@@ -1,0 +1,219 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { Navbar } from "@/components/navbar";
+import { KanbanBoard } from "@/components/tasks/kanban-board";
+import { TaskDialog } from "@/components/tasks/task-dialog";
+import type { TaskItem } from "@/components/tasks/taskform/task-form";
+import { Button } from "@/components/ui/button";
+import { LayoutGrid, Kanban, Plus, ArrowLeft, Sparkles, Filter } from "lucide-react";
+import { toast, Toaster } from "sonner";
+
+export default function KanbanPage() {
+  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [tasks, setTasks] = React.useState<TaskItem[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Dialog state
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [editingTask, setEditingTask] = React.useState<TaskItem | null>(null);
+
+  // Auth check
+  React.useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentUser(data.user);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      }
+    }
+    checkAuth();
+  }, []);
+
+  // Fetch tasks
+  const fetchTasks = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/tasks");
+      if (res.ok) {
+        const data = await res.json();
+        setTasks(data.tasks);
+      }
+    } catch {
+      toast.error("Failed to load tasks");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  // Handle open create modal
+  const handleOpenCreateModal = (defaultStatus?: "PENDING" | "IN_PROGRESS" | "COMPLETED") => {
+    if (defaultStatus) {
+      setEditingTask({
+        id: "",
+        title: "",
+        description: "",
+        status: defaultStatus,
+        priority: "MEDIUM",
+        dueDate: null,
+      });
+    } else {
+      setEditingTask(null);
+    }
+    setIsDialogOpen(true);
+  };
+
+  // Handle edit
+  const handleEditTask = (task: TaskItem) => {
+    setEditingTask(task);
+    setIsDialogOpen(true);
+  };
+
+  // Handle delete
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
+      if (res.ok) {
+        setTasks((prev) => prev.filter((t) => t.id !== taskId));
+        toast.success("Task deleted successfully");
+      }
+    } catch {
+      toast.error("Failed to delete task");
+    }
+  };
+
+  // Handle status toggle
+  const handleStatusToggle = async (task: TaskItem) => {
+    const nextStatus = task.status === "COMPLETED" ? "PENDING" : "COMPLETED";
+    handleStatusChange(task.id, nextStatus);
+  };
+
+  // Handle drag-and-drop or explicit status change
+  const handleStatusChange = async (
+    taskId: string,
+    newStatus: "PENDING" | "IN_PROGRESS" | "COMPLETED"
+  ) => {
+    // Optimistic UI update
+    setTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
+    );
+
+    try {
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setTasks((prev) => prev.map((t) => (t.id === taskId ? data.task : t)));
+        const statusLabel =
+          newStatus === "COMPLETED"
+            ? "Completed! 🎉"
+            : newStatus === "IN_PROGRESS"
+            ? "In Progress ⏳"
+            : "To Do 📋";
+        toast.success(`Task moved to ${statusLabel}`);
+      } else {
+        fetchTasks(); // Revert on failure
+        toast.error("Failed to update task status");
+      }
+    } catch {
+      fetchTasks();
+      toast.error("Network error while updating status");
+    }
+  };
+
+  // Handle form success
+  const handleFormSuccess = (savedTask: TaskItem) => {
+    setTasks((prev) => {
+      const exists = prev.some((t) => t.id === savedTask.id);
+      if (exists) {
+        return prev.map((t) => (t.id === savedTask.id ? savedTask : t));
+      }
+      return [savedTask, ...prev];
+    });
+    toast.success(editingTask?.id ? "Task updated" : "Task created in Kanban board! 🚀");
+  };
+
+  return (
+    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 via-zinc-50/50 to-slate-100/60 pb-24 overflow-x-hidden">
+      {/* Decorative Ambient Background Glow Elements */}
+      <div className="pointer-events-none absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-3xl animate-pulse-glow" />
+      <div className="pointer-events-none absolute top-32 right-10 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
+
+      <Toaster position="top-right" richColors />
+      <Navbar user={currentUser} onOpenCreateModal={() => handleOpenCreateModal()} />
+
+      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+        {/* Top Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white/80 backdrop-blur-md border border-zinc-200/80 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-md shadow-indigo-500/25">
+              <Kanban className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-zinc-900">
+                  Kanban Project Board
+                </h1>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200/60">
+                  Live Sync
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Organize workflow visually. Drag cards across columns to progress work.
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild className="h-9 gap-1.5 text-xs rounded-xl">
+              <Link href="/">
+                <LayoutGrid className="h-4 w-4 text-zinc-500" />
+                <span>Dashboard View</span>
+              </Link>
+            </Button>
+            <Button
+              onClick={() => handleOpenCreateModal()}
+              size="sm"
+              className="h-9 gap-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Task</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* The Kanban Board */}
+        <KanbanBoard
+          tasks={tasks}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          onStatusToggle={handleStatusToggle}
+          onStatusChange={handleStatusChange}
+          onOpenCreateModal={handleOpenCreateModal}
+        />
+      </main>
+
+      {/* Task Dialog */}
+      <TaskDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        initialData={editingTask}
+        onSuccess={handleFormSuccess}
+      />
+    </div>
+  );
+}
