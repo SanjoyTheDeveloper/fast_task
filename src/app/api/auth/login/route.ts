@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { loginSchema } from "@/lib/validations";
 import { db } from "@/lib/db";
-import { verifyPassword, createSessionToken, setSessionCookie } from "@/lib/auth";
+import { verifyPassword } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify password
+    // Verify password with bcryptjs
     const isPasswordValid = await verifyPassword(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -38,13 +38,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create session
     const sessionUser = { id: user.id, email: user.email, name: user.name };
-    const token = await createSessionToken(sessionUser);
-    await setSessionCookie(token);
 
     return NextResponse.json(
-      { message: "Logged in successfully", user: sessionUser },
+      { message: "Credentials valid. Please use Auth.js session.", user: sessionUser },
       { status: 200 }
     );
   } catch (error) {

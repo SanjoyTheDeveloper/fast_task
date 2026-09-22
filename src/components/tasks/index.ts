@@ -5,3 +5,8 @@ export * from "./tasknote";
 export * from "./task-list";
 export * from "./kanban-board";
 export * from "./task-dialog";
+export * from "./TaskStatusBadge";
+export * from "./TaskPriorityBadge";
+export * from "./TaskEmptyState";
+export * from "./TaskSearch";
+export * from "./TaskPagination";

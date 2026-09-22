@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registerSchema } from "@/lib/validations";
 import { db } from "@/lib/db";
-import { hashPassword, createSessionToken, setSessionCookie } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Hash password and store user
+    // Hash password using bcryptjs and store user
     const hashedPassword = await hashPassword(password);
     const user = await db.user.create({
       data: {
@@ -39,13 +39,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create session
-    const sessionUser = { id: user.id, email: user.email, name: user.name };
-    const token = await createSessionToken(sessionUser);
-    await setSessionCookie(token);
+    const registeredUser = { id: user.id, email: user.email, name: user.name };
 
     return NextResponse.json(
-      { message: "Account created successfully", user: sessionUser },
+      { message: "Account created successfully", user: registeredUser },
       { status: 201 }
     );
   } catch (error) {

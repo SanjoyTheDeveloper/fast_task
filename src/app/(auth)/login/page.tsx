@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare, Loader2, Lock, Mail } from "lucide-react";
 
+import { signIn } from "next-auth/react";
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,21 +38,19 @@ function LoginForm() {
     setServerError(null);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setServerError(data.message || "Invalid credentials. Please try again.");
+      if (res?.error) {
+        setServerError("Invalid email or password. Please try again.");
         setIsLoading(false);
         return;
       }
 
-      // Successful login
+      // Successful login with Auth.js session
       router.push(from);
       router.refresh();
     } catch (err: any) {

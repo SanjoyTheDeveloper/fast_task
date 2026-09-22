@@ -18,24 +18,22 @@ import {
   Pencil,
   Trash2,
   ExternalLink,
-  Calendar,
   Clock,
   ArrowRight,
   GripVertical,
   CheckCircle2,
   Circle,
-  Timer,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import type { TaskItem } from "./taskform/task-form";
+import type { Task } from "@/types/task";
 
 interface KanbanBoardProps {
-  tasks: TaskItem[];
-  onEdit: (task: TaskItem) => void;
+  tasks: Task[];
+  onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
-  onStatusToggle: (task: TaskItem) => void;
-  onStatusChange?: (taskId: string, newStatus: "PENDING" | "IN_PROGRESS" | "COMPLETED") => void;
-  onOpenCreateModal: (defaultStatus?: "PENDING" | "IN_PROGRESS" | "COMPLETED") => void;
+  onStatusToggle: (task: Task) => void;
+  onStatusChange?: (taskId: string, completed: boolean) => void;
+  onOpenCreateModal: (defaultCompleted?: boolean) => void;
 }
 
 export function KanbanBoard({
@@ -49,36 +47,31 @@ export function KanbanBoard({
   const [draggedTaskId, setDraggedTaskId] = React.useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = React.useState<string | null>(null);
 
+  const pendingTasks = tasks.filter((t) => !t.completed);
+  const completedTasks = tasks.filter((t) => t.completed);
+
   const columns = [
     {
       id: "PENDING" as const,
+      completedValue: false,
       title: "To Do",
-      subtitle: "Backlog & Planned",
+      subtitle: "Pending & Active Tasks",
       badgeVariant: "pending",
       icon: Circle,
-      topAccent: "from-slate-500 to-zinc-600",
-      accentBorder: "border-l-zinc-400",
-      items: tasks.filter((t) => t.status === "PENDING"),
-    },
-    {
-      id: "IN_PROGRESS" as const,
-      title: "In Progress",
-      subtitle: "Actively Working",
-      badgeVariant: "in_progress",
-      icon: Timer,
       topAccent: "from-blue-500 to-indigo-600",
-      accentBorder: "border-l-blue-500",
-      items: tasks.filter((t) => t.status === "IN_PROGRESS"),
+      accentBorder: "border-l-indigo-500",
+      items: pendingTasks,
     },
     {
       id: "COMPLETED" as const,
+      completedValue: true,
       title: "Completed",
       subtitle: "Done & Verified",
       badgeVariant: "completed",
       icon: CheckCircle2,
       topAccent: "from-emerald-500 to-teal-600",
       accentBorder: "border-l-emerald-500",
-      items: tasks.filter((t) => t.status === "COMPLETED"),
+      items: completedTasks,
     },
   ];
 
@@ -103,40 +96,40 @@ export function KanbanBoard({
   };
 
   const handleDragLeave = (e: React.DragEvent, colId: string) => {
-    // Only clear if leaving the column element itself
     if (e.currentTarget.contains(e.relatedTarget as Node)) return;
     if (dragOverCol === colId) {
       setDragOverCol(null);
     }
   };
 
-  const handleDrop = (e: React.DragEvent, colId: "PENDING" | "IN_PROGRESS" | "COMPLETED") => {
+  const handleDrop = (e: React.DragEvent, completedValue: boolean) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData("text/plain") || draggedTaskId;
     setDraggedTaskId(null);
     setDragOverCol(null);
 
     if (taskId && onStatusChange) {
-      onStatusChange(taskId, colId);
+      onStatusChange(taskId, completedValue);
     }
   };
 
   return (
     <div className="space-y-4 animate-fade-in-up">
       {/* Visual instructions banner */}
-      <div className="flex items-center justify-between px-3 py-2 bg-blue-50/60 border border-blue-100 rounded-xl text-xs text-blue-700">
+      <div className="flex items-center justify-between px-3.5 py-2.5 bg-blue-50/60 border border-blue-100 rounded-xl text-xs text-blue-700">
         <span className="flex items-center gap-1.5 font-medium">
           <GripVertical className="h-4 w-4 text-blue-500" />
           Drag and drop any task card between columns to update its status instantly.
         </span>
-        <span className="font-semibold text-blue-600 bg-white px-2 py-0.5 rounded-md border border-blue-200/60 shadow-2xs">
-          Interactive Kanban
+        <span className="text-[11px] text-blue-500 font-semibold hidden sm:inline">
+          {tasks.length} total tasks
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+      {/* Kanban Columns Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
         {columns.map((col) => {
-          const ColIcon = col.icon;
+          const Icon = col.icon;
           const isOver = dragOverCol === col.id;
 
           return (
@@ -144,74 +137,63 @@ export function KanbanBoard({
               key={col.id}
               onDragOver={(e) => handleDragOver(e, col.id)}
               onDragLeave={(e) => handleDragLeave(e, col.id)}
-              onDrop={(e) => handleDrop(e, col.id)}
-              className={`relative flex flex-col rounded-2xl border transition-all duration-300 p-4 min-h-[520px] shadow-xs overflow-hidden ${
+              onDrop={(e) => handleDrop(e, col.completedValue)}
+              className={`flex flex-col rounded-2xl border transition-all duration-300 min-h-[500px] ${
                 isOver
-                  ? "border-blue-400 bg-blue-50/40 ring-2 ring-blue-400/20 shadow-lg scale-[1.01]"
-                  : "border-zinc-200/80 bg-zinc-50/60 backdrop-blur-xs hover:shadow-md"
+                  ? "border-blue-400 bg-blue-50/40 shadow-md ring-2 ring-blue-400/30 scale-[1.01]"
+                  : "border-zinc-200/90 bg-zinc-100/50 hover:border-zinc-300 shadow-2xs"
               }`}
             >
-              {/* Column top gradient accent */}
-              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${col.topAccent}`} />
-
               {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-200/80 mb-3.5 mt-1">
+              <div className="p-4 border-b border-zinc-200/80 bg-white/80 rounded-t-2xl backdrop-blur-xs flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className={`p-1.5 rounded-lg bg-white shadow-2xs text-zinc-700`}>
-                    <ColIcon className="h-4 w-4" />
+                  <div
+                    className={`h-7 w-7 rounded-lg bg-gradient-to-br ${col.topAccent} text-white flex items-center justify-center shadow-xs`}
+                  >
+                    <Icon className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="font-extrabold text-sm text-zinc-900 tracking-tight block">
-                      {col.title}
-                    </span>
-                    <span className="text-[10px] text-zinc-400 font-medium">
-                      {col.subtitle}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-sm text-zinc-900 leading-none">
+                        {col.title}
+                      </h3>
+                      <Badge
+                        variant={col.badgeVariant as any}
+                        className="text-xs px-2 py-0.5 rounded-full"
+                      >
+                        {col.items.length}
+                      </Badge>
+                    </div>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">{col.subtitle}</p>
                   </div>
-                  <Badge variant={col.badgeVariant as any} className="text-xs font-bold px-2 py-0.5 ml-1">
-                    {col.items.length}
-                  </Badge>
                 </div>
 
                 <Button
-                  variant="ghost"
                   size="sm"
-                  onClick={() => onOpenCreateModal(col.id)}
-                  className="h-7 px-2.5 text-xs text-zinc-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors gap-1"
+                  variant="ghost"
+                  onClick={() => onOpenCreateModal(col.completedValue)}
+                  className="h-8 w-8 p-0 text-zinc-500 hover:text-zinc-900 rounded-lg hover:bg-zinc-100"
+                  title={`Add task to ${col.title}`}
                 >
-                  <Plus className="h-3.5 w-3.5" /> Add
+                  <Plus className="h-4 w-4" />
                 </Button>
               </div>
 
-              {/* Column Tasks Container */}
-              <div className="flex-1 space-y-3">
+              {/* Column Tasks List */}
+              <div className="p-3 space-y-3 flex-1 flex flex-col">
                 {col.items.length === 0 ? (
-                  <div
-                    className={`flex h-40 flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors text-xs text-zinc-400 ${
-                      isOver
-                        ? "border-blue-400 bg-blue-100/30 text-blue-600 font-semibold"
-                        : "border-zinc-200/90 bg-white/40"
-                    }`}
-                  >
-                    <span>{isOver ? "Release to drop task here" : "No tasks in this stage"}</span>
-                    {!isOver && (
-                      <button
-                        onClick={() => onOpenCreateModal(col.id)}
-                        className="mt-2 text-blue-600 hover:underline flex items-center gap-1 font-medium"
-                      >
-                        <Plus className="h-3 w-3" /> Add a task
-                      </button>
-                    )}
+                  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center rounded-xl border-2 border-dashed border-zinc-200/70 text-zinc-400 my-2">
+                    <p className="text-xs font-medium">No tasks in {col.title}</p>
+                    <button
+                      onClick={() => onOpenCreateModal(col.completedValue)}
+                      className="mt-2 text-blue-600 hover:underline flex items-center gap-1 font-medium text-xs cursor-pointer"
+                    >
+                      <Plus className="h-3 w-3" /> Add a task
+                    </button>
                   </div>
                 ) : (
                   col.items.map((task) => {
                     const isDraggingThis = draggedTaskId === task.id;
-                    const priorityBorderColor =
-                      task.priority === "HIGH"
-                        ? "border-l-rose-500"
-                        : task.priority === "MEDIUM"
-                        ? "border-l-amber-500"
-                        : "border-l-emerald-500";
 
                     return (
                       <div
@@ -224,7 +206,7 @@ export function KanbanBoard({
                         }`}
                       >
                         <Card
-                          className={`relative border-l-4 ${priorityBorderColor} border-zinc-200/90 bg-white shadow-xs hover:shadow-md transition-shadow group`}
+                          className={`relative border-l-4 ${col.accentBorder} border-zinc-200/90 bg-white shadow-xs hover:shadow-md transition-shadow group`}
                         >
                           <CardHeader className="p-3.5 pb-2">
                             <div className="flex items-start justify-between gap-2">
@@ -233,24 +215,12 @@ export function KanbanBoard({
                                 <div className="space-y-1 flex-1 min-w-0">
                                   <Link
                                     href={`/task/${task.id}`}
-                                    className="font-semibold text-sm block hover:text-blue-600 transition-colors truncate text-zinc-900"
+                                    className={`font-semibold text-sm block hover:text-blue-600 transition-colors truncate ${
+                                      task.completed ? "line-through text-zinc-400" : "text-zinc-900"
+                                    }`}
                                   >
                                     {task.title}
                                   </Link>
-                                  <div className="flex flex-wrap items-center gap-1">
-                                    <Badge
-                                      variant={
-                                        task.priority === "HIGH"
-                                          ? "high"
-                                          : task.priority === "MEDIUM"
-                                          ? "medium"
-                                          : "low"
-                                      }
-                                      className="text-[10px] px-1.5 py-0"
-                                    >
-                                      {task.priority.toLowerCase()}
-                                    </Badge>
-                                  </div>
                                 </div>
                               </div>
 
@@ -277,23 +247,12 @@ export function KanbanBoard({
                                     Edit Task
                                   </DropdownMenuItem>
                                   <DropdownMenuSeparator />
-                                  {/* Quick move status actions */}
-                                  {col.id !== "PENDING" && onStatusChange && (
-                                    <DropdownMenuItem onClick={() => onStatusChange(task.id, "PENDING")}>
-                                      <ArrowRight className="mr-2 h-4 w-4 text-zinc-500 rotate-180" />
-                                      Move to To Do
-                                    </DropdownMenuItem>
-                                  )}
-                                  {col.id !== "IN_PROGRESS" && onStatusChange && (
-                                    <DropdownMenuItem onClick={() => onStatusChange(task.id, "IN_PROGRESS")}>
+                                  {onStatusChange && (
+                                    <DropdownMenuItem
+                                      onClick={() => onStatusChange(task.id, !task.completed)}
+                                    >
                                       <ArrowRight className="mr-2 h-4 w-4 text-blue-500" />
-                                      Move to In Progress
-                                    </DropdownMenuItem>
-                                  )}
-                                  {col.id !== "COMPLETED" && onStatusChange && (
-                                    <DropdownMenuItem onClick={() => onStatusChange(task.id, "COMPLETED")}>
-                                      <ArrowRight className="mr-2 h-4 w-4 text-emerald-500" />
-                                      Move to Completed
+                                      Mark as {task.completed ? "To Do" : "Completed"}
                                     </DropdownMenuItem>
                                   )}
                                   <DropdownMenuSeparator />
@@ -322,12 +281,6 @@ export function KanbanBoard({
                               <Clock className="h-3 w-3" />
                               <span>{formatDate(task.createdAt)}</span>
                             </div>
-                            {task.dueDate && (
-                              <div className="flex items-center gap-1 font-medium text-zinc-700 bg-white px-1.5 py-0.5 rounded border border-zinc-200/60 shadow-2xs">
-                                <Calendar className="h-3 w-3 text-blue-600" />
-                                <span>{formatDate(task.dueDate)}</span>
-                              </div>
-                            )}
                           </CardFooter>
                         </Card>
                       </div>

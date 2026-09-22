@@ -5,19 +5,19 @@ import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { KanbanBoard } from "@/components/tasks/kanban-board";
 import { TaskDialog } from "@/components/tasks/task-dialog";
-import type { TaskItem } from "@/components/tasks/taskform/task-form";
+import type { Task } from "@/types/task";
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, Kanban, Plus, ArrowLeft, Sparkles, Filter } from "lucide-react";
+import { LayoutGrid, Kanban, Plus } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
 export default function KanbanPage() {
   const [currentUser, setCurrentUser] = React.useState<any>(null);
-  const [tasks, setTasks] = React.useState<TaskItem[]>([]);
+  const [tasks, setTasks] = React.useState<Task[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   // Dialog state
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [editingTask, setEditingTask] = React.useState<TaskItem | null>(null);
+  const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 
   // Auth check
   React.useEffect(() => {
@@ -35,14 +35,15 @@ export default function KanbanPage() {
     checkAuth();
   }, []);
 
-  // Fetch tasks
+  // Fetch tasks strictly from response.data: Task[]
   const fetchTasks = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/tasks");
       if (res.ok) {
-        const data = await res.json();
-        setTasks(data.tasks);
+        const json = await res.json();
+        const list: Task[] = json.data || [];
+        setTasks(list);
       }
     } catch {
       toast.error("Failed to load tasks");
@@ -56,15 +57,16 @@ export default function KanbanPage() {
   }, [fetchTasks]);
 
   // Handle open create modal
-  const handleOpenCreateModal = (defaultStatus?: "PENDING" | "IN_PROGRESS" | "COMPLETED") => {
-    if (defaultStatus) {
+  const handleOpenCreateModal = (defaultCompleted?: boolean) => {
+    if (defaultCompleted !== undefined) {
       setEditingTask({
         id: "",
         title: "",
-        description: "",
-        status: defaultStatus,
-        priority: "MEDIUM",
-        dueDate: null,
+        description: null,
+        completed: defaultCompleted,
+        userId: "",
+        createdAt: "",
+        updatedAt: "",
       });
     } else {
       setEditingTask(null);
@@ -73,7 +75,7 @@ export default function KanbanPage() {
   };
 
   // Handle edit
-  const handleEditTask = (task: TaskItem) => {
+  const handleEditTask = (task: Task) => {
     setEditingTask(task);
     setIsDialogOpen(true);
   };
@@ -82,48 +84,43 @@ export default function KanbanPage() {
   const handleDeleteTask = async (taskId: string) => {
     try {
       const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
-      if (res.ok) {
+      if (res.status === 204 || res.ok) {
         setTasks((prev) => prev.filter((t) => t.id !== taskId));
         toast.success("Task deleted successfully");
+      } else {
+        toast.error("Failed to delete task");
       }
     } catch {
-      toast.error("Failed to delete task");
+      toast.error("Network error while deleting task");
     }
   };
 
   // Handle status toggle
-  const handleStatusToggle = async (task: TaskItem) => {
-    const nextStatus = task.status === "COMPLETED" ? "PENDING" : "COMPLETED";
-    handleStatusChange(task.id, nextStatus);
+  const handleStatusToggle = async (task: Task) => {
+    handleStatusChange(task.id, !task.completed);
   };
 
   // Handle drag-and-drop or explicit status change
-  const handleStatusChange = async (
-    taskId: string,
-    newStatus: "PENDING" | "IN_PROGRESS" | "COMPLETED"
-  ) => {
+  const handleStatusChange = async (taskId: string, completed: boolean) => {
     // Optimistic UI update
     setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
+      prev.map((t) => (t.id === taskId ? { ...t, completed } : t))
     );
 
     try {
       const res = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ completed }),
       });
 
       if (res.ok) {
-        const data = await res.json();
-        setTasks((prev) => prev.map((t) => (t.id === taskId ? data.task : t)));
-        const statusLabel =
-          newStatus === "COMPLETED"
-            ? "Completed! 🎉"
-            : newStatus === "IN_PROGRESS"
-            ? "In Progress ⏳"
-            : "To Do 📋";
-        toast.success(`Task moved to ${statusLabel}`);
+        const json = await res.json();
+        const updated: Task = json.data;
+        if (updated) {
+          setTasks((prev) => prev.map((t) => (t.id === taskId ? updated : t)));
+        }
+        toast.success(completed ? "Task moved to Completed! 🎉" : "Task moved to To Do 📋");
       } else {
         fetchTasks(); // Revert on failure
         toast.error("Failed to update task status");
@@ -135,7 +132,7 @@ export default function KanbanPage() {
   };
 
   // Handle form success
-  const handleFormSuccess = (savedTask: TaskItem) => {
+  const handleFormSuccess = (savedTask: Task) => {
     setTasks((prev) => {
       const exists = prev.some((t) => t.id === savedTask.id);
       if (exists) {

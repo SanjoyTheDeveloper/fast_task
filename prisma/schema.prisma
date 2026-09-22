@@ -35,6 +35,7 @@ model Task {
   id          String       @id @default(cuid())
   title       String
   description String?
+  completed   Boolean      @default(false)
   status      TaskStatus   @default(PENDING)
   priority    TaskPriority @default(MEDIUM)
   dueDate     DateTime?
@@ -44,6 +45,9 @@ model Task {
   updatedAt   DateTime     @updatedAt
 
   @@index([userId])
+  @@index([userId, completed])
+  @@index([userId, createdAt])
+  @@index([userId, priority])
   @@index([status])
   @@index([priority])
   @@map("tasks")

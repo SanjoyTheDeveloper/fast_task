@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,77 +12,63 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, MoreVertical, Pencil, Trash2, ExternalLink, Clock } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, ExternalLink, Clock, Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import type { TaskItem } from "../taskform/task-form";
+import { TaskStatusBadge } from "../TaskStatusBadge";
+import type { Task } from "@/types/task";
 
-interface TaskCardProps {
-  task: TaskItem;
-  onEdit: (task: TaskItem) => void;
+export interface TaskCardProps {
+  task: Task;
+  onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
-  onStatusToggle: (task: TaskItem) => void;
+  onStatusToggle: (task: Task) => void;
+  isUpdating?: boolean;
 }
 
-export function TaskCard({ task, onEdit, onDelete, onStatusToggle }: TaskCardProps) {
-  const isCompleted = task.status === "COMPLETED";
+export function TaskCard({
+  task,
+  onEdit,
+  onDelete,
+  onStatusToggle,
+  isUpdating = false,
+}: TaskCardProps) {
+  const isCompleted = task.completed;
 
-  const priorityBadgeVariant =
-    task.priority === "HIGH"
-      ? "high"
-      : task.priority === "MEDIUM"
-      ? "medium"
-      : "low";
-
-  const statusBadgeVariant =
-    task.status === "COMPLETED"
-      ? "completed"
-      : task.status === "IN_PROGRESS"
-      ? "in_progress"
-      : "pending";
-
-  const statusLabel =
-    task.status === "COMPLETED"
-      ? "Completed"
-      : task.status === "IN_PROGRESS"
-      ? "In Progress"
-      : "Pending";
-
-  const priorityBorderColor =
-    task.priority === "HIGH"
-      ? "border-l-rose-500 hover:border-l-rose-600"
-      : task.priority === "MEDIUM"
-      ? "border-l-amber-500 hover:border-l-amber-600"
-      : "border-l-emerald-500 hover:border-l-emerald-600";
+  const borderColor = isCompleted
+    ? "border-l-emerald-500 hover:border-l-emerald-600"
+    : "border-l-indigo-500 hover:border-l-indigo-600";
 
   return (
     <Card
-      className={`group relative border-l-4 ${priorityBorderColor} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border-zinc-200/90 bg-white/95 backdrop-blur-xs`}
+      className={`group relative border-l-4 ${borderColor} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border-zinc-200/90 bg-white/95 backdrop-blur-xs`}
     >
       <CardHeader className="p-4 pb-2">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-start gap-3 flex-1">
-            <Checkbox
-              checked={isCompleted}
-              onCheckedChange={() => onStatusToggle(task)}
-              className="mt-1 transition-transform duration-200 group-hover:scale-110 active:scale-95"
-              aria-label={`Mark task ${task.title} as ${isCompleted ? "pending" : "completed"}`}
-            />
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            {isUpdating ? (
+              <div className="mt-1 h-4 w-4 flex items-center justify-center shrink-0">
+                <Loader2 className="h-3.5 w-3.5 text-blue-600 animate-spin" />
+              </div>
+            ) : (
+              <Checkbox
+                checked={isCompleted}
+                onCheckedChange={() => onStatusToggle(task)}
+                disabled={isUpdating}
+                className="mt-1 shrink-0 transition-transform duration-200 group-hover:scale-110 active:scale-95 cursor-pointer"
+                aria-label={isCompleted ? "Mark task as active" : "Mark task as completed"}
+              />
+            )}
             <div className="space-y-1 flex-1 min-w-0">
               <Link
                 href={`/task/${task.id}`}
-                className={`font-semibold text-base block hover:text-blue-600 transition-colors truncate ${
+                className={`font-semibold text-base block hover:text-blue-600 transition-colors break-words line-clamp-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-sm ${
                   isCompleted ? "line-through text-zinc-400" : "text-zinc-900"
                 }`}
               >
                 {task.title}
               </Link>
               <div className="flex flex-wrap items-center gap-1.5">
-                <Badge variant={statusBadgeVariant as any} className="transition-transform group-hover:scale-105">
-                  {statusLabel}
-                </Badge>
-                <Badge variant={priorityBadgeVariant as any} className="transition-transform group-hover:scale-105">
-                  {task.priority.charAt(0) + task.priority.slice(1).toLowerCase()}
-                </Badge>
+                <TaskStatusBadge completed={isCompleted} />
               </div>
             </div>
           </div>
@@ -94,30 +79,36 @@ export function TaskCard({ task, onEdit, onDelete, onStatusToggle }: TaskCardPro
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-zinc-400 hover:text-zinc-800 transition-transform group-hover:scale-105"
+                className="h-9 w-9 shrink-0 text-zinc-400 hover:text-zinc-800 transition-transform group-hover:scale-105 rounded-lg focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                aria-label="Task actions"
+                onClick={(e) => e.stopPropagation()}
               >
                 <MoreVertical className="h-4 w-4" />
-                <span className="sr-only">Task actions</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 shadow-xl border-zinc-200">
               <DropdownMenuItem asChild>
-                <Link href={`/task/${task.id}`} className="flex items-center">
+                <Link href={`/task/${task.id}`} className="flex items-center cursor-pointer">
                   <ExternalLink className="mr-2 h-4 w-4 text-zinc-500" />
-                  View Details
+                  <span>View Details</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onEdit(task)}>
+              <DropdownMenuItem
+                onClick={() => onEdit(task)}
+                className="cursor-pointer"
+                aria-label="Edit task"
+              >
                 <Pencil className="mr-2 h-4 w-4 text-zinc-500" />
-                Edit Task
+                <span>Edit Task</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => onDelete(task.id)}
                 className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+                aria-label="Delete task"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete Task
+                <span>Delete Task</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -126,7 +117,7 @@ export function TaskCard({ task, onEdit, onDelete, onStatusToggle }: TaskCardPro
 
       {task.description && (
         <CardContent className="px-4 py-2 pt-0">
-          <p className="text-sm text-zinc-600 line-clamp-2 pl-7 leading-relaxed">
+          <p className="text-sm text-zinc-600 line-clamp-2 pl-7 leading-relaxed break-words">
             {task.description}
           </p>
         </CardContent>
@@ -137,12 +128,6 @@ export function TaskCard({ task, onEdit, onDelete, onStatusToggle }: TaskCardPro
           <Clock className="h-3.5 w-3.5" />
           <span>{formatDate(task.createdAt)}</span>
         </div>
-        {task.dueDate && (
-          <div className="flex items-center gap-1.5 font-medium text-zinc-700 bg-white px-2 py-0.5 rounded-md border border-zinc-200/60 shadow-2xs">
-            <Calendar className="h-3.5 w-3.5 text-blue-600" />
-            <span>Due {formatDate(task.dueDate)}</span>
-          </div>
-        )}
       </CardFooter>
     </Card>
   );

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare, Loader2, Lock, Mail, User } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -49,7 +50,13 @@ export default function RegisterPage() {
         return;
       }
 
-      // Successful registration & auto-login
+      // Automatically sign in with Auth.js
+      await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+
       router.push("/");
       router.refresh();
     } catch (err: any) {

@@ -3,29 +3,35 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { taskSchema, TaskInput } from "@/lib/validations";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatForInput } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
+import type { Task } from "@/types/task";
 
-export interface TaskItem {
-  id: string;
-  title: string;
-  description: string | null;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-  priority: "LOW" | "MEDIUM" | "HIGH";
-  dueDate: string | Date | null;
-  userId?: string;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
-}
+export type { Task };
+export type TaskItem = Task;
+
+const formSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, { message: "Title is required" })
+    .max(255, { message: "Title cannot exceed 255 characters" }),
+  description: z
+    .string()
+    .max(2000, { message: "Description cannot exceed 2000 characters" })
+    .optional(),
+  completed: z.boolean(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface TaskFormProps {
-  initialData?: TaskItem | null;
-  onSuccess: (task: TaskItem) => void;
+  initialData?: Task | null;
+  onSuccess: (task: Task) => void;
   onCancel?: () => void;
 }
 
@@ -41,21 +47,18 @@ export function TaskForm({ initialData, onSuccess, onCancel }: TaskFormProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<TaskInput>({
-    resolver: zodResolver(taskSchema),
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       title: initialData?.title || "",
       description: initialData?.description || "",
-      status: initialData?.status || "PENDING",
-      priority: initialData?.priority || "MEDIUM",
-      dueDate: initialData?.dueDate ? formatForInput(initialData.dueDate) : "",
+      completed: Boolean(initialData?.completed),
     },
   });
 
-  const selectedStatus = watch("status");
-  const selectedPriority = watch("priority");
+  const isCompleted = watch("completed");
 
-  const onSubmit = async (values: TaskInput) => {
+  const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     setServerError(null);
 
@@ -63,21 +66,37 @@ export function TaskForm({ initialData, onSuccess, onCancel }: TaskFormProps) {
       const url = isEditing ? `/api/tasks/${initialData.id}` : "/api/tasks";
       const method = isEditing ? "PATCH" : "POST";
 
+      const payload = {
+        title: values.title.trim(),
+        description: values.description?.trim() ? values.description.trim() : null,
+        completed: Boolean(values.completed),
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const json = await res.json();
 
       if (!res.ok) {
-        setServerError(data.message || "Failed to save task");
+        const errorMsg =
+          json.error?.message ||
+          (json.error?.details
+            ? Object.values(json.error.details as Record<string, string[]>)
+                .flat()
+                .join(", ")
+            : null) ||
+          "Failed to save task";
+        setServerError(errorMsg);
         setIsSubmitting(false);
         return;
       }
 
-      onSuccess(data.task);
+      // Canonical contract: read task strictly from response.data: Task
+      const savedTask: Task = json.data;
+      onSuccess(savedTask);
     } catch (err: any) {
       setServerError(err.message || "Network error occurred");
     } finally {
@@ -126,80 +145,48 @@ export function TaskForm({ initialData, onSuccess, onCancel }: TaskFormProps) {
         )}
       </div>
 
-      {/* Status & Priority Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Status */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-zinc-900">Status</label>
-          <Select
-            value={selectedStatus}
-            onValueChange={(val: any) => setValue("status", val)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="PENDING">Pending</SelectItem>
-              <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-              <SelectItem value="COMPLETED">Completed</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.status && (
-            <p className="text-xs text-red-600">{errors.status.message}</p>
-          )}
-        </div>
-
-        {/* Priority */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-zinc-900">Priority</label>
-          <Select
-            value={selectedPriority}
-            onValueChange={(val: any) => setValue("priority", val)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="LOW">Low</SelectItem>
-              <SelectItem value="MEDIUM">Medium</SelectItem>
-              <SelectItem value="HIGH">High</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.priority && (
-            <p className="text-xs text-red-600">{errors.priority.message}</p>
-          )}
-        </div>
-      </div>
-
-      {/* Due Date */}
-      <div className="space-y-1.5">
-        <label className="text-sm font-medium text-zinc-900" htmlFor="task-dueDate">
-          Due Date
-        </label>
-        <Input
-          id="task-dueDate"
-          type="date"
-          {...register("dueDate")}
-          className={errors.dueDate ? "border-red-500 focus-visible:ring-red-500" : ""}
+      {/* Completed Status Checkbox */}
+      <div className="flex items-center space-x-2.5 p-3 rounded-xl bg-zinc-50/80 border border-zinc-200/70">
+        <Checkbox
+          id="task-form-completed"
+          checked={isCompleted}
+          onCheckedChange={(checked) => setValue("completed", Boolean(checked))}
         />
-        {errors.dueDate && (
-          <p className="text-xs text-red-600">{errors.dueDate.message}</p>
-        )}
+        <label
+          htmlFor="task-form-completed"
+          className="text-sm font-medium text-zinc-800 cursor-pointer select-none flex-1"
+        >
+          Mark as completed
+        </label>
+        <span
+          className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+            isCompleted
+              ? "bg-emerald-100 text-emerald-800"
+              : "bg-zinc-200 text-zinc-600"
+          }`}
+        >
+          {isCompleted ? "Completed" : "Pending"}
+        </span>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end space-x-3 pt-4 border-t border-zinc-100">
+      <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-zinc-100">
         {onCancel && (
           <Button
             type="button"
             variant="outline"
             onClick={onCancel}
             disabled={isSubmitting}
+            className="rounded-xl border-zinc-200 w-full sm:w-auto cursor-pointer"
           >
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto cursor-pointer"
+        >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

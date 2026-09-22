@@ -2,18 +2,17 @@
 
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, Clock, AlertTriangle, ListTodo, TrendingUp, Sparkles } from "lucide-react";
-import type { TaskItem } from "./tasks/taskform/task-form";
+import { CheckCircle2, Clock, ListTodo, TrendingUp, Sparkles } from "lucide-react";
+import type { Task } from "@/types/task";
 
 interface StatsOverviewProps {
-  tasks: TaskItem[];
+  tasks: Task[];
 }
 
 export function StatsOverview({ tasks }: StatsOverviewProps) {
   const total = tasks.length;
-  const completed = tasks.filter((t) => t.status === "COMPLETED").length;
-  const inProgress = tasks.filter((t) => t.status === "IN_PROGRESS").length;
-  const highPriority = tasks.filter((t) => t.priority === "HIGH").length;
+  const completed = tasks.filter((t) => t.completed).length;
+  const pending = tasks.filter((t) => !t.completed).length;
 
   const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
@@ -24,15 +23,13 @@ export function StatsOverview({ tasks }: StatsOverviewProps) {
       icon: ListTodo,
       gradient: "from-slate-600 to-zinc-800",
       lightBg: "bg-slate-50 border-slate-200/60",
-      accent: "text-slate-700",
     },
     {
-      title: "In Progress",
-      value: inProgress,
+      title: "Pending",
+      value: pending,
       icon: Clock,
       gradient: "from-blue-500 to-indigo-600",
       lightBg: "bg-blue-50/50 border-blue-100",
-      accent: "text-blue-600",
     },
     {
       title: "Completed",
@@ -40,15 +37,13 @@ export function StatsOverview({ tasks }: StatsOverviewProps) {
       icon: CheckCircle2,
       gradient: "from-emerald-500 to-teal-600",
       lightBg: "bg-emerald-50/50 border-emerald-100",
-      accent: "text-emerald-600",
     },
     {
-      title: "High Priority",
-      value: highPriority,
-      icon: AlertTriangle,
-      gradient: "from-rose-500 to-amber-600",
-      lightBg: "bg-rose-50/50 border-rose-100",
-      accent: "text-rose-600",
+      title: "Completion Rate",
+      value: `${completionRate}%`,
+      icon: TrendingUp,
+      gradient: "from-indigo-500 to-purple-600",
+      lightBg: "bg-purple-50/50 border-purple-100",
     },
   ];
 
@@ -95,7 +90,7 @@ export function StatsOverview({ tasks }: StatsOverviewProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
             <div className="flex items-center gap-2">
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <TrendingUp className="h-3 w-3" />
+                <Sparkles className="h-3 w-3" />
               </div>
               <span className="text-xs font-bold text-zinc-800 uppercase tracking-wider">
                 Overall Productivity Progress
@@ -116,7 +111,6 @@ export function StatsOverview({ tasks }: StatsOverviewProps) {
               className="bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 h-2 rounded-full transition-all duration-700 ease-out relative"
               style={{ width: `${completionRate}%` }}
             >
-              {/* Shimmer line */}
               <div className="absolute inset-0 shimmer-effect opacity-60 rounded-full" />
             </div>
           </div>

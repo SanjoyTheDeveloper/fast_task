@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
-import { removeSessionCookie } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export async function POST() {
   try {
-    await removeSessionCookie();
+    const cookieStore = await cookies();
+    cookieStore.delete("authjs.session-token");
+    cookieStore.delete("__Secure-authjs.session-token");
+    cookieStore.delete("next-auth.session-token");
+    cookieStore.delete("__Secure-next-auth.session-token");
+
     return NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
   } catch (error) {
     console.error("Logout error:", error);

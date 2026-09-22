@@ -2,47 +2,71 @@
 
 import * as React from "react";
 import { TaskCard } from "./taskcard/task-card";
-import type { TaskItem } from "./taskform/task-form";
+import { TaskEmptyState } from "./TaskEmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Plus, Inbox, Sparkles } from "lucide-react";
+import { AlertCircle, RotateCcw } from "lucide-react";
+import type { Task } from "@/types/task";
 
-interface TaskListProps {
-  tasks: TaskItem[];
+export interface TaskListProps {
+  tasks: Task[];
   isLoading: boolean;
-  onEdit: (task: TaskItem) => void;
+  isError?: boolean;
+  errorMessage?: string | null;
+  onRetry?: () => void;
+  isFiltered?: boolean;
+  filterStatus?: string;
+  searchQuery?: string;
+  onClearFilter?: () => void;
+  onClearSearch?: () => void;
+  onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
-  onStatusToggle: (task: TaskItem) => void;
+  onStatusToggle: (task: Task) => void;
   onOpenCreateModal: () => void;
+  updatingTaskId?: string | null;
 }
 
 export function TaskList({
   tasks,
   isLoading,
+  isError = false,
+  errorMessage = null,
+  onRetry,
+  isFiltered = false,
+  filterStatus = "ALL",
+  searchQuery = "",
+  onClearFilter,
+  onClearSearch,
   onEdit,
   onDelete,
   onStatusToggle,
   onOpenCreateModal,
+  updatingTaskId = null,
 }: TaskListProps) {
+  // 1. Loading State
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        role="status"
+        aria-label="Loading tasks"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div
             key={i}
-            className="p-5 border border-zinc-200 rounded-xl bg-white space-y-3.5 shadow-2xs"
+            className="p-5 border border-zinc-200/90 rounded-2xl bg-white/90 space-y-3.5 shadow-2xs"
           >
             <div className="flex items-center gap-3">
-              <Skeleton className="h-5 w-5 rounded" />
+              <Skeleton className="h-5 w-5 rounded-md" />
               <div className="space-y-1.5 flex-1">
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-5 w-3/4 rounded-md" />
+                <Skeleton className="h-4 w-1/3 rounded-md" />
               </div>
             </div>
-            <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-lg" />
             <div className="flex justify-between pt-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-24 rounded-md" />
+              <Skeleton className="h-4 w-16 rounded-md" />
             </div>
           </div>
         ))}
@@ -50,34 +74,70 @@ export function TaskList({
     );
   }
 
-  if (tasks.length === 0) {
+  // 2. Error State
+  if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border-2 border-dashed border-zinc-200/90 bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300">
-        <div className="h-16 w-16 rounded-2xl bg-gradient-to-tr from-blue-500/10 via-indigo-500/15 to-blue-600/20 text-blue-600 flex items-center justify-center mb-4 animate-float shadow-sm">
-          <Inbox className="h-8 w-8" />
+      <div
+        role="alert"
+        className="flex flex-col items-center justify-center p-10 text-center rounded-2xl border border-red-200 bg-red-50/70 backdrop-blur-md shadow-xs space-y-3.5 my-4"
+      >
+        <div className="h-12 w-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center">
+          <AlertCircle className="h-6 w-6" />
         </div>
-        <h3 className="text-lg font-bold text-zinc-900 mb-1">No tasks found</h3>
-        <p className="text-sm text-zinc-500 max-w-sm mb-6 leading-relaxed">
-          You don&apos;t have any tasks matching your filters. Create a new task or adjust your filters to get started.
-        </p>
-        <Button onClick={onOpenCreateModal} className="gap-2 shadow-md shadow-blue-500/20 hover:scale-105 transition-transform">
-          <Plus className="h-4 w-4" />
-          Create First Task
-        </Button>
+        <div>
+          <h3 className="text-base font-bold text-red-950">
+            Failed to load tasks
+          </h3>
+          <p className="text-xs text-red-700 max-w-md mt-1">
+            {errorMessage || "An unexpected error occurred while loading your tasks. Please try again."}
+          </p>
+        </div>
+        {onRetry && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRetry}
+            className="rounded-xl border-red-200 bg-white hover:bg-red-50 text-red-700 gap-1.5"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span>Retry</span>
+          </Button>
+        )}
       </div>
     );
   }
 
+  // 3. Empty State (Handles both 'No Tasks' and 'No Filtered Results')
+  if (tasks.length === 0) {
+    return (
+      <TaskEmptyState
+        isFiltered={isFiltered}
+        filterStatus={filterStatus}
+        searchQuery={searchQuery}
+        onOpenCreateModal={onOpenCreateModal}
+        onClearFilter={onClearFilter}
+        onClearSearch={onClearSearch}
+      />
+    );
+  }
+
+  // 4. Task List Grid
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up">
+    <div
+      role="list"
+      aria-label="Tasks list"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up"
+    >
       {tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onStatusToggle={onStatusToggle}
-        />
+        <div role="listitem" key={task.id}>
+          <TaskCard
+            task={task}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onStatusToggle={onStatusToggle}
+            isUpdating={updatingTaskId === task.id}
+          />
+        </div>
       ))}
     </div>
   );

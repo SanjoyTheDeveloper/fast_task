@@ -35,6 +35,7 @@ model Task {
   id          String       @id @default(cuid())
   title       String
   description String?
+  completed   Boolean      @default(false)
   status      TaskStatus   @default(PENDING)
   priority    TaskPriority @default(MEDIUM)
   dueDate     DateTime?
