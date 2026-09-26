@@ -115,12 +115,12 @@ export function TaskDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[540px] p-5 sm:p-6">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-zinc-900">
+      <DialogContent className="sm:max-w-[540px] p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/90 shadow-[0_20px_50px_-10px_rgba(15,23,42,0.16)]">
+        <DialogHeader className="space-y-1 text-left">
+          <DialogTitle className="text-xl font-bold tracking-tight text-slate-900">
             {isEditing ? "Edit Task" : "Create New Task"}
           </DialogTitle>
-          <DialogDescription className="text-sm text-zinc-500">
+          <DialogDescription className="text-sm text-slate-500 font-normal leading-relaxed">
             {isEditing
               ? "Update the details and completion status of this task."
               : "Fill out the fields below to add a new task to your dashboard."}

@@ -3,12 +3,15 @@
 import * as React from "react";
 import { Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { AcademicHeader } from "@/components/academic/AcademicHeader";
-import { StudentStats } from "@/components/academic/StudentStats";
-import { PomodoroWidget } from "@/components/academic/PomodoroWidget";
-import { AcademicQuickLinks } from "@/components/academic/AcademicQuickLinks";
-import { MobileNavBar } from "@/components/academic/MobileNavBar";
+import {
+  Sidebar,
+  TopHeader,
+  WelcomeCard,
+  TodaySchedule,
+  StatCards,
+  CalendarWidget,
+  FocusPomodoro,
+} from "@/components/dashboard";
 import {
   TaskFilters,
   FilterState,
@@ -16,6 +19,13 @@ import {
   TaskDialog,
   TaskPagination,
 } from "@/components/tasks";
+import { SemesterSetupModal } from "@/components/academic/SemesterSetupModal";
+import { CourseScheduleModal } from "@/components/academic/CourseScheduleModal";
+import {
+  DEFAULT_SEMESTER_CONFIG,
+  SemesterConfig,
+  CourseSession,
+} from "@/lib/academic";
 import { toast, Toaster } from "sonner";
 import type { Task, PaginationMeta, PaginatedTasksResponse } from "@/types/task";
 
@@ -51,12 +61,16 @@ function DashboardContent() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);
 
-  // Dialog & Action States
+  // UI Drawer & Modal States
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [editingTask, setEditingTask] = React.useState<Task | null>(null);
   const [deletingTask, setDeletingTask] = React.useState<Task | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [updatingTaskId, setUpdatingTaskId] = React.useState<string | null>(null);
+  const [isSemesterSetupOpen, setIsSemesterSetupOpen] = React.useState(false);
+  const [isRoutineModalOpen, setIsRoutineModalOpen] = React.useState(false);
+  const [semesterConfig, setSemesterConfig] = React.useState<SemesterConfig>(DEFAULT_SEMESTER_CONFIG);
 
   // 2. Load authenticated user
   React.useEffect(() => {
@@ -163,13 +177,13 @@ function DashboardContent() {
     fetchTasks();
   }, [fetchTasks]);
 
-  // Client-side course filter matching for instant response
+  // Client-side course filter matching
   const displayedTasks = React.useMemo(() => {
     if (!course || course === "ALL") return tasks;
     return tasks.filter((t) => (t.course || "").toUpperCase() === course);
   }, [tasks, course]);
 
-  // Filter change handler: updates URL params and resets page to 1
+  // Filter change handler
   const handleFilterChange = (newFilters: FilterState) => {
     updateQueryParams(
       {
@@ -180,11 +194,16 @@ function DashboardContent() {
         sortBy: newFilters.sortBy,
         sortOrder: newFilters.sortOrder,
       },
-      true // Reset page to 1
+      true
     );
   };
 
-  // Page change handler: preserves search, filters, and sort
+  // Search input handler
+  const handleGlobalSearch = (val: string) => {
+    updateQueryParams({ search: val }, true);
+  };
+
+  // Page change handler
   const handlePageChange = (newPage: number) => {
     updateQueryParams({ page: newPage }, false);
   };
@@ -217,28 +236,24 @@ function DashboardContent() {
     sortBy !== "createdAt" ||
     sortOrder !== "desc";
 
-  // 4. Create Task Modal Handler
+  // Task Dialog Actions
   const handleOpenCreateModal = () => {
     setEditingTask(null);
     setIsFormOpen(true);
   };
 
-  // 5. Edit Task Modal Handler
   const handleOpenEditModal = (task: Task) => {
     setEditingTask(task);
     setIsFormOpen(true);
   };
 
-  // 6. Form Success (Create or Edit)
   const handleFormSuccess = (_savedTask: Task) => {
-    // Re-fetch current query from database
     fetchTasks();
     toast.success(
-      editingTask?.id ? "Task updated successfully" : "Task added to course list 🚀"
+      editingTask?.id ? "Assignment updated successfully" : "Assignment added to your list 🚀"
     );
   };
 
-  // 7. Delete Task Trigger & Confirm
   const handleOpenDeleteModal = (taskId: string) => {
     const task = tasks.find((t) => t.id === taskId) || null;
     if (task) {
@@ -252,7 +267,7 @@ function DashboardContent() {
       const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
       if (res.status === 204 || res.ok) {
         setDeletingTask(null);
-        toast.success("Task deleted successfully");
+        toast.success("Assignment removed successfully");
 
         if (tasks.length === 1 && page > 1) {
           updateQueryParams({ page: page - 1 }, false);
@@ -261,16 +276,15 @@ function DashboardContent() {
         }
       } else {
         const errJson = await res.json().catch(() => ({}));
-        toast.error(errJson?.error?.message || "Failed to delete task");
+        toast.error(errJson?.error?.message || "Failed to delete assignment");
       }
     } catch {
-      toast.error("Network error while deleting task");
+      toast.error("Network error while deleting assignment");
     } finally {
       setIsDeleting(false);
     }
   };
 
-  // 8. Toggle Status (Active <-> Completed)
   const handleStatusToggle = async (task: Task) => {
     if (updatingTaskId) return;
     const nextCompleted = !task.completed;
@@ -315,98 +329,126 @@ function DashboardContent() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-50/60 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] pb-24 overflow-x-hidden selection:bg-indigo-500 selection:text-white">
-      {/* Ambient atmospheric glows */}
-      <div className="pointer-events-none absolute -top-32 -left-32 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-indigo-300/20 via-blue-200/15 to-transparent blur-3xl" />
-      <div className="pointer-events-none absolute top-10 -right-32 h-[600px] w-[600px] rounded-full bg-gradient-to-bl from-cyan-300/20 via-indigo-200/15 to-transparent blur-3xl" />
-      <div className="pointer-events-none absolute top-1/2 left-1/3 h-96 w-96 rounded-full bg-violet-200/10 blur-3xl" />
-
+    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
 
-      {/* 1. Navbar */}
-      <DashboardHeader user={currentUser} />
+      {/* 1. Left Fixed Sidebar */}
+      <Sidebar
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
 
-      <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-5 sm:space-y-6 pb-28 md:pb-16 animate-fade-in-up">
-        {/* Anchor point for Top Overview */}
-        <div id="top" className="sr-only" />
+      {/* Mobile Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
 
-        {/* 2. Academic Header & Today's Routine Strip */}
-        <AcademicHeader
-          userName={currentUser?.name}
-          onOpenCreateModal={handleOpenCreateModal}
+      {/* 2. Main Wrapper with Left Margin for Desktop Sidebar */}
+      <div className="lg:pl-60 flex flex-col min-h-screen">
+        {/* Top Header */}
+        <TopHeader
+          user={currentUser}
+          searchQuery={search}
+          onSearchChange={handleGlobalSearch}
+          onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
         />
 
-        {/* 3. Student Metric Cards (Pending Assignments, Upcoming Exams, Study Target) */}
-        <StudentStats tasks={tasks} totalCount={pagination.total} />
+        {/* Dashboard Main Content Body */}
+        <main className="flex-1 w-full max-w-[1550px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
+          {/* 3. Hero / Welcome Card */}
+          <WelcomeCard
+            userName={currentUser?.name}
+            onOpenCreateModal={handleOpenCreateModal}
+            onOpenSemesterSetup={() => setIsSemesterSetupOpen(true)}
+          />
 
-        {/* 4. Unified Search & Filter Toolbar */}
-        <TaskFilters
-          filters={{
-            search,
-            status,
-            priority,
-            course,
-            sortBy,
-            sortOrder,
-          }}
-          onFilterChange={handleFilterChange}
-          onOpenCreateModal={handleOpenCreateModal}
-          isLoading={isLoading}
-          activeView="grid"
-        />
+          {/* 4. Today's Schedule (3 Cards in a Row) */}
+          <TodaySchedule
+            onManageRoutine={() => setIsRoutineModalOpen(true)}
+            onSelectSession={(item) => {
+              toast.info(`${item.courseCode} ${item.type}: ${item.title}`);
+            }}
+          />
 
-        {/* 5. Main Content Grid: Academic Tasks List (First on mobile) + Focus & Utility (Second on mobile) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Tasks Column (Primary, Order 1) */}
-          <div id="tasks" className="lg:col-span-8 space-y-5 order-1">
-            <TaskList
-              tasks={displayedTasks}
-              isLoading={isLoading}
-              isError={!!loadError}
-              errorMessage={loadError}
-              onRetry={fetchTasks}
-              isFiltered={isFiltered}
-              filterStatus={status}
-              searchQuery={search}
-              onClearFilter={handleClearFilter}
-              onClearSearch={handleClearSearch}
-              onEdit={handleOpenEditModal}
-              onDelete={handleOpenDeleteModal}
-              onStatusToggle={handleStatusToggle}
-              onOpenCreateModal={handleOpenCreateModal}
-              updatingTaskId={updatingTaskId}
-            />
+          {/* 5. Summary Stat Cards (3 Columns) */}
+          <StatCards tasks={tasks} totalCount={pagination.total} />
 
-            {/* Pagination Controls */}
-            {pagination.total > 0 && (
-              <TaskPagination
-                page={pagination.page}
-                totalPages={pagination.totalPages}
-                total={pagination.total}
-                limit={pagination.limit}
-                hasNextPage={pagination.hasNextPage}
-                hasPreviousPage={pagination.hasPreviousPage}
-                onPageChange={handlePageChange}
+          {/* 6. Responsive Two-Column Layout: Tasks Area (Left) + Calendar & Pomodoro (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Area: Tasks Management */}
+            <div id="tasks" className="lg:col-span-8 space-y-5">
+              {/* Task Filters & Status Toolbar */}
+              <TaskFilters
+                filters={{
+                  search,
+                  status,
+                  priority,
+                  course,
+                  sortBy,
+                  sortOrder,
+                }}
+                onFilterChange={handleFilterChange}
+                onOpenCreateModal={handleOpenCreateModal}
                 isLoading={isLoading}
+                activeView="grid"
               />
-            )}
+
+              {/* Tasks List / Empty State */}
+              <TaskList
+                tasks={displayedTasks}
+                isLoading={isLoading}
+                isError={!!loadError}
+                errorMessage={loadError}
+                onRetry={fetchTasks}
+                isFiltered={isFiltered}
+                filterStatus={status}
+                searchQuery={search}
+                onClearFilter={handleClearFilter}
+                onClearSearch={handleClearSearch}
+                onEdit={handleOpenEditModal}
+                onDelete={handleOpenDeleteModal}
+                onStatusToggle={handleStatusToggle}
+                onOpenCreateModal={handleOpenCreateModal}
+                updatingTaskId={updatingTaskId}
+              />
+
+              {/* Pagination Controls */}
+              {pagination.total > 0 && (
+                <TaskPagination
+                  page={pagination.page}
+                  totalPages={pagination.totalPages}
+                  total={pagination.total}
+                  limit={pagination.limit}
+                  hasNextPage={pagination.hasNextPage}
+                  hasPreviousPage={pagination.hasPreviousPage}
+                  onPageChange={handlePageChange}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
+
+            {/* Right Area: Calendar, Upcoming Tasks & Focus Pomodoro */}
+            <div id="calendar" className="lg:col-span-4 space-y-6">
+              {/* Compact Calendar Widget & Upcoming Tasks */}
+              <CalendarWidget
+                onSelectTask={(id) => toast.info(`Viewing task: ${id}`)}
+                onViewAll={() => {
+                  const tasksElement = document.getElementById("tasks");
+                  tasksElement?.scrollIntoView({ behavior: "smooth" });
+                }}
+              />
+
+              {/* Dark Navy Focus Pomodoro Widget */}
+              <FocusPomodoro />
+            </div>
           </div>
+        </main>
+      </div>
 
-          {/* Academic Focus & Utility Column (Order 2 on mobile, sidebar on desktop) */}
-          <div id="pomodoro" className="lg:col-span-4 space-y-5 sm:space-y-6 order-2">
-            {/* Pomodoro Study Timer */}
-            <PomodoroWidget />
-
-            {/* Academic Quick Links Repository */}
-            <AcademicQuickLinks />
-          </div>
-        </div>
-      </main>
-
-      {/* Mobile Bottom Navigation Bar (Hidden on md and larger screens) */}
-      <MobileNavBar />
-
-      {/* Create / Edit Task Dialog */}
+      {/* Task Creation / Editing Dialog */}
       <TaskDialog
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
@@ -426,6 +468,28 @@ function DashboardContent() {
         onConfirmDelete={handleConfirmDelete}
         isDeleting={isDeleting}
       />
+
+      {/* Semester Duration Setup Modal */}
+      <SemesterSetupModal
+        open={isSemesterSetupOpen}
+        onOpenChange={setIsSemesterSetupOpen}
+        config={semesterConfig}
+        onSave={(newConfig: SemesterConfig) => {
+          setSemesterConfig(newConfig);
+          setIsSemesterSetupOpen(false);
+          toast.success("Semester timetable settings updated!");
+        }}
+      />
+
+      {/* Routine & Course Schedule Modal */}
+      <CourseScheduleModal
+        open={isRoutineModalOpen}
+        onOpenChange={setIsRoutineModalOpen}
+        onSave={(_session: CourseSession) => {
+          setIsRoutineModalOpen(false);
+          toast.success("Course session added to routine 📚");
+        }}
+      />
     </div>
   );
 }
@@ -434,8 +498,8 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-          <div className="h-8 w-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+        <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+          <div className="h-8 w-8 rounded-full border-2 border-[#315BFF] border-t-transparent animate-spin" />
         </div>
       }
     >

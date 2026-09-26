@@ -41,6 +41,8 @@ export const authConfig = {
         pathname.startsWith("/dashboard") ||
         pathname.startsWith("/kanban") ||
         pathname.startsWith("/schedule") ||
+        pathname.startsWith("/calendar") ||
+        pathname.startsWith("/settings") ||
         pathname.startsWith("/task");
 
       if (isProtectedRoute && !isLoggedIn) {

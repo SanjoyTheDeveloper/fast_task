@@ -94,24 +94,24 @@ export function TaskEmptyState({
     <div
       role="status"
       aria-live="polite"
-      className="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-12 text-center rounded-2xl border border-dashed border-zinc-300/80 bg-white/70 backdrop-blur-md shadow-xs transition-all duration-300 animate-fade-in-up"
+      className="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-12 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-white shadow-2xs transition-all duration-300 animate-fade-in-up"
     >
-      <div className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-200/70 flex items-center justify-center mb-4 shadow-2xs">
+      <div className="h-14 w-14 rounded-2xl bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center mb-4 shadow-2xs">
         <Inbox className="h-6 w-6 stroke-[2.2]" />
       </div>
-      <h3 className="text-lg font-bold text-zinc-900 tracking-tight">
+      <h3 className="text-base font-bold text-[#172033] tracking-tight">
         You don&apos;t have any tasks yet
       </h3>
-      <p className="text-sm text-zinc-500 max-w-sm mt-1 mb-6 leading-relaxed">
-        Get started by creating your first task to plan, track, and organize your work.
+      <p className="text-xs text-slate-500 max-w-sm mt-1 mb-5 leading-relaxed">
+        Create your first task or add an assignment to get started.
       </p>
       {onOpenCreateModal && (
         <Button
           onClick={onOpenCreateModal}
-          className="h-10 px-5 gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+          className="h-10 px-5 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
         >
           <Plus className="h-4 w-4 stroke-[2.5]" />
-          <span>Create First Task</span>
+          <span>+ Add Assignment</span>
         </Button>
       )}
     </div>

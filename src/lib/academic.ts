@@ -1,8 +1,12 @@
 export const COURSES = [
-  "CSE231", // Operating Systems
-  "EEPP",   // Ethics & Professional Practice
-  "MAT112", // Linear Algebra & Calculus
-  "PHY101", // Engineering Physics
+  "0611CSE321", // AIES
+  "0613CSE333", // AP
+  "0541MAT337", // MACS
+  "0612CSE315", // CN
+  "0031CSE320", // TWRM
+  "0612CSE316", // CN Sess.
+  "0611CSE322", // AIES Sess.
+  "0613CSE334", // AP Sess.
   "General",
 ] as const;
 
@@ -295,9 +299,9 @@ export interface SemesterConfig {
 }
 
 export const DEFAULT_SEMESTER_CONFIG: SemesterConfig = {
-  name: "Fall Semester 2026",
-  startDate: "2026-08-24",
-  endDate: "2026-12-18",
+  name: "Summer 2026 | Batch: 82A",
+  startDate: "2026-05-10",
+  endDate: "2026-09-30",
 };
 
 export interface SemesterStatusResult {
