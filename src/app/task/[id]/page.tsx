@@ -27,6 +27,7 @@ import {
   Loader2,
   CheckCircle2,
   User,
+  Calendar,
 } from "lucide-react";
 
 export default function TaskDetailPage() {
@@ -161,27 +162,28 @@ export default function TaskDetailPage() {
     <div className="min-h-screen bg-zinc-50/60 pb-16">
       <Navbar user={currentUser} />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 space-y-6">
+      <main className="max-w-4xl mx-auto px-3.5 sm:px-6 pt-6 sm:pt-8 space-y-5 sm:space-y-6">
         {/* Navigation bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-2">
           <Button
             variant="ghost"
             size="sm"
             asChild
-            className="gap-1.5 text-zinc-600 hover:text-zinc-900 self-start sm:self-auto cursor-pointer"
+            className="gap-1.5 text-zinc-600 hover:text-zinc-900 px-2 sm:px-3 h-9 cursor-pointer"
           >
             <Link href="/dashboard">
               <ArrowLeft className="h-4 w-4" />
-              <span>Back to Tasks</span>
+              <span className="hidden xs:inline">Back to Tasks</span>
+              <span className="xs:hidden">Back</span>
             </Link>
           </Button>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsEditDialogOpen(true)}
-              className="gap-1.5 cursor-pointer"
+              className="gap-1.5 h-9 px-2.5 sm:px-3.5 cursor-pointer text-xs sm:text-sm"
             >
               <Pencil className="h-3.5 w-3.5" />
               <span>Edit</span>
@@ -190,7 +192,7 @@ export default function TaskDetailPage() {
               variant="destructive"
               size="sm"
               onClick={() => setShowDeleteConfirm(true)}
-              className="gap-1.5 cursor-pointer"
+              className="gap-1.5 h-9 px-2.5 sm:px-3.5 cursor-pointer text-xs sm:text-sm"
             >
               <Trash2 className="h-3.5 w-3.5" />
               <span>Delete</span>
@@ -280,7 +282,7 @@ export default function TaskDetailPage() {
             </div>
 
             {/* Metadata Footer */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-zinc-100 text-xs text-zinc-500">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-zinc-100 text-xs text-zinc-500">
               <div className="flex items-center gap-2.5 min-w-0">
                 <Clock className="h-4 w-4 text-zinc-500 shrink-0" />
                 <div className="min-w-0">
@@ -296,6 +298,16 @@ export default function TaskDetailPage() {
                   <span className="truncate block">{formatDate(task.updatedAt)}</span>
                 </div>
               </div>
+
+              {task.dueDate && (
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Calendar className="h-4 w-4 text-amber-600 shrink-0" />
+                  <div className="min-w-0">
+                    <span className="block font-medium text-amber-700">Due Date</span>
+                    <span className="truncate block font-semibold text-amber-900">{formatDate(task.dueDate)}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -21,7 +21,7 @@ export function TaskEmptyState({
   onClearFilter,
   onClearSearch,
 }: TaskEmptyStateProps) {
-  // Case 2: No filtered or search results
+  // Case 1: No matching filtered or search results
   if (isFiltered) {
     const isSearchEmpty = Boolean(searchQuery && searchQuery.trim().length > 0);
     const normalizedStatus = (filterStatus || "ALL").toUpperCase();
@@ -33,12 +33,12 @@ export function TaskEmptyState({
 
     if (isSearchEmpty) {
       title = `No tasks found for "${searchQuery.trim()}"`;
-      message = `We couldn't find any tasks matching "${searchQuery.trim()}". Try checking for typos or searching for a different keyword.`;
+      message = `We couldn't find any tasks matching "${searchQuery.trim()}". Try checking for typos or clear your search query.`;
       actionLabel = "Clear Search";
       actionHandler = onClearSearch || onClearFilter;
     } else if (normalizedStatus === "COMPLETED") {
-      title = "No completed tasks found";
-      message = "You have not completed any tasks yet. Keep progressing!";
+      title = "No completed tasks yet";
+      message = "You haven't completed any tasks yet. Keep moving forward!";
       actionLabel = "Clear Filters";
       actionHandler = onClearFilter;
     } else if (normalizedStatus === "ACTIVE" || normalizedStatus === "PENDING") {
@@ -52,25 +52,25 @@ export function TaskEmptyState({
       <div
         role="status"
         aria-live="polite"
-        className="flex flex-col items-center justify-center p-6 sm:p-12 text-center rounded-2xl border-2 border-dashed border-zinc-200/90 bg-white/80 backdrop-blur-md shadow-xs transition-all duration-300 animate-fade-in-up"
+        className="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-12 text-center rounded-2xl border border-dashed border-zinc-300/80 bg-white/70 backdrop-blur-md shadow-xs transition-all duration-300 animate-fade-in-up"
       >
-        <div className="h-16 w-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center mb-4 shadow-2xs">
+        <div className="h-14 w-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/70 flex items-center justify-center mb-4 shadow-2xs">
           {isSearchEmpty ? (
-            <SearchX className="h-8 w-8" />
+            <SearchX className="h-6 w-6 stroke-[2.2]" />
           ) : (
-            <FilterX className="h-8 w-8" />
+            <FilterX className="h-6 w-6 stroke-[2.2]" />
           )}
         </div>
-        <h3 className="text-lg font-bold text-zinc-900 mb-1">{title}</h3>
-        <p className="text-sm text-zinc-500 max-w-sm mb-6 leading-relaxed">
+        <h3 className="text-lg font-bold text-zinc-900 tracking-tight">{title}</h3>
+        <p className="text-sm text-zinc-500 max-w-sm mt-1 mb-6 leading-relaxed">
           {message}
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
           {actionHandler && (
             <Button
               variant="outline"
               onClick={actionHandler}
-              className="gap-2 rounded-xl border-zinc-300 hover:bg-zinc-100 cursor-pointer"
+              className="h-10 px-4 rounded-xl border-zinc-200 hover:bg-zinc-100 text-zinc-700 font-medium cursor-pointer"
             >
               {actionLabel}
             </Button>
@@ -78,10 +78,10 @@ export function TaskEmptyState({
           {onOpenCreateModal && (
             <Button
               onClick={onOpenCreateModal}
-              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25 cursor-pointer"
+              className="h-10 px-5 gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm shadow-blue-500/25 transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
-              <Plus className="h-4 w-4" />
-              Create Task
+              <Plus className="h-4 w-4 stroke-[2.5]" />
+              <span>Create Task</span>
             </Button>
           )}
         </div>
@@ -89,29 +89,29 @@ export function TaskEmptyState({
     );
   }
 
-  // Case 1: No tasks created yet in entire account
+  // Case 2: No tasks created yet in entire account
   return (
     <div
       role="status"
       aria-live="polite"
-      className="flex flex-col items-center justify-center p-6 sm:p-12 text-center rounded-2xl border-2 border-dashed border-zinc-200/90 bg-white/80 backdrop-blur-md shadow-xs transition-all duration-300 animate-fade-in-up"
+      className="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-12 text-center rounded-2xl border border-dashed border-zinc-300/80 bg-white/70 backdrop-blur-md shadow-xs transition-all duration-300 animate-fade-in-up"
     >
-      <div className="h-16 w-16 rounded-2xl bg-gradient-to-tr from-blue-500/10 via-indigo-500/15 to-blue-600/20 text-blue-600 flex items-center justify-center mb-4 animate-float shadow-2xs">
-        <Inbox className="h-8 w-8" />
+      <div className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-200/70 flex items-center justify-center mb-4 shadow-2xs">
+        <Inbox className="h-6 w-6 stroke-[2.2]" />
       </div>
-      <h3 className="text-lg font-bold text-zinc-900 mb-1">
-        You don&apos;t have any tasks yet.
+      <h3 className="text-lg font-bold text-zinc-900 tracking-tight">
+        You don&apos;t have any tasks yet
       </h3>
-      <p className="text-sm text-zinc-500 max-w-sm mb-6 leading-relaxed">
-        Create your first task to start organizing your workflow and reaching your goals.
+      <p className="text-sm text-zinc-500 max-w-sm mt-1 mb-6 leading-relaxed">
+        Get started by creating your first task to plan, track, and organize your work.
       </p>
       {onOpenCreateModal && (
         <Button
           onClick={onOpenCreateModal}
-          className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25 hover:scale-105 transition-transform cursor-pointer"
+          className="h-10 px-5 gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
         >
-          <Plus className="h-4 w-4" />
-          Create Task
+          <Plus className="h-4 w-4 stroke-[2.5]" />
+          <span>Create First Task</span>
         </Button>
       )}
     </div>

@@ -12,6 +12,7 @@ import {
   User as UserIcon,
   Menu,
   X,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,11 +59,14 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
+      // Clear server-side session cookies & tokens
       await fetch("/api/auth/logout", { method: "POST" });
-      await signOut({ callbackUrl: "/login" });
+      // NextAuth signOut with redirect to the public home / landing page
+      await signOut({ callbackUrl: "/", redirect: true });
     } catch (error) {
       console.error("Logout error:", error);
-      router.push("/login");
+      // Fallback: navigate directly to public home page
+      router.push("/");
       router.refresh();
     } finally {
       setIsLoggingOut(false);
@@ -74,7 +78,7 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/85 backdrop-blur-xl shadow-2xs">
-      <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-3.5 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1600px] mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-10">
         {/* Left: Brand Logo & Desktop Nav */}
         <div className="flex items-center gap-4 sm:gap-6 min-w-0">
           <Link
@@ -128,16 +132,27 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
               <Kanban className="h-3.5 w-3.5" />
               <span>Kanban</span>
             </Link>
+            <Link
+              href="/lms"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                pathname === "/lms"
+                  ? "bg-purple-100 text-purple-700 font-extrabold"
+                  : "text-purple-600 hover:text-purple-800 hover:bg-purple-50"
+              }`}
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              <span>LMS Library</span>
+            </Link>
           </nav>
         </div>
 
         {/* Right: User Info, Actions & Mobile Toggle */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {user && onOpenCreateModal && (
             <Button
               onClick={onOpenCreateModal}
               size="sm"
-              className="h-9 px-3 sm:px-4 gap-1.5 bg-blue-600 hover:bg-blue-700 text-white shadow-xs shadow-blue-500/30 transition-transform active:scale-95 shrink-0"
+              className="h-9 px-2.5 sm:px-4 gap-1.5 bg-blue-600 hover:bg-blue-700 text-white shadow-xs shadow-blue-500/30 transition-transform active:scale-95 shrink-0"
               aria-label="Create new task"
             >
               <Plus className="h-4 w-4" />
@@ -199,7 +214,7 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
               <Button variant="ghost" size="sm" asChild className="rounded-xl text-xs sm:text-sm h-8 sm:h-9">
                 <Link href="/login">Log in</Link>
               </Button>
@@ -263,6 +278,16 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
               <Kanban className="h-4 w-4" />
               <span>Kanban Board</span>
             </Link>
+            <Link
+              href="/lms"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                pathname === "/lms" ? "bg-purple-50 text-purple-700 font-bold" : "text-purple-600 hover:bg-purple-50"
+              }`}
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>LMS Library</span>
+            </Link>
           </nav>
 
           <div className="pt-2 border-t border-zinc-100 flex flex-col gap-2">
@@ -293,11 +318,11 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
                 <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
               </Button>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" asChild className="rounded-xl">
+              <div className="flex flex-col gap-2 pt-1">
+                <Button variant="outline" asChild className="h-11 w-full rounded-xl border-zinc-300 font-semibold text-sm">
                   <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Log in</Link>
                 </Button>
-                <Button asChild className="rounded-xl bg-blue-600 text-white">
+                <Button asChild className="h-11 w-full rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-xs">
                   <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>Sign up</Link>
                 </Button>
               </div>

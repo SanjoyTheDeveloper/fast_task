@@ -22,6 +22,9 @@ interface MockUser {
   name: string;
   email: string;
   password: string;
+  emailVerified?: Date | null;
+  verificationToken?: string | null;
+  verificationTokenExpires?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -103,7 +106,7 @@ export const db = {
     }
   },
   user: {
-    async findUnique({ where }: { where: { id?: string; email?: string } }) {
+    async findUnique({ where }: { where: { id?: string; email?: string; verificationToken?: string } }) {
       try {
         return await prisma.user.findUnique({ where: where as any });
       } catch {
@@ -111,25 +114,71 @@ export const db = {
           mockUsers.find(
             (u) =>
               (where.id && u.id === where.id) ||
-              (where.email && u.email.toLowerCase() === where.email.toLowerCase())
+              (where.email && u.email.toLowerCase() === where.email.toLowerCase()) ||
+              (where.verificationToken && u.verificationToken === where.verificationToken)
           ) || null
         );
       }
     },
-    async create({ data }: { data: { name: string; email: string; password: string } }) {
+    async create({
+      data,
+    }: {
+      data: {
+        name: string;
+        email: string;
+        password: string;
+        emailVerified?: Date | null;
+        verificationToken?: string | null;
+        verificationTokenExpires?: Date | null;
+      };
+    }) {
       try {
-        return await prisma.user.create({ data });
+        return await prisma.user.create({ data: data as any });
       } catch {
         const newUser: MockUser = {
           id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
           name: data.name,
           email: data.email.toLowerCase(),
           password: data.password,
+          emailVerified: data.emailVerified || null,
+          verificationToken: data.verificationToken || null,
+          verificationTokenExpires: data.verificationTokenExpires || null,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
         mockUsers.push(newUser);
         return newUser;
+      }
+    },
+    async update({
+      where,
+      data,
+    }: {
+      where: { id?: string; email?: string; verificationToken?: string };
+      data: {
+        emailVerified?: Date | null;
+        verificationToken?: string | null;
+        verificationTokenExpires?: Date | null;
+        name?: string;
+        password?: string;
+      };
+    }) {
+      try {
+        return await prisma.user.update({ where: where as any, data });
+      } catch {
+        const index = mockUsers.findIndex(
+          (u) =>
+            (where.id && u.id === where.id) ||
+            (where.email && u.email.toLowerCase() === where.email.toLowerCase()) ||
+            (where.verificationToken && u.verificationToken === where.verificationToken)
+        );
+        if (index === -1) throw new Error("User not found");
+        mockUsers[index] = {
+          ...mockUsers[index],
+          ...data,
+          updatedAt: new Date(),
+        };
+        return mockUsers[index];
       }
     },
   },

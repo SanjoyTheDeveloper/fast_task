@@ -94,6 +94,14 @@ export const createTaskApiSchema = z
       })
       .optional()
       .default(false),
+    dueDate: z
+      .string({
+        invalid_type_error: "Due date must be a valid date string",
+      })
+      .nullable()
+      .optional(),
+    course: z.string().nullable().optional(),
+    category: z.string().nullable().optional(),
   })
   .strict(); // Rejects protected fields like id, userId, etc.
 
@@ -121,13 +129,24 @@ export const updateTaskApiSchema = z
         invalid_type_error: "Completed must be a boolean",
       })
       .optional(),
+    dueDate: z
+      .string({
+        invalid_type_error: "Due date must be a valid date string",
+      })
+      .nullable()
+      .optional(),
+    course: z.string().nullable().optional(),
+    category: z.string().nullable().optional(),
   })
   .strict() // Rejects protected fields like id, userId, createdAt, updatedAt
   .refine(
     (data) =>
       data.title !== undefined ||
       data.description !== undefined ||
-      data.completed !== undefined,
+      data.completed !== undefined ||
+      data.dueDate !== undefined ||
+      data.course !== undefined ||
+      data.category !== undefined,
     {
       message: "At least one field must be provided",
     }

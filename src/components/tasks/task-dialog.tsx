@@ -65,13 +65,13 @@ export function TaskDialog({
             </div>
           )}
 
-          <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-3 border-t border-zinc-100">
+          <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 sm:gap-2 pt-3 border-t border-zinc-100">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isDeleting}
-              className="rounded-xl border-zinc-200"
+              className="rounded-xl border-zinc-200 w-full sm:w-auto h-11 sm:h-10 cursor-pointer"
             >
               Cancel
             </Button>
@@ -84,7 +84,7 @@ export function TaskDialog({
                 }
               }}
               disabled={isDeleting}
-              className="rounded-xl gap-1.5"
+              className="rounded-xl gap-1.5 w-full sm:w-auto h-11 sm:h-10 cursor-pointer"
               aria-label="Confirm delete task"
             >
               {isDeleting ? (

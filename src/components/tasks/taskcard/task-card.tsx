@@ -12,10 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Pencil, Trash2, ExternalLink, Clock, Loader2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, ExternalLink, Clock, Loader2, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { TaskStatusBadge } from "../TaskStatusBadge";
 import type { Task } from "@/types/task";
+import { COURSE_BADGES, CATEGORY_STYLES } from "@/lib/academic";
 
 export interface TaskCardProps {
   task: Task;
@@ -34,52 +35,92 @@ export function TaskCard({
 }: TaskCardProps) {
   const isCompleted = task.completed;
 
+  // Determine if task is due soon (within 72 hours)
+  const isDueSoon = React.useMemo(() => {
+    if (!task.dueDate || task.completed) return false;
+    const due = new Date(task.dueDate);
+    const now = new Date();
+    const diffHours = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
+    return diffHours >= 0 && diffHours <= 72;
+  }, [task.dueDate, task.completed]);
+
   const borderColor = isCompleted
     ? "border-l-emerald-500 hover:border-l-emerald-600"
+    : isDueSoon
+    ? "border-l-amber-500 hover:border-l-amber-600"
     : "border-l-indigo-500 hover:border-l-indigo-600";
 
   return (
     <Card
-      className={`group relative border-l-4 ${borderColor} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border-zinc-200/90 bg-white/95 backdrop-blur-xs`}
+      className={`group relative border-l-4 ${borderColor} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/90 border-slate-200/80 bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden`}
     >
       <CardHeader className="p-4 pb-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             {isUpdating ? (
-              <div className="mt-1 h-4 w-4 flex items-center justify-center shrink-0">
-                <Loader2 className="h-3.5 w-3.5 text-blue-600 animate-spin" />
+              <div className="mt-1 h-5 w-5 flex items-center justify-center shrink-0">
+                <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />
               </div>
             ) : (
-              <Checkbox
-                checked={isCompleted}
-                onCheckedChange={() => onStatusToggle(task)}
-                disabled={isUpdating}
-                className="mt-1 shrink-0 transition-transform duration-200 group-hover:scale-110 active:scale-95 cursor-pointer"
-                aria-label={isCompleted ? "Mark task as active" : "Mark task as completed"}
-              />
+              <div className="mt-0.5 flex items-center justify-center min-w-[32px] min-h-[32px]">
+                <Checkbox
+                  checked={isCompleted}
+                  onCheckedChange={() => onStatusToggle(task)}
+                  disabled={isUpdating}
+                  className="h-5 w-5 transition-transform duration-200 group-hover:scale-110 active:scale-95 cursor-pointer rounded-md border-slate-300"
+                  aria-label={isCompleted ? "Mark task as active" : "Mark task as completed"}
+                />
+              </div>
             )}
-            <div className="space-y-1 flex-1 min-w-0">
+            <div className="space-y-1.5 flex-1 min-w-0">
               <Link
                 href={`/task/${task.id}`}
-                className={`font-semibold text-base block hover:text-blue-600 transition-colors break-words line-clamp-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-sm ${
-                  isCompleted ? "line-through text-zinc-400" : "text-zinc-900"
+                className={`font-semibold text-base block hover:text-indigo-600 transition-colors break-words line-clamp-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-sm tracking-tight py-0.5 ${
+                  isCompleted ? "line-through text-slate-400" : "text-slate-900"
                 }`}
               >
                 {task.title}
               </Link>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <TaskStatusBadge completed={isCompleted} />
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                {task.course && (
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${
+                      COURSE_BADGES[task.course]
+                        ? `${COURSE_BADGES[task.course].bg} ${COURSE_BADGES[task.course].text} ${COURSE_BADGES[task.course].border}`
+                        : "bg-indigo-50 text-indigo-700 border-indigo-200"
+                    }`}
+                  >
+                    {task.course}
+                  </span>
+                )}
+                {task.category && (
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border ${
+                      CATEGORY_STYLES[task.category]
+                        ? `${CATEGORY_STYLES[task.category].bg} ${CATEGORY_STYLES[task.category].border}`
+                        : "bg-zinc-50 text-zinc-700 border-zinc-200"
+                    }`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        CATEGORY_STYLES[task.category]?.dot || "bg-zinc-400"
+                      }`}
+                    />
+                    {task.category}
+                  </span>
+                )}
+                <TaskStatusBadge completed={isCompleted} dueSoon={isDueSoon} />
               </div>
             </div>
           </div>
 
-          {/* Action Menu */}
+          {/* Action Menu (Touch-friendly 44px min tap area on mobile) */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 shrink-0 text-zinc-400 hover:text-zinc-800 transition-transform group-hover:scale-105 rounded-lg focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                className="h-11 w-11 sm:h-9 sm:w-9 shrink-0 text-slate-400 hover:text-slate-800 transition-transform group-hover:scale-105 rounded-xl focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 aria-label="Task actions"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -123,11 +164,17 @@ export function TaskCard({
         </CardContent>
       )}
 
-      <CardFooter className="px-4 py-3 pt-2 border-t border-zinc-100/90 flex items-center justify-between text-xs text-zinc-500 mt-2 bg-zinc-50/40">
+      <CardFooter className="px-4 py-2.5 border-t border-zinc-100/90 flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-500 mt-2 bg-zinc-50/40">
         <div className="flex items-center gap-1.5 text-zinc-500">
           <Clock className="h-3.5 w-3.5" />
           <span>{formatDate(task.createdAt)}</span>
         </div>
+        {task.dueDate && (
+          <div className="flex items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
+            <Calendar className="h-3 w-3" />
+            <span>Due {formatDate(task.dueDate)}</span>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

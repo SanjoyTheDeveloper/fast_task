@@ -1,9 +1,19 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 import { db } from "@/lib/db";
 import { loginSchema } from "@/lib/validations";
+
+export class EmailNotVerifiedError extends CredentialsSignin {
+  code = "email_not_verified";
+
+  constructor(message = "Please verify your email before logging in") {
+    super(message);
+    this.message = message;
+    this.name = "EmailNotVerifiedError";
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -29,6 +39,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) return null;
 
+        // Check if user email is verified
+        if (!user.emailVerified) {
+          throw new EmailNotVerifiedError("Please verify your email before logging in");
+        }
+
         return {
           id: user.id,
           name: user.name,
@@ -38,3 +53,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
 });
+

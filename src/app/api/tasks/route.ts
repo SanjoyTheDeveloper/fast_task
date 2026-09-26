@@ -8,6 +8,7 @@ import {
   errorResponse,
   serializeTask,
 } from "@/lib/api-response";
+import { serializeTaskDescription } from "@/lib/academic";
 
 /**
  * GET /api/tasks
@@ -185,16 +186,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { title, description, completed } = result.data;
+    const { title, description, completed, dueDate, course, category } = result.data;
     const isCompleted = Boolean(completed);
+
+    const packedDescription = serializeTaskDescription(
+      description,
+      course,
+      category
+    );
 
     // Create task in database tied strictly to the authenticated user ID
     const task = await db.task.create({
       data: {
         title,
-        description: description ?? null,
+        description: packedDescription,
         completed: isCompleted,
         status: isCompleted ? "COMPLETED" : "PENDING",
+        dueDate: dueDate ? new Date(dueDate) : null,
         userId: user.id,
       },
     });

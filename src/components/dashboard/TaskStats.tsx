@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { ListTodo, Clock, CheckCircle2 } from "lucide-react";
 import type { Task } from "@/types/task";
 
@@ -36,28 +35,22 @@ export function TaskStats({
       label: "Total Tasks",
       value: total,
       icon: ListTodo,
-      gradient: "from-slate-600 to-zinc-800",
-      lightBg: "bg-slate-50 border-slate-200/80",
-      iconBg: "bg-zinc-800 text-white shadow-zinc-300/40",
-      pillBg: "bg-zinc-100 text-zinc-700",
+      iconBg: "bg-slate-100 text-slate-700",
+      accentBorder: "border-slate-200/90",
     },
     {
       label: "Active Tasks",
       value: active,
       icon: Clock,
-      gradient: "from-blue-600 to-indigo-600",
-      lightBg: "bg-blue-50/50 border-blue-100/90",
-      iconBg: "bg-blue-600 text-white shadow-blue-300/40",
-      pillBg: "bg-blue-100 text-blue-800",
+      iconBg: "bg-blue-50 text-blue-600",
+      accentBorder: "border-blue-200/80",
     },
     {
       label: "Completed Tasks",
       value: completed,
       icon: CheckCircle2,
-      gradient: "from-emerald-500 to-teal-600",
-      lightBg: "bg-emerald-50/50 border-emerald-100/90",
-      iconBg: "bg-emerald-600 text-white shadow-emerald-300/40",
-      pillBg: "bg-emerald-100 text-emerald-800",
+      iconBg: "bg-emerald-50 text-emerald-600",
+      accentBorder: "border-emerald-200/80",
     },
   ];
 
@@ -65,43 +58,30 @@ export function TaskStats({
     <div
       role="region"
       aria-label="Task statistics"
-      className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 ${className}`}
+      className={`grid grid-cols-1 md:grid-cols-3 gap-6 w-full ${className}`}
     >
-      {stats.map((item, index) => {
+      {stats.map((item) => {
         const Icon = item.icon;
-        const isThird = index === 2;
         return (
-          <Card
+          <div
             key={item.label}
-            className={`group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${item.lightBg} border rounded-2xl ${
-              isThird ? "sm:col-span-2 lg:col-span-1" : ""
-            }`}
-            style={{ animationDelay: `${index * 100}ms` }}
+            className="flex items-center justify-between p-5 sm:p-6 rounded-2xl bg-white/90 backdrop-blur-md border border-zinc-200/80 shadow-xs hover:shadow-md hover:border-zinc-300 transition-all duration-200"
           >
-            {/* Top gradient highlight on hover */}
+            <div className="space-y-1 min-w-0 flex-1">
+              <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider truncate">
+                {item.label}
+              </p>
+              <p className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 truncate">
+                {item.value}
+              </p>
+            </div>
             <div
-              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-            />
-
-            <CardContent className="p-4 sm:p-5 flex items-center justify-between gap-3">
-              <div className="space-y-1 min-w-0 flex-1">
-                <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider truncate">
-                  {item.label}
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight transition-transform duration-200 group-hover:scale-105 origin-left truncate">
-                    {item.value}
-                  </p>
-                </div>
-              </div>
-              <div
-                className={`p-2.5 sm:p-3 rounded-xl shrink-0 ${item.iconBg} shadow-md transition-transform duration-300 group-hover:scale-110`}
-                aria-hidden="true"
-              >
-                <Icon className="h-5 w-5 stroke-[2.5]" />
-              </div>
-            </CardContent>
-          </Card>
+              className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center shrink-0 ${item.iconBg} border border-black/5 shadow-2xs transition-transform duration-200 hover:scale-105`}
+              aria-hidden="true"
+            >
+              <Icon className="h-6 w-6 stroke-[2.2]" />
+            </div>
+          </div>
         );
       })}
     </div>

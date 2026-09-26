@@ -4,10 +4,21 @@ import { cookies } from "next/headers";
 export async function POST() {
   try {
     const cookieStore = await cookies();
-    cookieStore.delete("authjs.session-token");
-    cookieStore.delete("__Secure-authjs.session-token");
-    cookieStore.delete("next-auth.session-token");
-    cookieStore.delete("__Secure-next-auth.session-token");
+    const tokens = [
+      "authjs.session-token",
+      "__Secure-authjs.session-token",
+      "authjs.csrf-token",
+      "__Host-authjs.csrf-token",
+      "authjs.callback-url",
+      "next-auth.session-token",
+      "__Secure-next-auth.session-token",
+      "next-auth.csrf-token",
+      "next-auth.callback-url",
+    ];
+
+    for (const token of tokens) {
+      cookieStore.delete(token);
+    }
 
     return NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
   } catch (error) {

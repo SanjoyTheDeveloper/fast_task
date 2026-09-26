@@ -150,9 +150,9 @@ export default function KanbanPage() {
       <div className="pointer-events-none absolute top-32 right-10 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
 
       <Toaster position="top-right" richColors />
-      <Navbar user={currentUser} onOpenCreateModal={() => handleOpenCreateModal()} />
+      <Navbar user={currentUser} />
 
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+      <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-6 space-y-6">
         {/* Top Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white/80 backdrop-blur-md border border-zinc-200/80 shadow-xs">
           <div className="flex items-center gap-3">
@@ -175,17 +175,17 @@ export default function KanbanPage() {
           </div>
 
           {/* Quick Actions */}
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" asChild className="h-9 gap-1.5 text-xs rounded-xl">
-              <Link href="/">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button variant="outline" size="sm" asChild className="h-9 gap-1.5 text-xs rounded-xl flex-1 sm:flex-initial justify-center">
+              <Link href="/dashboard">
                 <LayoutGrid className="h-4 w-4 text-zinc-500" />
-                <span>Dashboard View</span>
+                <span>Dashboard</span>
               </Link>
             </Button>
             <Button
               onClick={() => handleOpenCreateModal()}
               size="sm"
-              className="h-9 gap-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25"
+              className="h-9 gap-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25 flex-1 sm:flex-initial justify-center"
             >
               <Plus className="h-4 w-4" />
               <span>Add Task</span>

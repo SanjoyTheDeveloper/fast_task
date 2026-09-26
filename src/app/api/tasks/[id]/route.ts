@@ -7,6 +7,7 @@ import {
   errorResponse,
   serializeTask,
 } from "@/lib/api-response";
+import { serializeTaskDescription, parseTaskDescription } from "@/lib/academic";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -123,17 +124,43 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
       description?: string | null;
       completed?: boolean;
       status?: "PENDING" | "IN_PROGRESS" | "COMPLETED";
+      dueDate?: Date | null;
     } = {};
 
     if (result.data.title !== undefined) {
       updateData.title = result.data.title;
     }
-    if (result.data.description !== undefined) {
-      updateData.description = result.data.description;
+    if (
+      result.data.course !== undefined ||
+      result.data.category !== undefined ||
+      result.data.description !== undefined
+    ) {
+      const currentMeta = parseTaskDescription(existingTask.description);
+      const newCourse =
+        result.data.course !== undefined
+          ? result.data.course
+          : currentMeta.course;
+      const newCategory =
+        result.data.category !== undefined
+          ? result.data.category
+          : currentMeta.category;
+      const newText =
+        result.data.description !== undefined
+          ? result.data.description
+          : currentMeta.description;
+
+      updateData.description = serializeTaskDescription(
+        newText,
+        newCourse,
+        newCategory
+      );
     }
     if (result.data.completed !== undefined) {
       updateData.completed = result.data.completed;
       updateData.status = result.data.completed ? "COMPLETED" : "PENDING";
+    }
+    if (result.data.dueDate !== undefined) {
+      updateData.dueDate = result.data.dueDate ? new Date(result.data.dueDate) : null;
     }
 
     const updatedTask = await db.task.update({

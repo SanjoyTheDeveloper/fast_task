@@ -55,15 +55,18 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
 
-  // Existing Auth.js logout mechanism
+  // Auth.js logout mechanism: clear session and redirect to public home / landing page
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
+      // Clear server-side session cookies & tokens
       await fetch("/api/auth/logout", { method: "POST" });
-      await signOut({ callbackUrl: "/login" });
+      // NextAuth signOut with redirect to the public home / landing page
+      await signOut({ callbackUrl: "/", redirect: true });
     } catch (error) {
       console.error("Logout error:", error);
-      router.push("/login");
+      // Fallback: navigate directly to public home page
+      router.push("/");
       router.refresh();
     } finally {
       setIsLoggingOut(false);
@@ -75,7 +78,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/85 backdrop-blur-xl shadow-2xs">
-      <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-3.5 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1600px] mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-10">
         {/* Left: Brand Logo & Desktop Navigation */}
         <div className="flex items-center gap-4 sm:gap-6 min-w-0">
           <Link
@@ -200,7 +203,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
               <Button variant="ghost" size="sm" asChild className="rounded-xl text-xs sm:text-sm h-8 sm:h-9">
                 <Link href="/login">Log in</Link>
               </Button>
@@ -301,11 +304,11 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                 <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
               </Button>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" asChild className="rounded-xl">
+              <div className="flex flex-col gap-2 pt-1">
+                <Button variant="outline" asChild className="h-11 w-full rounded-xl border-zinc-300 font-semibold text-sm">
                   <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Log in</Link>
                 </Button>
-                <Button asChild className="rounded-xl bg-blue-600 text-white">
+                <Button asChild className="h-11 w-full rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-xs">
                   <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>Sign up</Link>
                 </Button>
               </div>

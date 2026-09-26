@@ -138,7 +138,7 @@ export function KanbanBoard({
               onDragOver={(e) => handleDragOver(e, col.id)}
               onDragLeave={(e) => handleDragLeave(e, col.id)}
               onDrop={(e) => handleDrop(e, col.completedValue)}
-              className={`flex flex-col rounded-2xl border transition-all duration-300 min-h-[500px] ${
+              className={`flex flex-col rounded-2xl border transition-all duration-300 min-h-[240px] sm:min-h-[400px] md:min-h-[500px] ${
                 isOver
                   ? "border-blue-400 bg-blue-50/40 shadow-md ring-2 ring-blue-400/30 scale-[1.01]"
                   : "border-zinc-200/90 bg-zinc-100/50 hover:border-zinc-300 shadow-2xs"
@@ -281,6 +281,34 @@ export function KanbanBoard({
                               <Clock className="h-3 w-3" />
                               <span>{formatDate(task.createdAt)}</span>
                             </div>
+                            {onStatusChange && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onStatusChange(task.id, !task.completed);
+                                }}
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold transition-all active:scale-95 cursor-pointer ${
+                                  task.completed
+                                    ? "bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/70"
+                                    : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/70"
+                                }`}
+                                title={task.completed ? "Move to To Do" : "Mark as Completed"}
+                                aria-label={task.completed ? "Move task to To Do" : "Move task to Completed"}
+                              >
+                                {task.completed ? (
+                                  <>
+                                    <ArrowRight className="h-3 w-3 rotate-180" />
+                                    <span>To Do</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <CheckCircle2 className="h-3 w-3" />
+                                    <span>Done</span>
+                                  </>
+                                )}
+                              </button>
+                            )}
                           </CardFooter>
                         </Card>
                       </div>

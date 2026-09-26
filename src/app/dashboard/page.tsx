@@ -4,7 +4,11 @@ import * as React from "react";
 import { Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { TaskStats } from "@/components/dashboard/TaskStats";
+import { AcademicHeader } from "@/components/academic/AcademicHeader";
+import { StudentStats } from "@/components/academic/StudentStats";
+import { PomodoroWidget } from "@/components/academic/PomodoroWidget";
+import { AcademicQuickLinks } from "@/components/academic/AcademicQuickLinks";
+import { MobileNavBar } from "@/components/academic/MobileNavBar";
 import {
   TaskFilters,
   FilterState,
@@ -12,8 +16,6 @@ import {
   TaskDialog,
   TaskPagination,
 } from "@/components/tasks";
-import { Button } from "@/components/ui/button";
-import { Plus, Sparkles } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import type { Task, PaginationMeta, PaginatedTasksResponse } from "@/types/task";
 
@@ -26,6 +28,7 @@ function DashboardContent() {
   const search = searchParams.get("search") || "";
   const status = (searchParams.get("status") || "ALL").toUpperCase();
   const priority = (searchParams.get("priority") || "ALL").toUpperCase();
+  const course = (searchParams.get("course") || "ALL").toUpperCase();
   const sortBy = searchParams.get("sortBy") || "createdAt";
   const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
   const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
@@ -54,15 +57,6 @@ function DashboardContent() {
   const [deletingTask, setDeletingTask] = React.useState<Task | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [updatingTaskId, setUpdatingTaskId] = React.useState<string | null>(null);
-
-  // Dynamic greeting based on current local time
-  const [greeting, setGreeting] = React.useState("Welcome back");
-  React.useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning");
-    else if (hour < 18) setGreeting("Good afternoon");
-    else setGreeting("Good evening");
-  }, []);
 
   // 2. Load authenticated user
   React.useEffect(() => {
@@ -169,6 +163,12 @@ function DashboardContent() {
     fetchTasks();
   }, [fetchTasks]);
 
+  // Client-side course filter matching for instant response
+  const displayedTasks = React.useMemo(() => {
+    if (!course || course === "ALL") return tasks;
+    return tasks.filter((t) => (t.course || "").toUpperCase() === course);
+  }, [tasks, course]);
+
   // Filter change handler: updates URL params and resets page to 1
   const handleFilterChange = (newFilters: FilterState) => {
     updateQueryParams(
@@ -176,6 +176,7 @@ function DashboardContent() {
         search: newFilters.search,
         status: newFilters.status,
         priority: newFilters.priority,
+        course: newFilters.course,
         sortBy: newFilters.sortBy,
         sortOrder: newFilters.sortOrder,
       },
@@ -195,6 +196,7 @@ function DashboardContent() {
         search: "",
         status: "ALL",
         priority: "ALL",
+        course: "ALL",
         sortBy: "createdAt",
         sortOrder: "desc",
       },
@@ -211,6 +213,7 @@ function DashboardContent() {
     Boolean(search && search.trim() !== "") ||
     status !== "ALL" ||
     priority !== "ALL" ||
+    course !== "ALL" ||
     sortBy !== "createdAt" ||
     sortOrder !== "desc";
 
@@ -228,10 +231,10 @@ function DashboardContent() {
 
   // 6. Form Success (Create or Edit)
   const handleFormSuccess = (_savedTask: Task) => {
-    // Re-fetch current query from database to maintain proper pagination & order
+    // Re-fetch current query from database
     fetchTasks();
     toast.success(
-      editingTask?.id ? "Task updated successfully" : "Task created successfully 🚀"
+      editingTask?.id ? "Task updated successfully" : "Task added to course list 🚀"
     );
   };
 
@@ -251,7 +254,6 @@ function DashboardContent() {
         setDeletingTask(null);
         toast.success("Task deleted successfully");
 
-        // If this was the last task on page > 1, navigate to page - 1
         if (tasks.length === 1 && page > 1) {
           updateQueryParams({ page: page - 1 }, false);
         } else {
@@ -294,17 +296,15 @@ function DashboardContent() {
             prev.map((t) => (t.id === task.id ? updatedTask : t))
           );
         }
-        // If status filter is active, re-fetch to keep page accurate with database query
         if (status === "ACTIVE" || status === "COMPLETED") {
           fetchTasks();
         }
         toast.success(
-          nextCompleted ? "Task marked as completed! 🎉" : "Task marked as active 📋"
+          nextCompleted ? "Completed! One step closer to semester goals 🎉" : "Task reactivated 📋"
         );
       } else {
-        // Revert on failure
         fetchTasks();
-        toast.error("Failed to update task status");
+        toast.error("Failed to update status");
       }
     } catch {
       fetchTasks();
@@ -315,78 +315,37 @@ function DashboardContent() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 via-zinc-50/50 to-slate-100/60 pb-24 overflow-x-hidden">
-      {/* Decorative ambient background glows */}
-      <div className="pointer-events-none absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-3xl" />
-      <div className="pointer-events-none absolute top-32 right-10 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl" />
+    <div className="relative min-h-screen bg-slate-50/60 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] pb-24 overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+      {/* Ambient atmospheric glows */}
+      <div className="pointer-events-none absolute -top-32 -left-32 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-indigo-300/20 via-blue-200/15 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute top-10 -right-32 h-[600px] w-[600px] rounded-full bg-gradient-to-bl from-cyan-300/20 via-indigo-200/15 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-1/3 h-96 w-96 rounded-full bg-violet-200/10 blur-3xl" />
 
       <Toaster position="top-right" richColors />
 
-      {/* 1. Header / Navbar */}
-      <DashboardHeader
-        user={currentUser}
-        onOpenCreateModal={handleOpenCreateModal}
-      />
+      {/* 1. Navbar */}
+      <DashboardHeader user={currentUser} />
 
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-7 animate-fade-in-up">
-        {/* 2. Dashboard Title & Hero */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-7 rounded-2xl bg-white/80 backdrop-blur-md border border-zinc-200/80 shadow-xs">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold mb-1 shadow-2xs">
-              <Sparkles
-                className="h-3.5 w-3.5 text-blue-600 animate-spin"
-                style={{ animationDuration: "8s" }}
-              />
-              <span>Personal Task Workspace</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-zinc-900 leading-tight">
-              {greeting},{" "}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
-                {currentUser?.name || "Developer"}
-              </span>{" "}
-              👋
-            </h1>
-            <p className="text-sm text-zinc-500 max-w-xl leading-relaxed">
-              Track your daily goals, manage active work items, and stay organized.
-            </p>
-          </div>
+      <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-5 sm:space-y-6 pb-28 md:pb-16 animate-fade-in-up">
+        {/* Anchor point for Top Overview */}
+        <div id="top" className="sr-only" />
 
-          <Button
-            onClick={handleOpenCreateModal}
-            className="h-10 px-5 gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25 self-start sm:self-auto cursor-pointer"
-            aria-label="Add new task"
-          >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span className="font-semibold">+ Add Task</span>
-          </Button>
-        </div>
-
-        {/* 3. Task Statistics */}
-        <TaskStats
-          tasks={tasks}
-          totalCount={pagination.total}
-          activeCount={
-            status === "ACTIVE"
-              ? pagination.total
-              : status === "COMPLETED"
-              ? 0
-              : undefined
-          }
-          completedCount={
-            status === "COMPLETED"
-              ? pagination.total
-              : status === "ACTIVE"
-              ? 0
-              : undefined
-          }
+        {/* 2. Academic Header & Today's Routine Strip */}
+        <AcademicHeader
+          userName={currentUser?.name}
+          onOpenCreateModal={handleOpenCreateModal}
         />
 
-        {/* 4. Task Filters (Search, Status, Priority, Sort) */}
+        {/* 3. Student Metric Cards (Pending Assignments, Upcoming Exams, Study Target) */}
+        <StudentStats tasks={tasks} totalCount={pagination.total} />
+
+        {/* 4. Unified Search & Filter Toolbar */}
         <TaskFilters
           filters={{
             search,
             status,
             priority,
+            course,
             sortBy,
             sortOrder,
           }}
@@ -396,41 +355,58 @@ function DashboardContent() {
           activeView="grid"
         />
 
-        {/* 5. Task List (Loading, Error, Empty, and Task Cards) */}
-        <TaskList
-          tasks={tasks}
-          isLoading={isLoading}
-          isError={!!loadError}
-          errorMessage={loadError}
-          onRetry={fetchTasks}
-          isFiltered={isFiltered}
-          filterStatus={status}
-          searchQuery={search}
-          onClearFilter={handleClearFilter}
-          onClearSearch={handleClearSearch}
-          onEdit={handleOpenEditModal}
-          onDelete={handleOpenDeleteModal}
-          onStatusToggle={handleStatusToggle}
-          onOpenCreateModal={handleOpenCreateModal}
-          updatingTaskId={updatingTaskId}
-        />
+        {/* 5. Main Content Grid: Academic Tasks List (First on mobile) + Focus & Utility (Second on mobile) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Tasks Column (Primary, Order 1) */}
+          <div id="tasks" className="lg:col-span-8 space-y-5 order-1">
+            <TaskList
+              tasks={displayedTasks}
+              isLoading={isLoading}
+              isError={!!loadError}
+              errorMessage={loadError}
+              onRetry={fetchTasks}
+              isFiltered={isFiltered}
+              filterStatus={status}
+              searchQuery={search}
+              onClearFilter={handleClearFilter}
+              onClearSearch={handleClearSearch}
+              onEdit={handleOpenEditModal}
+              onDelete={handleOpenDeleteModal}
+              onStatusToggle={handleStatusToggle}
+              onOpenCreateModal={handleOpenCreateModal}
+              updatingTaskId={updatingTaskId}
+            />
 
-        {/* 6. Database-Level Pagination Controls */}
-        {pagination.total > 0 && (
-          <TaskPagination
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            total={pagination.total}
-            limit={pagination.limit}
-            hasNextPage={pagination.hasNextPage}
-            hasPreviousPage={pagination.hasPreviousPage}
-            onPageChange={handlePageChange}
-            isLoading={isLoading}
-          />
-        )}
+            {/* Pagination Controls */}
+            {pagination.total > 0 && (
+              <TaskPagination
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+                total={pagination.total}
+                limit={pagination.limit}
+                hasNextPage={pagination.hasNextPage}
+                hasPreviousPage={pagination.hasPreviousPage}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+              />
+            )}
+          </div>
+
+          {/* Academic Focus & Utility Column (Order 2 on mobile, sidebar on desktop) */}
+          <div id="pomodoro" className="lg:col-span-4 space-y-5 sm:space-y-6 order-2">
+            {/* Pomodoro Study Timer */}
+            <PomodoroWidget />
+
+            {/* Academic Quick Links Repository */}
+            <AcademicQuickLinks />
+          </div>
+        </div>
       </main>
 
-      {/* 7. Create / Edit Task Dialog */}
+      {/* Mobile Bottom Navigation Bar (Hidden on md and larger screens) */}
+      <MobileNavBar />
+
+      {/* Create / Edit Task Dialog */}
       <TaskDialog
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
@@ -439,7 +415,7 @@ function DashboardContent() {
         mode="form"
       />
 
-      {/* 8. Delete Confirmation Dialog */}
+      {/* Delete Confirmation Dialog */}
       <TaskDialog
         open={!!deletingTask}
         onOpenChange={(open) => {

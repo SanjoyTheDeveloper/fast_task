@@ -49,7 +49,7 @@ export function TaskList({
       <div
         role="status"
         aria-label="Loading tasks"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5"
       >
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div
@@ -126,7 +126,7 @@ export function TaskList({
     <div
       role="list"
       aria-label="Tasks list"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up"
+      className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5 animate-fade-in-up"
     >
       {tasks.map((task) => (
         <div role="listitem" key={task.id}>

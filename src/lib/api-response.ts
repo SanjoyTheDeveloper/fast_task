@@ -45,18 +45,29 @@ export function errorResponse(
   return NextResponse.json({ success: false, error: errorBody }, { status });
 }
 
+import { parseTaskDescription } from "@/lib/academic";
+
 export function serializeTask(task: any): Task {
   const createdAt = task.createdAt instanceof Date ? task.createdAt.toISOString() : new Date(task.createdAt).toISOString();
   const updatedAt = task.updatedAt instanceof Date ? task.updatedAt.toISOString() : new Date(task.updatedAt).toISOString();
 
   const rawDesc = task.description != null ? String(task.description).trim() : null;
-  const description = rawDesc && rawDesc.length > 0 ? rawDesc : null;
+  const parsedMeta = parseTaskDescription(rawDesc);
+
+  let dueDate: string | null = null;
+  if (task.dueDate) {
+    dueDate = task.dueDate instanceof Date ? task.dueDate.toISOString() : new Date(task.dueDate).toISOString();
+  }
 
   return {
     id: String(task.id),
     title: String(task.title),
-    description,
+    description: parsedMeta.description,
     completed: Boolean(task.completed ?? task.status === "COMPLETED"),
+    dueDate,
+    course: task.course || parsedMeta.course,
+    category: task.category || parsedMeta.category,
+    priority: task.priority || "MEDIUM",
     userId: String(task.userId),
     createdAt,
     updatedAt,

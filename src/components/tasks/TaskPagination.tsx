@@ -72,7 +72,7 @@ export function TaskPagination({
     <nav
       role="navigation"
       aria-label="Pagination navigation"
-      className={`flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-5 rounded-2xl bg-white/90 backdrop-blur-md border border-zinc-200/80 shadow-xs ${className}`}
+      className={`w-full flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-5 rounded-2xl bg-white/90 backdrop-blur-md border border-zinc-200/80 shadow-xs ${className}`}
     >
       {/* Item summary */}
       <div className="text-xs text-zinc-500 font-medium">

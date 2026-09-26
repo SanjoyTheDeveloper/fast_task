@@ -1,13 +1,22 @@
 /**
- * Canonical Task type across the entire application.
- * All backend API endpoints, TypeScript types, frontend components,
- * forms, filters, dialogs, and API client code consume this exact shape.
+ * Canonical Task type across the entire application for the Student Academic Workspace.
  */
+export type AcademicCategory =
+  | "Assignment"
+  | "Exam"
+  | "Lab Report"
+  | "Personal Routine"
+  | string;
+
 export type Task = {
   id: string;
   title: string;
   description: string | null;
   completed: boolean;
+  dueDate?: string | null;
+  course?: string | null;
+  category?: AcademicCategory | null;
+  priority?: "LOW" | "MEDIUM" | "HIGH" | string;
   userId: string;
   createdAt: string;
   updatedAt: string;
