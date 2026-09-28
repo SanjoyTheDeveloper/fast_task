@@ -111,7 +111,7 @@ export function TaskEmptyState({
           className="h-10 px-5 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
         >
           <Plus className="h-4 w-4 stroke-[2.5]" />
-          <span>+ Add Assignment</span>
+          <span>Add Assignment</span>
         </Button>
       )}
     </div>

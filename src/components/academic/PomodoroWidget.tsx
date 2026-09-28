@@ -138,19 +138,19 @@ export function PomodoroWidget() {
   const ActiveIcon = currentConfig.icon;
 
   return (
-    <div className="bg-[#0B0F17] text-white border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md rounded-2xl transition-all overflow-hidden relative">
+    <div className="bg-white text-[#172033] border border-slate-200/80 shadow-xs rounded-2xl transition-all overflow-hidden relative">
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-indigo-500/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-cyan-500/10 blur-3xl" />
+      <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-blue-500/5 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-500/5 blur-3xl" />
 
       {/* Header Bar */}
-      <div className="relative px-5 py-4 flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02]">
+      <div className="relative px-5 py-4 flex items-center justify-between border-b border-slate-100 bg-slate-50/40">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-indigo-500/15 border border-indigo-400/30 text-indigo-400 flex items-center justify-center shadow-[0_0_12px_rgba(99,102,241,0.2)]">
+          <div className="h-8 w-8 rounded-lg bg-blue-50 border border-blue-200/60 text-[#315BFF] flex items-center justify-center shadow-2xs">
             <Timer className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-[#172033] flex items-center gap-2">
               Focus Pomodoro
               <span className="relative flex h-2 w-2">
                 {isRunning && (
@@ -158,12 +158,12 @@ export function PomodoroWidget() {
                 )}
                 <span
                   className={`relative inline-flex rounded-full h-2 w-2 ${
-                    isRunning ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" : "bg-zinc-600"
+                    isRunning ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" : "bg-slate-300"
                   }`}
                 />
               </span>
             </h3>
-            <p className="text-[11px] text-zinc-400">
+            <p className="text-[11px] text-slate-500">
               {isRunning ? "Deep study timer running" : "25m study blocks / 5m breaks"}
             </p>
           </div>
@@ -173,16 +173,16 @@ export function PomodoroWidget() {
           <button
             type="button"
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-1.5 text-zinc-400 hover:text-zinc-200 rounded-lg hover:bg-white/[0.06] transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
             title={soundEnabled ? "Mute chimes" : "Enable chimes"}
             aria-label="Toggle chime sound"
           >
-            {soundEnabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5 text-zinc-500" />}
+            {soundEnabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5 text-slate-400" />}
           </button>
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 text-zinc-400 hover:text-zinc-200 rounded-lg hover:bg-white/[0.06] transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
             title={isCollapsed ? "Expand widget" : "Collapse widget"}
             aria-label="Toggle collapse"
           >
@@ -193,9 +193,9 @@ export function PomodoroWidget() {
 
       {/* Collapsed Mini Bar */}
       {isCollapsed ? (
-        <div className="relative px-5 py-3.5 flex items-center justify-between bg-white/[0.02]">
+        <div className="relative px-5 py-3.5 flex items-center justify-between bg-slate-50/30">
           <div className="flex items-center gap-3">
-            <span className="text-xl font-bold font-mono tracking-tight text-white">
+            <span className="text-xl font-bold font-mono tracking-tight text-[#172033]">
               {formattedTime}
             </span>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${currentConfig.badge}`}>
@@ -205,10 +205,10 @@ export function PomodoroWidget() {
           <div className="flex items-center gap-1.5">
             <button
               onClick={togglePlay}
-              className={`p-2 rounded-xl text-white font-medium shadow-md transition-all active:scale-95 ${
+              className={`p-2 rounded-xl text-white font-medium shadow-sm transition-all active:scale-95 ${
                 isRunning
-                  ? "bg-amber-600 hover:bg-amber-700 shadow-amber-500/20"
-                  : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/25"
+                  ? "bg-amber-600 hover:bg-amber-700"
+                  : "bg-[#315BFF] hover:bg-[#254BE3]"
               }`}
             >
               {isRunning ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 fill-current" />}
@@ -219,14 +219,14 @@ export function PomodoroWidget() {
         /* Expanded Full Body */
         <div className="relative p-5 space-y-5">
           {/* Mode Switcher Tabs */}
-          <div className="grid grid-cols-3 gap-1.5 p-1 bg-white/[0.04] border border-white/[0.06] rounded-xl text-xs font-medium">
+          <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100/80 border border-slate-200/60 rounded-xl text-xs font-medium">
             <button
               type="button"
               onClick={() => switchMode("focus")}
               className={`py-1.5 px-2 rounded-lg transition-all text-center ${
                 mode === "focus"
-                  ? "bg-white/[0.12] text-white shadow-xs font-semibold border border-white/[0.1]"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-white text-[#172033] shadow-xs font-bold border border-slate-200/80"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
               }`}
             >
               25m Focus
@@ -236,8 +236,8 @@ export function PomodoroWidget() {
               onClick={() => switchMode("shortBreak")}
               className={`py-1.5 px-2 rounded-lg transition-all text-center ${
                 mode === "shortBreak"
-                  ? "bg-white/[0.12] text-white shadow-xs font-semibold border border-white/[0.1]"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-white text-[#172033] shadow-xs font-bold border border-slate-200/80"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
               }`}
             >
               5m Break
@@ -247,8 +247,8 @@ export function PomodoroWidget() {
               onClick={() => switchMode("longBreak")}
               className={`py-1.5 px-2 rounded-lg transition-all text-center ${
                 mode === "longBreak"
-                  ? "bg-white/[0.12] text-white shadow-xs font-semibold border border-white/[0.1]"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-white text-[#172033] shadow-xs font-bold border border-slate-200/80"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
               }`}
             >
               15m Rest
@@ -258,23 +258,22 @@ export function PomodoroWidget() {
           {/* Clock Display */}
           <div className="text-center py-2 flex flex-col items-center justify-center">
             <div className="relative flex items-center justify-center mb-4">
-              {/* Radial or circular progress bar indicator */}
-              <div className="w-36 h-36 rounded-full border-4 border-white/[0.06] flex items-center justify-center relative shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
+              {/* Radial circular progress bar indicator */}
+              <div className="w-36 h-36 rounded-full border-4 border-slate-100 flex items-center justify-center relative shadow-inner">
                 <div
                   className="absolute inset-0 rounded-full"
                   style={{
                     background: `conic-gradient(${currentConfig.ringColor} ${progressPercent}%, transparent ${progressPercent}% 100%)`,
                     mask: "radial-gradient(transparent 60px, black 61px)",
                     WebkitMask: "radial-gradient(transparent 60px, black 61px)",
-                    filter: `drop-shadow(0 0 6px ${currentConfig.ringColor}80)`,
                   }}
                 />
                 <div className="flex flex-col items-center z-10">
-                  <span className="text-4xl font-black tracking-tight font-mono text-white">
+                  <span className="text-4xl font-black tracking-tight font-mono text-[#172033]">
                     {formattedTime}
                   </span>
-                  <span className="text-[11px] font-medium text-zinc-400 mt-0.5 flex items-center gap-1">
-                    <ActiveIcon className="h-3 w-3 text-zinc-300" />
+                  <span className="text-[11px] font-semibold text-slate-500 mt-0.5 flex items-center gap-1">
+                    <ActiveIcon className="h-3 w-3 text-slate-400" />
                     {currentConfig.label}
                   </span>
                 </div>
@@ -286,7 +285,7 @@ export function PomodoroWidget() {
               <button
                 type="button"
                 onClick={resetTimer}
-                className="p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                className="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#172033] hover:bg-slate-50 transition-all cursor-pointer shadow-2xs"
                 title="Reset timer"
                 aria-label="Reset timer"
               >
@@ -296,10 +295,10 @@ export function PomodoroWidget() {
               <button
                 type="button"
                 onClick={togglePlay}
-                className={`flex-1 py-2.5 px-4 rounded-xl text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] ${
+                className={`flex-1 py-2.5 px-4 rounded-xl text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] ${
                   isRunning
-                    ? "bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow-amber-500/25 border border-amber-400/30"
-                    : "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:to-indigo-700 shadow-indigo-500/25 border border-indigo-400/30"
+                    ? "bg-amber-600 hover:bg-amber-700 shadow-amber-500/20"
+                    : "bg-[#315BFF] hover:bg-[#254BE3] shadow-blue-500/25"
                 }`}
               >
                 {isRunning ? (
@@ -316,9 +315,9 @@ export function PomodoroWidget() {
           </div>
 
           {/* Session Progress Tracker */}
-          <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between text-xs">
-            <span className="text-zinc-400 flex items-center gap-1.5 font-medium">
-              <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="text-slate-500 flex items-center gap-1.5 font-medium">
+              <CheckCircle2 className="h-3.5 w-3.5 text-[#315BFF]" />
               Today&apos;s Pomodoros:
             </span>
             <div className="flex items-center gap-1.5">
@@ -327,13 +326,13 @@ export function PomodoroWidget() {
                   key={i}
                   className={`h-2.5 w-2.5 rounded-full transition-colors ${
                     i <= completedSessions
-                      ? "bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.8)]"
-                      : "bg-white/[0.1]"
+                      ? "bg-[#315BFF] shadow-[0_0_6px_rgba(49,91,255,0.5)]"
+                      : "bg-slate-200"
                   }`}
                   title={`Session ${i}`}
                 />
               ))}
-              <span className="ml-1.5 font-bold text-zinc-200">
+              <span className="ml-1.5 font-bold text-[#172033]">
                 {completedSessions} / 4
               </span>
             </div>

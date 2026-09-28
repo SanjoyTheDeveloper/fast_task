@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { LandingPage } from "@/components/landing/landing-page";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 export const metadata: Metadata = {
   title: "FastTask — Academic & Student Task Workspace",

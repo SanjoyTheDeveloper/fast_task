@@ -7,7 +7,7 @@ import {
   Sidebar,
   TopHeader,
 } from "@/components/dashboard";
-import { TaskDialog } from "@/components/tasks/task-dialog";
+import { TaskDialog } from "@/components/tasks/TaskDialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
@@ -387,7 +387,7 @@ export default function MyTasksPage() {
               className="bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl h-11 px-5 shadow-sm shadow-blue-500/25 flex items-center gap-2 cursor-pointer transition active:scale-[0.99] self-start sm:self-auto shrink-0"
             >
               <Plus className="h-4 w-4 stroke-[2.5]" />
-              <span>+ Add New Task</span>
+              <span>Add New Task</span>
             </Button>
           </div>
 
@@ -596,7 +596,7 @@ export default function MyTasksPage() {
                   className="h-11 px-6 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.01] active:scale-[0.99] transition cursor-pointer"
                 >
                   <Plus className="h-4 w-4 stroke-[2.5]" />
-                  <span>+ Create your first task</span>
+                  <span>Create your first task</span>
                 </Button>
               </div>
             )}

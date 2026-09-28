@@ -3,16 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare, Loader2, Lock, Mail, AlertCircle } from "lucide-react";
 import { toast, Toaster } from "sonner";
-
-import { signIn } from "next-auth/react";
 
 function LoginForm() {
   const router = useRouter();
@@ -27,8 +24,8 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -38,14 +35,16 @@ function LoginForm() {
     },
   });
 
+  const email = watch("email");
+
   const isEmailVerificationError =
     serverError?.toLowerCase().includes("verify your email") ||
-    serverError?.toLowerCase().includes("check your inbox");
+    serverError?.toLowerCase().includes("verification") ||
+    serverError?.toLowerCase().includes("email_not_verified");
 
   const handleResendVerification = async () => {
-    const email = getValues("email");
     if (!email || !email.trim()) {
-      toast.error("Please enter your email address above first.");
+      toast.error("Please enter your email address to resend verification.");
       return;
     }
 
@@ -98,6 +97,10 @@ function LoginForm() {
       error === "email_not_verified"
     ) {
       setServerError("Please verify your email before logging in");
+    } else if (error === "CredentialsSignin") {
+      setServerError("Invalid email or password. Please try again.");
+    } else if (error) {
+      setServerError(decodeURIComponent(error));
     }
   }, [searchParams, setValue]);
 
@@ -107,21 +110,19 @@ function LoginForm() {
 
     try {
       const res = await signIn("credentials", {
-        email: values.email,
+        email: values.email.trim(),
         password: values.password,
         redirect: false,
       });
 
       if (res?.error) {
         if (
-          res.code === "email_not_verified" ||
-          res.error === "email_not_verified" ||
-          res.error?.toLowerCase().includes("verify") ||
+          res.error.toLowerCase().includes("verify") ||
+          res.error.toLowerCase().includes("email_not_verified") ||
           res.code?.toLowerCase().includes("verify")
         ) {
           setServerError("Please verify your email before logging in");
         } else {
-          // Check if failure is due to unverified email
           try {
             const checkRes = await fetch("/api/auth/resend-verification", {
               method: "POST",
@@ -143,7 +144,6 @@ function LoginForm() {
         return;
       }
 
-      // Successful login with Auth.js session
       router.push(from);
       router.refresh();
     } catch (err: any) {
@@ -178,17 +178,18 @@ function LoginForm() {
   };
 
   return (
-    <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-purple-100/80 shadow-[0_20px_50px_-12px_rgba(124,58,237,0.12)] p-8 sm:p-10 max-w-md w-full space-y-6">
+    <div className="relative rounded-3xl border border-[#DCE7FC] bg-white shadow-[0_20px_50px_rgba(49,91,255,0.06)] overflow-hidden p-6 sm:p-8 space-y-6">
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#315BFF] via-[#5B63E6] to-[#8B5CF6]" />
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-[#1E1B4B] tracking-tight">Sign In</h2>
-        <p className="text-sm text-purple-900/60">
-          Stay organized and manage your projects efficiently
+        <h2 className="text-xl font-black text-[#172033] tracking-tight">Sign In</h2>
+        <p className="text-xs sm:text-sm text-slate-500">
+          Enter your credentials to access your dashboard
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {serverError && (
-          <div className="p-3.5 text-sm rounded-2xl border bg-rose-50 text-rose-700 border-rose-200/80 space-y-2.5">
+          <div className="p-3.5 text-sm rounded-xl border bg-rose-50 text-rose-700 border-rose-200/80 space-y-2.5">
             <div className="flex items-start gap-2">
               <AlertCircle className="h-4 w-4 mt-0.5 shrink-0 text-rose-600" />
               <span className="leading-snug">{serverError}</span>
@@ -219,7 +220,7 @@ function LoginForm() {
                 {devVerificationUrl && (
                   <a
                     href={devVerificationUrl}
-                    className="flex items-center justify-center gap-1.5 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-semibold py-2.5 px-3 shadow-md shadow-purple-500/20 transition-all text-center"
+                    className="flex items-center justify-center gap-1.5 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold py-2.5 px-3 shadow-xs transition-all text-center"
                   >
                     <span>🚀 Verify Account Now (Instant Dev Link)</span>
                   </a>
@@ -231,17 +232,17 @@ function LoginForm() {
 
         {/* Email */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-purple-900/80 uppercase tracking-wider" htmlFor="email">
+          <label className="text-xs font-bold text-[#172033] uppercase tracking-wider" htmlFor="email">
             Email Address
           </label>
           <div className="relative">
-            <Mail className="absolute left-4 top-3.5 h-4 w-4 text-purple-400" />
+            <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             <input
               id="email"
               type="email"
               placeholder="alex@example.com"
-              className={`flex h-12 w-full rounded-2xl bg-[#F8F7FF] border border-[#E0E7FF] text-[#1E1B4B] placeholder-purple-300 pl-11 pr-4 text-sm transition-all focus:bg-white focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-500/15 ${
-                errors.email ? "border-rose-400 bg-rose-50/30" : ""
+              className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                errors.email ? "border-rose-500" : "border-[#E5EAF2]"
               }`}
               {...register("email")}
             />
@@ -253,17 +254,17 @@ function LoginForm() {
 
         {/* Password */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-purple-900/80 uppercase tracking-wider" htmlFor="password">
+          <label className="text-xs font-bold text-[#172033] uppercase tracking-wider" htmlFor="password">
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-4 top-3.5 h-4 w-4 text-purple-400" />
+            <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             <input
               id="password"
               type="password"
               placeholder="••••••••"
-              className={`flex h-12 w-full rounded-2xl bg-[#F8F7FF] border border-[#E0E7FF] text-[#1E1B4B] placeholder-purple-300 pl-11 pr-4 text-sm transition-all focus:bg-white focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-500/15 ${
-                errors.password ? "border-rose-400 bg-rose-50/30" : ""
+              className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                errors.password ? "border-rose-500" : "border-[#E5EAF2]"
               }`}
               {...register("password")}
             />
@@ -273,10 +274,10 @@ function LoginForm() {
           )}
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-2 bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#8B5CF6] hover:from-[#4F46E5] hover:to-[#7C3AED] text-white font-semibold rounded-2xl py-3.5 shadow-md shadow-purple-500/30 hover:shadow-lg hover:shadow-purple-500/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 text-sm"
+          className="w-full mt-2 h-11 rounded-xl text-sm font-bold text-white bg-[#315BFF] hover:bg-[#254BE3] shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
         >
           {isLoading ? (
             <>
@@ -286,15 +287,15 @@ function LoginForm() {
           ) : (
             <span>Sign In</span>
           )}
-        </button>
+        </Button>
       </form>
 
-      <div className="pt-4 border-t border-purple-100/60 text-center">
-        <p className="text-sm text-purple-900/60">
+      <div className="pt-4 border-t border-[#F1F5F9] text-center">
+        <p className="text-xs sm:text-sm text-slate-500">
           Don&apos;t have an account?{" "}
           <Link
             href="/register"
-            className="text-[#7C3AED] font-semibold hover:underline transition-colors"
+            className="text-[#315BFF] font-bold hover:underline transition-colors"
           >
             Sign up
           </Link>
@@ -306,11 +307,11 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#F5F3FF] via-[#FDF2F8] to-[#EDE9FE] p-4 text-[#1E1B4B] selection:bg-purple-500 selection:text-white">
-      {/* Subtle, ultra-soft ambient blurred blobs in the corners */}
-      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-[#DDD6FE] blur-3xl opacity-60" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-[#FCE7F3] blur-3xl opacity-60" />
-      <div className="pointer-events-none absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-[#EDE9FE] blur-3xl opacity-50" />
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#F8FAFC] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
+      {/* Ambient background glows */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-[radial-gradient(ellipse_at_top,rgba(49,91,255,0.08),rgba(99,102,241,0.04),transparent_65%)]" />
+      <div className="pointer-events-none absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-blue-400/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-1/4 h-80 w-80 rounded-full bg-indigo-300/10 blur-[100px]" />
 
       <Toaster richColors position="top-right" />
 
@@ -319,26 +320,26 @@ export default function LoginPage() {
         <div className="flex flex-col items-center text-center space-y-3">
           <Link
             href="/"
-            className="group flex flex-col items-center space-y-2.5 transition-transform hover:scale-102"
+            className="group flex flex-col items-center space-y-2 transition-transform hover:scale-102"
           >
-            {/* App Icon Badge: Rounded clay-style gradient box */}
-            <div className="flex h-12 w-12 items-center justify-center bg-gradient-to-tr from-purple-500 to-indigo-500 text-white rounded-2xl p-3 shadow-lg shadow-purple-500/30">
+            {/* FastTask Logo Icon */}
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#315BFF] text-white shadow-md shadow-blue-500/25">
               <CheckSquare className="h-6 w-6 stroke-[2.5]" />
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-2xl font-black tracking-tight text-[#1E1B4B]">
-                Fast<span className="text-[#7C3AED]">Task</span>
+              <span className="text-2xl font-black tracking-tight text-[#172033]">
+                FastTask
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-purple-700 bg-purple-100/80 border border-purple-200/60 px-2 py-0.5 rounded-full">
-                Academic
+              <span className="text-[10px] font-extrabold uppercase tracking-wide text-[#315BFF] bg-[#EEF3FF] border border-[#D0DFFF] px-2 py-0.5 rounded">
+                PRO
               </span>
             </div>
           </Link>
           <div className="space-y-1">
-            <h1 className="text-[#1E1B4B] font-bold text-2xl tracking-tight">
+            <h1 className="text-[#172033] font-black text-2xl tracking-tight">
               Welcome back to FastTask
             </h1>
-            <p className="text-purple-900/60 text-sm">
+            <p className="text-slate-500 text-sm">
               Enter your credentials to access your task dashboard
             </p>
           </div>
@@ -347,8 +348,8 @@ export default function LoginPage() {
         {/* Suspense boundary for useSearchParams */}
         <React.Suspense
           fallback={
-            <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-purple-100/80 shadow-[0_20px_50px_-12px_rgba(124,58,237,0.12)] p-10 text-center">
-              <Loader2 className="h-6 w-6 animate-spin mx-auto text-[#7C3AED]" />
+            <div className="bg-white rounded-3xl border border-[#DCE7FC] shadow-sm p-10 text-center">
+              <Loader2 className="h-6 w-6 animate-spin mx-auto text-[#315BFF]" />
             </div>
           }
         >
@@ -359,7 +360,7 @@ export default function LoginPage() {
         <div className="text-center pt-1">
           <Link
             href="/"
-            className="text-xs font-medium text-purple-800/60 hover:text-purple-900 transition-colors"
+            className="text-xs font-medium text-slate-400 hover:text-[#315BFF] transition-colors"
           >
             ← Return to Public Home
           </Link>

@@ -128,15 +128,32 @@ export const defaultUpcomingTasks: UpcomingTaskItem[] = [
   },
 ];
 
+import { WEEKLY_SCHEDULE, ScheduleItem } from "./TodaySchedule";
+
 export interface CalendarWidgetProps {
   onSelectTask?: (id: string) => void;
   onViewAll?: () => void;
+  onSelectDate?: (day: number, dayOfWeek: string) => void;
+  selectedDate?: number | null;
 }
 
-export function CalendarWidget({ onSelectTask, onViewAll }: CalendarWidgetProps) {
+export function CalendarWidget({
+  onSelectTask,
+  onViewAll,
+  onSelectDate,
+  selectedDate: propSelectedDate,
+}: CalendarWidgetProps) {
   const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
-  const [selectedDate, setSelectedDate] = React.useState<number | null>(27);
+  const [internalSelectedDate, setInternalSelectedDate] = React.useState<number | null>(27);
   const [hoveredDate, setHoveredDate] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (propSelectedDate !== undefined && propSelectedDate !== null) {
+      setInternalSelectedDate(propSelectedDate);
+    }
+  }, [propSelectedDate]);
+
+  const selectedDate = propSelectedDate !== undefined ? propSelectedDate : internalSelectedDate;
 
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const daysInMonth = Array.from({ length: 30 }, (_, i) => i + 1);
@@ -147,6 +164,17 @@ export function CalendarWidget({ onSelectTask, onViewAll }: CalendarWidgetProps)
   // Active date for the popover (hovered or clicked)
   const activePopoverDate = hoveredDate || selectedDate;
   const activeEvent = activePopoverDate ? SEPTEMBER_EVENTS[activePopoverDate] : null;
+
+  const activeDayOfWeekIdx = activePopoverDate ? (activePopoverDate + 1) % 7 : 0;
+  const activeDayShort = daysOfWeek[activeDayOfWeekIdx];
+  const activeDaySessions = activeDayShort ? (WEEKLY_SCHEDULE[activeDayShort] || []) : [];
+
+  const handleDateClick = (day: number) => {
+    setInternalSelectedDate(day);
+    const dayIdx = (day + 1) % 7;
+    const dayStr = daysOfWeek[dayIdx];
+    onSelectDate?.(day, dayStr);
+  };
 
   return (
     <div className="rounded-2xl bg-white border border-[#E5EAF2] p-5 shadow-2xs space-y-4 relative transition-all">
@@ -258,7 +286,7 @@ export function CalendarWidget({ onSelectTask, onViewAll }: CalendarWidgetProps)
           return (
             <div
               key={day}
-              onClick={() => setSelectedDate(day)}
+              onClick={() => handleDateClick(day)}
               onMouseEnter={() => setHoveredDate(day)}
               onMouseLeave={() => setHoveredDate(null)}
               className="relative flex flex-col items-center justify-center cursor-pointer group"
@@ -266,14 +294,14 @@ export function CalendarWidget({ onSelectTask, onViewAll }: CalendarWidgetProps)
               {/* Day Cell Container */}
               <div
                 className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${
-                  isToday
-                    ? "bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-black shadow-md shadow-blue-500/35 ring-2 ring-blue-100"
-                    : isSelected
-                    ? "border-2 border-[#315BFF] text-[#315BFF] font-bold"
+                  isSelected
+                    ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/35 ring-2 ring-blue-100 scale-105"
                     : hasPomodoroHeatmap
                     ? "bg-emerald-50/80 text-emerald-900 font-semibold hover:bg-emerald-100"
                     : isWeekend
                     ? "text-slate-400 hover:bg-slate-50"
+                    : isToday
+                    ? "text-[#172033] font-bold hover:bg-slate-100"
                     : "text-slate-700 font-medium hover:bg-blue-50/60"
                 }`}
               >
@@ -302,49 +330,90 @@ export function CalendarWidget({ onSelectTask, onViewAll }: CalendarWidgetProps)
         })}
       </div>
 
-      {/* 5. Interactive Glassmorphic Popover for Selected Date */}
-      {activePopoverDate && activeEvent && (
-        <div className="p-3 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md space-y-1.5 animate-in fade-in-50 duration-200">
-          <div className="flex items-center justify-between text-xs">
+      {/* 5. Interactive Schedule Card for Selected Date */}
+      {activePopoverDate && (
+        <div className="p-3.5 rounded-xl bg-white border border-[#DCE7FC] shadow-sm space-y-2 animate-in fade-in-50 duration-200">
+          <div className="flex items-center justify-between text-xs pb-1.5 border-b border-slate-100">
             <span className="font-bold text-[#172033] flex items-center gap-1.5">
-              <Sparkles className="h-3 w-3 text-[#315BFF]" />
-              <span>Sep {activePopoverDate}, 2026</span>
+              <Sparkles className="h-3.5 w-3.5 text-[#315BFF]" />
+              <span>
+                {activeDayShort}, Sep {activePopoverDate}
+              </span>
               {activePopoverDate === 27 && (
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700 font-bold">
                   Today
                 </span>
               )}
             </span>
-            {activeEvent.pomodoroCompleted && (
+            {activeEvent?.pomodoroCompleted ? (
               <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Study Activity Logged
+                Study Logged
+              </span>
+            ) : (
+              <span className="text-[10px] text-slate-400 font-medium">
+                {activeDaySessions.length} Classes
               </span>
             )}
           </div>
 
-          <div className="text-[11px] text-slate-500 space-y-1 pt-0.5">
-            {activeEvent.hasClasses && (
-              <div className="flex items-center gap-1.5 text-slate-700">
-                <Clock className="h-3 w-3 text-[#315BFF]" />
-                <span>
-                  <strong>{activeEvent.classCount} Classes</strong> • Room {activeEvent.rooms}
-                </span>
-              </div>
-            )}
-            {activeEvent.assignmentTitle && (
-              <div className="flex items-center gap-1.5 text-rose-600">
-                <Pin className="h-3 w-3" />
-                <span>Deadline: {activeEvent.assignmentTitle}</span>
-              </div>
-            )}
-            {activeEvent.quizTitle && (
-              <div className="flex items-center gap-1.5 text-purple-600">
-                <Hourglass className="h-3 w-3" />
-                <span>Upcoming: {activeEvent.quizTitle}</span>
-              </div>
-            )}
-          </div>
+          {/* List of Scheduled Classes for this date */}
+          {activeDaySessions.length > 0 ? (
+            <div className="space-y-1.5 pt-0.5">
+              {activeDaySessions.map((session) => (
+                <div
+                  key={session.id}
+                  className="flex items-center justify-between p-2 rounded-lg bg-[#F8FAFC] border border-[#E5EAF2] hover:border-blue-300 hover:bg-blue-50/30 transition-colors text-xs"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-bold shrink-0 ${session.courseColor}`}
+                    >
+                      {session.courseCode.slice(4) || session.courseCode}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-bold text-[#172033] truncate text-[11px]">
+                        {session.title.split("•")[0]}
+                      </p>
+                      <p className="text-[10px] text-slate-500 truncate flex items-center gap-1">
+                        <MapPin className="h-2.5 w-2.5 shrink-0" />
+                        <span>{session.location}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#315BFF] shrink-0 ml-1.5">
+                    {session.startTime}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-2.5 rounded-lg bg-[#F8FAFC] border border-[#E5EAF2] text-center text-xs text-slate-500">
+              ☕ No lectures on {activeDayShort} (Off Day / Self Study)
+            </div>
+          )}
+
+          {/* Deadlines / Exam Notes */}
+          {(activeEvent?.assignmentTitle || activeEvent?.quizTitle) && (
+            <div className="pt-1 space-y-1 text-[11px]">
+              {activeEvent.assignmentTitle && (
+                <div className="flex items-center gap-1.5 text-rose-600 bg-rose-50/70 p-1.5 rounded-lg border border-rose-100">
+                  <Pin className="h-3 w-3 shrink-0" />
+                  <span className="font-semibold truncate">
+                    Deadline: {activeEvent.assignmentTitle}
+                  </span>
+                </div>
+              )}
+              {activeEvent.quizTitle && (
+                <div className="flex items-center gap-1.5 text-purple-600 bg-purple-50/70 p-1.5 rounded-lg border border-purple-100">
+                  <Hourglass className="h-3 w-3 shrink-0" />
+                  <span className="font-semibold truncate">
+                    Quiz: {activeEvent.quizTitle}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

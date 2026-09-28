@@ -1,1 +1,1 @@
-export * from "./task-note";
+export * from "./TaskNote";

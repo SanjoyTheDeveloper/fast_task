@@ -7,8 +7,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, RegisterInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare, Loader2, Lock, Mail, User } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
@@ -65,12 +63,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#070A10] p-4 text-white selection:bg-cyan-500 selection:text-black">
-      {/* 3D Ambient Studio Spotlights & Flares */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-[radial-gradient(ellipse_at_top,rgba(37,99,235,0.28),rgba(6,182,212,0.18),transparent_65%)]" />
-      <div className="pointer-events-none absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-blue-600/15 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-1/4 h-80 w-80 rounded-full bg-amber-500/8 blur-[100px]" />
-      <div className="pointer-events-none absolute left-1/3 -bottom-20 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#F8FAFC] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
+      {/* Ambient background glows */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-[radial-gradient(ellipse_at_top,rgba(49,91,255,0.08),rgba(99,102,241,0.04),transparent_65%)]" />
+      <div className="pointer-events-none absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-blue-400/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-1/4 h-80 w-80 rounded-full bg-indigo-300/10 blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/3 -bottom-20 h-64 w-64 rounded-full bg-blue-300/10 blur-[90px]" />
 
       <Toaster richColors position="top-right" />
 
@@ -81,61 +79,53 @@ export default function RegisterPage() {
             href="/"
             className="group flex flex-col items-center space-y-2 transition-transform hover:scale-102"
           >
-            {/* Glowing abstract geometric icon */}
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-[1.5px] shadow-[0_0_25px_rgba(37,99,235,0.5)]">
-              <div className="flex h-full w-full items-center justify-center rounded-[14px] bg-[#0B0F17]">
-                <div className="relative">
-                  <CheckSquare className="h-6 w-6 text-cyan-400 stroke-[2.3]" />
-                  <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-                  </span>
-                </div>
-              </div>
+            {/* FastTask Logo Icon */}
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#315BFF] text-white shadow-md shadow-blue-500/25">
+              <CheckSquare className="h-6 w-6 stroke-[2.5]" />
             </div>
-            <div>
-              <span className="text-2xl font-black tracking-tight text-white">
-                Fast<span className="text-cyan-400">Task</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-2xl font-black tracking-tight text-[#172033]">
+                FastTask
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-2 px-1.5 py-0.5 rounded bg-white/[0.05] border border-white/[0.08]">
-                Academic
+              <span className="text-[10px] font-extrabold uppercase tracking-wide text-[#315BFF] bg-[#EEF3FF] border border-[#D0DFFF] px-2 py-0.5 rounded">
+                PRO
               </span>
             </div>
           </Link>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-500 font-medium">
             Create account • Next-Gen Student & Task Workspace
           </p>
         </div>
 
         {/* Success confirmation card or Register Card */}
         {registeredEmail ? (
-          <div className="relative rounded-2xl border border-white/[0.12] bg-slate-900/75 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.85)] overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-emerald-500 to-blue-500" />
+          <div className="relative rounded-3xl border border-[#DCE7FC] bg-white shadow-[0_20px_50px_rgba(49,91,255,0.06)] overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#315BFF] via-[#5B63E6] to-[#8B5CF6]" />
             <div className="p-6 sm:p-8 space-y-6 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-400/30 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 shadow-2xs">
                 <Mail className="h-8 w-8" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 className="text-xl font-black text-[#172033] tracking-tight">
                   Account Created Successfully!
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm mx-auto">
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-sm mx-auto font-normal">
                   Please check your inbox and click the verification link to activate your workspace.
                 </p>
               </div>
 
-              <div className="p-3.5 bg-slate-950/60 border border-slate-700/60 rounded-xl text-center">
-                <span className="text-xs text-slate-400 block mb-1">
+              <div className="p-3.5 bg-[#F8FAFC] border border-[#E5EAF2] rounded-2xl text-center">
+                <span className="text-xs text-slate-400 block mb-1 font-medium">
                   Verification email sent to:
                 </span>
-                <span className="text-sm font-semibold text-cyan-300 break-all">
+                <span className="text-sm font-bold text-[#315BFF] break-all">
                   {registeredEmail}
                 </span>
               </div>
 
               <Button
                 asChild
-                className="w-full h-11 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] border border-cyan-400/30"
+                className="w-full h-11 rounded-xl text-sm font-bold text-white bg-[#315BFF] hover:bg-[#254BE3] shadow-md shadow-blue-500/25 transition-all"
               >
                 <Link href={`/login?email=${encodeURIComponent(registeredEmail)}`}>
                   Proceed to Sign In
@@ -145,18 +135,18 @@ export default function RegisterPage() {
               {devVerificationUrl && (
                 <a
                   href={devVerificationUrl}
-                  className="flex items-center justify-center gap-1.5 w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold py-2.5 px-3 shadow transition-colors text-center"
+                  className="flex items-center justify-center gap-1.5 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold py-2.5 px-3 shadow-xs transition-all text-center"
                 >
                   <span>🚀 Verify Account Now (Instant Dev Link)</span>
                 </a>
               )}
 
-              <div className="pt-4 border-t border-white/[0.08] text-center">
-                <p className="text-xs text-slate-500">
-                  Didn't receive the email? Request a new link on the{" "}
+              <div className="pt-4 border-t border-[#F1F5F9] text-center">
+                <p className="text-xs text-slate-400">
+                  Didn&apos;t receive the email? Request a new link on the{" "}
                   <Link
                     href={`/login?email=${encodeURIComponent(registeredEmail)}`}
-                    className="text-cyan-400 hover:underline font-semibold"
+                    className="text-[#315BFF] hover:underline font-bold"
                   >
                     Sign In
                   </Link>{" "}
@@ -166,115 +156,115 @@ export default function RegisterPage() {
             </div>
           </div>
         ) : (
-          <div className="relative rounded-2xl border border-white/[0.12] bg-slate-900/75 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.85)] overflow-hidden">
+          <div className="relative rounded-3xl border border-[#DCE7FC] bg-white shadow-[0_20px_50px_rgba(49,91,255,0.06)] overflow-hidden">
             {/* Top glowing accent gradient */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500" />
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#315BFF] via-[#5B63E6] to-[#8B5CF6]" />
 
             <div className="p-6 sm:p-8 space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-bold text-white tracking-tight">Create Free Account</h2>
-                <p className="text-xs sm:text-sm text-slate-400">
+                <h2 className="text-xl font-black text-[#172033] tracking-tight">Create Free Account</h2>
+                <p className="text-xs sm:text-sm text-slate-500">
                   Join FastTask to orchestrate your semester goals and tasks
                 </p>
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {serverError && (
-                  <div className="p-3.5 text-sm rounded-xl border bg-rose-500/10 text-rose-300 border-rose-500/30 backdrop-blur-md">
+                  <div className="p-3.5 text-sm rounded-xl border bg-rose-50 text-rose-700 border-rose-200">
                     {serverError}
                   </div>
                 )}
 
                 {/* Name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="name">
+                  <label className="text-xs font-bold text-[#172033] uppercase tracking-wider" htmlFor="name">
                     Full Name
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-500" />
+                    <User className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                     <input
                       id="name"
                       placeholder="Alex Morgan"
-                      className={`flex h-11 w-full rounded-xl border bg-slate-950/60 pl-10 pr-3 text-sm text-white placeholder:text-slate-500 transition-all focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 ${
-                        errors.name ? "border-rose-500" : "border-slate-700/60"
+                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                        errors.name ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("name")}
                     />
                   </div>
                   {errors.name && (
-                    <p className="text-xs text-rose-400">{errors.name.message}</p>
+                    <p className="text-xs text-rose-500 font-medium">{errors.name.message}</p>
                   )}
                 </div>
 
                 {/* Email */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="reg-email">
+                  <label className="text-xs font-bold text-[#172033] uppercase tracking-wider" htmlFor="reg-email">
                     University / Personal Email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-500" />
+                    <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                     <input
                       id="reg-email"
                       type="email"
                       placeholder="alex@university.edu"
-                      className={`flex h-11 w-full rounded-xl border bg-slate-950/60 pl-10 pr-3 text-sm text-white placeholder:text-slate-500 transition-all focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 ${
-                        errors.email ? "border-rose-500" : "border-slate-700/60"
+                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                        errors.email ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("email")}
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-xs text-rose-400">{errors.email.message}</p>
+                    <p className="text-xs text-rose-500 font-medium">{errors.email.message}</p>
                   )}
                 </div>
 
                 {/* Password */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="reg-password">
+                  <label className="text-xs font-bold text-[#172033] uppercase tracking-wider" htmlFor="reg-password">
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-500" />
+                    <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                     <input
                       id="reg-password"
                       type="password"
                       placeholder="At least 6 characters"
-                      className={`flex h-11 w-full rounded-xl border bg-slate-950/60 pl-10 pr-3 text-sm text-white placeholder:text-slate-500 transition-all focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 ${
-                        errors.password ? "border-rose-500" : "border-slate-700/60"
+                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                        errors.password ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("password")}
                     />
                   </div>
                   {errors.password && (
-                    <p className="text-xs text-rose-400">{errors.password.message}</p>
+                    <p className="text-xs text-rose-500 font-medium">{errors.password.message}</p>
                   )}
                 </div>
 
                 {/* Confirm Password */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="confirmPassword">
+                  <label className="text-xs font-bold text-[#172033] uppercase tracking-wider" htmlFor="confirmPassword">
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-500" />
+                    <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                     <input
                       id="confirmPassword"
                       type="password"
                       placeholder="Re-enter password"
-                      className={`flex h-11 w-full rounded-xl border bg-slate-950/60 pl-10 pr-3 text-sm text-white placeholder:text-slate-500 transition-all focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30 ${
-                        errors.confirmPassword ? "border-rose-500" : "border-slate-700/60"
+                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                        errors.confirmPassword ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("confirmPassword")}
                     />
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-xs text-rose-400">{errors.confirmPassword.message}</p>
+                    <p className="text-xs text-rose-500 font-medium">{errors.confirmPassword.message}</p>
                   )}
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  className="w-full mt-3 h-11 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:scale-[1.01] active:scale-[0.99] transition-all border border-cyan-400/30 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full mt-3 h-11 rounded-xl text-sm font-bold text-white bg-[#315BFF] hover:bg-[#254BE3] shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -285,15 +275,15 @@ export default function RegisterPage() {
                   ) : (
                     <span>Create Account Free</span>
                   )}
-                </button>
+                </Button>
               </form>
 
-              <div className="pt-4 border-t border-white/[0.08] text-center">
-                <p className="text-xs sm:text-sm text-slate-400">
+              <div className="pt-4 border-t border-[#F1F5F9] text-center">
+                <p className="text-xs sm:text-sm text-slate-500">
                   Already have an account?{" "}
                   <Link
                     href="/login"
-                    className="font-bold text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
+                    className="font-bold text-[#315BFF] hover:underline transition-colors"
                   >
                     Sign in
                   </Link>
@@ -307,7 +297,7 @@ export default function RegisterPage() {
         <div className="text-center pt-2">
           <Link
             href="/"
-            className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            className="text-xs font-medium text-slate-400 hover:text-[#315BFF] transition-colors"
           >
             ← Return to Public Home
           </Link>

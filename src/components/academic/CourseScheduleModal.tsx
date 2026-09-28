@@ -329,27 +329,27 @@ export function CourseScheduleModal({
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
               Card Preview in Schedule:
             </span>
-            <div className="p-3.5 rounded-xl bg-[#0B0F17] border border-white/[0.08] text-white flex flex-col justify-between shadow-sm">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-slate-200/80 text-[#172033] flex flex-col justify-between shadow-2xs">
               <div className="flex items-center justify-between mb-1.5">
                 <span
                   className={`px-2 py-0.5 rounded-md text-[11px] font-bold border ${currentColorConfig.bg} ${currentColorConfig.text} ${currentColorConfig.border}`}
                 >
                   {course || "COURSE101"}
                 </span>
-                <span className="text-[11px] font-medium text-zinc-400">
+                <span className="text-[11px] font-medium text-slate-500">
                   {type}
                 </span>
               </div>
-              <p className="text-xs font-semibold text-zinc-200 line-clamp-1">
+              <p className="text-xs font-bold text-[#172033] line-clamp-1">
                 {title || "Course Lecture Title"}
               </p>
-              <div className="mt-2.5 flex items-center justify-between text-[11px] text-zinc-400 pt-2 border-t border-white/[0.05]">
-                <span className="flex items-center gap-1 text-cyan-300 font-medium">
-                  <Clock className="h-3 w-3 text-cyan-400" />
+              <div className="mt-2.5 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-200/60">
+                <span className="flex items-center gap-1 text-[#315BFF] font-semibold">
+                  <Clock className="h-3 w-3 text-[#315BFF]" />
                   {startTime} - {endTime}
                 </span>
-                <span className="flex items-center gap-1 text-zinc-400 truncate max-w-[140px]">
-                  <MapPin className="h-3 w-3 shrink-0 text-zinc-500" />
+                <span className="flex items-center gap-1 text-slate-500 truncate max-w-[140px]">
+                  <MapPin className="h-3 w-3 shrink-0 text-slate-400" />
                   <span className="truncate">{room || "Room Number"}</span>
                 </span>
               </div>

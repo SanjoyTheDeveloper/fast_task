@@ -22,8 +22,11 @@ import {
   ListTodo,
   ArrowRight,
   BookOpen,
+  Coffee,
+  User,
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
+import { WEEKLY_SCHEDULE } from "@/components/dashboard/TodaySchedule";
 
 export interface DayEvent {
   hasClasses?: boolean;
@@ -157,6 +160,27 @@ export default function CalendarPage() {
   const emptyDays = [null, null]; // Sep 2026 starts on Tuesday
 
   const activeEvent = SEPTEMBER_EVENTS[selectedDate] || null;
+
+  const selectedDayOfWeekIdx = (selectedDate + 1) % 7;
+  const selectedDayShort = daysOfWeek[selectedDayOfWeekIdx];
+  const dayNameFullMap: Record<string, string> = {
+    Sun: "Sunday",
+    Mon: "Monday",
+    Tue: "Tuesday",
+    Wed: "Wednesday",
+    Thu: "Thursday",
+    Fri: "Friday",
+    Sat: "Saturday",
+  };
+  const selectedDayFullName = dayNameFullMap[selectedDayShort] || selectedDayShort;
+  const selectedDaySessions = WEEKLY_SCHEDULE[selectedDayShort] || [];
+
+  const handleDateClick = (day: number) => {
+    setSelectedDate(day);
+    const dayIdx = (day + 1) % 7;
+    const dStr = dayNameFullMap[daysOfWeek[dayIdx]];
+    toast.info(`Viewing ${dStr} (Sep ${day}) schedule`);
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
@@ -301,20 +325,20 @@ export default function CalendarPage() {
                 return (
                   <div
                     key={day}
-                    onClick={() => setSelectedDate(day)}
+                    onClick={() => handleDateClick(day)}
                     className="relative flex flex-col items-center justify-center py-1 cursor-pointer group"
                   >
                     {/* Day number cell */}
                     <div
                       className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all ${
-                        isToday
-                          ? "bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-black shadow-md shadow-blue-500/35 ring-4 ring-blue-100"
-                          : isSelected
-                          ? "border-2 border-[#315BFF] text-[#315BFF] font-bold bg-blue-50/40"
+                        isSelected
+                          ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/35 ring-4 ring-blue-100 scale-105"
                           : hasStudyActivity
                           ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
                           : isWeekend
                           ? "text-slate-400 hover:bg-slate-100"
+                          : isToday
+                          ? "text-[#172033] font-bold hover:bg-slate-100"
                           : "text-slate-800 font-medium hover:bg-blue-50/50"
                       }`}
                     >
@@ -343,36 +367,154 @@ export default function CalendarPage() {
               })}
             </div>
 
-            {/* Below the Calendar Grid: Soft Info Card */}
-            <div className="rounded-2xl bg-gradient-to-r from-blue-50/60 via-indigo-50/40 to-slate-50 border border-blue-100/80 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[#315BFF]" />
-                  <span className="text-sm font-bold text-[#172033]">
-                    Sep {selectedDate}, 2026 {selectedDate === 27 && "• Today"}
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-[#315BFF]" />
-                    <span>
-                      <strong>{activeEvent?.classCount || 0} Classes</strong> • Room {activeEvent?.rooms || "Online / None"}
-                    </span>
+            {/* Below the Calendar Grid: Comprehensive Day Schedule */}
+            <div className="rounded-2xl bg-gradient-to-r from-blue-50/40 via-indigo-50/20 to-slate-50/60 border border-[#DCE7FC] p-5 space-y-4 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
+                    <Clock className="h-5 w-5" />
                   </div>
-                  {activeEvent?.assignmentTitle && (
-                    <div className="flex items-center gap-1.5 text-rose-600 font-semibold">
-                      <Flag className="h-3.5 w-3.5" />
-                      <span>Deadline: {activeEvent.assignmentTitle}</span>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-base font-bold text-[#172033] tracking-tight">
+                        {selectedDayFullName}&apos;s Schedule
+                      </h3>
+                      <span className="text-xs font-semibold text-[#315BFF] bg-[#EEF3FF] border border-[#D0DFFF] px-2 py-0.5 rounded-md">
+                        Sep {selectedDate}, 2026
+                      </span>
+                      {selectedDate === 27 && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold">
+                          Today
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {selectedDaySessions.length > 0
+                        ? `${selectedDaySessions.length} routine class sessions scheduled • Summer 2026`
+                        : "Weekend / Free study day"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  {selectedDate !== 27 && (
+                    <button
+                      type="button"
+                      onClick={() => handleDateClick(27)}
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                    >
+                      ← Jump to Today
+                    </button>
+                  )}
+                  {activeEvent?.pomodoroCompleted && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold shadow-2xs shrink-0">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Study Activity Logged</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Green text “Study Activity Logged” */}
-              {activeEvent?.pomodoroCompleted && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-700 text-xs font-bold shadow-2xs shrink-0">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Study Activity Logged</span>
+              {/* Class Schedule Cards Grid */}
+              {selectedDaySessions.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                  {selectedDaySessions.map((session) => (
+                    <div
+                      key={session.id}
+                      onClick={() => toast.info(`${session.courseCode}: ${session.title}`)}
+                      className="group p-4 rounded-xl bg-white border border-[#E5EAF2] hover:border-[#315BFF]/60 hover:shadow-md transition-all flex flex-col justify-between space-y-3 cursor-pointer"
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${session.courseColor}`}
+                          >
+                            {session.courseCode}
+                          </span>
+                          <span
+                            className={`text-[11px] font-bold uppercase tracking-wider ${session.typeColor}`}
+                          >
+                            {session.type}
+                          </span>
+                        </div>
+                        <h4 className="text-xs font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors line-clamp-2 leading-snug">
+                          {session.title}
+                        </h4>
+                      </div>
+
+                      <div className="space-y-1.5 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
+                            <Clock className="h-3 w-3 text-[#315BFF]" />
+                            <span>
+                              {session.startTime} - {session.endTime}
+                            </span>
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-medium">
+                            Faculty: {session.faculty}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-slate-500 truncate">
+                          <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+                          <span className="truncate">{session.location}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                /* Off-Day Empty State */
+                <div className="p-8 text-center rounded-xl bg-white border border-dashed border-slate-200 flex flex-col items-center justify-center space-y-3">
+                  <div className="h-12 w-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500 shadow-2xs">
+                    <Coffee className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-1 max-w-md">
+                    <h4 className="text-sm font-bold text-[#172033]">
+                      No Scheduled Classes for {selectedDayFullName}
+                    </h4>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      This is an off-day from scheduled lectures. Great opportunity to review coursework, prepare pending assignments, or take a well-deserved rest.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Day Deadlines & Quizzes if any */}
+              {(activeEvent?.assignmentTitle || activeEvent?.quizTitle) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {activeEvent.assignmentTitle && (
+                    <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200/80 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Pin className="h-4 w-4 text-rose-600 shrink-0" />
+                        <div className="min-w-0">
+                          <p className="font-bold text-rose-950 truncate">Assignment Deadline</p>
+                          <p className="text-[11px] text-rose-700 truncate">
+                            {activeEvent.assignmentTitle}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-rose-200/60 text-rose-800 text-[10px] font-bold shrink-0">
+                        Due Today
+                      </span>
+                    </div>
+                  )}
+
+                  {activeEvent.quizTitle && (
+                    <div className="p-3.5 rounded-xl bg-purple-50 border border-purple-200/80 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Hourglass className="h-4 w-4 text-purple-600 shrink-0" />
+                        <div className="min-w-0">
+                          <p className="font-bold text-purple-950 truncate">Quiz / Exam Reminder</p>
+                          <p className="text-[11px] text-purple-700 truncate">
+                            {activeEvent.quizTitle}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-purple-200/60 text-purple-800 text-[10px] font-bold shrink-0">
+                        Scheduled
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -465,10 +607,6 @@ export default function CalendarPage() {
                       </p>
                     </div>
                   </div>
-
-                  <span className="text-[11px] font-semibold text-slate-400 group-hover:text-[#315BFF] transition-colors shrink-0">
-                    Details →
-                  </span>
                 </div>
               ))}
             </div>

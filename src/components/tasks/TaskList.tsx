@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { TaskCard } from "./taskcard/task-card";
+import { TaskCard } from "./taskcard/TaskCard";
 import { TaskEmptyState } from "./TaskEmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";

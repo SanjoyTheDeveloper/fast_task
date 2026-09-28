@@ -71,6 +71,8 @@ function DashboardContent() {
   const [isSemesterSetupOpen, setIsSemesterSetupOpen] = React.useState(false);
   const [isRoutineModalOpen, setIsRoutineModalOpen] = React.useState(false);
   const [semesterConfig, setSemesterConfig] = React.useState<SemesterConfig>(DEFAULT_SEMESTER_CONFIG);
+  const [selectedScheduleDay, setSelectedScheduleDay] = React.useState<string>("Sun");
+  const [selectedCalendarDate, setSelectedCalendarDate] = React.useState<number>(27);
 
   // 2. Load authenticated user
   React.useEffect(() => {
@@ -366,12 +368,30 @@ function DashboardContent() {
           />
 
           {/* 4. Today's Schedule (3 Cards in a Row) */}
-          <TodaySchedule
-            onManageRoutine={() => setIsRoutineModalOpen(true)}
-            onSelectSession={(item) => {
-              toast.info(`${item.courseCode} ${item.type}: ${item.title}`);
-            }}
-          />
+          <div id="schedule">
+            <TodaySchedule
+              selectedDay={selectedScheduleDay}
+              onSelectDay={(day) => {
+                setSelectedScheduleDay(day);
+                const dayToDateMap: Record<string, number> = {
+                  Sun: 27,
+                  Mon: 28,
+                  Tue: 29,
+                  Wed: 30,
+                  Thu: 24,
+                  Fri: 25,
+                  Sat: 26,
+                };
+                if (dayToDateMap[day]) {
+                  setSelectedCalendarDate(dayToDateMap[day]);
+                }
+              }}
+              onManageRoutine={() => setIsRoutineModalOpen(true)}
+              onSelectSession={(item) => {
+                toast.info(`${item.courseCode} ${item.type}: ${item.title}`);
+              }}
+            />
+          </div>
 
           {/* 5. Summary Stat Cards (3 Columns) */}
           <StatCards tasks={tasks} totalCount={pagination.total} />
@@ -434,6 +454,14 @@ function DashboardContent() {
             <div id="calendar" className="lg:col-span-4 space-y-6">
               {/* Compact Calendar Widget & Upcoming Tasks */}
               <CalendarWidget
+                selectedDate={selectedCalendarDate}
+                onSelectDate={(day, dayOfWeek) => {
+                  setSelectedCalendarDate(day);
+                  setSelectedScheduleDay(dayOfWeek);
+                  toast.success(`Showing ${dayOfWeek} (Sep ${day}) schedule`);
+                  const scheduleElement = document.getElementById("schedule");
+                  scheduleElement?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }}
                 onSelectTask={(id) => toast.info(`Viewing task: ${id}`)}
                 onViewAll={() => {
                   const tasksElement = document.getElementById("tasks");

@@ -1,203 +1,311 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { LmsSidebar } from "@/components/lms/LmsSidebar";
-import { LmsHeader } from "@/components/lms/LmsHeader";
-import { LmsHeroBanner } from "@/components/lms/LmsHeroBanner";
-import { CourseCard, CourseCardData } from "@/components/lms/CourseCard";
-import { LmsRightPanel } from "@/components/lms/LmsRightPanel";
-import { CourseDetailModal } from "@/components/lms/CourseDetailModal";
+import { ArrowLeft, Upload, BookOpen, Layers, Sparkles, Folder, FileText } from "lucide-react";
 import { Toaster, toast } from "sonner";
-import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
+import { LmsLibrarySidebar, LmsNavSection } from "@/components/lms/LmsLibrarySidebar";
+import { LmsLibraryHeader } from "@/components/lms/LmsLibraryHeader";
+import { LmsLibraryCard, LmsPdfDocument } from "@/components/lms/LmsLibraryCard";
+import { LmsPdfViewerModal } from "@/components/lms/LmsPdfViewerModal";
+import { LmsUploadModal } from "@/components/lms/LmsUploadModal";
 
-const initialPopularCourses: CourseCardData[] = [
+const initialLibraryDocuments: LmsPdfDocument[] = [
   {
-    id: "pop-1",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-stack.png",
-    bgGradient: "from-[#E0F2FE] via-[#BAE6FD] to-[#93C5FD]/60",
-    rating: 4.9,
-    lessons: 18,
-    duration: "3h 45m",
-    category: "Literature",
+    id: "doc-1",
+    title: "Chapter 1 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Data Structures",
+    size: "3.2 MB",
+    category: "Data Structures",
+    pages: 24,
+    uploadedAt: "Sep 20, 2026",
+    isBookmarked: false,
   },
   {
-    id: "pop-2",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-notebook.png",
-    bgGradient: "from-[#FFF7ED] via-[#FFEDD5] to-[#FED7AA]",
-    rating: 4.8,
-    lessons: 14,
-    duration: "4h 10m",
-    category: "Reading & Habits",
+    id: "doc-2",
+    title: "Chapter 2 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Data Structures",
+    size: "3.2 MB",
+    category: "Data Structures",
+    pages: 32,
+    uploadedAt: "Sep 21, 2026",
+    isBookmarked: true,
   },
   {
-    id: "pop-3",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-clock.jpg",
-    bgGradient: "from-[#F5F3FF] via-[#EDE9FE] to-[#DDD6FE]",
-    rating: 5.0,
-    lessons: 22,
-    duration: "5h 20m",
-    category: "Time & Study",
+    id: "doc-3",
+    title: "Chapter 3 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Data Structures",
+    size: "3.2 MB",
+    category: "Data Structures",
+    pages: 28,
+    uploadedAt: "Sep 22, 2026",
+    isBookmarked: false,
   },
   {
-    id: "pop-4",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-coffee.jpg",
-    bgGradient: "from-[#FDF2F8] via-[#FCE7F3] to-[#FBCFE8]",
-    rating: 4.7,
-    lessons: 12,
-    duration: "2h 30m",
-    category: "Morning Routines",
+    id: "doc-4",
+    title: "Chapter 1 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Operating Systems",
+    size: "3.2 MB",
+    category: "Operating Systems",
+    pages: 18,
+    uploadedAt: "Sep 23, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-5",
+    title: "Chapter 2 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Operating Systems",
+    size: "3.2 MB",
+    category: "Operating Systems",
+    pages: 26,
+    uploadedAt: "Sep 24, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-6",
+    title: "Chapter 3 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Operating Systems",
+    size: "3.2 MB",
+    category: "Operating Systems",
+    pages: 30,
+    uploadedAt: "Sep 25, 2026",
+    isBookmarked: true,
+  },
+  {
+    id: "doc-7",
+    title: "Chapter 4 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Math",
+    size: "3.2 MB",
+    category: "Math",
+    pages: 22,
+    uploadedAt: "Sep 25, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-8",
+    title: "Chapter 5 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Math",
+    size: "3.2 MB",
+    category: "Math",
+    pages: 35,
+    uploadedAt: "Sep 26, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-9",
+    title: "Chapter 6 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Physics",
+    size: "3.2 MB",
+    category: "Physics",
+    pages: 19,
+    uploadedAt: "Sep 26, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-10",
+    title: "Chapter 4 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Physics",
+    size: "3.2 MB",
+    category: "Physics",
+    pages: 25,
+    uploadedAt: "Sep 27, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-11",
+    title: "Chapter 8 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Data Structures",
+    size: "3.2 MB",
+    category: "Data Structures",
+    pages: 40,
+    uploadedAt: "Sep 27, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "doc-12",
+    title: "Chapter 9 - Introduction.pdf",
+    courseCode: "CSE101",
+    courseName: "Data Structures",
+    size: "3.2 MB",
+    category: "Data Structures",
+    pages: 36,
+    uploadedAt: "Sep 28, 2026",
+    isBookmarked: false,
   },
 ];
 
-const initialOngoingCourses: CourseCardData[] = [
-  {
-    id: "ong-1",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-bookshelf.png",
-    bgGradient: "from-[#EDE9FE] to-[#DDD6FE]",
-    progress: 68,
-    category: "Library Science",
-  },
-  {
-    id: "ong-2",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-blue-char.jpg",
-    bgGradient: "from-[#D1FAE5] to-[#A7F3D0]",
-    progress: 45,
-    category: "Creative Stories",
-  },
-  {
-    id: "ong-3",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-red-book.jpg",
-    bgGradient: "from-[#FEF3C7] to-[#FDE68A]",
-    progress: 82,
-    category: "Arts & Archiving",
-  },
-  {
-    id: "ong-4",
-    title: "The book is an essent...",
-    subtitle: "This is just a general example...",
-    thumbnail: "/images/lms/clay-yellow-char.jpg",
-    bgGradient: "from-[#E0F2FE] to-[#BAE6FD]",
-    progress: 30,
-    category: "Storytime & Logic",
-  },
-];
+const CATEGORIES = [
+  "All",
+  "Data Structures",
+  "Operating Systems",
+  "Math",
+  "Physics",
+  "etc.",
+] as const;
 
-export default function LmsDashboardPage() {
-  const [activeTab, setActiveTab] = React.useState("library");
+export default function LmsPage() {
+  const [documents, setDocuments] = React.useState<LmsPdfDocument[]>(initialLibraryDocuments);
+  const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
+  const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [selectedCourse, setSelectedCourse] = React.useState<CourseCardData | null>(null);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  // Modals
+  const [previewDoc, setPreviewDoc] = React.useState<LmsPdfDocument | null>(null);
+  const [isViewerOpen, setIsViewerOpen] = React.useState(false);
+  const [isUploadOpen, setIsUploadOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  // Search filter
-  const filteredPopular = React.useMemo(() => {
-    if (!searchQuery.trim()) return initialPopularCourses;
-    const q = searchQuery.toLowerCase();
-    return initialPopularCourses.filter(
-      (c) => c.title.toLowerCase().includes(q) || c.subtitle.toLowerCase().includes(q)
+  // Toggle Bookmark
+  const handleToggleBookmark = (id: string) => {
+    setDocuments((prev) =>
+      prev.map((d) => {
+        if (d.id === id) {
+          const updated = !d.isBookmarked;
+          toast.info(
+            updated ? `Bookmarked "${d.title}"` : `Removed "${d.title}" from bookmarks`
+          );
+          return { ...d, isBookmarked: updated };
+        }
+        return d;
+      })
     );
-  }, [searchQuery]);
-
-  const filteredOngoing = React.useMemo(() => {
-    if (!searchQuery.trim()) return initialOngoingCourses;
-    const q = searchQuery.toLowerCase();
-    return initialOngoingCourses.filter(
-      (c) => c.title.toLowerCase().includes(q) || c.subtitle.toLowerCase().includes(q)
-    );
-  }, [searchQuery]);
-
-  const handleOpenCourse = (course: CourseCardData) => {
-    setSelectedCourse(course);
-    setIsModalOpen(true);
   };
 
-  const handleUpgrade = () => {
-    toast.success("SkillSet Pro Plan unlocked! Unlimited library access activated ✨");
+  // Preview Handler
+  const handlePreview = (doc: LmsPdfDocument) => {
+    setPreviewDoc(doc);
+    setIsViewerOpen(true);
   };
+
+  // Download Handler
+  const handleDownload = (doc: LmsPdfDocument) => {
+    toast.success(`Downloading "${doc.title}" (${doc.size})... 📥`);
+  };
+
+  // Upload Add Handler
+  const handleAddDocument = (newDoc: LmsPdfDocument) => {
+    setDocuments((prev) => [newDoc, ...prev]);
+  };
+
+  // Filtered Documents
+  const filteredDocuments = React.useMemo(() => {
+    return documents.filter((doc) => {
+      // 1. Sidebar section check
+      if (activeSection === "bookmarks" && !doc.isBookmarked) {
+        return false;
+      }
+
+      // 2. Category tab check (when on "all" or specific category)
+      if (selectedCategory !== "All" && activeSection !== "courses") {
+        if (selectedCategory === "etc.") {
+          if (
+            ["Data Structures", "Operating Systems", "Math", "Physics"].includes(doc.category)
+          ) {
+            return false;
+          }
+        } else if (doc.category !== selectedCategory) {
+          return false;
+        }
+      }
+
+      // 3. Search query check
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesTitle = doc.title.toLowerCase().includes(q);
+        const matchesCourse = doc.courseCode.toLowerCase().includes(q);
+        const matchesCategory = doc.category.toLowerCase().includes(q);
+        if (!matchesTitle && !matchesCourse && !matchesCategory) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [documents, activeSection, selectedCategory, searchQuery]);
+
+  // Grouped by course for "By Courses" view
+  const groupedByCourse = React.useMemo(() => {
+    const map = new Map<string, LmsPdfDocument[]>();
+    filteredDocuments.forEach((doc) => {
+      const key = `${doc.courseCode} - ${doc.category}`;
+      if (!map.has(key)) {
+        map.set(key, []);
+      }
+      map.get(key)!.push(doc);
+    });
+    return Array.from(map.entries());
+  }, [filteredDocuments]);
+
+  // Counts for sidebar badges
+  const sidebarCounts = React.useMemo(() => {
+    const courseCodes = new Set(documents.map((d) => d.courseCode));
+    const bookmarksCount = documents.filter((d) => d.isBookmarked).length;
+    return {
+      all: documents.length,
+      courses: courseCodes.size,
+      bookmarks: bookmarksCount,
+    };
+  }, [documents]);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-[#EBE5F7] p-3 sm:p-5 lg:p-8 flex flex-col justify-between selection:bg-purple-500 selection:text-white">
-      {/* Decorative ambient background blobs */}
-      <div className="pointer-events-none fixed -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-[#DDD6FE] blur-3xl opacity-70" />
-      <div className="pointer-events-none fixed -bottom-32 -right-32 h-[500px] w-[500px] rounded-full bg-[#FCE7F3] blur-3xl opacity-70" />
-      <div className="pointer-events-none fixed top-1/2 left-1/4 h-80 w-80 rounded-full bg-[#EDE9FE] blur-2xl opacity-60" />
-
-      {/* Floating 3D Clay Elements in Outer Canvas Corners */}
-      <div className="hidden xl:block pointer-events-none fixed top-8 left-12 w-20 h-20 opacity-80 transition-transform duration-700 hover:rotate-6">
-        <Image
-          src="/images/lms/clay-stack.png"
-          alt="Clay Books Deco"
-          width={80}
-          height={80}
-          className="object-contain drop-shadow-[0_15px_20px_rgba(110,80,180,0.2)] animate-pulse"
-        />
-      </div>
-
-      <div className="hidden xl:block pointer-events-none fixed bottom-10 right-12 w-24 h-24 opacity-80">
-        <Image
-          src="/images/lms/clay-notebook.png"
-          alt="Clay Notebook Deco"
-          width={96}
-          height={96}
-          className="object-contain drop-shadow-[0_15px_20px_rgba(110,80,180,0.2)]"
-        />
-      </div>
+    <div className="min-h-screen relative overflow-x-hidden bg-gradient-to-br from-[#EFE8F9] via-[#F4EEFB] to-[#FCEEF6] p-3 sm:p-5 lg:p-8 flex flex-col justify-between selection:bg-[#4F46E5] selection:text-white">
+      {/* Decorative ambient background glows */}
+      <div className="pointer-events-none fixed -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-[#DDD6FE] blur-3xl opacity-60" />
+      <div className="pointer-events-none fixed -bottom-32 -right-32 h-[500px] w-[500px] rounded-full bg-[#FCE7F3] blur-3xl opacity-60" />
 
       <Toaster richColors position="top-right" />
 
-      {/* Navigation Return Pill Header */}
+      {/* Top Outer Navigation Return Button */}
       <div className="relative z-10 max-w-[1540px] w-full mx-auto mb-3 px-2 flex items-center justify-between">
         <Link
-          href="/"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 hover:bg-white backdrop-blur-md border border-purple-200/60 text-xs font-bold text-[#6366F1] shadow-2xs hover:shadow-xs transition-all"
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 hover:bg-white text-xs font-semibold text-slate-700 shadow-2xs hover:shadow-xs transition-all border border-slate-200/60"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to FastTask Workspace</span>
         </Link>
 
-        <span className="text-[11px] font-semibold text-purple-900/60 hidden sm:inline-block">
-          SkillSet LMS Dashboard • Soft Claymorphic Edition
+        <span className="text-[11px] font-semibold text-purple-900/50 hidden sm:inline-block">
+          SkillSet LMS Library • Academic Document Repository
         </span>
       </div>
 
-      {/* Main Floating Dashboard Window (SkillSet LMS Canvas) */}
-      <div className="relative z-10 max-w-[1540px] w-full mx-auto bg-[#FAFAFC] rounded-[32px] sm:rounded-[36px] shadow-[0_25px_80px_rgba(110,80,180,0.14)] border border-white/90 overflow-hidden flex flex-col lg:flex-row">
-        {/* 1. Left Sidebar (Vertical Menu) */}
-        <div className="hidden lg:block shrink-0">
-          <LmsSidebar
-            activeItem={activeTab}
-            onSelectItem={(id) => setActiveTab(id)}
-            onUpgradeClick={handleUpgrade}
+      {/* Main LMS Library Floating Canvas Window */}
+      <div className="relative z-10 max-w-[1540px] w-full mx-auto bg-white rounded-[28px] sm:rounded-[36px] shadow-[0_20px_70px_rgba(110,80,180,0.09)] border border-white/90 overflow-hidden flex flex-col lg:flex-row min-h-[820px]">
+        {/* 1. Left Sidebar */}
+        <div className="hidden lg:block shrink-0 border-r border-[#EFF1F6] bg-[#FAF9FD]/70">
+          <LmsLibrarySidebar
+            activeSection={activeSection}
+            onSelectSection={(sec) => {
+              setActiveSection(sec);
+              if (sec === "courses") setSelectedCategory("All");
+            }}
+            counts={sidebarCounts}
           />
         </div>
 
         {/* Mobile Sidebar Overlay Drawer */}
         {isMobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex">
-            <div className="w-72 bg-[#FAFAFC] h-full shadow-2xl animate-in slide-in-from-left duration-200">
-              <LmsSidebar
-                activeItem={activeTab}
-                onSelectItem={(id) => {
-                  setActiveTab(id);
+            <div className="w-72 bg-[#FAF9FD] h-full shadow-2xl animate-in slide-in-from-left duration-200 p-2">
+              <LmsLibrarySidebar
+                activeSection={activeSection}
+                onSelectSection={(sec) => {
+                  setActiveSection(sec);
                   setIsMobileMenuOpen(false);
                 }}
-                onUpgradeClick={handleUpgrade}
+                counts={sidebarCounts}
               />
             </div>
             <div
@@ -207,101 +315,165 @@ export default function LmsDashboardPage() {
           </div>
         )}
 
-        {/* 2. Main Content & Right Panel Wrapper */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Top Header Bar */}
-          <LmsHeader
+        {/* 2. Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 bg-[#FAF9FD]/30">
+          {/* Header Bar */}
+          <LmsLibraryHeader
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
+            userName="Irham Muhammad"
             isMobileMenuOpen={isMobileMenuOpen}
             onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           />
 
-          {/* Body Columns: Center Content + Right Panel */}
-          <div className="p-4 sm:p-6 lg:p-8 flex flex-col xl:flex-row gap-6 sm:gap-8 items-start">
-            {/* Center Content Column (Hero Banner + Popular + Ongoing) */}
-            <div className="flex-1 min-w-0 space-y-7 sm:space-y-8 w-full">
-              {/* Hero Banner */}
-              <LmsHeroBanner
-                userName="Irham Muhammad Shidiq"
-                onLearnMore={() => {
-                  if (initialPopularCourses[0]) handleOpenCourse(initialPopularCourses[0]);
-                }}
-              />
+          {/* Inner Content Body */}
+          <div className="p-4 sm:p-6 lg:p-8 flex-1 flex flex-col space-y-6">
+            {/* Filter Tabs & Upload Action Row */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-1">
+              {/* Category Filter Chips / Tabs */}
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                {CATEGORIES.map((cat) => {
+                  const isCatActive = selectedCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        if (activeSection === "bookmarks") {
+                          setActiveSection("all");
+                        }
+                      }}
+                      className={`text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                        isCatActive
+                          ? "bg-white text-[#181829] shadow-xs font-bold ring-1 ring-slate-200/80"
+                          : "text-slate-500 hover:text-[#181829] hover:bg-white/60"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
 
-              {/* "Popular" Grid Section */}
-              <section className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base sm:text-lg font-bold text-[#1E1B4B] tracking-tight">
-                    Popular
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => toast.info("Viewing all 24 popular courses")}
-                    className="text-[11px] font-bold text-[#6366F1] uppercase tracking-wider hover:underline cursor-pointer"
-                  >
-                    VIEW ALL
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-                  {filteredPopular.map((course) => (
-                    <CourseCard
-                      key={course.id}
-                      course={course}
-                      onSelectCourse={handleOpenCourse}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              {/* "Ongoing" Grid Section */}
-              <section className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base sm:text-lg font-bold text-[#1E1B4B] tracking-tight">
-                    Ongoing
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => toast.info("Viewing all ongoing courses")}
-                    className="text-[11px] font-bold text-[#6366F1] uppercase tracking-wider hover:underline cursor-pointer"
-                  >
-                    VIEW ALL
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-                  {filteredOngoing.map((course) => (
-                    <CourseCard
-                      key={course.id}
-                      course={course}
-                      onSelectCourse={handleOpenCourse}
-                    />
-                  ))}
-                </div>
-              </section>
+              {/* Upload PDF Action Button */}
+              <button
+                type="button"
+                onClick={() => setIsUploadOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all cursor-pointer hover:shadow-md hover:shadow-indigo-500/20 active:scale-98 shrink-0"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Upload PDF</span>
+              </button>
             </div>
 
-            {/* Right Panel: Achievement Unlocks & Best Sellers */}
-            <LmsRightPanel
-              onOrderCourse={(title) => {
-                toast.success(`Enrolled in "${title}" successfully! 🎓`);
-              }}
-            />
+            {/* Active section title indicator if not 'all' */}
+            {activeSection === "bookmarks" && (
+              <div className="flex items-center justify-between bg-amber-50/70 border border-amber-200/80 px-4 py-2.5 rounded-xl text-xs text-amber-900">
+                <span className="font-semibold">
+                  Showing {filteredDocuments.length} bookmarked documents
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveSection("all")}
+                  className="font-bold text-[#4F46E5] hover:underline cursor-pointer"
+                >
+                  View All Notes
+                </button>
+              </div>
+            )}
+
+            {/* Main Documents Grid / Section Views */}
+            {activeSection === "courses" ? (
+              /* Grouped by Courses View */
+              <div className="space-y-6">
+                {groupedByCourse.map(([groupKey, groupDocs]) => (
+                  <div key={groupKey} className="space-y-3">
+                    <div className="flex items-center gap-2 pb-1 border-b border-slate-100">
+                      <Folder className="h-4 w-4 text-[#4F46E5]" />
+                      <h3 className="text-sm font-bold text-[#181829]">{groupKey}</h3>
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        ({groupDocs.length} notes)
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {groupDocs.map((doc) => (
+                        <LmsLibraryCard
+                          key={doc.id}
+                          doc={doc}
+                          onPreview={handlePreview}
+                          onDownload={handleDownload}
+                          onToggleBookmark={handleToggleBookmark}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Standard 3-Column Library Grid View */
+              <>
+                {filteredDocuments.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {filteredDocuments.map((doc) => (
+                      <LmsLibraryCard
+                        key={doc.id}
+                        doc={doc}
+                        onPreview={handlePreview}
+                        onDownload={handleDownload}
+                        onToggleBookmark={handleToggleBookmark}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  /* Empty state if search/filter returned nothing */
+                  <div className="flex-1 flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-white border border-dashed border-slate-200 space-y-3 min-h-[300px]">
+                    <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
+                      <FileText className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-bold text-slate-800">No notes found</h4>
+                      <p className="text-xs text-slate-500 max-w-sm">
+                        No documents matched your current search or category filter. Try clearing filters or upload a new PDF note.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory("All");
+                        setSearchQuery("");
+                        setActiveSection("all");
+                      }}
+                      className="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                    >
+                      Reset Filters
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Course Detail Modal */}
-      <CourseDetailModal
-        course={selectedCourse}
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
+      {/* PDF Interactive Viewer Modal */}
+      <LmsPdfViewerModal
+        doc={previewDoc}
+        isOpen={isViewerOpen}
+        onClose={() => setIsViewerOpen(false)}
+        onDownload={handleDownload}
       />
 
-      {/* Footer hint */}
-      <div className="relative z-10 text-center py-4 text-xs text-purple-900/60">
-        <p>© 2026 SkillSet Learning Management System. Claymorphism & Pastel Design System.</p>
+      {/* Upload PDF Modal */}
+      <LmsUploadModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onUpload={handleAddDocument}
+      />
+
+      {/* Footer copyright */}
+      <div className="relative z-10 text-center py-4 text-xs text-purple-900/50">
+        <p>© 2026 SkillSet LMS Library • FastTask Academic Suite</p>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-import { SessionProvider } from "@/components/providers/session-provider";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 
 export default function RootLayout({
   children,

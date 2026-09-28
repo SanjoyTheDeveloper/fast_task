@@ -18,6 +18,7 @@ import {
   TrendingUp,
   MapPin,
   Laptop,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -33,187 +34,193 @@ export function Hero({
   return (
     <section className="relative overflow-hidden pt-12 pb-24 sm:pt-20 sm:pb-32 lg:pt-24 lg:pb-36">
       {/* Ambient background glows */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[650px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(6,182,212,0.18),rgba(37,99,235,0.12),transparent_70%)]" />
-      <div className="pointer-events-none absolute -left-48 top-1/4 -z-10 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-48 top-1/3 -z-10 h-96 w-96 rounded-full bg-cyan-500/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[650px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(49,91,255,0.08),rgba(99,102,241,0.04),transparent_70%)]" />
+      <div className="pointer-events-none absolute -left-48 top-1/4 -z-10 h-96 w-96 rounded-full bg-blue-400/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-48 top-1/3 -z-10 h-96 w-96 rounded-full bg-indigo-300/10 blur-[120px]" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* 1. Header Typography & Eyebrow */}
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
           {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] text-xs font-semibold text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.2)] backdrop-blur-md">
-            <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#D0DFFF] text-xs font-bold text-[#315BFF] shadow-2xs backdrop-blur-md">
+            <span className="flex h-2 w-2 rounded-full bg-[#315BFF] animate-pulse" />
             <span>— Next-Gen Student & Task Workspace —</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1]">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.1]">
             Professional Student &{" "}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#315BFF] via-[#4361EE] to-[#7209B7] bg-clip-text text-transparent">
               Academic Workspace
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="max-w-2xl text-base sm:text-lg text-slate-400 leading-relaxed">
+          <p className="max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
             Modern unified layout for university students, automatic lecture routines, course tags, and high-impact task execution.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-3.5 pt-2 w-full sm:w-auto">
-            <Link
-              href={registerHref}
-              className="w-full sm:w-auto group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 shadow-[0_0_25px_rgba(37,99,235,0.45)] hover:shadow-[0_0_35px_rgba(6,182,212,0.65)] hover:scale-102 active:scale-98 transition-all border border-cyan-400/40"
-            >
-              <span>Get Started Free</span>
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+            <Button asChild size="pillLg" className="w-full sm:w-auto">
+              <Link href={registerHref}>
+                <span>Get Started Free</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
 
-            <Link
-              href={loginHref}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold text-slate-300 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] hover:border-white/[0.2] transition-all backdrop-blur-md"
-            >
-              <span>Explore Dashboard</span>
-            </Link>
+            <Button asChild variant="outline" size="pillLg" className="w-full sm:w-auto">
+              <Link href="/dashboard">
+                <span>Explore Dashboard</span>
+              </Link>
+            </Button>
           </div>
         </div>
 
         {/* 2. Central Showcase / Realistic 3D Laptop Mockup */}
         <div id="portfolio" className="relative mt-14 sm:mt-20 max-w-5xl mx-auto scroll-mt-28">
           {/* Ambient device backlight */}
-          <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-cyan-500/20 via-blue-600/20 to-transparent blur-3xl opacity-75" />
+          <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/15 via-indigo-500/10 to-transparent blur-3xl opacity-75" />
 
           {/* Laptop Frame */}
-          <div className="relative rounded-t-2xl sm:rounded-t-3xl border-[6px] sm:border-[10px] border-[#1C212D] bg-[#0B0F17] shadow-[0_25px_80px_rgba(0,0,0,0.85)] overflow-hidden">
+          <div className="relative rounded-t-2xl sm:rounded-t-3xl border-[6px] sm:border-[10px] border-[#E2E8F0] bg-[#F8FAFC] shadow-[0_25px_80px_rgba(49,91,255,0.14)] overflow-hidden">
             {/* Top Webcam Notch */}
-            <div className="h-4 sm:h-5 bg-[#1C212D] flex items-center justify-center border-b border-black/40">
+            <div className="h-4 sm:h-5 bg-[#EDF2F7] flex items-center justify-center border-b border-[#CBD5E1]">
               <div className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-700" />
-                <span className="h-2 w-2 rounded-full bg-slate-900 border border-slate-700/80" />
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="h-2 w-2 rounded-full bg-slate-700 border border-slate-400" />
               </div>
             </div>
 
             {/* Screen Content: Active Dashboard Preview */}
-            <div className="bg-[#0B0F17] p-3 sm:p-6 text-white space-y-4">
-              {/* Inner Dashboard Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                      <GraduationCap className="h-3 w-3 text-blue-400" />
-                      Week 6 • Fall Semester 2026
-                    </span>
-                    <span className="text-[10px] text-slate-400">
-                      Saturday, Sep 26
-                    </span>
+            <div className="bg-[#F8FAFC] p-3 sm:p-5 text-[#172033] space-y-3.5">
+              {/* Inner Dashboard Header: Welcome Card Banner */}
+              <div className="relative rounded-2xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/90 border border-[#D0DFFF] text-[10px] font-bold text-[#315BFF] shadow-2xs">
+                    <GraduationCap className="h-3 w-3" />
+                    <span>Week 5 of 17 • Summer Semester 2026 | Batch: 82A</span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
-                    Welcome back, <span className="text-cyan-400">Scholar</span> 📚
+                  <h3 className="text-base sm:text-xl font-extrabold text-[#172033]">
+                    Good evening, <span className="text-[#315BFF] font-black">sanjoy chandro Bhowmick</span> 👋
                   </h3>
+                  <p className="text-[11px] text-slate-500 max-w-md hidden sm:block">
+                    Stay on top of lectures, assignment deadlines, exam prep, and personal study targets.
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
-                    • 3 Lectures Today
-                  </span>
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-xs font-bold text-white shadow-md">
-                    JD
-                  </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button size="sm" className="rounded-xl gap-1.5">
+                    <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                    <span>Add Assignment</span>
+                  </Button>
                 </div>
               </div>
 
-              {/* Routine Strip Inside Mockup */}
-              <div className="p-3.5 rounded-xl bg-black/40 border border-white/[0.08] space-y-2">
-                <div className="flex items-center justify-between text-xs font-bold text-slate-300 border-b border-white/[0.06] pb-2">
-                  <span className="flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                    <Clock className="h-3.5 w-3.5 text-cyan-400" />
-                    Today&apos;s Lecture & Lab Schedule
-                  </span>
-                  <span className="text-[10px] text-slate-500">Auto-Synced</span>
+              {/* Today's Schedule Strip */}
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F1F5F9] pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-[#315BFF]" />
+                    <span className="text-xs font-bold text-[#172033]">
+                      Today&apos;s Schedule
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      (Monday, Sep 28)
+                    </span>
+                  </div>
+
+                  {/* Day Pills */}
+                  <div className="flex items-center gap-1 text-[10px] font-bold">
+                    <span className="px-2 py-0.5 rounded-full text-slate-500 bg-slate-50">Sun</span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#1E3A8A] text-white shadow-2xs">Mon 2</span>
+                    <span className="px-2 py-0.5 rounded-full text-slate-500 bg-slate-50 hidden sm:inline-block">Tue</span>
+                    <span className="px-2 py-0.5 rounded-full text-slate-500 bg-slate-50 hidden sm:inline-block">Wed</span>
+                    <span className="ml-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                      • 2 active sessions
+                    </span>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                {/* 2 Classes */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                   {/* Class 1 */}
-                  <div className="p-2.5 rounded-lg bg-white/[0.04] border border-white/[0.06]">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">
-                        CSE231
-                      </span>
-                      <span className="text-[10px] text-slate-400">Lecture</span>
+                  <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E5EAF2] flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-[#EEF3FF] text-[#315BFF] border border-[#D0DFFF]">
+                          0612CSE315
+                        </span>
+                        <span className="text-[10px] font-bold text-[#315BFF]">Lecture</span>
+                      </div>
+                      <p className="font-extrabold text-[#172033] text-xs">
+                        CN • Computer Networks
+                      </p>
                     </div>
-                    <p className="font-semibold text-slate-200 text-[11px] truncate">
-                      Virtual Memory & Page Tables
-                    </p>
-                    <p className="text-[10px] text-cyan-300 mt-1">09:30 AM • Rm 402</p>
+                    <div className="mt-2 text-[10px] text-slate-500 flex items-center justify-between">
+                      <span>09:30 AM - 11:00 AM</span>
+                      <span>Room A/502</span>
+                    </div>
                   </div>
 
                   {/* Class 2 */}
-                  <div className="p-2.5 rounded-lg bg-white/[0.04] border border-white/[0.06]">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                        EEPP
-                      </span>
-                      <span className="text-[10px] text-slate-400">Lecture</span>
+                  <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E5EAF2] flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-50 text-purple-600 border border-purple-200">
+                          0612CSE320
+                        </span>
+                        <span className="text-[10px] font-bold text-purple-600">Lecture</span>
+                      </div>
+                      <p className="font-extrabold text-[#172033] text-xs truncate">
+                        TWRM • Technical Writing & Research
+                      </p>
                     </div>
-                    <p className="font-semibold text-slate-200 text-[11px] truncate">
-                      Ethics & Practice • Case 4
-                    </p>
-                    <p className="text-[10px] text-cyan-300 mt-1">11:15 AM • Aud B</p>
-                  </div>
-
-                  {/* Class 3 */}
-                  <div className="p-2.5 rounded-lg bg-white/[0.04] border border-white/[0.06]">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        CSE231L
-                      </span>
-                      <span className="text-[10px] text-slate-400">Lab</span>
+                    <div className="mt-2 text-[10px] text-slate-500 flex items-center justify-between">
+                      <span>11:00 AM - 12:30 PM</span>
+                      <span>Room A/MCL A</span>
                     </div>
-                    <p className="font-semibold text-slate-200 text-[11px] truncate">
-                      Concurrency & Lock Systems
-                    </p>
-                    <p className="text-[10px] text-cyan-300 mt-1">02:00 PM • Lab 4B</p>
                   </div>
                 </div>
               </div>
 
               {/* 3 Metric Cards Inside Mockup */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between">
+                <div className="p-3.5 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Pending Tasks
+                      Pending Assignments
                     </span>
-                    <p className="text-xl font-bold text-white mt-0.5">8 Tasks</p>
-                    <span className="text-[10px] text-amber-400">3 due soon</span>
+                    <p className="text-xl font-black text-[#172033] mt-0.5">0</p>
+                    <span className="text-[10px] text-slate-400">all on track</span>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-xl bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center">
                     <BookOpen className="h-4 w-4" />
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between">
+                <div className="p-3.5 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Exam Deadlines
+                      Exams & Deadlines
                     </span>
-                    <p className="text-xl font-bold text-white mt-0.5">2 Exams</p>
-                    <span className="text-[10px] text-rose-400">Midterm in 5d</span>
+                    <p className="text-xl font-black text-[#172033] mt-0.5">0</p>
+                    <span className="text-[10px] text-rose-500 font-semibold">• Prioritize</span>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-xl bg-rose-50 border border-rose-100 text-rose-500 flex items-center justify-center">
                     <Calendar className="h-4 w-4" />
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between">
+                <div className="p-3.5 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Study Target
+                      Study Target Progress
                     </span>
-                    <p className="text-xl font-bold text-white mt-0.5">80% Done</p>
-                    <span className="text-[10px] text-emerald-400">4 of 5 sessions</span>
+                    <p className="text-xl font-black text-[#172033] mt-0.5">0 / 5</p>
+                    <span className="text-[10px] text-emerald-600 font-semibold">• 0% done</span>
                   </div>
-                  <div className="h-9 w-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center">
                     <TrendingUp className="h-4 w-4" />
                   </div>
                 </div>
@@ -222,97 +229,97 @@ export function Hero({
           </div>
 
           {/* Laptop 3D Base Stand */}
-          <div className="relative mx-auto w-[92%] sm:w-[86%] h-3.5 sm:h-4.5 bg-gradient-to-b from-[#2E3646] via-[#1E232E] to-[#12161F] rounded-b-xl sm:rounded-b-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex items-center justify-center">
-            <div className="w-16 sm:w-24 h-1 bg-[#10141D] rounded-full" />
+          <div className="relative mx-auto w-[92%] sm:w-[86%] h-3.5 sm:h-4.5 bg-gradient-to-b from-[#E2E8F0] via-[#CBD5E1] to-[#94A3B8] rounded-b-xl sm:rounded-b-2xl shadow-[0_20px_50px_rgba(49,91,255,0.12)] flex items-center justify-center">
+            <div className="w-16 sm:w-24 h-1 bg-[#64748B] rounded-full" />
           </div>
 
           {/* Surface Reflection Light */}
-          <div className="mx-auto w-[75%] h-6 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent blur-xl" />
+          <div className="mx-auto w-[75%] h-6 bg-gradient-to-r from-transparent via-[#315BFF]/10 to-transparent blur-xl" />
         </div>
 
         {/* 3. Floating Feature Quick-Cards (Foreground Overlay) */}
         <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Routine & Lectures */}
-          <div id="routine" className="group relative p-5 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-cyan-500/40 shadow-xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer scroll-mt-28">
-            <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+          <div id="routine" className="group relative p-5 rounded-2xl bg-white border border-[#E5EAF2] hover:border-[#315BFF] shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer scroll-mt-28">
+            <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center mb-3 shadow-2xs">
               <Clock className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+            <h3 className="text-sm font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors">
               Routine & Lectures
             </h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               Auto-filtered daily lectures and labs based on real-time client day and semester range.
             </p>
           </div>
 
           {/* Card 2: Active Glow State: Assignments & Growth */}
-          <div className="group relative p-5 rounded-2xl bg-gradient-to-b from-blue-600/20 via-indigo-900/15 to-transparent backdrop-blur-xl border border-blue-500/40 shadow-[0_0_25px_rgba(37,99,235,0.25)] hover:border-cyan-400/60 transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
-            <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-500 text-white shadow-xs">
+          <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-[#EEF4FF] via-white to-[#F4F7FF] border border-[#D0DFFF] shadow-xs hover:border-[#315BFF] hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+            <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#315BFF] text-white shadow-2xs">
               Active Focus
             </div>
-            <div className="h-10 w-10 rounded-xl bg-blue-500/20 border border-blue-400/40 text-blue-300 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+            <div className="h-10 w-10 rounded-xl bg-[#EEF3FF] border border-[#D0DFFF] text-[#315BFF] flex items-center justify-center mb-3 shadow-2xs">
               <CheckSquare className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">
+            <h3 className="text-sm font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors">
               Assignments & Growth
             </h3>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
               Prioritized due-date tracking with glowing warning dots for immediate submissions.
             </p>
           </div>
 
           {/* Card 3: Semester Planning */}
-          <div className="group relative p-5 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-violet-500/40 shadow-xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
-            <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-400/30 text-violet-400 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(139,92,246,0.15)]">
+          <div className="group relative p-5 rounded-2xl bg-white border border-[#E5EAF2] hover:border-purple-400 shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+            <div className="h-10 w-10 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center mb-3 shadow-2xs">
               <GraduationCap className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-violet-300 transition-colors">
+            <h3 className="text-sm font-bold text-[#172033] group-hover:text-purple-600 transition-colors">
               Semester Planning
             </h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               Auto-calculate academic weeks, term start/end durations, and off-day notifications.
             </p>
           </div>
 
           {/* Card 4: Pomodoro & Study Focus */}
-          <div className="group relative p-5 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-emerald-500/40 shadow-xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
-            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-400/30 text-emerald-400 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+          <div className="group relative p-5 rounded-2xl bg-white border border-[#E5EAF2] hover:border-emerald-400 shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+            <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-3 shadow-2xs">
               <Timer className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+            <h3 className="text-sm font-bold text-[#172033] group-hover:text-emerald-600 transition-colors">
               Pomodoro & Focus
             </h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               Integrated 25m study blocks, synthesizer audio chimes, and session goal metrics.
             </p>
           </div>
         </div>
 
         {/* 4. Social Proof & Metric Bar */}
-        <div className="mt-14 sm:mt-18 p-5 sm:p-7 rounded-2xl bg-gradient-to-r from-white/[0.05] via-white/[0.03] to-white/[0.05] backdrop-blur-2xl border border-white/[0.08] shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="mt-14 sm:mt-18 p-6 sm:p-7 rounded-2xl bg-white border border-[#E5EAF2] shadow-xs flex flex-col lg:flex-row items-center justify-between gap-6">
           {/* Key Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10 text-center sm:text-left w-full lg:w-auto">
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <p className="text-2xl sm:text-3xl font-black text-[#172033] tracking-tight">
                 500+
               </p>
-              <p className="text-xs font-medium text-slate-400 mt-0.5">
+              <p className="text-xs font-semibold text-slate-400 mt-0.5">
                 Tasks Handled
               </p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-cyan-400 tracking-tight">
+              <p className="text-2xl sm:text-3xl font-black text-[#315BFF] tracking-tight">
                 98%
               </p>
-              <p className="text-xs font-medium text-slate-400 mt-0.5">
+              <p className="text-xs font-semibold text-slate-400 mt-0.5">
                 On-Time Submissions
               </p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <p className="text-2xl sm:text-3xl font-black text-[#172033] tracking-tight">
                 24/7
               </p>
-              <p className="text-xs font-medium text-slate-400 mt-0.5">
+              <p className="text-xs font-semibold text-slate-400 mt-0.5">
                 Timetable Sync
               </p>
             </div>
@@ -320,17 +327,16 @@ export function Hero({
 
           {/* Action CTA & Feature Tags */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto justify-end">
-            <span className="text-xs font-semibold text-slate-400 tracking-wider uppercase hidden xl:inline">
+            <span className="text-xs font-bold text-slate-400 tracking-wider uppercase hidden xl:inline">
               Modern • Fast • Smart • Responsive
             </span>
 
-            <Link
-              href={registerHref}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-xs font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 shadow-md shadow-blue-600/30 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all"
-            >
-              <span>Get Started Free</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <Button asChild size="pill" className="w-full sm:w-auto">
+              <Link href={registerHref}>
+                <span>Get Started Free</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

@@ -305,7 +305,7 @@ export default function NotesPage() {
               className="bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl h-11 px-5 shadow-sm shadow-blue-500/25 flex items-center gap-2 cursor-pointer transition active:scale-[0.99] self-start sm:self-auto shrink-0"
             >
               <Plus className="h-4 w-4 stroke-[2.5]" />
-              <span>+ New Note</span>
+              <span>New Note</span>
             </Button>
           </div>
 
@@ -405,7 +405,7 @@ export default function NotesPage() {
                 className="h-11 px-6 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.01] active:scale-[0.99] transition cursor-pointer"
               >
                 <Plus className="h-4 w-4 stroke-[2.5]" />
-                <span>+ Create Note</span>
+                <span>Create Note</span>
               </Button>
             </div>
           ) : filteredNotes.length === 0 ? (

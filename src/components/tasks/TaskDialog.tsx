@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { TaskForm } from "./taskform/task-form";
+import { TaskForm } from "./taskform/TaskForm";
 import { TaskStatusBadge } from "./TaskStatusBadge";
 import { AlertCircle, Loader2, Trash2 } from "lucide-react";
 import type { Task } from "@/types/task";

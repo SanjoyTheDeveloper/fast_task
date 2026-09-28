@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,8 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TaskDialog } from "@/components/tasks/task-dialog";
-import { TaskNote } from "@/components/tasks/tasknote/task-note";
+import { TaskDialog } from "@/components/tasks/TaskDialog";
+import { TaskNote } from "@/components/tasks/tasknote/TaskNote";
 import type { Task } from "@/types/task";
 import { formatDate } from "@/lib/utils";
 import {

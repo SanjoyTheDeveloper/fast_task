@@ -235,28 +235,28 @@ export function AcademicHeader({
             aria-label="Add new assignment or task"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span>+ Add Assignment</span>
+            <span>Add Assignment</span>
           </Button>
         </div>
       </div>
 
-      {/* 2. Today's Routine & Lecture Strip (Deep Dark SaaS Glass) with Schedule Management */}
+      {/* 2. Today's Routine & Lecture Strip (Light Dashboard Card) with Schedule Management */}
       <div
         id="schedule"
-        className="w-full p-4 sm:p-5 rounded-2xl bg-[#0B0F17] backdrop-blur-md border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_8px_24px_rgba(0,0,0,0.15)] text-white relative overflow-hidden"
+        className="w-full p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-[#172033] relative overflow-hidden"
       >
         {/* Ambient background glows */}
-        <div className="pointer-events-none absolute -top-12 -right-12 h-44 w-44 rounded-full bg-violet-600/10 blur-2xl" />
-        <div className="pointer-events-none absolute -bottom-12 -left-12 h-44 w-44 rounded-full bg-cyan-600/10 blur-2xl" />
+        <div className="pointer-events-none absolute -top-12 -right-12 h-44 w-44 rounded-full bg-blue-500/5 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-12 -left-12 h-44 w-44 rounded-full bg-indigo-500/5 blur-2xl" />
 
         {/* Header Bar */}
-        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-white/[0.08] pb-3">
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-400 border border-indigo-400/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[#315BFF] border border-blue-200/60 shadow-2xs">
               <Clock className="h-3.5 w-3.5" />
             </span>
             <div>
-              <h2 className="text-xs sm:text-sm font-bold tracking-tight text-zinc-100 uppercase flex items-center gap-2">
+              <h2 className="text-xs sm:text-sm font-bold tracking-tight text-[#172033] uppercase flex items-center gap-2">
                 {viewMode === "today"
                   ? `Today's Schedule (${currentDayOfWeek})`
                   : "All Weekly Course Schedule"}
@@ -267,18 +267,18 @@ export function AcademicHeader({
           {/* Action & Status Controls */}
           <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
             {/* Active sessions counter badge */}
-            <span className="text-xs text-zinc-400 font-medium flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06]">
+            <span className="text-xs text-slate-600 font-medium flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100/80 border border-slate-200/60">
               {todaySessions.length > 0 ? (
                 <>
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-                  <span className="text-zinc-300 font-semibold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                  <span className="text-slate-800 font-semibold">
                     • {todaySessions.length} active session{todaySessions.length !== 1 ? "s" : ""}
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-                  <span className="text-zinc-400">No classes today</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                  <span className="text-slate-500">No classes today</span>
                 </>
               )}
             </span>
@@ -287,10 +287,10 @@ export function AcademicHeader({
             <button
               type="button"
               onClick={() => setIsSemesterModalOpen(true)}
-              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-zinc-300 border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               title="Configure semester duration and term name"
             >
-              <CalendarDays className="h-3 w-3 text-indigo-400" />
+              <CalendarDays className="h-3 w-3 text-[#315BFF]" />
               <span className="hidden sm:inline">Term Dates</span>
             </button>
 
@@ -298,7 +298,7 @@ export function AcademicHeader({
             <button
               type="button"
               onClick={() => setViewMode(viewMode === "today" ? "all" : "today")}
-              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-zinc-300 border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               title="Toggle weekly timetable"
             >
               <Layers className="h-3 w-3" />
@@ -309,7 +309,7 @@ export function AcademicHeader({
             <button
               type="button"
               onClick={handleOpenAddSession}
-              className="px-3 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs border border-indigo-400/30 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="px-3 py-1 text-xs font-semibold rounded-lg bg-[#315BFF] hover:bg-[#254BE3] text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
               <span>Setup Course Schedule</span>
@@ -319,16 +319,16 @@ export function AcademicHeader({
 
         {/* Outside Semester Alert Banners */}
         {semesterStatus.status === "not_started" && (
-          <div className="mb-3.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-between text-xs text-amber-200">
+          <div className="mb-3.5 p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs text-amber-800">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-amber-400 shrink-0" />
+              <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
               <span>
                 <strong>Upcoming Semester:</strong> {semesterStatus.message}. Weekly routine is previewed below.
               </span>
             </div>
             <button
               onClick={() => setIsSemesterModalOpen(true)}
-              className="underline hover:text-white font-medium shrink-0 ml-2"
+              className="underline hover:text-amber-950 font-medium shrink-0 ml-2"
             >
               Adjust Dates
             </button>
@@ -336,16 +336,16 @@ export function AcademicHeader({
         )}
 
         {semesterStatus.status === "ended" && (
-          <div className="mb-3.5 p-3 rounded-xl bg-violet-500/10 border border-violet-500/25 flex items-center justify-between text-xs text-violet-200">
+          <div className="mb-3.5 p-3 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-between text-xs text-purple-800">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-purple-600 shrink-0" />
               <span>
                 <strong>Term Concluded:</strong> {semesterStatus.message}. Great job completing this academic term!
               </span>
             </div>
             <button
               onClick={() => setIsSemesterModalOpen(true)}
-              className="underline hover:text-white font-medium shrink-0 ml-2"
+              className="underline hover:text-purple-950 font-medium shrink-0 ml-2"
             >
               Start New Term
             </button>
@@ -367,7 +367,7 @@ export function AcademicHeader({
                 <div
                   key={session.id}
                   onClick={() => handleOpenEditSession(session)}
-                  className="group relative flex flex-col justify-between p-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.14] transition-all duration-200 shadow-sm min-w-[260px] sm:min-w-[280px] md:min-w-0 snap-center shrink-0 md:shrink cursor-pointer"
+                  className="group relative flex flex-col justify-between p-3.5 rounded-xl bg-[#F8FAFC] hover:bg-white border border-slate-200/80 hover:border-blue-300 hover:shadow-sm transition-all duration-200 min-w-[260px] sm:min-w-[280px] md:min-w-0 snap-center shrink-0 md:shrink cursor-pointer"
                   title="Click to edit session details"
                 >
                   <div className="space-y-1.5">
@@ -378,26 +378,26 @@ export function AcademicHeader({
                         {session.course}
                       </span>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] font-medium text-zinc-400">
+                        <span className="text-[11px] font-medium text-slate-500">
                           {session.type}
                         </span>
-                        <span className="opacity-0 group-hover:opacity-100 p-1 rounded-md bg-white/[0.1] text-zinc-300 transition-opacity">
+                        <span className="opacity-0 group-hover:opacity-100 p-1 rounded-md bg-slate-200/60 text-slate-600 transition-opacity">
                           <Pencil className="h-2.5 w-2.5" />
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-1">
+                    <p className="text-xs font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors line-clamp-1">
                       {session.title}
                     </p>
                   </div>
 
-                  <div className="mt-3 flex items-center justify-between text-[11px] text-zinc-400 pt-2 border-t border-white/[0.05]">
-                    <span className="flex items-center gap-1 text-cyan-300 font-medium">
-                      <Clock className="h-3 w-3 text-cyan-400" />
+                  <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-200/60">
+                    <span className="flex items-center gap-1 text-[#315BFF] font-semibold">
+                      <Clock className="h-3 w-3 text-[#315BFF]" />
                       {formattedTime}
                     </span>
-                    <span className="flex items-center gap-1 text-zinc-400 truncate max-w-[130px]">
-                      <MapPin className="h-3 w-3 shrink-0 text-zinc-500" />
+                    <span className="flex items-center gap-1 text-slate-500 truncate max-w-[130px]">
+                      <MapPin className="h-3 w-3 shrink-0 text-slate-400" />
                       <span className="truncate">{session.room}</span>
                     </span>
                   </div>
@@ -408,10 +408,10 @@ export function AcademicHeader({
                       {session.days.map((d) => (
                         <span
                           key={d}
-                          className={`text-[9px] px-1.5 py-0.2 rounded ${
+                          className={`text-[9px] px-1.5 py-0.2 rounded font-medium ${
                             d === currentDayOfWeek
-                              ? "bg-indigo-500/30 text-indigo-200 font-bold"
-                              : "bg-white/[0.04] text-zinc-400"
+                              ? "bg-[#315BFF] text-white font-bold"
+                              : "bg-slate-200/70 text-slate-600"
                           }`}
                         >
                           {d.slice(0, 3)}
@@ -425,21 +425,21 @@ export function AcademicHeader({
           </div>
         ) : (
           /* Attractive Empty State for Off-Day / No Classes */
-          <div className="p-6 sm:p-8 text-center rounded-xl bg-white/[0.02] border border-dashed border-white/[0.08] flex flex-col items-center justify-center space-y-2.5">
-            <div className="h-12 w-12 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-zinc-400 mb-1 shadow-inner">
-              <Coffee className="h-6 w-6 text-amber-400/90" />
+          <div className="p-6 sm:p-8 text-center rounded-xl bg-[#F8FAFC] border border-dashed border-slate-200 flex flex-col items-center justify-center space-y-2.5">
+            <div className="h-12 w-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-amber-500 mb-1 shadow-2xs">
+              <Coffee className="h-6 w-6 text-amber-500" />
             </div>
-            <p className="text-sm sm:text-base font-semibold text-zinc-200">
+            <p className="text-sm sm:text-base font-bold text-[#172033]">
               No classes scheduled for today. Take rest or catch up on study!
             </p>
-            <p className="text-xs text-zinc-400 max-w-md leading-relaxed">
+            <p className="text-xs text-slate-500 max-w-md leading-relaxed">
               Today is free from scheduled lectures. Use this time to prepare assignments, review past lecture notes, or schedule an ad-hoc tutorial.
             </p>
             <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
               <button
                 type="button"
                 onClick={() => setViewMode("all")}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.06] hover:bg-white/[0.1] text-zinc-300 border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
                 <Layers className="h-3.5 w-3.5" />
                 <span>View Full Weekly Timetable</span>
@@ -447,10 +447,10 @@ export function AcademicHeader({
               <button
                 type="button"
                 onClick={handleOpenAddSession}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs border border-indigo-400/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#315BFF] hover:bg-[#254BE3] text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <Plus className="h-3.5 w-3.5" />
-                <span>+ Add a Class for {currentDayOfWeek}</span>
+                <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                <span>Add a Class for {currentDayOfWeek}</span>
               </button>
             </div>
           </div>

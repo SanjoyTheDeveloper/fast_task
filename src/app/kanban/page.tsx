@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
-import { KanbanBoard } from "@/components/tasks/kanban-board";
-import { TaskDialog } from "@/components/tasks/task-dialog";
+import { Navbar } from "@/components/Navbar";
+import { KanbanBoard } from "@/components/tasks/KanbanBoard";
+import { TaskDialog } from "@/components/tasks/TaskDialog";
 import type { Task } from "@/types/task";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, Kanban, Plus } from "lucide-react";
