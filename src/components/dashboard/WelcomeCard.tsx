@@ -4,6 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import { Plus, GraduationCap, Calendar, Sliders } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useStudentProfile } from "@/lib/studentProfile";
 
 export interface WelcomeCardProps {
   userName?: string;
@@ -13,11 +14,16 @@ export interface WelcomeCardProps {
 }
 
 export function WelcomeCard({
-  userName = "sanjoy chandro Bhowmick",
-  semesterText = "Week 5 of 17 • Summer Semester 2026 | Batch: 82A",
+  userName: propUserName,
+  semesterText: propSemesterText,
   onOpenCreateModal,
   onOpenSemesterSetup,
 }: WelcomeCardProps) {
+  const { profile } = useStudentProfile();
+  const userName = propUserName || profile.name || "Student";
+  const semesterText =
+    propSemesterText ||
+    `Week 5 of 17 • Summer Semester 2026 | Batch: ${profile.batch || "82A"}`;
   // Determine dynamic greeting based on time of day
   const greeting = React.useMemo(() => {
     const hour = new Date().getHours();

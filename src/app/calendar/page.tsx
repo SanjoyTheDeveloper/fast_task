@@ -84,7 +84,8 @@ const SEPTEMBER_EVENTS: Record<number, DayEvent> = {
     classCount: 3,
     rooms: "A/507, A/MCL C",
     hasQuizOrExam: true,
-    quizTitle: "CN Quiz 1 • 3 Days Left",
+    quizTitle: "CN Quiz 1 • Today (02:00 PM)",
+    pomodoroCompleted: true,
   },
   30: {
     hasClasses: true,
@@ -98,35 +99,35 @@ const SEPTEMBER_EVENTS: Record<number, DayEvent> = {
 const UPCOMING_TASKS_LIST = [
   {
     id: "task-1",
-    title: "AIES • Lecture & Practice",
-    courseCode: "0611CSE321",
-    dueDate: "Sep 27, 2026",
-    time: "11:00 AM",
-    dotColor: "bg-[#315BFF]", // Blue
+    title: "CN • Computer Networks Quiz Prep",
+    courseCode: "0612CSE315",
+    dueDate: "Sep 29, 2026",
+    time: "09:30 AM",
+    dotColor: "bg-[#06B6D4]", // Cyan
   },
   {
     id: "task-2",
-    title: "AP • Advanced Programming",
-    courseCode: "0613CSE333",
-    dueDate: "Sep 27, 2026",
-    time: "02:00 PM",
-    dotColor: "bg-[#315BFF]", // Blue
-  },
-  {
-    id: "task-3",
     title: "MACS • Complex Systems Problem Set",
     courseCode: "0541MAT337",
-    dueDate: "Sep 27, 2026",
+    dueDate: "Sep 29, 2026",
     time: "03:30 PM",
     dotColor: "bg-[#F59E0B]", // Orange
   },
   {
+    id: "task-3",
+    title: "TWRM • Report Draft Submission",
+    courseCode: "0031CSE320",
+    dueDate: "Sep 30, 2026",
+    time: "11:00 AM",
+    dotColor: "bg-[#8B5CF6]", // Purple
+  },
+  {
     id: "task-4",
-    title: "CN • Computer Networks Quiz Prep",
-    courseCode: "0612CSE315",
-    dueDate: "Sep 28, 2026",
-    time: "09:30 AM",
-    dotColor: "bg-[#06B6D4]", // Cyan
+    title: "AP • Advanced Programming Task",
+    courseCode: "0613CSE333",
+    dueDate: "Oct 01, 2026",
+    time: "12:30 PM",
+    dotColor: "bg-[#315BFF]", // Blue
   },
 ];
 
@@ -135,7 +136,23 @@ export default function CalendarPage() {
   const [currentUser, setCurrentUser] = React.useState<any>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
-  const [selectedDate, setSelectedDate] = React.useState<number>(27);
+
+  // Real today from system/browser
+  const today = React.useMemo(() => new Date(), []);
+  const todayDate = today.getDate();
+  const todayMonth = today.getMonth();
+  const todayYear = today.getFullYear();
+
+  const [currentMonthDate, setCurrentMonthDate] = React.useState(() => new Date());
+  const year = currentMonthDate.getFullYear();
+  const month = currentMonthDate.getMonth();
+  const monthName = currentMonthDate.toLocaleDateString("en-US", { month: "long" });
+
+  const isCurrentMonth = year === todayYear && month === todayMonth;
+
+  const [selectedDate, setSelectedDate] = React.useState<number>(() => {
+    return isCurrentMonth ? todayDate : 1;
+  });
 
   // Load authenticated user
   React.useEffect(() => {
@@ -156,12 +173,15 @@ export default function CalendarPage() {
   }, [router]);
 
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const daysInMonth = Array.from({ length: 30 }, (_, i) => i + 1);
-  const emptyDays = [null, null]; // Sep 2026 starts on Tuesday
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = Array.from({ length: totalDaysInMonth }, (_, i) => i + 1);
+  const firstDayOffset = new Date(year, month, 1).getDay();
+  const emptyDays = Array.from({ length: firstDayOffset }, (_, i) => null);
 
   const activeEvent = SEPTEMBER_EVENTS[selectedDate] || null;
 
-  const selectedDayOfWeekIdx = (selectedDate + 1) % 7;
+  const selectedDateObj = new Date(year, month, selectedDate);
+  const selectedDayOfWeekIdx = selectedDateObj.getDay();
   const selectedDayShort = daysOfWeek[selectedDayOfWeekIdx];
   const dayNameFullMap: Record<string, string> = {
     Sun: "Sunday",
@@ -175,11 +195,35 @@ export default function CalendarPage() {
   const selectedDayFullName = dayNameFullMap[selectedDayShort] || selectedDayShort;
   const selectedDaySessions = WEEKLY_SCHEDULE[selectedDayShort] || [];
 
+  // Week view calculation
+  const currentWeekDays = React.useMemo(() => {
+    const targetDay = selectedDate || todayDate;
+    const targetDate = new Date(year, month, targetDay);
+    const dayOfWeek = targetDate.getDay();
+    const days: number[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(targetDate);
+      d.setDate(targetDate.getDate() + (i - dayOfWeek));
+      if (d.getMonth() === month) {
+        days.push(d.getDate());
+      }
+    }
+    return days.length > 0 ? days : [27, 28, 29, 30];
+  }, [year, month, selectedDate, todayDate]);
+
   const handleDateClick = (day: number) => {
     setSelectedDate(day);
-    const dayIdx = (day + 1) % 7;
-    const dStr = dayNameFullMap[daysOfWeek[dayIdx]];
-    toast.info(`Viewing ${dStr} (Sep ${day}) schedule`);
+    const dObj = new Date(year, month, day);
+    const dStr = dayNameFullMap[daysOfWeek[dObj.getDay()]];
+    toast.info(`Viewing ${dStr} (${monthName.slice(0, 3)} ${day}) schedule`);
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentMonthDate(new Date(year, month - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonthDate(new Date(year, month + 1, 1));
   };
 
   return (
@@ -247,7 +291,7 @@ export default function CalendarPage() {
 
           {/* Main Calendar Card */}
           <div className="rounded-2xl bg-white border border-[#E5EAF2] p-6 shadow-2xs space-y-6">
-            {/* Header: “September 2026” with calendar icon + left/right navigation arrows */}
+            {/* Header: Month and Year with calendar icon + left/right navigation arrows */}
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="h-8 w-8 rounded-xl bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center shadow-2xs">
@@ -255,7 +299,7 @@ export default function CalendarPage() {
                 </div>
                 <div>
                   <h2 className="text-base font-bold text-[#172033] tracking-tight">
-                    September 2026
+                    {monthName} {year}
                   </h2>
                   <p className="text-[11px] text-slate-400 font-medium">
                     Summer 2026 • Academic Calendar
@@ -266,7 +310,7 @@ export default function CalendarPage() {
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  onClick={() => toast.info("Viewing August 2026")}
+                  onClick={handlePrevMonth}
                   className="h-8 w-8 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
                   aria-label="Previous month"
                 >
@@ -274,7 +318,7 @@ export default function CalendarPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => toast.info("Viewing October 2026")}
+                  onClick={handleNextMonth}
                   className="h-8 w-8 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
                   aria-label="Next month"
                 >
@@ -302,7 +346,7 @@ export default function CalendarPage() {
 
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-2 text-center text-sm">
-              {/* Empty leading slots for Sun, Mon */}
+              {/* Empty leading slots */}
               {viewMode === "month" &&
                 emptyDays.map((_, idx) => (
                   <div key={`empty-${idx}`} className="h-12 w-full" />
@@ -310,16 +354,17 @@ export default function CalendarPage() {
 
               {/* Days list (full month or current week) */}
               {(viewMode === "week"
-                ? [27, 28, 29, 30]
+                ? currentWeekDays
                 : daysInMonth
               ).map((day) => {
-                const isToday = day === 27;
+                const isToday = isCurrentMonth && day === todayDate;
                 const isSelected = selectedDate === day;
                 const event = SEPTEMBER_EVENTS[day];
                 const hasStudyActivity = event?.pomodoroCompleted;
 
                 // Weekend detection
-                const dayOfWeekIdx = (day + 1) % 7;
+                const dObj = new Date(year, month, day);
+                const dayOfWeekIdx = dObj.getDay();
                 const isWeekend = dayOfWeekIdx === 5 || dayOfWeekIdx === 6;
 
                 return (
@@ -333,12 +378,12 @@ export default function CalendarPage() {
                       className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all ${
                         isSelected
                           ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/35 ring-4 ring-blue-100 scale-105"
+                          : isToday
+                          ? "ring-2 ring-[#315BFF] text-[#315BFF] font-black bg-blue-50/50 hover:bg-blue-100/60"
                           : hasStudyActivity
                           ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
                           : isWeekend
                           ? "text-slate-400 hover:bg-slate-100"
-                          : isToday
-                          ? "text-[#172033] font-bold hover:bg-slate-100"
                           : "text-slate-800 font-medium hover:bg-blue-50/50"
                       }`}
                     >
@@ -377,12 +422,12 @@ export default function CalendarPage() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-base font-bold text-[#172033] tracking-tight">
-                        {selectedDayFullName}&apos;s Schedule
+                        {isCurrentMonth && selectedDate === todayDate ? "Today's Schedule" : `${selectedDayFullName}'s Schedule`}
                       </h3>
                       <span className="text-xs font-semibold text-[#315BFF] bg-[#EEF3FF] border border-[#D0DFFF] px-2 py-0.5 rounded-md">
-                        Sep {selectedDate}, 2026
+                        {monthName.slice(0, 3)} {selectedDate}, {year}
                       </span>
-                      {selectedDate === 27 && (
+                      {isCurrentMonth && selectedDate === todayDate && (
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold">
                           Today
                         </span>
@@ -397,10 +442,15 @@ export default function CalendarPage() {
                 </div>
 
                 <div className="flex items-center gap-2 self-start sm:self-auto">
-                  {selectedDate !== 27 && (
+                  {!(isCurrentMonth && selectedDate === todayDate) && (
                     <button
                       type="button"
-                      onClick={() => handleDateClick(27)}
+                      onClick={() => {
+                        if (!isCurrentMonth) {
+                          setCurrentMonthDate(new Date());
+                        }
+                        handleDateClick(todayDate);
+                      }}
                       className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer"
                     >
                       ← Jump to Today
@@ -530,7 +580,7 @@ export default function CalendarPage() {
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-[#172033]">
-                    Next Quiz: CN (Computer Networks)
+                    Active Quiz: CN (Computer Networks)
                   </h3>
                   <p className="text-[11px] text-slate-500 mt-0.5">
                     Tuesday, Sep 29 • Room A/MCL C
@@ -538,13 +588,13 @@ export default function CalendarPage() {
                 </div>
               </div>
 
-              {/* Purple badge “3 days left” */}
-              <span className="px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 text-[10px] font-extrabold uppercase shrink-0">
-                3 days left
+              {/* Emerald badge “Today” */}
+              <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase shrink-0">
+                Today
               </span>
             </div>
 
-            {/* Soft orange/pink card: AIES Assignment 1 */}
+            {/* Soft orange/pink card: TWRM Report Draft */}
             <div className="rounded-2xl bg-gradient-to-r from-rose-50/80 to-amber-50/70 border border-rose-100/80 p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
                 <div className="h-10 w-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 shadow-2xs">
@@ -552,17 +602,17 @@ export default function CalendarPage() {
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-[#172033]">
-                    AIES Assignment 1
+                    TWRM Report Draft
                   </h3>
                   <p className="text-[11px] text-slate-500 mt-0.5">
-                    Batch 82A • Submit before 11:59 PM
+                    Batch 82A • Tomorrow, Sep 30
                   </p>
                 </div>
               </div>
 
-              {/* Red badge “2 days left” */}
+              {/* Red badge “Tomorrow” */}
               <span className="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase shrink-0">
-                2 days left
+                Tomorrow
               </span>
             </div>
           </div>

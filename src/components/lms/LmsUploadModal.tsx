@@ -12,13 +12,22 @@ export interface LmsUploadModalProps {
 }
 
 export function LmsUploadModal({ isOpen, onClose, onUpload }: LmsUploadModalProps) {
+  const COURSE_OPTIONS = [
+    { code: "0611CSE321", name: "AIES", category: "AIES", title: "0611CSE321 • AIES (Artificial Intelligence)" },
+    { code: "0613CSE333", name: "AP", category: "AP", title: "0613CSE333 • AP (Advanced Programming)" },
+    { code: "0612CSE315", name: "CN", category: "CN", title: "0612CSE315 • CN (Computer Networks)" },
+    { code: "0541MAT337", name: "MACS", category: "MACS", title: "0541MAT337 • MACS (Complex Systems)" },
+    { code: "0031CSE320", name: "TWRM", category: "TWRM", title: "0031CSE320 • TWRM (Research Writing)" },
+    { code: "0612CSE316", name: "CN Sess.", category: "Labs & Sessionals", title: "0612CSE316 • CN Sessional" },
+    { code: "0611CSE322", name: "AIES Sess.", category: "Labs & Sessionals", title: "0611CSE322 • AIES Sessional" },
+    { code: "0613CSE334", name: "AP Sess.", category: "Labs & Sessionals", title: "0613CSE334 • AP Sessional" },
+  ];
+
+  const [selectedCourseIdx, setSelectedCourseIdx] = React.useState(0);
+  const selectedCourse = COURSE_OPTIONS[selectedCourseIdx] || COURSE_OPTIONS[0];
   const [title, setTitle] = React.useState("");
-  const [courseCode, setCourseCode] = React.useState("CSE101");
-  const [category, setCategory] = React.useState<LmsPdfDocument["category"]>("Data Structures");
   const [selectedFileName, setSelectedFileName] = React.useState("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  if (!isOpen) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,16 +47,17 @@ export function LmsUploadModal({ isOpen, onClose, onUpload }: LmsUploadModalProp
     const newDoc: LmsPdfDocument = {
       id: `doc-${Date.now()}`,
       title: normalizedTitle,
-      courseCode: courseCode.trim().toUpperCase() || "CSE101",
+      courseCode: selectedCourse.code,
+      courseName: selectedCourse.name,
       size: `${(Math.random() * 3 + 1.5).toFixed(1)} MB`,
-      category,
+      category: selectedCourse.category,
       pages: Math.floor(Math.random() * 20 + 10),
       uploadedAt: "Just now",
       isBookmarked: false,
     };
 
     onUpload(newDoc);
-    toast.success(`"${normalizedTitle}" uploaded successfully to SkillSet Library! 🎉`);
+    toast.success(`"${normalizedTitle}" uploaded successfully to Library! 🎉`);
     setTitle("");
     setSelectedFileName("");
     onClose();
@@ -67,8 +77,8 @@ export function LmsUploadModal({ isOpen, onClose, onUpload }: LmsUploadModalProp
               <Upload className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Upload PDF Note</h2>
-              <p className="text-xs text-slate-500">Add course materials to SkillSet Library</p>
+              <h2 className="text-base font-bold text-slate-900">Upload Course Material</h2>
+              <p className="text-xs text-slate-500">Add course materials to Library</p>
             </div>
           </div>
           <button
@@ -110,38 +120,25 @@ export function LmsUploadModal({ isOpen, onClose, onUpload }: LmsUploadModalProp
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Chapter 7 - Graph Algorithms.pdf"
+              placeholder="e.g. Chapter 5 - Network Security & Firewalls.pdf"
               className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#4F46E5] text-xs sm:text-sm text-slate-900 focus:outline-none transition-all"
             />
           </div>
 
-          {/* Course & Category Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700">Course Code</label>
-              <input
-                type="text"
-                value={courseCode}
-                onChange={(e) => setCourseCode(e.target.value)}
-                placeholder="CSE101"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#4F46E5] text-xs sm:text-sm text-slate-900 uppercase focus:outline-none transition-all"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700">Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value as LmsPdfDocument["category"])}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#4F46E5] text-xs sm:text-sm text-slate-900 focus:outline-none transition-all"
-              >
-                <option value="Data Structures">Data Structures</option>
-                <option value="Operating Systems">Operating Systems</option>
-                <option value="Math">Math</option>
-                <option value="Physics">Physics</option>
-                <option value="etc.">etc.</option>
-              </select>
-            </div>
+          {/* Course Selector */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700">Select Enrolled Course</label>
+            <select
+              value={selectedCourseIdx}
+              onChange={(e) => setSelectedCourseIdx(Number(e.target.value))}
+              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#4F46E5] text-xs sm:text-sm text-slate-900 focus:outline-none transition-all"
+            >
+              {COURSE_OPTIONS.map((opt, idx) => (
+                <option key={opt.code} value={idx}>
+                  {opt.title}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Submit buttons */}

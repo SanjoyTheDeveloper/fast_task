@@ -73,7 +73,8 @@ const SEPTEMBER_EVENTS: Record<number, DayEvent> = {
     classCount: 3,
     rooms: "A/507, A/MCL C",
     hasQuizOrExam: true,
-    quizTitle: "CN Quiz 1 • 3 Days Left",
+    quizTitle: "CN Quiz 1 • Today (02:00 PM)",
+    pomodoroCompleted: true,
   },
   30: {
     hasClasses: true,
@@ -96,35 +97,35 @@ export interface UpcomingTaskItem {
 export const defaultUpcomingTasks: UpcomingTaskItem[] = [
   {
     id: "up-1",
-    title: "AIES • Lecture & Practice",
-    courseCode: "0611CSE321",
-    dueDate: "Sep 27, 2026",
-    time: "11:00 AM",
-    dotColor: "bg-[#5B63E6]",
-  },
-  {
-    id: "up-2",
-    title: "AP • Advanced Programming",
-    courseCode: "0613CSE333",
-    dueDate: "Sep 27, 2026",
-    time: "02:00 PM",
-    dotColor: "bg-[#315BFF]",
-  },
-  {
-    id: "up-3",
-    title: "MACS • Complex Systems Problem Set",
-    courseCode: "0541MAT337",
-    dueDate: "Sep 27, 2026",
-    time: "03:30 PM",
-    dotColor: "bg-[#F59E0B]",
-  },
-  {
-    id: "up-4",
     title: "CN • Computer Networks Quiz Prep",
     courseCode: "0612CSE315",
     dueDate: "Sep 29, 2026",
     time: "09:30 AM",
     dotColor: "bg-[#0284C7]",
+  },
+  {
+    id: "up-2",
+    title: "MACS • Complex Systems Problem Set",
+    courseCode: "0541MAT337",
+    dueDate: "Sep 29, 2026",
+    time: "03:30 PM",
+    dotColor: "bg-[#F59E0B]",
+  },
+  {
+    id: "up-3",
+    title: "TWRM • Report Draft Submission",
+    courseCode: "0031CSE320",
+    dueDate: "Sep 30, 2026",
+    time: "11:00 AM",
+    dotColor: "bg-[#8B5CF6]",
+  },
+  {
+    id: "up-4",
+    title: "AP • Advanced Programming Task",
+    courseCode: "0613CSE333",
+    dueDate: "Oct 01, 2026",
+    time: "12:30 PM",
+    dotColor: "bg-[#315BFF]",
   },
 ];
 
@@ -144,8 +145,23 @@ export function CalendarWidget({
   selectedDate: propSelectedDate,
 }: CalendarWidgetProps) {
   const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
-  const [internalSelectedDate, setInternalSelectedDate] = React.useState<number | null>(27);
-  const [hoveredDate, setHoveredDate] = React.useState<number | null>(null);
+
+  // Real today from system/browser
+  const today = React.useMemo(() => new Date(), []);
+  const todayDate = today.getDate();
+  const todayMonth = today.getMonth();
+  const todayYear = today.getFullYear();
+
+  const [currentMonthDate, setCurrentMonthDate] = React.useState(() => new Date());
+  const year = currentMonthDate.getFullYear();
+  const month = currentMonthDate.getMonth();
+  const monthName = currentMonthDate.toLocaleDateString("en-US", { month: "long" });
+
+  const isCurrentMonth = year === todayYear && month === todayMonth;
+
+  const [internalSelectedDate, setInternalSelectedDate] = React.useState<number | null>(() => {
+    return isCurrentMonth ? todayDate : 1;
+  });
 
   React.useEffect(() => {
     if (propSelectedDate !== undefined && propSelectedDate !== null) {
@@ -154,26 +170,53 @@ export function CalendarWidget({
   }, [propSelectedDate]);
 
   const selectedDate = propSelectedDate !== undefined ? propSelectedDate : internalSelectedDate;
+  const activePopoverDate = selectedDate || (isCurrentMonth ? todayDate : 1);
 
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const daysInMonth = Array.from({ length: 30 }, (_, i) => i + 1);
 
-  // Month starts on Tuesday: 2 empty slots for Sun, Mon
-  const emptyDays = [null, null];
+  // Total days in month
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = Array.from({ length: totalDaysInMonth }, (_, i) => i + 1);
 
-  // Active date for the popover (hovered or clicked)
-  const activePopoverDate = hoveredDate || selectedDate;
-  const activeEvent = activePopoverDate ? SEPTEMBER_EVENTS[activePopoverDate] : null;
+  // First day offset (0 = Sunday)
+  const firstDayOffset = new Date(year, month, 1).getDay();
+  const emptyDays = Array.from({ length: firstDayOffset }, (_, i) => null);
 
-  const activeDayOfWeekIdx = activePopoverDate ? (activePopoverDate + 1) % 7 : 0;
-  const activeDayShort = daysOfWeek[activeDayOfWeekIdx];
+  // Active day info
+  const activeDayDateObj = new Date(year, month, activePopoverDate);
+  const activeDayShort = daysOfWeek[activeDayDateObj.getDay()];
   const activeDaySessions = activeDayShort ? (WEEKLY_SCHEDULE[activeDayShort] || []) : [];
+  const activeEvent = SEPTEMBER_EVENTS[activePopoverDate] || null;
+
+  // Current week days for week view
+  const currentWeekDays = React.useMemo(() => {
+    const targetDay = selectedDate || todayDate;
+    const targetDate = new Date(year, month, targetDay);
+    const dayOfWeek = targetDate.getDay();
+    const days: number[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(targetDate);
+      d.setDate(targetDate.getDate() + (i - dayOfWeek));
+      if (d.getMonth() === month) {
+        days.push(d.getDate());
+      }
+    }
+    return days.length > 0 ? days : [27, 28, 29, 30];
+  }, [year, month, selectedDate, todayDate]);
 
   const handleDateClick = (day: number) => {
     setInternalSelectedDate(day);
-    const dayIdx = (day + 1) % 7;
-    const dayStr = daysOfWeek[dayIdx];
+    const dayDateObj = new Date(year, month, day);
+    const dayStr = daysOfWeek[dayDateObj.getDay()];
     onSelectDate?.(day, dayStr);
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentMonthDate(new Date(year, month - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonthDate(new Date(year, month + 1, 1));
   };
 
   return (
@@ -219,12 +262,15 @@ export function CalendarWidget({
           <div className="h-6 w-6 rounded-lg bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center">
             <CalendarIcon className="h-3.5 w-3.5" />
           </div>
-          <h3 className="text-xs font-bold text-[#172033]">September 2026</h3>
+          <h3 className="text-xs font-bold text-[#172033]">
+            {monthName} {year}
+          </h3>
         </div>
 
         <div className="flex items-center gap-1">
           <button
             type="button"
+            onClick={handlePrevMonth}
             className="h-6 w-6 rounded-md hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
             aria-label="Previous month"
           >
@@ -232,6 +278,7 @@ export function CalendarWidget({
           </button>
           <button
             type="button"
+            onClick={handleNextMonth}
             className="h-6 w-6 rounded-md hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
             aria-label="Next month"
           >
@@ -259,36 +306,29 @@ export function CalendarWidget({
 
       {/* 4. Calendar Grid with Color-Coded Event Dots & Heatmap Activity */}
       <div className="grid grid-cols-7 gap-1 text-center text-xs relative">
-        {/* Leading empty slots for Sun, Mon */}
+        {/* Leading empty slots */}
         {viewMode === "month" &&
           emptyDays.map((_, idx) => (
             <div key={`empty-${idx}`} className="h-8 w-8" />
           ))}
 
-        {/* Days 1 to 30 (or current week if week view) */}
-        {(viewMode === "week"
-          ? [27, 28, 29, 30] // Current active week sample
-          : daysInMonth
-        ).map((day) => {
-          const isToday = day === 27; // Today is Sep 27
-          const isYesterday = day === 26;
+        {/* Days of month or week view */}
+        {(viewMode === "week" ? currentWeekDays : daysInMonth).map((day) => {
+          const isToday = isCurrentMonth && day === todayDate;
           const isSelected = selectedDate === day;
           const event = SEPTEMBER_EVENTS[day];
 
-          // Heatmap activity styling: soft light green or soft blue background tint
+          // Heatmap activity styling: soft light green background
           const hasPomodoroHeatmap = event?.pomodoroCompleted;
 
-          // Day of week index (0=Sun, 6=Sat)
-          // Sep 1 was Tue (idx 2). Formula: (day + 1) % 7
-          const dayOfWeekIdx = (day + 1) % 7;
+          const dayDateObj = new Date(year, month, day);
+          const dayOfWeekIdx = dayDateObj.getDay();
           const isWeekend = dayOfWeekIdx === 5 || dayOfWeekIdx === 6; // Fri, Sat
 
           return (
             <div
               key={day}
               onClick={() => handleDateClick(day)}
-              onMouseEnter={() => setHoveredDate(day)}
-              onMouseLeave={() => setHoveredDate(null)}
               className="relative flex flex-col items-center justify-center cursor-pointer group"
             >
               {/* Day Cell Container */}
@@ -296,12 +336,12 @@ export function CalendarWidget({
                 className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${
                   isSelected
                     ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/35 ring-2 ring-blue-100 scale-105"
+                    : isToday
+                    ? "ring-2 ring-[#315BFF] text-[#315BFF] font-black bg-blue-50/50 hover:bg-blue-100/60"
                     : hasPomodoroHeatmap
                     ? "bg-emerald-50/80 text-emerald-900 font-semibold hover:bg-emerald-100"
                     : isWeekend
                     ? "text-slate-400 hover:bg-slate-50"
-                    : isToday
-                    ? "text-[#172033] font-bold hover:bg-slate-100"
                     : "text-slate-700 font-medium hover:bg-blue-50/60"
                 }`}
               >
@@ -319,7 +359,7 @@ export function CalendarWidget({
                   {event.hasAssignmentDeadline && (
                     <span className="h-1 w-1 rounded-full bg-rose-500" />
                   )}
-                  {/* Purple/yellow dot: quizzes and exams */}
+                  {/* Purple dot: quizzes and exams */}
                   {event.hasQuizOrExam && (
                     <span className="h-1 w-1 rounded-full bg-purple-500" />
                   )}
@@ -337,24 +377,35 @@ export function CalendarWidget({
             <span className="font-bold text-[#172033] flex items-center gap-1.5">
               <Sparkles className="h-3.5 w-3.5 text-[#315BFF]" />
               <span>
-                {activeDayShort}, Sep {activePopoverDate}
+                {activeDayShort}, {monthName.slice(0, 3)} {activePopoverDate}
               </span>
-              {activePopoverDate === 27 && (
+              {isCurrentMonth && activePopoverDate === todayDate && (
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700 font-bold">
                   Today
                 </span>
               )}
             </span>
-            {activeEvent?.pomodoroCompleted ? (
-              <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Study Logged
-              </span>
-            ) : (
-              <span className="text-[10px] text-slate-400 font-medium">
-                {activeDaySessions.length} Classes
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {isCurrentMonth && activePopoverDate !== todayDate && (
+                <button
+                  type="button"
+                  onClick={() => handleDateClick(todayDate)}
+                  className="text-[10px] font-bold text-[#315BFF] hover:underline cursor-pointer"
+                >
+                  ← Jump to Today
+                </button>
+              )}
+              {activeEvent?.pomodoroCompleted ? (
+                <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Study Logged
+                </span>
+              ) : (
+                <span className="text-[10px] text-slate-400 font-medium">
+                  {activeDaySessions.length} Classes
+                </span>
+              )}
+            </div>
           </div>
 
           {/* List of Scheduled Classes for this date */}
@@ -425,13 +476,13 @@ export function CalendarWidget({
             <span className="text-sm">⏳</span>
             <div>
               <p className="font-bold text-[#172033] leading-none text-[11px]">
-                Next Quiz: CN (Computer Networks)
+                Active Quiz: CN (Computer Networks)
               </p>
               <p className="text-[10px] text-slate-400 mt-0.5">Tuesday, Sep 29 • Room A/MCL C</p>
             </div>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-extrabold shrink-0">
-            3 days left
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-extrabold shrink-0">
+            Today
           </span>
         </div>
 
@@ -441,13 +492,13 @@ export function CalendarWidget({
             <span className="text-sm">📌</span>
             <div>
               <p className="font-bold text-[#172033] leading-none text-[11px]">
-                AIES Assignment 1
+                TWRM Report Draft
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Batch 82A • Submit before 11:59 PM</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Batch 82A • Tomorrow, Sep 30</p>
             </div>
           </div>
           <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold shrink-0">
-            2 days left
+            Tomorrow
           </span>
         </div>
       </div>

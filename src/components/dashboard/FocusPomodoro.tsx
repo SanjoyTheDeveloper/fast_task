@@ -14,7 +14,11 @@ import {
 
 export type PomodoroMode = "25m Focus" | "5m Break" | "15m Rest";
 
-export function FocusPomodoro() {
+export interface FocusPomodoroProps {
+  onOpenZenMode?: () => void;
+}
+
+export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
   const [mode, setMode] = React.useState<PomodoroMode>("25m Focus");
   const [isRunning, setIsRunning] = React.useState(false);
   const [timeLeft, setTimeLeft] = React.useState(25 * 60);
@@ -155,6 +159,29 @@ export function FocusPomodoro() {
           )}
         </div>
       </div>
+
+      {/* Unique Feature: Zen Flow Mode Fullscreen Launcher */}
+      {onOpenZenMode && (
+        <div className="pt-1 border-t border-slate-800/80">
+          <button
+            type="button"
+            onClick={onOpenZenMode}
+            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 hover:from-indigo-500/30 hover:via-purple-500/30 hover:to-pink-500/30 border border-indigo-400/30 hover:border-indigo-400/60 text-white flex items-center justify-between text-xs font-bold transition-all shadow-md group cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded-lg bg-indigo-500/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition-transform">
+                <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
+              </div>
+              <span className="text-slate-200 group-hover:text-white tracking-wide text-[11px]">
+                Zen Flow Mode
+              </span>
+            </div>
+            <span className="text-[10px] font-semibold text-indigo-300/90 bg-indigo-900/50 px-2 py-0.5 rounded-full border border-indigo-400/20">
+              Lo-Fi & Timer 🎧
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

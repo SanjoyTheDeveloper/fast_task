@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useStudentProfile } from "@/lib/studentProfile";
 
 export interface TopHeaderProps {
   user?: {
@@ -34,6 +35,7 @@ export interface TopHeaderProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onOpenMobileMenu?: () => void;
+  onOpenZenMode?: () => void;
 }
 
 export function TopHeader({
@@ -41,14 +43,18 @@ export function TopHeader({
   searchQuery = "",
   onSearchChange,
   onOpenMobileMenu,
+  onOpenZenMode,
 }: TopHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [hasNotification, setHasNotification] = React.useState(true);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
-  const userName = user?.name || "sanjoy chandro Bhowmick";
-  const userEmail = user?.email || "sanjoy1vbhowmick1@gmail.com";
+  const { profile, palette } = useStudentProfile(
+    user?.name ? { name: user.name } : undefined
+  );
+  const userName = profile?.name || user?.name || (user?.email ? user.email.split("@")[0] : "Student");
+  const userEmail = user?.email || "";
 
   // Logout handler redirecting to landing page /
   const handleLogout = async () => {
@@ -134,6 +140,19 @@ export function TopHeader({
 
       {/* Right: Notifications & Profile */}
       <div className="flex items-center gap-3">
+        {/* Zen Flow Quick Trigger */}
+        {onOpenZenMode && (
+          <button
+            type="button"
+            onClick={onOpenZenMode}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 hover:from-indigo-500/20 hover:via-purple-500/20 hover:to-pink-500/20 border border-indigo-200/60 text-indigo-700 text-xs font-bold transition-all shadow-2xs cursor-pointer group"
+            title="Enter Zen Flow Mode"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-indigo-500 group-hover:rotate-12 transition-transform" />
+            <span className="hidden sm:inline">Zen Flow</span>
+          </button>
+        )}
+
         {/* Notification Bell */}
         <button
           type="button"
@@ -151,7 +170,7 @@ export function TopHeader({
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2.5 p-1 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all outline-none cursor-pointer">
             {/* Avatar */}
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-[#315BFF] via-[#5B63E6] to-[#8B5CF6] text-white flex items-center justify-center text-xs font-bold ring-2 ring-blue-100 shadow-2xs overflow-hidden">
+            <div className={`h-8 w-8 rounded-full bg-gradient-to-tr ${palette.gradient} text-white flex items-center justify-center text-xs font-bold ring-2 ring-blue-100 shadow-2xs overflow-hidden transition-all`}>
               {userName
                 .split(" ")
                 .map((n) => n[0])

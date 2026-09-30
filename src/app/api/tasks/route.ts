@@ -10,6 +10,9 @@ import {
 } from "@/lib/api-response";
 import { serializeTaskDescription } from "@/lib/academic";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * GET /api/tasks
  * Returns paginated tasks belonging to the authenticated user.

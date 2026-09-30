@@ -282,73 +282,21 @@ export default function NotesPage() {
 
         {/* Page Main Content Body */}
         <main className="flex-1 w-full max-w-[1300px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-          {/* Top Header: Title & "+ New Note" Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                  Notes
-                </h1>
-                {notes.length > 0 && (
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-[#315BFF] border border-blue-200/80 shadow-2xs">
-                    {notes.length} {notes.length === 1 ? "Note" : "Notes"}
-                  </span>
-                )}
+          {/* Top Header: Title in Modern UI Card */}
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white border border-[#DCE7FC] shadow-[0_2px_14px_rgba(49,91,255,0.06)]">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-[#315BFF] to-[#557BFF] text-white flex items-center justify-center shadow-xs">
+                <FileText className="h-4 w-4 stroke-[2.5]" />
               </div>
-              <p className="text-sm text-slate-500 mt-1">
-                Your personal study notes and quick thoughts
-              </p>
+              <h1 className="text-base sm:text-lg font-extrabold tracking-tight text-[#172033]">
+                Notes
+              </h1>
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#EEF4FF] text-[#315BFF] border border-[#D0DFFF]">
+                {notes.length} {notes.length === 1 ? "Note" : "Notes"}
+              </span>
             </div>
-
-            <Button
-              onClick={handleOpenCreateModal}
-              className="bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl h-11 px-5 shadow-sm shadow-blue-500/25 flex items-center gap-2 cursor-pointer transition active:scale-[0.99] self-start sm:self-auto shrink-0"
-            >
-              <Plus className="h-4 w-4 stroke-[2.5]" />
-              <span>New Note</span>
-            </Button>
           </div>
 
-          {/* Search & Filter Bar (shown if notes exist or search is active) */}
-          {(notes.length > 0 || searchQuery) && (
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search notes by title or content..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-10 pl-10 pr-9 text-sm rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white focus:border-[#315BFF] focus:ring-4 focus:ring-[#315BFF]/10 text-slate-900 placeholder:text-slate-400 transition outline-none"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-
-              {/* Course Filter Dropdown */}
-              <div className="relative shrink-0">
-                <select
-                  value={selectedCourseFilter}
-                  onChange={(e) => setSelectedCourseFilter(e.target.value)}
-                  className="w-full sm:w-auto h-10 pl-3.5 pr-8 text-xs font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 transition cursor-pointer appearance-none"
-                >
-                  <option value="ALL">All Subjects</option>
-                  {COURSES.map((c) => (
-                    <option key={c} value={c}>
-                      {COURSE_LABELS[c] || c}
-                    </option>
-                  ))}
-                </select>
-                <GraduationCap className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              </div>
-            </div>
-          )}
 
           {/* Main Content Area */}
           {!isLoaded ? (
@@ -367,10 +315,14 @@ export default function NotesPage() {
               ))}
             </div>
           ) : notes.length === 0 ? (
-            /* Clean Empty State with Notebook Illustration */
-            <div className="w-full flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border border-dashed border-slate-200 bg-white shadow-2xs animate-fade-in-up">
+            /* Clean Empty State with Dashboard Upper Box Styling */
+            <div className="relative w-full flex flex-col items-center justify-center py-16 px-6 text-center rounded-3xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] shadow-[0_4px_20px_rgba(49,91,255,0.04)] overflow-hidden animate-fade-in-up">
+              {/* Decorative ambient subtle background glows */}
+              <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-blue-400/10 blur-2xl" />
+              <div className="pointer-events-none absolute -bottom-16 -right-12 h-52 w-52 rounded-full bg-indigo-300/10 blur-3xl" />
+
               {/* Soft Illustration of a Notebook */}
-              <div className="relative w-28 h-28 mx-auto mb-5 flex items-center justify-center">
+              <div className="relative z-10 w-28 h-28 mx-auto mb-5 flex items-center justify-center">
                 <div className="absolute inset-0 rounded-3xl bg-blue-50 border border-blue-100 rotate-3 transition-transform" />
                 <div className="relative w-24 h-24 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex flex-col p-3.5 justify-between">
                   <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
@@ -394,19 +346,21 @@ export default function NotesPage() {
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                No notes yet
-              </h3>
-              <p className="text-sm text-slate-500 max-w-sm mt-1.5 mb-6 text-center leading-relaxed">
-                Create your first note to save important points, formulas, or ideas.
-              </p>
-              <Button
-                onClick={handleOpenCreateModal}
-                className="h-11 px-6 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.01] active:scale-[0.99] transition cursor-pointer"
-              >
-                <Plus className="h-4 w-4 stroke-[2.5]" />
-                <span>Create Note</span>
-              </Button>
+              <div className="relative z-10">
+                <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                  No notes yet
+                </h3>
+                <p className="text-sm text-slate-500 max-w-sm mt-1.5 mb-6 text-center leading-relaxed">
+                  Create your first note to save important points, formulas, or ideas.
+                </p>
+                <Button
+                  onClick={handleOpenCreateModal}
+                  className="h-11 px-6 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-semibold rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.01] active:scale-[0.99] transition cursor-pointer"
+                >
+                  <Plus className="h-4 w-4 stroke-[2.5]" />
+                  <span>Create Note</span>
+                </Button>
+              </div>
             </div>
           ) : filteredNotes.length === 0 ? (
             /* No search results */

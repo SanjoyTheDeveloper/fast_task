@@ -20,11 +20,8 @@ export const authConfig = {
       // Public APIs and email verification are always public
       if (isPublicApi || isVerifyEmail) return true;
 
-      // Public Home / Landing page: strictly public route, unauthenticated users are never blocked or redirected to /login
+      // Public Home / Landing page: accessible to both logged-in and guest users without forced redirect
       if (isLanding) {
-        if (isLoggedIn) {
-          return Response.redirect(new URL("/dashboard", nextUrl));
-        }
         return true;
       }
 

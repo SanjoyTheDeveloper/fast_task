@@ -18,9 +18,11 @@ import {
   TaskList,
   TaskDialog,
   TaskPagination,
+  KanbanBoard,
 } from "@/components/tasks";
 import { SemesterSetupModal } from "@/components/academic/SemesterSetupModal";
 import { CourseScheduleModal } from "@/components/academic/CourseScheduleModal";
+import { ZenFlowModal } from "@/components/focus/ZenFlowModal";
 import {
   DEFAULT_SEMESTER_CONFIG,
   SemesterConfig,
@@ -62,6 +64,7 @@ function DashboardContent() {
   const [loadError, setLoadError] = React.useState<string | null>(null);
 
   // UI Drawer & Modal States
+  const [dashboardView, setDashboardView] = React.useState<"grid" | "kanban">("grid");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [editingTask, setEditingTask] = React.useState<Task | null>(null);
@@ -70,9 +73,27 @@ function DashboardContent() {
   const [updatingTaskId, setUpdatingTaskId] = React.useState<string | null>(null);
   const [isSemesterSetupOpen, setIsSemesterSetupOpen] = React.useState(false);
   const [isRoutineModalOpen, setIsRoutineModalOpen] = React.useState(false);
+  const [isZenOpen, setIsZenOpen] = React.useState(false);
   const [semesterConfig, setSemesterConfig] = React.useState<SemesterConfig>(DEFAULT_SEMESTER_CONFIG);
-  const [selectedScheduleDay, setSelectedScheduleDay] = React.useState<string>("Sun");
-  const [selectedCalendarDate, setSelectedCalendarDate] = React.useState<number>(27);
+  const [selectedScheduleDay, setSelectedScheduleDay] = React.useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return new Date().toLocaleDateString("en-US", { weekday: "short" });
+    }
+    return "Tue";
+  });
+  const [selectedCalendarDate, setSelectedCalendarDate] = React.useState<number>(() => {
+    if (typeof window !== "undefined") {
+      return new Date().getDate();
+    }
+    return 29;
+  });
+
+  // Keep state synced with current actual date on client mount
+  React.useEffect(() => {
+    const now = new Date();
+    setSelectedScheduleDay(now.toLocaleDateString("en-US", { weekday: "short" }));
+    setSelectedCalendarDate(now.getDate());
+  }, []);
 
   // 2. Load authenticated user
   React.useEffect(() => {
@@ -330,6 +351,13 @@ function DashboardContent() {
     }
   };
 
+  const handleStatusChange = (taskId: string, completed: boolean) => {
+    const task = tasks.find((t) => t.id === taskId) || displayedTasks.find((t) => t.id === taskId);
+    if (task && task.completed !== completed) {
+      handleStatusToggle(task);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
@@ -356,6 +384,7 @@ function DashboardContent() {
           searchQuery={search}
           onSearchChange={handleGlobalSearch}
           onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
+          onOpenZenMode={() => setIsZenOpen(true)}
         />
 
         {/* Dashboard Main Content Body */}
@@ -373,17 +402,28 @@ function DashboardContent() {
               selectedDay={selectedScheduleDay}
               onSelectDay={(day) => {
                 setSelectedScheduleDay(day);
-                const dayToDateMap: Record<string, number> = {
-                  Sun: 27,
-                  Mon: 28,
-                  Tue: 29,
-                  Wed: 30,
-                  Thu: 24,
-                  Fri: 25,
-                  Sat: 26,
-                };
-                if (dayToDateMap[day]) {
-                  setSelectedCalendarDate(dayToDateMap[day]);
+                const now = new Date();
+                const currentDayIdx = now.getDay();
+                const daysList = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                const targetDayIdx = daysList.indexOf(day);
+                if (targetDayIdx !== -1) {
+                  const diff = targetDayIdx - currentDayIdx;
+                  const targetDate = new Date(now);
+                  targetDate.setDate(now.getDate() + diff);
+                  if (targetDate.getMonth() === now.getMonth()) {
+                    setSelectedCalendarDate(targetDate.getDate());
+                  } else {
+                    const fallbackMap: Record<string, number> = {
+                      Sun: 27,
+                      Mon: 28,
+                      Tue: 29,
+                      Wed: 30,
+                      Thu: 24,
+                      Fri: 25,
+                      Sat: 26,
+                    };
+                    setSelectedCalendarDate(fallbackMap[day] || targetDate.getDate());
+                  }
                 }
               }}
               onManageRoutine={() => setIsRoutineModalOpen(true)}
@@ -400,7 +440,7 @@ function DashboardContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Area: Tasks Management */}
             <div id="tasks" className="lg:col-span-8 space-y-5">
-              {/* Task Filters & Status Toolbar */}
+              {/* Task Filters & Status Toolbar with View Switcher */}
               <TaskFilters
                 filters={{
                   search,
@@ -413,40 +453,65 @@ function DashboardContent() {
                 onFilterChange={handleFilterChange}
                 onOpenCreateModal={handleOpenCreateModal}
                 isLoading={isLoading}
-                activeView="grid"
+                activeView={dashboardView}
+                onViewChange={(v) => setDashboardView(v)}
               />
 
-              {/* Tasks List / Empty State */}
-              <TaskList
-                tasks={displayedTasks}
-                isLoading={isLoading}
-                isError={!!loadError}
-                errorMessage={loadError}
-                onRetry={fetchTasks}
-                isFiltered={isFiltered}
-                filterStatus={status}
-                searchQuery={search}
-                onClearFilter={handleClearFilter}
-                onClearSearch={handleClearSearch}
-                onEdit={handleOpenEditModal}
-                onDelete={handleOpenDeleteModal}
-                onStatusToggle={handleStatusToggle}
-                onOpenCreateModal={handleOpenCreateModal}
-                updatingTaskId={updatingTaskId}
-              />
-
-              {/* Pagination Controls */}
-              {pagination.total > 0 && (
-                <TaskPagination
-                  page={pagination.page}
-                  totalPages={pagination.totalPages}
-                  total={pagination.total}
-                  limit={pagination.limit}
-                  hasNextPage={pagination.hasNextPage}
-                  hasPreviousPage={pagination.hasPreviousPage}
-                  onPageChange={handlePageChange}
-                  isLoading={isLoading}
+              {/* Tasks List / Kanban Board based on active view without reload */}
+              {dashboardView === "kanban" ? (
+                <KanbanBoard
+                  tasks={displayedTasks}
+                  onEdit={handleOpenEditModal}
+                  onDelete={handleOpenDeleteModal}
+                  onStatusToggle={handleStatusToggle}
+                  onStatusChange={handleStatusChange}
+                  onOpenCreateModal={(completed) => {
+                    setEditingTask({
+                      id: "",
+                      title: "",
+                      description: null,
+                      completed: !!completed,
+                      userId: "",
+                      createdAt: "",
+                      updatedAt: "",
+                    });
+                    setIsFormOpen(true);
+                  }}
                 />
+              ) : (
+                <>
+                  <TaskList
+                    tasks={displayedTasks}
+                    isLoading={isLoading}
+                    isError={!!loadError}
+                    errorMessage={loadError}
+                    onRetry={fetchTasks}
+                    isFiltered={isFiltered}
+                    filterStatus={status}
+                    searchQuery={search}
+                    onClearFilter={handleClearFilter}
+                    onClearSearch={handleClearSearch}
+                    onEdit={handleOpenEditModal}
+                    onDelete={handleOpenDeleteModal}
+                    onStatusToggle={handleStatusToggle}
+                    onOpenCreateModal={handleOpenCreateModal}
+                    updatingTaskId={updatingTaskId}
+                  />
+
+                  {/* Pagination Controls */}
+                  {pagination.total > 0 && (
+                    <TaskPagination
+                      page={pagination.page}
+                      totalPages={pagination.totalPages}
+                      total={pagination.total}
+                      limit={pagination.limit}
+                      hasNextPage={pagination.hasNextPage}
+                      hasPreviousPage={pagination.hasPreviousPage}
+                      onPageChange={handlePageChange}
+                      isLoading={isLoading}
+                    />
+                  )}
+                </>
               )}
             </div>
 
@@ -470,11 +535,19 @@ function DashboardContent() {
               />
 
               {/* Dark Navy Focus Pomodoro Widget */}
-              <FocusPomodoro />
+              <FocusPomodoro onOpenZenMode={() => setIsZenOpen(true)} />
             </div>
           </div>
         </main>
       </div>
+
+      {/* Unique Full-screen Ambient Zen Flow Modal */}
+      <ZenFlowModal
+        isOpen={isZenOpen}
+        onClose={() => setIsZenOpen(false)}
+        tasks={tasks}
+        onCompleteTask={handleStatusToggle}
+      />
 
       {/* Task Creation / Editing Dialog */}
       <TaskDialog

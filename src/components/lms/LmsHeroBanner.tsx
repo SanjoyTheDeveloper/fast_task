@@ -10,7 +10,7 @@ export interface LmsHeroBannerProps {
 }
 
 export function LmsHeroBanner({
-  userName = "Irham Muhammad Shidiq",
+  userName = "Student",
   onLearnMore,
 }: LmsHeroBannerProps) {
   return (

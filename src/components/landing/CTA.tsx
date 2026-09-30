@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Sparkles, GraduationCap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface CTAProps {
@@ -29,14 +29,8 @@ export function CTA({
         />
 
         <div className="relative mx-auto max-w-3xl">
-          {/* Eyebrow badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#D0DFFF] bg-white/90 px-4 py-1.5 text-xs font-bold text-[#315BFF] backdrop-blur-md shadow-2xs">
-            <GraduationCap className="h-4 w-4 text-[#315BFF]" />
-            <span>Built for High-Achieving Students</span>
-          </div>
-
           {/* Heading */}
-          <h2 className="mt-6 text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl text-[#172033] leading-tight">
+          <h2 className="text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl text-[#172033] leading-tight">
             {headline}
           </h2>
 
@@ -47,34 +41,18 @@ export function CTA({
 
           {/* CTA Action Buttons */}
           <div className="mt-8 sm:mt-10 flex flex-col justify-center gap-4 sm:flex-row sm:items-center">
-            <Button asChild size="pillLg">
-              <Link href={registerHref}>
-                <span>Get Started Free</span>
+            <Button asChild size="pillLg" className="w-full sm:w-52">
+              <Link href={registerHref} className="flex items-center justify-center gap-2 w-full">
+                <span>Create Account</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
 
-            <Button asChild variant="outline" size="pillLg">
-              <Link href={loginHref}>
-                <span>Sign In to Workspace</span>
+            <Button asChild variant="outline" size="pillLg" className="w-full sm:w-52">
+              <Link href={loginHref} className="flex items-center justify-center gap-2 w-full">
+                <span>Log In</span>
               </Link>
             </Button>
-          </div>
-
-          {/* Value reassurance badges */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-semibold text-slate-500">
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#315BFF]" />
-              100% Free student workspace
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#315BFF]" />
-              No credit card required
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#315BFF]" />
-              Instant timetable sync
-            </span>
           </div>
         </div>
       </div>

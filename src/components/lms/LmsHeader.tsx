@@ -17,10 +17,21 @@ export function LmsHeader({
   onSearchChange,
   isMobileMenuOpen = false,
   onToggleMobileMenu,
-  userName = "Irham Muhammad Shidiq",
+  userName = "Student",
 }: LmsHeaderProps) {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [hasUnread, setHasUnread] = React.useState(true);
+
+  const initials = React.useMemo(() => {
+    const words = (userName || "U").trim().split(/\s+/).filter(Boolean);
+    if (words.length >= 2) {
+      return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+    }
+    if (words.length === 1) {
+      return words[0].slice(0, 2).toUpperCase();
+    }
+    return "U";
+  }, [userName]);
 
   return (
     <header className="w-full flex items-center justify-between gap-4 py-4 px-4 sm:px-6 lg:px-8 bg-transparent">
@@ -87,12 +98,11 @@ export function LmsHeader({
           )}
         </button>
 
-        {/* Profile Avatar with cute stylized illustration */}
-        <div className="flex items-center gap-2 pl-1 cursor-pointer group">
+        {/* Profile Avatar with dynamic initials */}
+        <div className="flex items-center gap-2 pl-1 cursor-pointer group" title={userName}>
           <div className="relative h-9 w-9 rounded-full ring-2 ring-purple-200/80 p-0.5 overflow-hidden shadow-xs bg-gradient-to-tr from-amber-400 via-rose-400 to-indigo-500">
             <div className="h-full w-full rounded-full bg-[#FED7AA] flex items-center justify-center text-xs font-bold text-amber-900 overflow-hidden">
-              {/* Fallback avatar icon or initial */}
-              <span>IS</span>
+              <span>{initials}</span>
             </div>
           </div>
           <span className="text-xs font-bold text-[#1E1B4B] hidden xl:inline-block max-w-[120px] truncate">

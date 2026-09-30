@@ -1,26 +1,128 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  CheckCircle2,
-  Clock,
   Sparkles,
-  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
   GraduationCap,
   Timer,
-  Play,
-  Layers,
-  BookOpen,
-  CheckSquare,
+  Columns,
+  Calendar,
   ShieldCheck,
-  TrendingUp,
-  MapPin,
-  Laptop,
-  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+export interface ShowcaseFeature {
+  id: string;
+  badge: string;
+  tagline: string;
+  title: string;
+  category: string;
+  actionText: string;
+  accentColor: string;
+  glowColor: string;
+  theme: "emerald" | "blue" | "magenta" | "purple" | "indigo" | "amber" | "rose";
+  meta: {
+    stat: string;
+    subtext: string;
+  };
+  details: {
+    chip1: string;
+    chip2: string;
+    chip3: string;
+  };
+}
+
+const showcaseItems: ShowcaseFeature[] = [
+  {
+    id: "timetable",
+    badge: "Live Routine",
+    category: "Class Routine",
+    title: "Today's Lecture Routine",
+    tagline:
+      "Automatically updates active lectures, venue rooms, and lab timings according to your semester schedule.",
+    actionText: "View Schedule",
+    accentColor: "from-cyan-400 to-blue-500",
+    glowColor: "rgba(49,91,255,0.3)",
+    theme: "blue",
+    meta: {
+      stat: "09:30 AM",
+      subtext: "Room A/502 • Operating Systems",
+    },
+    details: {
+      chip1: "CSE315",
+      chip2: "Room A/502",
+      chip3: "Week 5",
+    },
+  },
+  {
+    id: "kanban",
+    badge: "Task Flow",
+    category: "Kanban Board",
+    title: "Coursework Kanban Pipeline",
+    tagline:
+      "Track coursework seamlessly across Pending, In Progress, and Completed with clear priority flags.",
+    actionText: "Open Kanban",
+    accentColor: "from-purple-400 via-pink-500 to-rose-500",
+    glowColor: "rgba(168,85,247,0.3)",
+    theme: "magenta",
+    meta: {
+      stat: "3 Active",
+      subtext: "2 Submissions this week",
+    },
+    details: {
+      chip1: "In Progress",
+      chip2: "Priority Flags",
+      chip3: "Due Tomorrow",
+    },
+  },
+  {
+    id: "pomodoro",
+    badge: "Deep Focus",
+    category: "Study Timer",
+    title: "Pomodoro Study Timer",
+    tagline:
+      "Build study momentum with structured 25-minute Pomodoro study intervals and 5-minute break cues.",
+    actionText: "Start Session",
+    accentColor: "from-emerald-400 to-teal-500",
+    glowColor: "rgba(16,185,129,0.3)",
+    theme: "emerald",
+    meta: {
+      stat: "24:18",
+      subtext: "Distributed Systems • Session 2/4",
+    },
+    details: {
+      chip1: "25m Interval",
+      chip2: "5m Break",
+      chip3: "Audio Chimes",
+    },
+  },
+  {
+    id: "deadlines",
+    badge: "Deadlines",
+    category: "Submission Radar",
+    title: "Assignments & Exam Radar",
+    tagline:
+      "Urgency radar with clear alerts for assignments, lab reports, and midterm exams due within 48 hours.",
+    actionText: "View Deadlines",
+    accentColor: "from-rose-400 to-amber-500",
+    glowColor: "rgba(244,63,94,0.3)",
+    theme: "rose",
+    meta: {
+      stat: "2 Urgent",
+      subtext: "Due within 48 hours",
+    },
+    details: {
+      chip1: "Due in 18h",
+      chip2: "CSE421",
+      chip3: "20% Grade",
+    },
+  },
+];
 
 export interface HeroProps {
   registerHref?: string;
@@ -31,45 +133,182 @@ export function Hero({
   registerHref = "/register",
   loginHref = "/login",
 }: HeroProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const total = showcaseItems.length;
+
+  const nextSlide = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % total);
+  }, [total]);
+
+  const prevSlide = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + total) % total);
+  }, [total]);
+
+  // Autoplay rotation every 5s with pause on hover
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isPaused, nextSlide]);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Touch and drag swipe handlers
+  const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    touchStartX.current = clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    if (touchStartX.current === null) return;
+    const clientX =
+      "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX;
+    const diff = clientX - touchStartX.current;
+    if (diff > 45) {
+      prevSlide();
+    } else if (diff < -45) {
+      nextSlide();
+    }
+    touchStartX.current = null;
+  };
+
+  // Continuous 3D cylindrical transform calculations for all persistent card nodes
+  const getCardStyle = (index: number) => {
+    let offset = ((index - activeIndex) % total + total) % total;
+    if (offset > total / 2) offset -= total;
+
+    const isCenter = offset === 0;
+    const isLeft = offset === -1;
+    const isRight = offset === 1;
+
+    const xSpacing = isMobile ? 220 : 340;
+
+    let translateX = 0;
+    let translateZ = 0;
+    let rotateY = 0;
+    let scale = 1;
+    let opacity = 0;
+    let zIndex = 5;
+    let pointerEvents: "auto" | "none" = "none";
+
+    if (isCenter) {
+      translateX = 0;
+      translateZ = 60;
+      rotateY = 0;
+      scale = 1.04;
+      opacity = 1;
+      zIndex = 30;
+      pointerEvents = "auto";
+    } else if (isLeft) {
+      translateX = -xSpacing;
+      translateZ = -70;
+      rotateY = 26;
+      scale = 0.91;
+      opacity = 0.9;
+      zIndex = 20;
+      pointerEvents = "auto";
+    } else if (isRight) {
+      translateX = xSpacing;
+      translateZ = -70;
+      rotateY = -26;
+      scale = 0.91;
+      opacity = 0.9;
+      zIndex = 20;
+      pointerEvents = "auto";
+    } else if (offset === -2) {
+      translateX = -xSpacing * 1.55;
+      translateZ = -180;
+      rotateY = 40;
+      scale = 0.78;
+      opacity = 0;
+      zIndex = 10;
+      pointerEvents = "none";
+    } else if (offset === 2) {
+      translateX = xSpacing * 1.55;
+      translateZ = -180;
+      rotateY = -40;
+      scale = 0.78;
+      opacity = 0;
+      zIndex = 10;
+      pointerEvents = "none";
+    } else {
+      translateX = offset > 0 ? xSpacing * 2 : -xSpacing * 2;
+      translateZ = -240;
+      rotateY = offset > 0 ? -50 : 50;
+      scale = 0.65;
+      opacity = 0;
+      zIndex = 5;
+      pointerEvents = "none";
+    }
+
+    return {
+      transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+      opacity,
+      zIndex,
+      pointerEvents,
+      transition:
+        "transform 700ms cubic-bezier(0.16, 1, 0.3, 1), opacity 650ms cubic-bezier(0.16, 1, 0.3, 1), z-index 700ms step-end",
+    };
+  };
+
   return (
-    <section className="relative overflow-hidden pt-12 pb-24 sm:pt-20 sm:pb-32 lg:pt-24 lg:pb-36">
-      {/* Ambient background glows */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[650px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(49,91,255,0.08),rgba(99,102,241,0.04),transparent_70%)]" />
-      <div className="pointer-events-none absolute -left-48 top-1/4 -z-10 h-96 w-96 rounded-full bg-blue-400/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-48 top-1/3 -z-10 h-96 w-96 rounded-full bg-indigo-300/10 blur-[120px]" />
+    <section
+      id="features"
+      className="relative pt-8 sm:pt-12 lg:pt-14 pb-16 sm:pb-20 lg:pb-24 bg-transparent text-[#172033] overflow-hidden select-none"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Ambient background glows matching dashboard palette */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[650px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(49,91,255,0.08),rgba(99,102,241,0.04),transparent_70%)] animate-pulse-glow" />
+      <div className="pointer-events-none absolute -left-48 top-1/4 -z-10 h-96 w-96 rounded-full bg-blue-400/10 blur-[130px] animate-pulse-glow" />
+      <div className="pointer-events-none absolute -right-48 top-1/3 -z-10 h-96 w-96 rounded-full bg-purple-400/10 blur-[140px] animate-pulse-glow [animation-delay:2s]" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* 1. Header Typography & Eyebrow */}
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
-          {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#D0DFFF] text-xs font-bold text-[#315BFF] shadow-2xs backdrop-blur-md">
-            <span className="flex h-2 w-2 rounded-full bg-[#315BFF] animate-pulse" />
-            <span>— Next-Gen Student & Task Workspace —</span>
-          </div>
-
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.1]">
-            Professional Student &{" "}
-            <span className="bg-gradient-to-r from-[#315BFF] via-[#4361EE] to-[#7209B7] bg-clip-text text-transparent">
-              Academic Workspace
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* 1. Header Typography */}
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-5">
+          {/* Main Headline with entrance and animated gradient text */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.08] animate-fade-in-up">
+            Engineered for Academic Focus &{" "}
+            <span className="bg-gradient-to-r from-[#315BFF] via-[#7209B7] to-[#315BFF] bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-flow inline-block">
+              High-Grade Results
             </span>
           </h1>
 
-          {/* Subtitle */}
-          <p className="max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            Modern unified layout for university students, automatic lecture routines, course tags, and high-impact task execution.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-3.5 pt-2 w-full sm:w-auto">
-            <Button asChild size="pillLg" className="w-full sm:w-auto">
-              <Link href={registerHref}>
+          {/* CTA Buttons with hover lift, shadow bloom, arrow slide, and active feedback */}
+          <div className="flex flex-col sm:flex-row items-center gap-3.5 pt-2 w-full sm:w-auto animate-fade-in-up [animation-delay:150ms]">
+            <Button
+              asChild
+              size="pillLg"
+              className="w-full sm:w-auto bg-[#315BFF] hover:bg-[#254BE3] text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 group cursor-pointer"
+            >
+              <Link
+                href={registerHref}
+                className="flex items-center justify-center gap-2"
+              >
                 <span>Get Started Free</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </Button>
 
-            <Button asChild variant="outline" size="pillLg" className="w-full sm:w-auto">
+            <Button
+              asChild
+              variant="outline"
+              size="pillLg"
+              className="w-full sm:w-auto bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
+            >
               <Link href="/dashboard">
                 <span>Explore Dashboard</span>
               </Link>
@@ -77,270 +316,297 @@ export function Hero({
           </div>
         </div>
 
-        {/* 2. Central Showcase / Realistic 3D Laptop Mockup */}
-        <div id="portfolio" className="relative mt-14 sm:mt-20 max-w-5xl mx-auto scroll-mt-28">
-          {/* Ambient device backlight */}
-          <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/15 via-indigo-500/10 to-transparent blur-3xl opacity-75" />
-
-          {/* Laptop Frame */}
-          <div className="relative rounded-t-2xl sm:rounded-t-3xl border-[6px] sm:border-[10px] border-[#E2E8F0] bg-[#F8FAFC] shadow-[0_25px_80px_rgba(49,91,255,0.14)] overflow-hidden">
-            {/* Top Webcam Notch */}
-            <div className="h-4 sm:h-5 bg-[#EDF2F7] flex items-center justify-center border-b border-[#CBD5E1]">
-              <div className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-                <span className="h-2 w-2 rounded-full bg-slate-700 border border-slate-400" />
-              </div>
-            </div>
-
-            {/* Screen Content: Active Dashboard Preview */}
-            <div className="bg-[#F8FAFC] p-3 sm:p-5 text-[#172033] space-y-3.5">
-              {/* Inner Dashboard Header: Welcome Card Banner */}
-              <div className="relative rounded-2xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
-                <div className="space-y-1.5">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/90 border border-[#D0DFFF] text-[10px] font-bold text-[#315BFF] shadow-2xs">
-                    <GraduationCap className="h-3 w-3" />
-                    <span>Week 5 of 17 • Summer Semester 2026 | Batch: 82A</span>
-                  </div>
-                  <h3 className="text-base sm:text-xl font-extrabold text-[#172033]">
-                    Good evening, <span className="text-[#315BFF] font-black">sanjoy chandro Bhowmick</span> 👋
-                  </h3>
-                  <p className="text-[11px] text-slate-500 max-w-md hidden sm:block">
-                    Stay on top of lectures, assignment deadlines, exam prep, and personal study targets.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <Button size="sm" className="rounded-xl gap-1.5">
-                    <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
-                    <span>Add Assignment</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Today's Schedule Strip */}
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F1F5F9] pb-2.5">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-[#315BFF]" />
-                    <span className="text-xs font-bold text-[#172033]">
-                      Today&apos;s Schedule
-                    </span>
-                    <span className="text-[10px] text-slate-400">
-                      (Monday, Sep 28)
-                    </span>
-                  </div>
-
-                  {/* Day Pills */}
-                  <div className="flex items-center gap-1 text-[10px] font-bold">
-                    <span className="px-2 py-0.5 rounded-full text-slate-500 bg-slate-50">Sun</span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#1E3A8A] text-white shadow-2xs">Mon 2</span>
-                    <span className="px-2 py-0.5 rounded-full text-slate-500 bg-slate-50 hidden sm:inline-block">Tue</span>
-                    <span className="px-2 py-0.5 rounded-full text-slate-500 bg-slate-50 hidden sm:inline-block">Wed</span>
-                    <span className="ml-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                      • 2 active sessions
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2 Classes */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                  {/* Class 1 */}
-                  <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E5EAF2] flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-[#EEF3FF] text-[#315BFF] border border-[#D0DFFF]">
-                          0612CSE315
-                        </span>
-                        <span className="text-[10px] font-bold text-[#315BFF]">Lecture</span>
-                      </div>
-                      <p className="font-extrabold text-[#172033] text-xs">
-                        CN • Computer Networks
-                      </p>
-                    </div>
-                    <div className="mt-2 text-[10px] text-slate-500 flex items-center justify-between">
-                      <span>09:30 AM - 11:00 AM</span>
-                      <span>Room A/502</span>
-                    </div>
-                  </div>
-
-                  {/* Class 2 */}
-                  <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E5EAF2] flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-50 text-purple-600 border border-purple-200">
-                          0612CSE320
-                        </span>
-                        <span className="text-[10px] font-bold text-purple-600">Lecture</span>
-                      </div>
-                      <p className="font-extrabold text-[#172033] text-xs truncate">
-                        TWRM • Technical Writing & Research
-                      </p>
-                    </div>
-                    <div className="mt-2 text-[10px] text-slate-500 flex items-center justify-between">
-                      <span>11:00 AM - 12:30 PM</span>
-                      <span>Room A/MCL A</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3 Metric Cards Inside Mockup */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <div className="p-3.5 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Pending Assignments
-                    </span>
-                    <p className="text-xl font-black text-[#172033] mt-0.5">0</p>
-                    <span className="text-[10px] text-slate-400">all on track</span>
-                  </div>
-                  <div className="h-9 w-9 rounded-xl bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center">
-                    <BookOpen className="h-4 w-4" />
-                  </div>
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Exams & Deadlines
-                    </span>
-                    <p className="text-xl font-black text-[#172033] mt-0.5">0</p>
-                    <span className="text-[10px] text-rose-500 font-semibold">• Prioritize</span>
-                  </div>
-                  <div className="h-9 w-9 rounded-xl bg-rose-50 border border-rose-100 text-rose-500 flex items-center justify-center">
-                    <Calendar className="h-4 w-4" />
-                  </div>
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-white border border-[#E5EAF2] shadow-2xs flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Study Target Progress
-                    </span>
-                    <p className="text-xl font-black text-[#172033] mt-0.5">0 / 5</p>
-                    <span className="text-[10px] text-emerald-600 font-semibold">• 0% done</span>
-                  </div>
-                  <div className="h-9 w-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center">
-                    <TrendingUp className="h-4 w-4" />
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* 2. The 3D Curved Cylindrical Horizon Stage (Right Below Navbar & Header) */}
+        <div
+          id="portfolio"
+          className="relative mt-12 sm:mt-16 w-full h-[520px] sm:h-[580px] lg:h-[620px] flex items-center justify-center [perspective:1400px] scroll-mt-28"
+        >
+          {/* Curved Holographic Screen Horizon Ribbon behind windows */}
+          <div className="absolute inset-x-2 sm:inset-x-8 top-1/2 -translate-y-1/2 h-[380px] sm:h-[440px] rounded-[36px] sm:rounded-[48px] border border-[#E2E8F0]/70 bg-gradient-to-b from-white/80 via-white/30 to-transparent backdrop-blur-md pointer-events-none shadow-[0_20px_50px_rgba(15,23,42,0.03)] overflow-hidden">
+            {/* Subtle smooth radial glow with no harsh line cuts */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.05),transparent_70%)]" />
           </div>
 
-          {/* Laptop 3D Base Stand */}
-          <div className="relative mx-auto w-[92%] sm:w-[86%] h-3.5 sm:h-4.5 bg-gradient-to-b from-[#E2E8F0] via-[#CBD5E1] to-[#94A3B8] rounded-b-xl sm:rounded-b-2xl shadow-[0_20px_50px_rgba(49,91,255,0.12)] flex items-center justify-center">
-            <div className="w-16 sm:w-24 h-1 bg-[#64748B] rounded-full" />
+          {/* Soft Diffused Ambient Ground Shadow (Clean & smooth, no sharp circle stroke lines) */}
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center -z-0">
+            {/* Soft ground diffusion */}
+            <div className="w-[320px] sm:w-[480px] h-16 rounded-[100%] bg-gradient-to-r from-blue-400/15 via-[#315BFF]/20 to-indigo-500/15 blur-2xl" />
+            <div className="w-[220px] sm:w-[340px] h-8 rounded-[100%] bg-blue-500/15 blur-xl -mt-4" />
           </div>
 
-          {/* Surface Reflection Light */}
-          <div className="mx-auto w-[75%] h-6 bg-gradient-to-r from-transparent via-[#315BFF]/10 to-transparent blur-xl" />
-        </div>
+          {/* 3. Three 3D Curved Floating Tablet Windows with Continuous Fluid 3D Travel */}
+          <div
+            className="relative w-full h-full flex items-center justify-center [transform-style:preserve-3d]"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleTouchStart}
+            onMouseUp={handleTouchEnd}
+          >
+            {showcaseItems.map((item, index) => {
+              const cardStyle = getCardStyle(index);
+              const isCenter = index === activeIndex;
 
-        {/* 3. Floating Feature Quick-Cards (Foreground Overlay) */}
-        <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Routine & Lectures */}
-          <div id="routine" className="group relative p-5 rounded-2xl bg-white border border-[#E5EAF2] hover:border-[#315BFF] shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer scroll-mt-28">
-            <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center mb-3 shadow-2xs">
-              <Clock className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors">
-              Routine & Lectures
-            </h3>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Auto-filtered daily lectures and labs based on real-time client day and semester range.
-            </p>
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    if (!isCenter) setActiveIndex(index);
+                  }}
+                  className={`absolute will-change-transform ${
+                    isCenter
+                      ? "cursor-default"
+                      : "cursor-pointer hover:brightness-105"
+                  }`}
+                  style={cardStyle}
+                >
+                  <TabletWindow item={item} isCenter={isCenter} />
+                </div>
+              );
+            })}
           </div>
 
-          {/* Card 2: Active Glow State: Assignments & Growth */}
-          <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-[#EEF4FF] via-white to-[#F4F7FF] border border-[#D0DFFF] shadow-xs hover:border-[#315BFF] hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
-            <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#315BFF] text-white shadow-2xs">
-              Active Focus
-            </div>
-            <div className="h-10 w-10 rounded-xl bg-[#EEF3FF] border border-[#D0DFFF] text-[#315BFF] flex items-center justify-center mb-3 shadow-2xs">
-              <CheckSquare className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors">
-              Assignments & Growth
-            </h3>
-            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-              Prioritized due-date tracking with glowing warning dots for immediate submissions.
-            </p>
-          </div>
-
-          {/* Card 3: Semester Planning */}
-          <div className="group relative p-5 rounded-2xl bg-white border border-[#E5EAF2] hover:border-purple-400 shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
-            <div className="h-10 w-10 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center mb-3 shadow-2xs">
-              <GraduationCap className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-bold text-[#172033] group-hover:text-purple-600 transition-colors">
-              Semester Planning
-            </h3>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Auto-calculate academic weeks, term start/end durations, and off-day notifications.
-            </p>
-          </div>
-
-          {/* Card 4: Pomodoro & Study Focus */}
-          <div className="group relative p-5 rounded-2xl bg-white border border-[#E5EAF2] hover:border-emerald-400 shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
-            <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-3 shadow-2xs">
-              <Timer className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-bold text-[#172033] group-hover:text-emerald-600 transition-colors">
-              Pomodoro & Focus
-            </h3>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Integrated 25m study blocks, synthesizer audio chimes, and session goal metrics.
-            </p>
+          {/* 4. Floating Glassmorphic Navigation Buttons */}
+          <div className="absolute right-4 sm:right-10 bottom-6 sm:bottom-10 z-40 flex items-center gap-2">
+            <button
+              onClick={prevSlide}
+              aria-label="Previous Showcase"
+              className="group flex items-center justify-center h-12 w-12 rounded-2xl bg-white/90 hover:bg-white border border-slate-200/90 backdrop-blur-xl text-slate-700 shadow-md hover:shadow-lg hover:border-slate-300 hover:scale-105 active:scale-95 outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#315BFF]/30 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="h-5 w-5 text-[#315BFF] group-hover:scale-110 transition-transform" />
+            </button>
+            <button
+              onClick={nextSlide}
+              aria-label="Next Showcase"
+              className="group flex items-center justify-center h-12 w-12 rounded-2xl bg-white/90 hover:bg-white border border-slate-200/90 backdrop-blur-xl text-slate-700 shadow-md hover:shadow-lg hover:border-slate-300 hover:scale-105 active:scale-95 outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#315BFF]/30 transition-all cursor-pointer"
+            >
+              <ChevronRight className="h-5 w-5 text-[#315BFF] group-hover:scale-110 transition-transform" />
+            </button>
           </div>
         </div>
 
-        {/* 4. Social Proof & Metric Bar */}
-        <div className="mt-14 sm:mt-18 p-6 sm:p-7 rounded-2xl bg-white border border-[#E5EAF2] shadow-xs flex flex-col lg:flex-row items-center justify-between gap-6">
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10 text-center sm:text-left w-full lg:w-auto">
-            <div>
-              <p className="text-2xl sm:text-3xl font-black text-[#172033] tracking-tight">
-                500+
-              </p>
-              <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                Tasks Handled
-              </p>
-            </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-black text-[#315BFF] tracking-tight">
-                98%
-              </p>
-              <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                On-Time Submissions
-              </p>
-            </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-black text-[#172033] tracking-tight">
-                24/7
-              </p>
-              <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                Timetable Sync
-              </p>
-            </div>
+        {/* 5. Carousel Pagination Dots & Category Indicator */}
+        <div className="mt-10 sm:mt-12 flex flex-col items-center justify-center gap-3">
+          <div className="flex items-center gap-2">
+            {showcaseItems.map((item, idx) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveIndex(idx)}
+                aria-label={`Show ${item.title}`}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === activeIndex
+                    ? "w-8 bg-[#315BFF] shadow-2xs"
+                    : "w-2 bg-slate-300 hover:bg-slate-400"
+                }`}
+              />
+            ))}
           </div>
 
-          {/* Action CTA & Feature Tags */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto justify-end">
-            <span className="text-xs font-bold text-slate-400 tracking-wider uppercase hidden xl:inline">
-              Modern • Fast • Smart • Responsive
-            </span>
-
-            <Button asChild size="pill" className="w-full sm:w-auto">
-              <Link href={registerHref}>
-                <span>Get Started Free</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
+          <p className="text-xs font-mono font-bold text-slate-500">
+            {showcaseItems[activeIndex].category} • {activeIndex + 1} of {total}
+          </p>
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Realistic Student UI Component Preview
+ */
+function ShowcasePreview({ item }: { item: ShowcaseFeature }) {
+  if (item.id === "timetable") {
+    return (
+      <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-3 space-y-2 text-left">
+        <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-0.5">
+          <span>Wednesday • Today</span>
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Live Routine
+          </span>
+        </div>
+        <div className="rounded-xl bg-white border border-blue-200/90 p-2.5 shadow-2xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#315BFF] border border-blue-100">
+              09:30 - 11:00 AM
+            </span>
+            <span className="text-[10px] font-bold text-slate-700">Room A/502</span>
+          </div>
+          <p className="text-xs font-bold text-slate-900 leading-tight">Operating Systems Lecture</p>
+          <p className="text-[10px] text-slate-500">Prof. A. Rahman • CSE 315</p>
+        </div>
+        <div className="rounded-xl bg-white/90 border border-slate-200/80 p-2 flex items-center justify-between shadow-2xs">
+          <div>
+            <p className="text-[11px] font-semibold text-slate-800">11:30 AM • Linear Algebra</p>
+            <p className="text-[10px] text-slate-400">Auditorium 2 • MAT 201</p>
+          </div>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+            Next
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (item.id === "pomodoro") {
+    return (
+      <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800 p-3.5 text-white flex flex-col justify-between h-[152px]">
+        <div className="flex items-center justify-between text-[11px] text-slate-400">
+          <span className="font-medium text-slate-300">Deep Study Session</span>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            Focus Mode
+          </span>
+        </div>
+        <div className="text-center my-auto">
+          <p className="text-3xl font-black tracking-tight text-white font-mono">24:18</p>
+          <p className="text-[11px] text-slate-400 mt-0.5">Distributed Systems • Session 2 of 4</p>
+        </div>
+        <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-[10px] text-slate-400">
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-700" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-700" />
+          </div>
+          <span className="text-emerald-400 font-semibold">Break in 24m</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (item.id === "deadlines") {
+    return (
+      <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-3 space-y-2 text-left">
+        <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-0.5">
+          <span>Course Deadlines</span>
+          <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/60">
+            2 Urgent
+          </span>
+        </div>
+        <div className="rounded-xl bg-white border border-rose-200 p-2.5 shadow-2xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-100">
+              Due in 18 hrs
+            </span>
+            <span className="text-[10px] font-bold text-slate-600">CSE 421</span>
+          </div>
+          <p className="text-xs font-bold text-slate-900 leading-tight">Database Final Project Report</p>
+          <p className="text-[10px] text-slate-500">Weight: 20% of term grade</p>
+        </div>
+        <div className="rounded-xl bg-white/90 border border-slate-200/80 p-2 flex items-center justify-between shadow-2xs">
+          <div>
+            <p className="text-[11px] font-semibold text-slate-800">Physics Lab 4 Report</p>
+            <p className="text-[10px] text-slate-400">Friday, 11:59 PM • PHY 102</p>
+          </div>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+            Upcoming
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // Default: Kanban
+  return (
+    <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-3 space-y-2 text-left">
+      <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-0.5">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-[#315BFF]" />
+          In Progress (2)
+        </span>
+        <span className="text-[10px] text-slate-400">Semester Week 5</span>
+      </div>
+      <div className="rounded-xl bg-white border border-slate-200 p-2.5 shadow-2xs space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#315BFF] border border-blue-100">
+            CSE 315
+          </span>
+          <span className="text-[10px] font-semibold text-rose-600">Due Tomorrow</span>
+        </div>
+        <p className="text-xs font-bold text-slate-900 leading-tight">Operating Systems Lab Report #3</p>
+        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+          <span>3 subtasks</span>
+          <span className="text-emerald-600 font-semibold">2/3 Done</span>
+        </div>
+      </div>
+      <div className="rounded-xl bg-white/90 border border-slate-200/80 p-2 flex items-center justify-between shadow-2xs">
+        <span className="text-[11px] font-medium text-slate-700 truncate">Algorithm Quiz 2 Study</span>
+        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-50 text-purple-600">
+          MAT 201
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Tablet Window Component in Clean Human Theme
+ */
+function TabletWindow({
+  item,
+  isCenter,
+}: {
+  item: ShowcaseFeature;
+  isCenter: boolean;
+}) {
+  return (
+    <div className="relative">
+      {/* 4-sided ambient aura glow & smooth breathing animation for the center active card */}
+      {isCenter && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-3 sm:-inset-4.5 rounded-[34px] sm:rounded-[38px] bg-gradient-to-r from-blue-500/35 via-indigo-500/25 to-blue-400/35 blur-2xl opacity-75 animate-pulse -z-10"
+          style={{ animationDuration: "3.5s" }}
+        />
+      )}
+
+      <div
+        className={`w-[290px] sm:w-[350px] lg:w-[370px] h-[415px] sm:h-[445px] rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 flex flex-col justify-between border transition-all duration-500 ${
+          isCenter
+            ? "bg-white text-[#172033] border-2 border-[#315BFF]/60 shadow-[0_0_50px_rgba(49,91,255,0.25),0_0_25px_rgba(49,91,255,0.15),0_20px_45px_-10px_rgba(15,23,42,0.12)] ring-4 ring-[#315BFF]/15 scale-[1.01]"
+            : "bg-white/95 text-[#172033] border border-slate-200/90 shadow-[0_8px_25px_-5px_rgba(15,23,42,0.08),0_0_15px_rgba(49,91,255,0.06)] backdrop-blur-md"
+        }`}
+      >
+      <div>
+        {/* Clean Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#315BFF]" />
+            <span className="text-xs font-bold text-slate-800 tracking-tight">
+              {item.category}
+            </span>
+          </div>
+
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/80">
+            {item.badge}
+          </span>
+        </div>
+
+        {/* Realistic Human UI Preview */}
+        <div className="mt-3">
+          <ShowcasePreview item={item} />
+        </div>
+      </div>
+
+      {/* Bottom Content Area */}
+      <div className="pt-2">
+        <h3 className="text-base sm:text-lg font-bold text-[#172033] tracking-tight leading-snug">
+          {item.title}
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500 line-clamp-2">
+          {item.tagline}
+        </p>
+
+        {/* Clean Human Button */}
+        <Link
+          href="/dashboard"
+          className="mt-3 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-[#315BFF] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+        >
+          <span>Explore Feature</span>
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </div>
+    </div>
   );
 }
 

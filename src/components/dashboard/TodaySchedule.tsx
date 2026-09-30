@@ -211,6 +211,8 @@ export const WEEKLY_SCHEDULE: Record<string, ScheduleItem[]> = {
 
 const DAYS_LIST = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+import { useStudentProfile } from "@/lib/studentProfile";
+
 export interface TodayScheduleProps {
   onManageRoutine?: () => void;
   onSelectSession?: (item: ScheduleItem) => void;
@@ -224,6 +226,7 @@ export function TodaySchedule({
   selectedDay: propSelectedDay,
   onSelectDay,
 }: TodayScheduleProps) {
+  const { profile } = useStudentProfile();
   // Current actual day of the week abbreviated: e.g. "Sun"
   const currentActualDay = React.useMemo(() => {
     const dayLong = new Date().toLocaleDateString("en-US", { weekday: "short" });
@@ -302,7 +305,7 @@ export function TodaySchedule({
               )}
             </div>
             <p className="text-[11px] text-slate-400 font-medium leading-none mt-0.5">
-              Summer 2026 • Batch 82A
+              Summer 2026 • {profile.batch || "Batch 82A"}
             </p>
           </div>
         </div>

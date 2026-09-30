@@ -2,16 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Plus,
   MoreVertical,
@@ -23,7 +13,19 @@ import {
   GripVertical,
   CheckCircle2,
   Circle,
+  Sparkles,
+  Calendar,
+  AlertCircle,
+  Tag,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import type { Task } from "@/types/task";
 
@@ -34,6 +36,7 @@ interface KanbanBoardProps {
   onStatusToggle: (task: Task) => void;
   onStatusChange?: (taskId: string, completed: boolean) => void;
   onOpenCreateModal: (defaultCompleted?: boolean) => void;
+  onLoadStarterTasks?: () => void;
 }
 
 export function KanbanBoard({
@@ -43,6 +46,7 @@ export function KanbanBoard({
   onStatusToggle,
   onStatusChange,
   onOpenCreateModal,
+  onLoadStarterTasks,
 }: KanbanBoardProps) {
   const [draggedTaskId, setDraggedTaskId] = React.useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = React.useState<string | null>(null);
@@ -55,22 +59,20 @@ export function KanbanBoard({
       id: "PENDING" as const,
       completedValue: false,
       title: "To Do",
-      subtitle: "Pending & Active Tasks",
-      badgeVariant: "pending",
-      icon: Circle,
-      topAccent: "from-blue-500 to-indigo-600",
-      accentBorder: "border-l-indigo-500",
+      subtitle: "Pending & Active Studies",
+      dotColor: "bg-blue-600",
+      badgeColor: "bg-blue-100 text-blue-700",
+      borderColor: "hover:border-blue-300",
       items: pendingTasks,
     },
     {
       id: "COMPLETED" as const,
       completedValue: true,
       title: "Completed",
-      subtitle: "Done & Verified",
-      badgeVariant: "completed",
-      icon: CheckCircle2,
-      topAccent: "from-emerald-500 to-teal-600",
-      accentBorder: "border-l-emerald-500",
+      subtitle: "Finished & Verified",
+      dotColor: "bg-emerald-600",
+      badgeColor: "bg-emerald-100 text-emerald-700",
+      borderColor: "hover:border-emerald-300",
       items: completedTasks,
     },
   ];
@@ -114,22 +116,33 @@ export function KanbanBoard({
   };
 
   return (
-    <div className="space-y-4 animate-fade-in-up">
-      {/* Visual instructions banner */}
-      <div className="flex items-center justify-between px-3.5 py-2.5 bg-blue-50/60 border border-blue-100 rounded-xl text-xs text-blue-700">
-        <span className="flex items-center gap-1.5 font-medium">
-          <GripVertical className="h-4 w-4 text-blue-500" />
-          Drag and drop any task card between columns to update its status instantly.
+    <div className="space-y-4">
+      {/* Top Helper Bar */}
+      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-100/80 border border-slate-200/80 rounded-xl text-xs text-slate-600">
+        <span className="flex items-center gap-2 font-medium">
+          <GripVertical className="h-4 w-4 text-slate-400" />
+          <span>Drag and drop cards across columns to progress work in real time.</span>
         </span>
-        <span className="text-[11px] text-blue-500 font-semibold hidden sm:inline">
-          {tasks.length} total tasks
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] font-semibold text-slate-500">
+            {tasks.length} total tasks
+          </span>
+          {onLoadStarterTasks && tasks.length === 0 && (
+            <button
+              type="button"
+              onClick={onLoadStarterTasks}
+              className="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <Sparkles className="h-3 w-3 text-amber-500" />
+              <span>Reset Sample Tasks</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Kanban Columns Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         {columns.map((col) => {
-          const Icon = col.icon;
           const isOver = dragOverCol === col.id;
 
           return (
@@ -138,58 +151,51 @@ export function KanbanBoard({
               onDragOver={(e) => handleDragOver(e, col.id)}
               onDragLeave={(e) => handleDragLeave(e, col.id)}
               onDrop={(e) => handleDrop(e, col.completedValue)}
-              className={`flex flex-col rounded-2xl border transition-all duration-300 min-h-[240px] sm:min-h-[400px] md:min-h-[500px] ${
+              className={`flex flex-col rounded-2xl border transition-all duration-200 min-h-[580px] p-3.5 space-y-3 ${
                 isOver
-                  ? "border-blue-400 bg-blue-50/40 shadow-md ring-2 ring-blue-400/30 scale-[1.01]"
-                  : "border-zinc-200/90 bg-zinc-100/50 hover:border-zinc-300 shadow-2xs"
+                  ? "border-blue-400 bg-blue-50/50 shadow-md ring-2 ring-blue-400/20"
+                  : "border-slate-200/80 bg-slate-100/70"
               }`}
             >
-              {/* Column Header */}
-              <div className="p-4 border-b border-zinc-200/80 bg-white/80 rounded-t-2xl backdrop-blur-xs flex items-center justify-between">
+              {/* Column Header (Linear / Jira style) */}
+              <div className="flex items-center justify-between pb-2 px-1 border-b border-slate-200/80">
                 <div className="flex items-center gap-2.5">
-                  <div
-                    className={`h-7 w-7 rounded-lg bg-gradient-to-br ${col.topAccent} text-white flex items-center justify-center shadow-xs`}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-sm text-zinc-900 leading-none">
-                        {col.title}
-                      </h3>
-                      <Badge
-                        variant={col.badgeVariant as any}
-                        className="text-xs px-2 py-0.5 rounded-full"
-                      >
-                        {col.items.length}
-                      </Badge>
-                    </div>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">{col.subtitle}</p>
-                  </div>
+                  <span className={`h-2.5 w-2.5 rounded-full ${col.dotColor} shrink-0`} />
+                  <h3 className="font-bold text-sm text-slate-800 tracking-tight">
+                    {col.title}
+                  </h3>
+                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${col.badgeColor}`}>
+                    {col.items.length}
+                  </span>
                 </div>
 
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => onOpenCreateModal(col.completedValue)}
-                  className="h-8 w-8 p-0 text-zinc-500 hover:text-zinc-900 rounded-lg hover:bg-zinc-100"
+                  className="h-7 px-2 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-200/80 gap-1 cursor-pointer"
                   title={`Add task to ${col.title}`}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Add</span>
                 </Button>
               </div>
 
-              {/* Column Tasks List */}
-              <div className="p-3 space-y-3 flex-1 flex flex-col">
+              {/* Cards List inside column */}
+              <div className="space-y-3 flex-1 flex flex-col">
                 {col.items.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center rounded-xl border-2 border-dashed border-zinc-200/70 text-zinc-400 my-2">
-                    <p className="text-xs font-medium">No tasks in {col.title}</p>
-                    <button
-                      onClick={() => onOpenCreateModal(col.completedValue)}
-                      className="mt-2 text-blue-600 hover:underline flex items-center gap-1 font-medium text-xs cursor-pointer"
-                    >
-                      <Plus className="h-3 w-3" /> Add a task
-                    </button>
+                  /* Compact Human Dropzone (No giant cartoon voids!) */
+                  <div
+                    onClick={() => onOpenCreateModal(col.completedValue)}
+                    className="h-28 rounded-xl border-2 border-dashed border-slate-300/80 hover:border-blue-400 bg-white/40 hover:bg-white/80 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 transition-all cursor-pointer text-xs gap-1 group"
+                  >
+                    <div className="flex items-center gap-1 font-semibold text-slate-600 group-hover:text-blue-600">
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>Add a task to {col.title}</span>
+                    </div>
+                    <span className="text-[11px] text-slate-400">
+                      or drag cards into this column
+                    </span>
                   </div>
                 ) : (
                   col.items.map((task) => {
@@ -201,116 +207,138 @@ export function KanbanBoard({
                         draggable
                         onDragStart={(e) => handleDragStart(e, task.id)}
                         onDragEnd={handleDragEnd}
-                        className={`cursor-grab active:cursor-grabbing transition-all duration-200 ${
-                          isDraggingThis ? "opacity-40 scale-95" : "hover:-translate-y-0.5"
+                        className={`group relative bg-white rounded-xl border border-slate-200/90 hover:border-blue-400/80 shadow-xs hover:shadow-md transition-all duration-150 p-3.5 space-y-2.5 cursor-grab active:cursor-grabbing ${
+                          isDraggingThis ? "opacity-40 scale-95" : ""
                         }`}
                       >
-                        <Card
-                          className={`relative border-l-4 ${col.accentBorder} border-zinc-200/90 bg-white shadow-xs hover:shadow-md transition-shadow group`}
-                        >
-                          <CardHeader className="p-3.5 pb-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex items-start gap-2 flex-1 min-w-0">
-                                <GripVertical className="h-4 w-4 text-zinc-300 group-hover:text-zinc-500 mt-0.5 shrink-0" />
-                                <div className="space-y-1 flex-1 min-w-0">
-                                  <Link
-                                    href={`/task/${task.id}`}
-                                    className={`font-semibold text-sm block hover:text-blue-600 transition-colors truncate ${
-                                      task.completed ? "line-through text-zinc-400" : "text-zinc-900"
-                                    }`}
-                                  >
-                                    {task.title}
-                                  </Link>
-                                </div>
-                              </div>
-
-                              {/* Card Actions */}
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-7 w-7 text-zinc-400 hover:text-zinc-800"
-                                  >
-                                    <MoreVertical className="h-3.5 w-3.5" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-44 shadow-lg">
-                                  <DropdownMenuItem asChild>
-                                    <Link href={`/task/${task.id}`}>
-                                      <ExternalLink className="mr-2 h-4 w-4 text-zinc-500" />
-                                      View Details
-                                    </Link>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => onEdit(task)}>
-                                    <Pencil className="mr-2 h-4 w-4 text-zinc-500" />
-                                    Edit Task
-                                  </DropdownMenuItem>
-                                  <DropdownMenuSeparator />
-                                  {onStatusChange && (
-                                    <DropdownMenuItem
-                                      onClick={() => onStatusChange(task.id, !task.completed)}
-                                    >
-                                      <ArrowRight className="mr-2 h-4 w-4 text-blue-500" />
-                                      Mark as {task.completed ? "To Do" : "Completed"}
-                                    </DropdownMenuItem>
-                                  )}
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem
-                                    onClick={() => onDelete(task.id)}
-                                    className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                                  >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Delete Task
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                          </CardHeader>
-
-                          {task.description && (
-                            <CardContent className="px-3.5 py-1.5 pt-0">
-                              <p className="text-xs text-zinc-500 line-clamp-2 pl-6 leading-relaxed">
-                                {task.description}
-                              </p>
-                            </CardContent>
-                          )}
-
-                          <CardFooter className="px-3.5 py-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400 bg-zinc-50/40 mt-1">
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{formatDate(task.createdAt)}</span>
-                            </div>
-                            {onStatusChange && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onStatusChange(task.id, !task.completed);
-                                }}
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold transition-all active:scale-95 cursor-pointer ${
-                                  task.completed
-                                    ? "bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/70"
-                                    : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/70"
-                                }`}
-                                title={task.completed ? "Move to To Do" : "Mark as Completed"}
-                                aria-label={task.completed ? "Move task to To Do" : "Move task to Completed"}
-                              >
-                                {task.completed ? (
-                                  <>
-                                    <ArrowRight className="h-3 w-3 rotate-180" />
-                                    <span>To Do</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <CheckCircle2 className="h-3 w-3" />
-                                    <span>Done</span>
-                                  </>
-                                )}
-                              </button>
+                        {/* Card Top Row: Course Tag & Priority & Dropdown Menu */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                            {task.course && (
+                              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/70 font-bold text-[10px] tracking-wide shrink-0">
+                                {task.course}
+                              </span>
                             )}
-                          </CardFooter>
-                        </Card>
+                            {task.priority && (
+                              <span
+                                className={`px-2 py-0.5 rounded-md font-semibold text-[10px] flex items-center gap-1 shrink-0 ${
+                                  task.priority === "HIGH"
+                                    ? "bg-rose-50 text-rose-700 border border-rose-200/70"
+                                    : task.priority === "MEDIUM"
+                                    ? "bg-amber-50 text-amber-700 border border-amber-200/70"
+                                    : "bg-slate-50 text-slate-600 border border-slate-200/70"
+                                }`}
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${
+                                    task.priority === "HIGH"
+                                      ? "bg-rose-500"
+                                      : task.priority === "MEDIUM"
+                                      ? "bg-amber-500"
+                                      : "bg-slate-400"
+                                  }`}
+                                />
+                                <span>{task.priority}</span>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Menu dropdown */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 text-slate-400 hover:text-slate-800 rounded-md"
+                              >
+                                <MoreVertical className="h-3.5 w-3.5" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-44 shadow-lg">
+                              <DropdownMenuItem asChild>
+                                <Link href={`/task/${task.id}`}>
+                                  <ExternalLink className="mr-2 h-4 w-4 text-slate-500" />
+                                  <span>View Details</span>
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => onEdit(task)}>
+                                <Pencil className="mr-2 h-4 w-4 text-slate-500" />
+                                <span>Edit Task</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              {onStatusChange && (
+                                <DropdownMenuItem
+                                  onClick={() => onStatusChange(task.id, !task.completed)}
+                                >
+                                  <ArrowRight className="mr-2 h-4 w-4 text-blue-500" />
+                                  <span>Mark as {task.completed ? "To Do" : "Completed"}</span>
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => onDelete(task.id)}
+                                className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                <span>Delete Task</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+
+                        {/* Card Title & Description */}
+                        <div>
+                          <h4
+                            onClick={() => onEdit(task)}
+                            className={`text-xs sm:text-sm font-bold leading-snug cursor-pointer hover:text-blue-600 transition-colors line-clamp-2 ${
+                              task.completed ? "line-through text-slate-400" : "text-slate-900"
+                            }`}
+                          >
+                            {task.title}
+                          </h4>
+                          {task.description && (
+                            <p className="text-xs text-slate-500 line-clamp-2 mt-1 leading-relaxed">
+                              {task.description}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Card Bottom Row: Date & Status Action Button */}
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                            <Clock className="h-3 w-3 text-slate-400" />
+                            <span>
+                              {task.dueDate
+                                ? `Due ${formatDate(task.dueDate)}`
+                                : formatDate(task.createdAt)}
+                            </span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onStatusChange && onStatusChange(task.id, !task.completed);
+                            }}
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                              task.completed
+                                ? "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/70"
+                                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/70"
+                            }`}
+                          >
+                            {task.completed ? (
+                              <>
+                                <ArrowRight className="h-3 w-3 rotate-180" />
+                                <span>To Do</span>
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                                <span>Done</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     );
                   })
@@ -318,11 +346,21 @@ export function KanbanBoard({
 
                 {/* Drop placeholder while dragging over this column */}
                 {isOver && draggedTaskId && (
-                  <div className="h-16 rounded-xl border-2 border-dashed border-blue-400 bg-blue-100/40 flex items-center justify-center text-xs font-semibold text-blue-600 animate-pulse">
-                    Drop here to move to {col.title}
+                  <div className="h-16 rounded-xl border-2 border-dashed border-blue-400 bg-blue-100/40 flex items-center justify-center text-blue-600 font-bold text-xs animate-pulse">
+                    Drop task here
                   </div>
                 )}
               </div>
+
+              {/* Bottom Quick-Add Row (Trello / Linear style) */}
+              <button
+                type="button"
+                onClick={() => onOpenCreateModal(col.completedValue)}
+                className="w-full py-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add a task to {col.title}</span>
+              </button>
             </div>
           );
         })}

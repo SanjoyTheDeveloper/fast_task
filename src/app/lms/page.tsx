@@ -2,168 +2,329 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowLeft, Upload, BookOpen, Layers, Sparkles, Folder, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Layers,
+  Sparkles,
+  Folder,
+  FileText,
+  Bookmark,
+  LayoutGrid,
+  List,
+  SlidersHorizontal,
+} from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { LmsLibrarySidebar, LmsNavSection } from "@/components/lms/LmsLibrarySidebar";
 import { LmsLibraryHeader } from "@/components/lms/LmsLibraryHeader";
 import { LmsLibraryCard, LmsPdfDocument } from "@/components/lms/LmsLibraryCard";
 import { LmsPdfViewerModal } from "@/components/lms/LmsPdfViewerModal";
-import { LmsUploadModal } from "@/components/lms/LmsUploadModal";
+import { COURSE_THEMES } from "@/lib/courseThemes";
 
 const initialLibraryDocuments: LmsPdfDocument[] = [
+  // 1. AIES (0611CSE321)
   {
-    id: "doc-1",
-    title: "Chapter 1 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Data Structures",
-    size: "3.2 MB",
-    category: "Data Structures",
-    pages: 24,
+    id: "aies-1",
+    title: "Chapter 1 - Intro to AI & Intelligent Agents.pdf",
+    courseCode: "0611CSE321",
+    courseName: "AIES",
+    size: "3.4 MB",
+    category: "AIES",
+    pages: 28,
     uploadedAt: "Sep 20, 2026",
-    isBookmarked: false,
-  },
-  {
-    id: "doc-2",
-    title: "Chapter 2 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Data Structures",
-    size: "3.2 MB",
-    category: "Data Structures",
-    pages: 32,
-    uploadedAt: "Sep 21, 2026",
     isBookmarked: true,
   },
   {
-    id: "doc-3",
-    title: "Chapter 3 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Data Structures",
-    size: "3.2 MB",
-    category: "Data Structures",
-    pages: 28,
+    id: "aies-2",
+    title: "Chapter 2 - Heuristic Search Algorithms & A-Star.pdf",
+    courseCode: "0611CSE321",
+    courseName: "AIES",
+    size: "4.2 MB",
+    category: "AIES",
+    pages: 34,
     uploadedAt: "Sep 22, 2026",
     isBookmarked: false,
   },
   {
-    id: "doc-4",
-    title: "Chapter 1 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Operating Systems",
-    size: "3.2 MB",
-    category: "Operating Systems",
-    pages: 18,
-    uploadedAt: "Sep 23, 2026",
-    isBookmarked: false,
-  },
-  {
-    id: "doc-5",
-    title: "Chapter 2 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Operating Systems",
-    size: "3.2 MB",
-    category: "Operating Systems",
-    pages: 26,
+    id: "aies-3",
+    title: "Chapter 3 - Knowledge Representation & First-Order Logic.pdf",
+    courseCode: "0611CSE321",
+    courseName: "AIES",
+    size: "3.8 MB",
+    category: "AIES",
+    pages: 30,
     uploadedAt: "Sep 24, 2026",
     isBookmarked: false,
   },
   {
-    id: "doc-6",
-    title: "Chapter 3 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Operating Systems",
-    size: "3.2 MB",
-    category: "Operating Systems",
-    pages: 30,
-    uploadedAt: "Sep 25, 2026",
+    id: "aies-4",
+    title: "Chapter 4 - Expert Systems & Inference Engines.pdf",
+    courseCode: "0611CSE321",
+    courseName: "AIES",
+    size: "2.9 MB",
+    category: "AIES",
+    pages: 24,
+    uploadedAt: "Sep 26, 2026",
+    isBookmarked: false,
+  },
+
+  // 2. AP (0613CSE333)
+  {
+    id: "ap-1",
+    title: "Module 1 - Advanced OOP Design Patterns.pdf",
+    courseCode: "0613CSE333",
+    courseName: "AP",
+    size: "4.1 MB",
+    category: "AP",
+    pages: 36,
+    uploadedAt: "Sep 19, 2026",
     isBookmarked: true,
   },
   {
-    id: "doc-7",
-    title: "Chapter 4 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Math",
-    size: "3.2 MB",
-    category: "Math",
-    pages: 22,
-    uploadedAt: "Sep 25, 2026",
+    id: "ap-2",
+    title: "Module 2 - Multithreading, Concurrency & Async IO.pdf",
+    courseCode: "0613CSE333",
+    courseName: "AP",
+    size: "3.7 MB",
+    category: "AP",
+    pages: 28,
+    uploadedAt: "Sep 21, 2026",
     isBookmarked: false,
   },
   {
-    id: "doc-8",
-    title: "Chapter 5 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Math",
-    size: "3.2 MB",
-    category: "Math",
-    pages: 35,
-    uploadedAt: "Sep 26, 2026",
+    id: "ap-3",
+    title: "Module 3 - Memory Management & Smart Pointers.pdf",
+    courseCode: "0613CSE333",
+    courseName: "AP",
+    size: "3.5 MB",
+    category: "AP",
+    pages: 26,
+    uploadedAt: "Sep 23, 2026",
     isBookmarked: false,
   },
   {
-    id: "doc-9",
-    title: "Chapter 6 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Physics",
-    size: "3.2 MB",
-    category: "Physics",
-    pages: 19,
-    uploadedAt: "Sep 26, 2026",
-    isBookmarked: false,
-  },
-  {
-    id: "doc-10",
-    title: "Chapter 4 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Physics",
-    size: "3.2 MB",
-    category: "Physics",
-    pages: 25,
-    uploadedAt: "Sep 27, 2026",
-    isBookmarked: false,
-  },
-  {
-    id: "doc-11",
-    title: "Chapter 8 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Data Structures",
-    size: "3.2 MB",
-    category: "Data Structures",
+    id: "ap-4",
+    title: "Module 4 - Network Socket Programming in C++.pdf",
+    courseCode: "0613CSE333",
+    courseName: "AP",
+    size: "4.6 MB",
+    category: "AP",
     pages: 40,
     uploadedAt: "Sep 27, 2026",
     isBookmarked: false,
   },
+
+  // 3. CN (0612CSE315)
   {
-    id: "doc-12",
-    title: "Chapter 9 - Introduction.pdf",
-    courseCode: "CSE101",
-    courseName: "Data Structures",
-    size: "3.2 MB",
-    category: "Data Structures",
-    pages: 36,
+    id: "cn-1",
+    title: "Unit 1 - OSI vs TCP-IP Architecture & Protocol Stack.pdf",
+    courseCode: "0612CSE315",
+    courseName: "CN",
+    size: "3.1 MB",
+    category: "CN",
+    pages: 26,
+    uploadedAt: "Sep 20, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "cn-2",
+    title: "Unit 2 - Data Link Layer, Framing & Flow Control.pdf",
+    courseCode: "0612CSE315",
+    courseName: "CN",
+    size: "2.8 MB",
+    category: "CN",
+    pages: 22,
+    uploadedAt: "Sep 22, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "cn-3",
+    title: "Unit 3 - IPv4 vs IPv6 Subnetting & CIDR Guide.pdf",
+    courseCode: "0612CSE315",
+    courseName: "CN",
+    size: "4.5 MB",
+    category: "CN",
+    pages: 38,
+    uploadedAt: "Sep 25, 2026",
+    isBookmarked: true,
+  },
+  {
+    id: "cn-4",
+    title: "Unit 4 - Routing Protocols (OSPF, BGP, RIP).pdf",
+    courseCode: "0612CSE315",
+    courseName: "CN",
+    size: "3.9 MB",
+    category: "CN",
+    pages: 32,
+    uploadedAt: "Sep 27, 2026",
+    isBookmarked: false,
+  },
+
+  // 4. MACS (0541MAT337)
+  {
+    id: "macs-1",
+    title: "Lecture 1 - Linear Algebra & Matrix Decompositions.pdf",
+    courseCode: "0541MAT337",
+    courseName: "MACS",
+    size: "4.8 MB",
+    category: "MACS",
+    pages: 42,
+    uploadedAt: "Sep 21, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "macs-2",
+    title: "Lecture 2 - Eigenvalues, Eigenvectors & State Spaces.pdf",
+    courseCode: "0541MAT337",
+    courseName: "MACS",
+    size: "3.6 MB",
+    category: "MACS",
+    pages: 30,
+    uploadedAt: "Sep 23, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "macs-3",
+    title: "Lecture 3 - Complex Numbers & Contour Integrals.pdf",
+    courseCode: "0541MAT337",
+    courseName: "MACS",
+    size: "5.2 MB",
+    category: "MACS",
+    pages: 45,
+    uploadedAt: "Sep 26, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "macs-4",
+    title: "Lecture 4 - Nonlinear Dynamics & Chaos Theory.pdf",
+    courseCode: "0541MAT337",
+    courseName: "MACS",
+    size: "4.0 MB",
+    category: "MACS",
+    pages: 33,
     uploadedAt: "Sep 28, 2026",
+    isBookmarked: false,
+  },
+
+  // 5. TWRM (0031CSE320)
+  {
+    id: "twrm-1",
+    title: "Handout 1 - IEEE Manuscript Structure & Formats.pdf",
+    courseCode: "0031CSE320",
+    courseName: "TWRM",
+    size: "2.2 MB",
+    category: "TWRM",
+    pages: 18,
+    uploadedAt: "Sep 22, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "twrm-2",
+    title: "Handout 2 - Literature Review & Citation Standards.pdf",
+    courseCode: "0031CSE320",
+    courseName: "TWRM",
+    size: "2.6 MB",
+    category: "TWRM",
+    pages: 20,
+    uploadedAt: "Sep 25, 2026",
+    isBookmarked: false,
+  },
+
+  // 6. CN Sess. (0612CSE316)
+  {
+    id: "cns-1",
+    title: "Lab Manual 1 - Cisco Packet Tracer Setup.pdf",
+    courseCode: "0612CSE316",
+    courseName: "CN Sess.",
+    size: "5.5 MB",
+    category: "Labs & Sessionals",
+    pages: 48,
+    uploadedAt: "Sep 24, 2026",
+    isBookmarked: false,
+  },
+  {
+    id: "cns-2",
+    title: "Lab Manual 2 - Wireshark Packet Sniffing.pdf",
+    courseCode: "0612CSE316",
+    courseName: "CN Sess.",
+    size: "4.3 MB",
+    category: "Labs & Sessionals",
+    pages: 35,
+    uploadedAt: "Sep 26, 2026",
+    isBookmarked: false,
+  },
+
+  // 7. AIES Sess. (0611CSE322)
+  {
+    id: "aiess-1",
+    title: "Lab Sheet 1 - Search Algorithms in Python.pdf",
+    courseCode: "0611CSE322",
+    courseName: "AIES Sess.",
+    size: "3.6 MB",
+    category: "Labs & Sessionals",
+    pages: 26,
+    uploadedAt: "Sep 25, 2026",
+    isBookmarked: false,
+  },
+
+  // 8. AP Sess. (0613CSE334)
+  {
+    id: "aps-1",
+    title: "Lab Project - Multithreaded TCP Chat System.pdf",
+    courseCode: "0613CSE334",
+    courseName: "AP Sess.",
+    size: "2.4 MB",
+    category: "Labs & Sessionals",
+    pages: 20,
+    uploadedAt: "Sep 27, 2026",
     isBookmarked: false,
   },
 ];
 
 const CATEGORIES = [
   "All",
-  "Data Structures",
-  "Operating Systems",
-  "Math",
-  "Physics",
-  "etc.",
+  "AIES",
+  "AP",
+  "CN",
+  "MACS",
+  "TWRM",
+  "Labs & Sessionals",
 ] as const;
 
 export default function LmsPage() {
+  const [currentUser, setCurrentUser] = React.useState<any>(null);
   const [documents, setDocuments] = React.useState<LmsPdfDocument[]>(initialLibraryDocuments);
   const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = React.useState<"recent" | "name" | "size">("recent");
+
+  // Load authenticated user strictly from auth session
+  React.useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user) {
+            setCurrentUser(data.user);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load authenticated user:", err);
+      }
+    }
+    loadUser();
+  }, []);
+
+  const loggedInName =
+    currentUser?.name ||
+    (currentUser?.email ? currentUser.email.split("@")[0] : "Student");
 
   // Modals
   const [previewDoc, setPreviewDoc] = React.useState<LmsPdfDocument | null>(null);
   const [isViewerOpen, setIsViewerOpen] = React.useState(false);
-  const [isUploadOpen, setIsUploadOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   // Toggle Bookmark
@@ -182,39 +343,48 @@ export default function LmsPage() {
     );
   };
 
-  // Preview Handler
+  // Preview Handler - Functional Read
   const handlePreview = (doc: LmsPdfDocument) => {
     setPreviewDoc(doc);
     setIsViewerOpen(true);
   };
 
-  // Download Handler
+  // Download Handler - Functional PDF Download
   const handleDownload = (doc: LmsPdfDocument) => {
-    toast.success(`Downloading "${doc.title}" (${doc.size})... 📥`);
+    toast.success(`Downloading "${doc.title}"... 📥`);
+    try {
+      const pdfContent = `%PDF-1.4\n%FastTask Academic Portal\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 4 0 R >> >> /MediaBox [0 0 612 792] /Contents 5 0 R >>\nendobj\n4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n5 0 obj\n<< /Length 200 >>\nstream\nBT\n/F1 20 Tf\n50 720 Td\n(${doc.courseCode} - ${doc.courseName || doc.category}) Tj\n0 -35 Td\n/F1 14 Tf\n(${doc.title.replace(/[\(\)]/g, "")}) Tj\n0 -30 Td\n/F1 10 Tf\n(Downloaded from FastTask LMS Academic Portal) Tj\nET\nendstream\nendobj\nxref\n0 6\n0000000000 65535 f \n0000000035 00000 n \n0000000094 00000 n \n0000000161 00000 n \n0000000286 00000 n \n0000000372 00000 n \ntrailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n630\n%%EOF`;
+      const blob = new Blob([pdfContent], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = doc.title.endsWith(".pdf") ? doc.title : `${doc.title}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("PDF download error:", e);
+    }
   };
 
-  // Upload Add Handler
-  const handleAddDocument = (newDoc: LmsPdfDocument) => {
-    setDocuments((prev) => [newDoc, ...prev]);
-  };
-
-  // Filtered Documents
+  // Filtered & Sorted Documents
   const filteredDocuments = React.useMemo(() => {
-    return documents.filter((doc) => {
+    const list = documents.filter((doc) => {
       // 1. Sidebar section check
       if (activeSection === "bookmarks" && !doc.isBookmarked) {
         return false;
       }
 
-      // 2. Category tab check (when on "all" or specific category)
-      if (selectedCategory !== "All" && activeSection !== "courses") {
-        if (selectedCategory === "etc.") {
-          if (
-            ["Data Structures", "Operating Systems", "Math", "Physics"].includes(doc.category)
-          ) {
-            return false;
-          }
-        } else if (doc.category !== selectedCategory) {
+      // 2. Category tab check (applies across all views)
+      if (selectedCategory !== "All") {
+        const catNorm = selectedCategory.trim().toLowerCase();
+        const matchesCategory = doc.category.trim().toLowerCase() === catNorm;
+        const matchesCourseName = doc.courseName
+          ? doc.courseName.trim().toLowerCase() === catNorm
+          : false;
+        const matchesCourseCode = doc.courseCode.toLowerCase().includes(catNorm);
+        if (!matchesCategory && !matchesCourseName && !matchesCourseCode) {
           return false;
         }
       }
@@ -224,21 +394,34 @@ export default function LmsPage() {
         const q = searchQuery.toLowerCase();
         const matchesTitle = doc.title.toLowerCase().includes(q);
         const matchesCourse = doc.courseCode.toLowerCase().includes(q);
+        const matchesCourseName = doc.courseName ? doc.courseName.toLowerCase().includes(q) : false;
         const matchesCategory = doc.category.toLowerCase().includes(q);
-        if (!matchesTitle && !matchesCourse && !matchesCategory) {
+        if (!matchesTitle && !matchesCourse && !matchesCourseName && !matchesCategory) {
           return false;
         }
       }
 
       return true;
     });
-  }, [documents, activeSection, selectedCategory, searchQuery]);
+
+    return [...list].sort((a, b) => {
+      if (sortBy === "name") {
+        return a.title.localeCompare(b.title);
+      }
+      if (sortBy === "size") {
+        const sA = parseFloat(a.size) || 0;
+        const sB = parseFloat(b.size) || 0;
+        return sB - sA;
+      }
+      return 0;
+    });
+  }, [documents, activeSection, selectedCategory, searchQuery, sortBy]);
 
   // Grouped by course for "By Courses" view
   const groupedByCourse = React.useMemo(() => {
     const map = new Map<string, LmsPdfDocument[]>();
     filteredDocuments.forEach((doc) => {
-      const key = `${doc.courseCode} - ${doc.category}`;
+      const key = `${doc.courseCode} • ${doc.courseName || doc.category}`;
       if (!map.has(key)) {
         map.set(key, []);
       }
@@ -258,51 +441,64 @@ export default function LmsPage() {
     };
   }, [documents]);
 
+  const courseDotMap: Record<string, string> = {
+    All: "bg-slate-400",
+    AIES: "bg-indigo-500",
+    AP: "bg-blue-500",
+    CN: "bg-emerald-500",
+    MACS: "bg-amber-500",
+    TWRM: "bg-rose-500",
+    "Labs & Sessionals": "bg-purple-500",
+  };
+
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-gradient-to-br from-[#EFE8F9] via-[#F4EEFB] to-[#FCEEF6] p-3 sm:p-5 lg:p-8 flex flex-col justify-between selection:bg-[#4F46E5] selection:text-white">
-      {/* Decorative ambient background glows */}
-      <div className="pointer-events-none fixed -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-[#DDD6FE] blur-3xl opacity-60" />
-      <div className="pointer-events-none fixed -bottom-32 -right-32 h-[500px] w-[500px] rounded-full bg-[#FCE7F3] blur-3xl opacity-60" />
+    <div className="min-h-screen relative overflow-x-hidden bg-[#F8FAFC] text-slate-900 p-3 sm:p-5 lg:p-7 flex flex-col justify-between selection:bg-[#315BFF] selection:text-white">
+      {/* Subtle ambient lighting */}
+      <div className="pointer-events-none fixed -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-100/40 blur-3xl" />
+      <div className="pointer-events-none fixed -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-indigo-100/30 blur-3xl" />
 
       <Toaster richColors position="top-right" />
 
       {/* Top Outer Navigation Return Button */}
-      <div className="relative z-10 max-w-[1540px] w-full mx-auto mb-3 px-2 flex items-center justify-between">
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto mb-3 px-1 flex items-center justify-between">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 hover:bg-white text-xs font-semibold text-slate-700 shadow-2xs hover:shadow-xs transition-all border border-slate-200/60"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs hover:shadow-xs transition-all border border-slate-200 cursor-pointer"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to FastTask Workspace</span>
         </Link>
-
-        <span className="text-[11px] font-semibold text-purple-900/50 hidden sm:inline-block">
-          SkillSet LMS Library • Academic Document Repository
-        </span>
       </div>
 
       {/* Main LMS Library Floating Canvas Window */}
-      <div className="relative z-10 max-w-[1540px] w-full mx-auto bg-white rounded-[28px] sm:rounded-[36px] shadow-[0_20px_70px_rgba(110,80,180,0.09)] border border-white/90 overflow-hidden flex flex-col lg:flex-row min-h-[820px]">
+      <div className="relative z-10 max-w-[1560px] w-full mx-auto bg-white rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.04)] border border-slate-200/90 overflow-hidden flex flex-col lg:flex-row min-h-[820px]">
         {/* 1. Left Sidebar */}
-        <div className="hidden lg:block shrink-0 border-r border-[#EFF1F6] bg-[#FAF9FD]/70">
+        <div className="hidden lg:block shrink-0 border-r border-slate-100 bg-[#FAF9FD]/80">
           <LmsLibrarySidebar
             activeSection={activeSection}
             onSelectSection={(sec) => {
               setActiveSection(sec);
               if (sec === "courses") setSelectedCategory("All");
             }}
+            selectedCategory={selectedCategory}
+            onSelectCategory={(cat) => setSelectedCategory(cat)}
             counts={sidebarCounts}
           />
         </div>
 
         {/* Mobile Sidebar Overlay Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex">
-            <div className="w-72 bg-[#FAF9FD] h-full shadow-2xl animate-in slide-in-from-left duration-200 p-2">
+          <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex">
+            <div className="w-72 bg-white h-full shadow-2xl animate-in slide-in-from-left duration-200 p-2">
               <LmsLibrarySidebar
                 activeSection={activeSection}
                 onSelectSection={(sec) => {
                   setActiveSection(sec);
+                  setIsMobileMenuOpen(false);
+                }}
+                selectedCategory={selectedCategory}
+                onSelectCategory={(cat) => {
+                  setSelectedCategory(cat);
                   setIsMobileMenuOpen(false);
                 }}
                 counts={sidebarCounts}
@@ -316,24 +512,29 @@ export default function LmsPage() {
         )}
 
         {/* 2. Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-[#FAF9FD]/30">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#FAF9FD]/25">
           {/* Header Bar */}
           <LmsLibraryHeader
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            userName="Irham Muhammad"
+            userName={loggedInName}
+            userEmail={currentUser?.email}
             isMobileMenuOpen={isMobileMenuOpen}
             onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           />
 
           {/* Inner Content Body */}
-          <div className="p-4 sm:p-6 lg:p-8 flex-1 flex flex-col space-y-6">
-            {/* Filter Tabs & Upload Action Row */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-1">
+          <div className="p-4 sm:p-6 lg:p-7 flex-1 flex flex-col space-y-5">
+            {/* Filter Tabs & View Controls Toolbar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-100">
               {/* Category Filter Chips / Tabs */}
-              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
                 {CATEGORIES.map((cat) => {
                   const isCatActive = selectedCategory === cat;
+                  const dotColor = courseDotMap[cat] || "bg-slate-400";
+                  const theme = COURSE_THEMES[cat];
+                  const activeClass = theme?.activePill || "bg-slate-900 text-white shadow-xs";
+
                   return (
                     <button
                       key={cat}
@@ -344,41 +545,81 @@ export default function LmsPage() {
                           setActiveSection("all");
                         }
                       }}
-                      className={`text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                      className={`text-xs font-semibold tracking-[-0.01em] px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
                         isCatActive
-                          ? "bg-white text-[#181829] shadow-xs font-bold ring-1 ring-slate-200/80"
-                          : "text-slate-500 hover:text-[#181829] hover:bg-white/60"
+                          ? activeClass
+                          : "text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80"
                       }`}
                     >
-                      {cat}
+                      <span className={`h-1.5 w-1.5 rounded-full ${isCatActive ? "bg-white" : dotColor}`} />
+                      <span>{cat}</span>
                     </button>
                   );
                 })}
               </div>
 
-              {/* Upload PDF Action Button */}
-              <button
-                type="button"
-                onClick={() => setIsUploadOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all cursor-pointer hover:shadow-md hover:shadow-indigo-500/20 active:scale-98 shrink-0"
-              >
-                <Upload className="h-4 w-4" />
-                <span>Upload PDF</span>
-              </button>
+              {/* Right View & Sort Controls */}
+              <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
+                <span className="text-xs font-medium text-slate-500 tabular-nums hidden xl:inline-block">
+                  {filteredDocuments.length} {filteredDocuments.length === 1 ? "note" : "notes"}
+                </span>
+
+                {/* Sort dropdown */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer hover:border-slate-300 shadow-2xs"
+                >
+                  <option value="recent">Sort: Newest</option>
+                  <option value="name">Sort: A-Z</option>
+                  <option value="size">Sort: File Size</option>
+                </select>
+
+                {/* View switcher (Grid vs List) */}
+                <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/60 shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("grid")}
+                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                      viewMode === "grid"
+                        ? "bg-white text-slate-900 shadow-xs"
+                        : "text-slate-400 hover:text-slate-700"
+                    }`}
+                    title="Grid View"
+                  >
+                    <LayoutGrid className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("list")}
+                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                      viewMode === "list"
+                        ? "bg-white text-slate-900 shadow-xs"
+                        : "text-slate-400 hover:text-slate-700"
+                    }`}
+                    title="List View"
+                  >
+                    <List className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Active section title indicator if not 'all' */}
+            {/* Bookmark indicator badge */}
             {activeSection === "bookmarks" && (
-              <div className="flex items-center justify-between bg-amber-50/70 border border-amber-200/80 px-4 py-2.5 rounded-xl text-xs text-amber-900">
-                <span className="font-semibold">
-                  Showing {filteredDocuments.length} bookmarked documents
-                </span>
+              <div className="flex items-center justify-between gap-3 p-1 pl-3 pr-1.5 rounded-full bg-amber-50 border border-amber-200/80 text-xs w-fit shadow-2xs">
+                <div className="flex items-center gap-2">
+                  <Bookmark className="h-3.5 w-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                  <span className="font-bold text-amber-900 text-xs">
+                    {filteredDocuments.length} bookmarked {filteredDocuments.length === 1 ? "document" : "documents"}
+                  </span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setActiveSection("all")}
-                  className="font-bold text-[#4F46E5] hover:underline cursor-pointer"
+                  className="px-2.5 py-0.5 rounded-full bg-white hover:bg-amber-100 text-[11px] font-bold text-amber-800 border border-amber-200 shadow-2xs transition-colors cursor-pointer"
                 >
-                  View All Notes
+                  View All
                 </button>
               </div>
             )}
@@ -389,14 +630,21 @@ export default function LmsPage() {
               <div className="space-y-6">
                 {groupedByCourse.map(([groupKey, groupDocs]) => (
                   <div key={groupKey} className="space-y-3">
-                    <div className="flex items-center gap-2 pb-1 border-b border-slate-100">
-                      <Folder className="h-4 w-4 text-[#4F46E5]" />
-                      <h3 className="text-sm font-bold text-[#181829]">{groupKey}</h3>
-                      <span className="text-[11px] text-slate-400 font-medium">
+                    <div className="flex items-center gap-2 pb-1.5 border-b border-slate-200/60">
+                      <Folder className="h-4 w-4 text-blue-600" />
+                      <h3 className="text-sm font-bold text-slate-900">{groupKey}</h3>
+                      <span className="text-[11px] text-slate-400 font-semibold">
                         ({groupDocs.length} notes)
                       </span>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+                    <div
+                      className={
+                        viewMode === "grid"
+                          ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5"
+                          : "space-y-2.5"
+                      }
+                    >
                       {groupDocs.map((doc) => (
                         <LmsLibraryCard
                           key={doc.id}
@@ -404,6 +652,7 @@ export default function LmsPage() {
                           onPreview={handlePreview}
                           onDownload={handleDownload}
                           onToggleBookmark={handleToggleBookmark}
+                          viewMode={viewMode}
                         />
                       ))}
                     </div>
@@ -411,10 +660,16 @@ export default function LmsPage() {
                 ))}
               </div>
             ) : (
-              /* Standard 3-Column Library Grid View */
+              /* Standard Library View (Grid or List) */
               <>
                 {filteredDocuments.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div
+                    className={
+                      viewMode === "grid"
+                        ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5"
+                        : "space-y-2.5"
+                    }
+                  >
                     {filteredDocuments.map((doc) => (
                       <LmsLibraryCard
                         key={doc.id}
@@ -422,6 +677,7 @@ export default function LmsPage() {
                         onPreview={handlePreview}
                         onDownload={handleDownload}
                         onToggleBookmark={handleToggleBookmark}
+                        viewMode={viewMode}
                       />
                     ))}
                   </div>
@@ -434,7 +690,7 @@ export default function LmsPage() {
                     <div className="space-y-1">
                       <h4 className="text-sm font-bold text-slate-800">No notes found</h4>
                       <p className="text-xs text-slate-500 max-w-sm">
-                        No documents matched your current search or category filter. Try clearing filters or upload a new PDF note.
+                        No documents matched your current search or category filter. Try clearing filters or resetting.
                       </p>
                     </div>
                     <button
@@ -444,7 +700,7 @@ export default function LmsPage() {
                         setSearchQuery("");
                         setActiveSection("all");
                       }}
-                      className="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
                     >
                       Reset Filters
                     </button>
@@ -464,16 +720,9 @@ export default function LmsPage() {
         onDownload={handleDownload}
       />
 
-      {/* Upload PDF Modal */}
-      <LmsUploadModal
-        isOpen={isUploadOpen}
-        onClose={() => setIsUploadOpen(false)}
-        onUpload={handleAddDocument}
-      />
-
       {/* Footer copyright */}
-      <div className="relative z-10 text-center py-4 text-xs text-purple-900/50">
-        <p>© 2026 SkillSet LMS Library • FastTask Academic Suite</p>
+      <div className="relative z-10 text-center py-4 text-xs text-slate-400">
+        <p>© 2026 Course Materials Vault • FastTask Academic Suite</p>
       </div>
     </div>
   );

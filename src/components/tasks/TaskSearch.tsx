@@ -80,7 +80,7 @@ export function TaskSearch({
   }, []);
 
   return (
-    <div className={`relative flex-1 ${className}`}>
+    <div className={`relative flex-1 w-full min-w-[180px] ${className}`}>
       <label htmlFor="task-search-input" className="sr-only">
         Search tasks by title or description
       </label>
