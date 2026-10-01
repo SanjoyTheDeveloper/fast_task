@@ -11,6 +11,9 @@ import {
   Binary,
   PenTool,
   FlaskConical,
+  Trash2,
+  Sparkles,
+  Bookmark,
 } from "lucide-react";
 import {
   getCourseTheme,
@@ -28,6 +31,9 @@ export interface LmsPdfDocument {
   uploadedAt?: string;
   description?: string;
   isBookmarked?: boolean;
+  fileUrl?: string;
+  isCustomUpload?: boolean;
+  materialType?: string;
 }
 
 export interface LmsLibraryCardProps {
@@ -35,6 +41,7 @@ export interface LmsLibraryCardProps {
   onPreview: (doc: LmsPdfDocument) => void;
   onDownload: (doc: LmsPdfDocument) => void;
   onToggleBookmark?: (id: string) => void;
+  onDelete?: (id: string) => void;
   viewMode?: "grid" | "list";
 }
 
@@ -61,6 +68,8 @@ export function LmsLibraryCard({
   doc,
   onPreview,
   onDownload,
+  onToggleBookmark,
+  onDelete,
   viewMode = "grid",
 }: LmsLibraryCardProps) {
   const theme = getCourseTheme(doc.courseName || doc.category || doc.courseCode);
@@ -82,7 +91,7 @@ export function LmsLibraryCard({
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span
                 className={`text-[11px] font-semibold tracking-[-0.01em] px-2 py-0.5 rounded-md ${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder}`}
               >
@@ -93,6 +102,12 @@ export function LmsLibraryCard({
               >
                 {doc.courseCode}
               </span>
+              {doc.isCustomUpload && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                  <Sparkles className="h-2.5 w-2.5" />
+                  Uploaded
+                </span>
+              )}
             </div>
 
             <h3 className="text-sm font-semibold tracking-[-0.015em] text-slate-900 group-hover:text-slate-950 transition-colors truncate">
@@ -101,11 +116,31 @@ export function LmsLibraryCard({
           </div>
         </div>
 
-        {/* Right Actions: Only Functional Read & PDF */}
+        {/* Right Actions: Bookmark + Functional Read & PDF + Optional Delete */}
         <div
           className="flex items-center gap-2 shrink-0"
           onClick={(e) => e.stopPropagation()}
         >
+          {onToggleBookmark && (
+            <button
+              type="button"
+              onClick={() => onToggleBookmark(doc.id)}
+              className={`p-2 rounded-xl transition-all cursor-pointer border ${
+                doc.isBookmarked
+                  ? "bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100 shadow-2xs"
+                  : "bg-white text-slate-400 hover:text-amber-500 hover:bg-amber-50/50 border-slate-200 shadow-2xs"
+              }`}
+              title={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
+              aria-label={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
+            >
+              <Bookmark
+                className={`h-3.5 w-3.5 ${
+                  doc.isBookmarked ? "fill-amber-500 text-amber-600" : ""
+                }`}
+              />
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => onPreview(doc)}
@@ -125,18 +160,29 @@ export function LmsLibraryCard({
             <Download className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">PDF</span>
           </button>
+
+          {doc.isCustomUpload && onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(doc.id)}
+              className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors cursor-pointer"
+              title="Delete uploaded note"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       </div>
     );
   }
 
-  // Grid View - Clean, focused box with only functional controls (Read & PDF)
+  // Grid View - Clean, focused box with functional controls & Bookmark
   return (
     <div
       onClick={() => onPreview(doc)}
       className={`group relative ${theme.cardBg} rounded-2xl border ${theme.cardBorder} p-5 flex flex-col justify-between ${theme.cardShadow} ${theme.cardHoverShadow} hover:-translate-y-1 transition-all duration-200 cursor-pointer`}
     >
-      {/* Top Header Row: Course Icon + Badges */}
+      {/* Top Header Row: Course Icon + Badges + Bookmark & Delete */}
       <div className="flex items-center justify-between gap-3 mb-3.5">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           {/* Refined Rounded Icon Tile */}
@@ -154,13 +200,53 @@ export function LmsLibraryCard({
               {doc.courseName || theme.name}
             </span>
 
-            {/* Course Code Badge (Same Matching Color) */}
+            {/* Course Code Badge */}
             <span
               className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border tabular-nums ${theme.codeBadge}`}
             >
               {doc.courseCode}
             </span>
+
+            {doc.isCustomUpload && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
+                <Sparkles className="h-2.5 w-2.5" />
+                Uploaded
+              </span>
+            )}
           </div>
+        </div>
+
+        <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+          {onToggleBookmark && (
+            <button
+              type="button"
+              onClick={() => onToggleBookmark(doc.id)}
+              className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                doc.isBookmarked
+                  ? "bg-amber-50 text-amber-600 border border-amber-200 shadow-2xs"
+                  : "text-slate-300 hover:text-amber-500 hover:bg-amber-50/60"
+              }`}
+              title={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
+              aria-label={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
+            >
+              <Bookmark
+                className={`h-4 w-4 ${
+                  doc.isBookmarked ? "fill-amber-500 text-amber-600" : ""
+                }`}
+              />
+            </button>
+          )}
+
+          {doc.isCustomUpload && onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(doc.id)}
+              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              title="Delete uploaded note"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -174,7 +260,7 @@ export function LmsLibraryCard({
         </h3>
       </div>
 
-      {/* Action Buttons Row: Only Functional Read & PDF */}
+      {/* Action Buttons Row: Read & PDF */}
       <div
         className="flex items-center justify-between gap-2 pt-1"
         onClick={(e) => e.stopPropagation()}

@@ -333,11 +333,11 @@ export function CalendarWidget({
             >
               {/* Day Cell Container */}
               <div
-                className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${
+                className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all duration-200 ease-out ${
                   isSelected
-                    ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/35 ring-2 ring-blue-100 scale-105"
+                    ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/40 ring-2 ring-blue-100 scale-105"
                     : isToday
-                    ? "ring-2 ring-[#315BFF] text-[#315BFF] font-black bg-blue-50/50 hover:bg-blue-100/60"
+                    ? "text-[#315BFF] font-black bg-blue-50/70 hover:bg-blue-100/70"
                     : hasPomodoroHeatmap
                     ? "bg-emerald-50/80 text-emerald-900 font-semibold hover:bg-emerald-100"
                     : isWeekend
@@ -349,7 +349,7 @@ export function CalendarWidget({
               </div>
 
               {/* Event Dots Under Date */}
-              {event && (
+              {event ? (
                 <div className="absolute -bottom-1 flex items-center justify-center gap-0.5 pointer-events-none">
                   {/* Blue dot: regular classes */}
                   {event.hasClasses && (
@@ -364,7 +364,11 @@ export function CalendarWidget({
                     <span className="h-1 w-1 rounded-full bg-purple-500" />
                   )}
                 </div>
-              )}
+              ) : isToday && !isSelected ? (
+                <div className="absolute -bottom-1 flex items-center justify-center pointer-events-none">
+                  <span className="h-1 w-1 rounded-full bg-[#315BFF]/70" />
+                </div>
+              ) : null}
             </div>
           );
         })}

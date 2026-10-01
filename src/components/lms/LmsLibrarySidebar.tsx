@@ -11,21 +11,25 @@ import {
   HardDrive,
   CheckCircle2,
   Sparkles,
+  UploadCloud,
 } from "lucide-react";
 import { COURSE_THEMES } from "@/lib/courseThemes";
 
-export type LmsNavSection = "all" | "courses" | "bookmarks";
+export type LmsNavSection = "all" | "courses" | "bookmarks" | "uploads";
 
 export interface LmsLibrarySidebarProps {
   activeSection: LmsNavSection;
   onSelectSection: (section: LmsNavSection) => void;
   selectedCategory?: string;
   onSelectCategory?: (category: string) => void;
+  onOpenUpload?: () => void;
   counts?: {
     all: number;
     courses: number;
     bookmarks: number;
+    uploads?: number;
   };
+  enrolledCourses?: Array<{ key: string; label: string; code: string; count: number }>;
 }
 
 export function LmsLibrarySidebar({
@@ -33,7 +37,9 @@ export function LmsLibrarySidebar({
   onSelectSection,
   selectedCategory = "All",
   onSelectCategory,
+  onOpenUpload,
   counts,
+  enrolledCourses,
 }: LmsLibrarySidebarProps) {
   const primaryNav = [
     {
@@ -41,6 +47,12 @@ export function LmsLibrarySidebar({
       label: "All Notes & PDFs",
       icon: FileText,
       count: counts?.all,
+    },
+    {
+      id: "uploads" as LmsNavSection,
+      label: "My Uploads",
+      icon: UploadCloud,
+      count: counts?.uploads,
     },
     {
       id: "bookmarks" as LmsNavSection,
@@ -56,14 +68,7 @@ export function LmsLibrarySidebar({
     },
   ];
 
-  const courseList = [
-    { key: "AIES", label: "AIES", code: "0611CSE321", count: 4 },
-    { key: "AP", label: "AP", code: "0613CSE333", count: 4 },
-    { key: "CN", label: "CN", code: "0612CSE315", count: 4 },
-    { key: "MACS", label: "MACS", code: "0541MAT337", count: 4 },
-    { key: "TWRM", label: "TWRM", code: "0031CSE320", count: 2 },
-    { key: "Labs & Sessionals", label: "Labs & Sessionals", code: "Lab Guides", count: 4 },
-  ];
+  const courseList = enrolledCourses ?? [];
 
   return (
     <aside className="w-64 shrink-0 flex flex-col justify-between p-5 bg-white lg:bg-[#FAF9FD]/80 h-full min-h-[720px] select-none">
@@ -126,6 +131,7 @@ export function LmsLibrarySidebar({
 
                   {item.count !== undefined && item.count > 0 && (
                     <span
+                      suppressHydrationWarning
                       className={`text-[11px] px-2 py-0.5 rounded-full font-semibold tabular-nums ${
                         isActive
                           ? "bg-white/20 text-white"
@@ -153,7 +159,12 @@ export function LmsLibrarySidebar({
           </div>
 
           <div className="space-y-0.5 pt-1">
-            {courseList.map((course) => {
+            {courseList.length === 0 ? (
+              <div className="px-3 py-3 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-center">
+                <p className="text-[11px] text-slate-400 font-medium">No courses uploaded yet</p>
+              </div>
+            ) : (
+              courseList.map((course) => {
               const theme = COURSE_THEMES[course.key];
               const isSelected =
                 activeSection === "all" && selectedCategory === course.key;
@@ -184,6 +195,7 @@ export function LmsLibrarySidebar({
                   </div>
 
                   <span
+                    suppressHydrationWarning
                     className={`text-[11px] px-1.5 py-0.2 rounded-md font-semibold tabular-nums ${
                       isSelected
                         ? "bg-white/25 text-white"
@@ -194,7 +206,7 @@ export function LmsLibrarySidebar({
                   </span>
                 </button>
               );
-            })}
+            }))}
           </div>
         </div>
       </div>

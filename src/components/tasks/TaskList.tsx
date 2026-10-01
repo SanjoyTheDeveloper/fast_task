@@ -24,6 +24,7 @@ export interface TaskListProps {
   onStatusToggle: (task: Task) => void;
   onOpenCreateModal: () => void;
   updatingTaskId?: string | null;
+  onOpenZenMode?: () => void;
 }
 
 export function TaskList({
@@ -42,6 +43,7 @@ export function TaskList({
   onStatusToggle,
   onOpenCreateModal,
   updatingTaskId = null,
+  onOpenZenMode,
 }: TaskListProps) {
   // 1. Loading State
   if (isLoading) {
@@ -117,6 +119,7 @@ export function TaskList({
         onOpenCreateModal={onOpenCreateModal}
         onClearFilter={onClearFilter}
         onClearSearch={onClearSearch}
+        onOpenZenMode={onOpenZenMode}
       />
     );
   }

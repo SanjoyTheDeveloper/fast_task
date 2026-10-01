@@ -16,6 +16,8 @@ export default function RegisterPage() {
   const [registeredEmail, setRegisteredEmail] = React.useState<string | null>(null);
   const [devVerificationUrl, setDevVerificationUrl] = React.useState<string | null>(null);
 
+  const [isAutoVerified, setIsAutoVerified] = React.useState(false);
+
   const {
     register,
     handleSubmit,
@@ -49,12 +51,17 @@ export default function RegisterPage() {
         return;
       }
 
-      // Do NOT log the user in automatically. Show confirmation screen & notification!
       setRegisteredEmail(values.email);
+      setIsAutoVerified(!!data.autoVerified);
       if (data.verificationUrl) {
         setDevVerificationUrl(data.verificationUrl);
       }
-      toast.success("Account created successfully! Please check your email and click the verification link.");
+      
+      if (data.autoVerified) {
+        toast.success("Account created successfully! You can now sign in.");
+      } else {
+        toast.success("Account created successfully! Please check your email.");
+      }
       setIsLoading(false);
     } catch (err: any) {
       setServerError(err.message || "An unexpected error occurred. Please try again.");
@@ -107,16 +114,18 @@ export default function RegisterPage() {
               </div>
               <div className="space-y-2">
                 <h2 className="text-xl font-black text-[#172033] tracking-tight">
-                  Account Created Successfully!
+                  {isAutoVerified ? "Account Created & Ready!" : "Account Created Successfully!"}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-sm mx-auto font-normal">
-                  Please check your inbox and click the verification link to activate your workspace.
+                  {isAutoVerified
+                    ? "Your account is permanently saved on this device. You can sign in now and your session will remain active across PC restarts."
+                    : "Please check your inbox and click the verification link to activate your workspace."}
                 </p>
               </div>
 
               <div className="p-3.5 bg-[#F8FAFC] border border-[#E5EAF2] rounded-2xl text-center">
                 <span className="text-xs text-slate-400 block mb-1 font-medium">
-                  Verification email sent to:
+                  {isAutoVerified ? "Account registered with email:" : "Verification email sent to:"}
                 </span>
                 <span className="text-sm font-bold text-[#315BFF] break-all">
                   {registeredEmail}
@@ -125,14 +134,14 @@ export default function RegisterPage() {
 
               <Button
                 asChild
-                className="w-full h-11 rounded-xl text-sm font-bold text-white bg-[#315BFF] hover:bg-[#254BE3] shadow-md shadow-blue-500/25 transition-all"
+                className="w-full h-11 rounded-xl text-sm font-bold text-white bg-[#315BFF] hover:bg-[#254BE3] shadow-md shadow-blue-500/25 transition-all cursor-pointer"
               >
                 <Link href={`/login?email=${encodeURIComponent(registeredEmail)}`}>
                   Proceed to Sign In
                 </Link>
               </Button>
 
-              {devVerificationUrl && (
+              {!isAutoVerified && devVerificationUrl && (
                 <a
                   href={devVerificationUrl}
                   className="flex items-center justify-center gap-1.5 w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold py-2.5 px-3 shadow-xs transition-all text-center"

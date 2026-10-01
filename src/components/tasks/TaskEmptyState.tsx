@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Inbox, Plus, FilterX, SearchX } from "lucide-react";
+import { FocusPomodoro } from "@/components/dashboard/FocusPomodoro";
 
 export interface TaskEmptyStateProps {
   isFiltered?: boolean;
@@ -11,6 +12,7 @@ export interface TaskEmptyStateProps {
   onOpenCreateModal?: () => void;
   onClearFilter?: () => void;
   onClearSearch?: () => void;
+  onOpenZenMode?: () => void;
 }
 
 export function TaskEmptyState({
@@ -20,6 +22,7 @@ export function TaskEmptyState({
   onOpenCreateModal,
   onClearFilter,
   onClearSearch,
+  onOpenZenMode,
 }: TaskEmptyStateProps) {
   // Case 1: No matching filtered or search results
   if (isFiltered) {
@@ -91,29 +94,36 @@ export function TaskEmptyState({
 
   // Case 2: No tasks created yet in entire account
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-12 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-white shadow-2xs transition-all duration-300 animate-fade-in-up"
-    >
-      <div className="h-14 w-14 rounded-2xl bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center mb-4 shadow-2xs">
-        <Inbox className="h-6 w-6 stroke-[2.2]" />
+    <div className="w-full space-y-6">
+      <div
+        role="status"
+        aria-live="polite"
+        className="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-12 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-white shadow-2xs transition-all duration-300 animate-fade-in-up"
+      >
+        <div className="h-14 w-14 rounded-2xl bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center mb-4 shadow-2xs">
+          <Inbox className="h-6 w-6 stroke-[2.2]" />
+        </div>
+        <h3 className="text-base font-bold text-[#172033] tracking-tight">
+          You don&apos;t have any tasks yet
+        </h3>
+        <p className="text-xs text-slate-500 max-w-sm mt-1 mb-5 leading-relaxed">
+          Create your first task or add an assignment to get started.
+        </p>
+        {onOpenCreateModal && (
+          <Button
+            onClick={onOpenCreateModal}
+            className="h-10 px-5 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+          >
+            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <span>Add Assignment</span>
+          </Button>
+        )}
       </div>
-      <h3 className="text-base font-bold text-[#172033] tracking-tight">
-        You don&apos;t have any tasks yet
-      </h3>
-      <p className="text-xs text-slate-500 max-w-sm mt-1 mb-5 leading-relaxed">
-        Create your first task or add an assignment to get started.
-      </p>
-      {onOpenCreateModal && (
-        <Button
-          onClick={onOpenCreateModal}
-          className="h-10 px-5 gap-2 bg-[#315BFF] hover:bg-[#254BE3] text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-        >
-          <Plus className="h-4 w-4 stroke-[2.5]" />
-          <span>Add Assignment</span>
-        </Button>
-      )}
+
+      {/* Focus Pomodoro Shifted Directly Under Add Assignment */}
+      <div className="w-full">
+        <FocusPomodoro onOpenZenMode={onOpenZenMode} />
+      </div>
     </div>
   );
 }

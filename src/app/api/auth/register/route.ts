@@ -40,20 +40,31 @@ export async function POST(req: NextRequest) {
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    // Hash password using bcryptjs and store user
+    const isEmailServiceActive =
+      !!process.env.RESEND_API_KEY &&
+      !process.env.RESEND_API_KEY.includes("xxxx") &&
+      !process.env.RESEND_API_KEY.includes("placeholder");
+
+    const initialEmailVerified = isEmailServiceActive ? null : new Date();
+
+    // Hash password using bcryptjs and store user permanently
     const hashedPassword = await hashPassword(password);
     const user = await db.user.create({
       data: {
         name,
         email: cleanEmail,
         password: hashedPassword,
-        emailVerified: null,
+        emailVerified: initialEmailVerified,
         verificationToken,
         verificationTokenExpires,
       },
     });
 
-    console.log(`[Register API] ✓ User created with ID: ${user.id} and emailVerified: null`);
+    console.log(
+      `[Register API] ✓ User created with ID: ${user.id} and emailVerified: ${
+        initialEmailVerified ? "Verified (Active)" : "Pending"
+      }`
+    );
 
     // Prepare verification URL
     const baseUrl =
@@ -68,30 +79,29 @@ export async function POST(req: NextRequest) {
     console.log(`[REGISTER API] NEW USER REGISTRATION`);
     console.log(`  - Name:               ${user.name}`);
     console.log(`  - Recipient Email:    ${user.email}`);
-    console.log(`  - DB emailVerified:   null (Account unverified pending email)`);
+    console.log(`  - DB emailVerified:   ${initialEmailVerified ? "ACTIVE" : "PENDING"}`);
     console.log(`  - Verification URL:   ${verificationUrl}`);
     console.log(`============================================================`);
 
-    // Immediately dispatch verification email via Resend
-    const emailResult = await sendVerificationEmail(user.email, verificationToken);
-
-    if (!emailResult.success) {
-      console.warn(`\n⚠️  [REGISTER API] Verification email not delivered via Resend:`);
-      console.warn(`   Reason: ${emailResult.error}`);
-      console.warn(`   Direct URL to verify: ${verificationUrl}\n`);
-    } else {
-      console.log(`\n✅ [REGISTER API] Verification email dispatched successfully via Resend!`);
-      console.log(`   Resend Message ID: ${emailResult.data?.id}\n`);
+    // Dispatch verification email if real service configured
+    let emailSent = false;
+    if (isEmailServiceActive) {
+      const emailResult = await sendVerificationEmail(user.email, verificationToken);
+      emailSent = emailResult.success;
     }
 
     const registeredUser = { id: user.id, email: user.email, name: user.name };
+    const autoVerified = !isEmailServiceActive;
 
     return NextResponse.json(
       {
-        message: "Account created successfully! Please check your email and click the verification link.",
+        message: autoVerified
+          ? "Account created successfully! You can now log in immediately."
+          : "Account created successfully! Please check your email and click the verification link.",
         user: registeredUser,
-        emailSent: emailResult.success,
+        emailSent,
         verificationUrl,
+        autoVerified,
       },
       { status: 201 }
     );

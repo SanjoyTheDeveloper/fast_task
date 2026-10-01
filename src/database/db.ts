@@ -14,8 +14,13 @@ export const prisma =
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
+import fs from "fs";
+import path from "path";
+
 /**
- * Resilient in-memory fallback store when local PostgreSQL is not active.
+ * Resilient disk-backed fallback store when local PostgreSQL is not active.
+ * Permanently persists users and tasks to local JSON files so they are NEVER
+ * lost when the computer restarts, shuts down, or when dev server reloads.
  */
 interface MockUser {
   id: string;
@@ -42,13 +47,82 @@ interface MockTask {
   updatedAt: Date;
 }
 
-const mockUsers: MockUser[] = [];
-const mockTasks: MockTask[] = [];
+const DATA_DIR = path.join(process.cwd(), "src", "database", "local_data");
+const USERS_FILE = path.join(DATA_DIR, "users.json");
+const TASKS_FILE = path.join(DATA_DIR, "tasks.json");
 
-// Default initial tasks
-if (mockTasks.length === 0) {
+function ensureDataDir() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch (err) {
+    console.error("Failed to create local_data directory:", err);
+  }
+}
+
+let mockUsers: MockUser[] = [];
+let mockTasks: MockTask[] = [];
+
+function loadUsersFromDisk(): MockUser[] {
+  ensureDataDir();
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const content = fs.readFileSync(USERS_FILE, "utf-8");
+      const list = JSON.parse(content);
+      if (Array.isArray(list)) {
+        return list.map((u: any) => ({
+          ...u,
+          createdAt: u.createdAt ? new Date(u.createdAt) : new Date(),
+          updatedAt: u.updatedAt ? new Date(u.updatedAt) : new Date(),
+          emailVerified: u.emailVerified ? new Date(u.emailVerified) : null,
+          verificationTokenExpires: u.verificationTokenExpires ? new Date(u.verificationTokenExpires) : null,
+        }));
+      }
+    }
+  } catch (err) {
+    console.error("Failed to read users from disk:", err);
+  }
+  return [];
+}
+
+function saveUsersToDisk(users: MockUser[]) {
+  ensureDataDir();
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Failed to save users to disk:", err);
+  }
+}
+
+function getUsers(): MockUser[] {
+  const diskUsers = loadUsersFromDisk();
+  mockUsers = diskUsers;
+  return mockUsers;
+}
+
+function loadTasksFromDisk(): MockTask[] {
+  ensureDataDir();
+  try {
+    if (fs.existsSync(TASKS_FILE)) {
+      const content = fs.readFileSync(TASKS_FILE, "utf-8");
+      const list = JSON.parse(content);
+      if (Array.isArray(list) && list.length > 0) {
+        return list.map((t: any) => ({
+          ...t,
+          dueDate: t.dueDate ? new Date(t.dueDate) : null,
+          createdAt: t.createdAt ? new Date(t.createdAt) : new Date(),
+          updatedAt: t.updatedAt ? new Date(t.updatedAt) : new Date(),
+        }));
+      }
+    }
+  } catch (err) {
+    console.error("Failed to read tasks from disk:", err);
+  }
+
+  // Initial default tasks if no persistent tasks exist yet
   const defaultUserId = "user_demo_default";
-  mockTasks.push(
+  const defaultTasks: MockTask[] = [
     {
       id: "task_1",
       title: "Set up PostgreSQL and run Prisma migrations",
@@ -84,9 +158,30 @@ if (mockTasks.length === 0) {
       userId: defaultUserId,
       createdAt: new Date(),
       updatedAt: new Date(),
-    }
-  );
+    },
+  ];
+  saveTasksToDisk(defaultTasks);
+  return defaultTasks;
 }
+
+function saveTasksToDisk(tasks: MockTask[]) {
+  ensureDataDir();
+  try {
+    fs.writeFileSync(TASKS_FILE, JSON.stringify(tasks, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Failed to save tasks to disk:", err);
+  }
+}
+
+function getTasks(): MockTask[] {
+  const diskTasks = loadTasksFromDisk();
+  mockTasks = diskTasks;
+  return mockTasks;
+}
+
+// Initial boot load
+mockUsers = loadUsersFromDisk();
+mockTasks = loadTasksFromDisk();
 
 /**
  * Safe Database Access Layer
@@ -110,8 +205,9 @@ export const db = {
       try {
         return await prisma.user.findUnique({ where: where as any });
       } catch {
+        const users = getUsers();
         return (
-          mockUsers.find(
+          users.find(
             (u) =>
               (where.id && u.id === where.id) ||
               (where.email && u.email.toLowerCase() === where.email.toLowerCase()) ||
@@ -135,18 +231,20 @@ export const db = {
       try {
         return await prisma.user.create({ data: data as any });
       } catch {
+        const users = getUsers();
         const newUser: MockUser = {
           id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
           name: data.name,
           email: data.email.toLowerCase(),
           password: data.password,
-          emailVerified: data.emailVerified || null,
+          emailVerified: data.emailVerified !== undefined ? data.emailVerified : new Date(),
           verificationToken: data.verificationToken || null,
           verificationTokenExpires: data.verificationTokenExpires || null,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        mockUsers.push(newUser);
+        users.push(newUser);
+        saveUsersToDisk(users);
         return newUser;
       }
     },
@@ -166,19 +264,21 @@ export const db = {
       try {
         return await prisma.user.update({ where: where as any, data });
       } catch {
-        const index = mockUsers.findIndex(
+        const users = getUsers();
+        const index = users.findIndex(
           (u) =>
             (where.id && u.id === where.id) ||
             (where.email && u.email.toLowerCase() === where.email.toLowerCase()) ||
             (where.verificationToken && u.verificationToken === where.verificationToken)
         );
         if (index === -1) throw new Error("User not found");
-        mockUsers[index] = {
-          ...mockUsers[index],
+        users[index] = {
+          ...users[index],
           ...data,
           updatedAt: new Date(),
         };
-        return mockUsers[index];
+        saveUsersToDisk(users);
+        return users[index];
       }
     },
   },
@@ -187,7 +287,8 @@ export const db = {
       try {
         return await prisma.task.count({ where });
       } catch {
-        let tasks = [...mockTasks];
+        const allTasks = getTasks();
+        let tasks = [...allTasks];
         if (where?.userId) {
           tasks = tasks.filter((t) => t.userId === where.userId);
         }
@@ -232,7 +333,8 @@ export const db = {
           take,
         });
       } catch {
-        let tasks = [...mockTasks];
+        const allTasks = getTasks();
+        let tasks = [...allTasks];
         if (where?.userId) {
           tasks = tasks.filter((t) => t.userId === where.userId);
         }
@@ -306,7 +408,8 @@ export const db = {
       try {
         return await prisma.task.findUnique({ where });
       } catch {
-        return mockTasks.find((t) => t.id === where.id) || null;
+        const tasks = getTasks();
+        return tasks.find((t) => t.id === where.id) || null;
       }
     },
     async create({
@@ -329,6 +432,7 @@ export const db = {
         }
         return await prisma.task.create({ data: payload });
       } catch {
+        const tasks = getTasks();
         const isCompleted = data.completed ?? (data.status === "COMPLETED");
         const status = data.status || (isCompleted ? "COMPLETED" : "PENDING");
         const newTask: MockTask = {
@@ -343,7 +447,8 @@ export const db = {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        mockTasks.unshift(newTask);
+        tasks.unshift(newTask);
+        saveTasksToDisk(tasks);
         return newTask;
       }
     },
@@ -370,29 +475,33 @@ export const db = {
         }
         return await prisma.task.update({ where, data: payload });
       } catch {
-        const index = mockTasks.findIndex((t) => t.id === where.id);
+        const tasks = getTasks();
+        const index = tasks.findIndex((t) => t.id === where.id);
         if (index === -1) throw new Error("Task not found");
 
-        const updatedCompleted = data.completed !== undefined ? data.completed : (data.status ? data.status === "COMPLETED" : mockTasks[index].completed);
-        const updatedStatus = data.status ? data.status : (data.completed !== undefined ? (data.completed ? "COMPLETED" : "PENDING") : mockTasks[index].status);
+        const updatedCompleted = data.completed !== undefined ? data.completed : (data.status ? data.status === "COMPLETED" : tasks[index].completed);
+        const updatedStatus = data.status ? data.status : (data.completed !== undefined ? (data.completed ? "COMPLETED" : "PENDING") : tasks[index].status);
 
-        mockTasks[index] = {
-          ...mockTasks[index],
+        tasks[index] = {
+          ...tasks[index],
           ...data,
           completed: updatedCompleted,
           status: updatedStatus,
           updatedAt: new Date(),
         };
-        return mockTasks[index];
+        saveTasksToDisk(tasks);
+        return tasks[index];
       }
     },
     async delete({ where }: { where: { id: string } }) {
       try {
         return await prisma.task.delete({ where });
       } catch {
-        const index = mockTasks.findIndex((t) => t.id === where.id);
+        const tasks = getTasks();
+        const index = tasks.findIndex((t) => t.id === where.id);
         if (index === -1) throw new Error("Task not found");
-        const [deleted] = mockTasks.splice(index, 1);
+        const [deleted] = tasks.splice(index, 1);
+        saveTasksToDisk(tasks);
         return deleted;
       }
     },

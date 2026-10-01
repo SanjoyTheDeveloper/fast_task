@@ -18,6 +18,11 @@ export class EmailNotVerifiedError extends CredentialsSignin {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "fast-task-auth-js-secure-production-secret-key-min-32-chars",
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days persistent session across PC reboots
+    updateAge: 24 * 60 * 60,
+  },
   providers: [
     Credentials({
       name: "Credentials",
@@ -39,9 +44,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) return null;
 
-        // Check if user email is verified
-        if (!user.emailVerified) {
+        const isEmailServiceActive =
+          !!process.env.RESEND_API_KEY &&
+          !process.env.RESEND_API_KEY.includes("xxxx") &&
+          !process.env.RESEND_API_KEY.includes("placeholder");
+
+        // If email service is active and user is unverified, require verification
+        if (isEmailServiceActive && !user.emailVerified) {
           throw new EmailNotVerifiedError("Please verify your email before logging in");
+        } else if (!user.emailVerified) {
+          // In local dev/fallback mode without active email delivery, auto-verify so users never get locked out
+          try {
+            await db.user.update({
+              where: { id: user.id },
+              data: { emailVerified: new Date() },
+            });
+          } catch (e) {
+            console.warn("Could not auto-verify user in fallback mode:", e);
+          }
         }
 
         return {

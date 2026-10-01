@@ -286,12 +286,18 @@ export function TodaySchedule({
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-2">
-              <h2 className="text-base font-bold text-[#172033] tracking-tight">
+              <h2
+                className="text-base font-bold text-[#172033] tracking-tight"
+                suppressHydrationWarning
+              >
                 {isViewingToday
                   ? "Today's Schedule"
                   : `${dayNameMap[selectedDay] || selectedDay}'s Schedule`}
               </h2>
-              <span className="text-xs text-slate-400 font-medium">
+              <span
+                className="text-xs text-slate-400 font-medium"
+                suppressHydrationWarning
+              >
                 {isViewingToday ? dateFormatted : `(Summer 2026 Routine)`}
               </span>
               {!isViewingToday && (

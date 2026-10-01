@@ -1,0 +1,38 @@
+[
+  {
+    "id": "task_1",
+    "title": "Set up PostgreSQL and run Prisma migrations",
+    "description": "Run npx prisma migrate dev to sync models with your PostgreSQL database.",
+    "completed": true,
+    "status": "COMPLETED",
+    "priority": "HIGH",
+    "dueDate": "2026-10-02T15:35:37.523Z",
+    "userId": "user_demo_default",
+    "createdAt": "2026-10-01T15:35:37.523Z",
+    "updatedAt": "2026-10-01T15:35:37.523Z"
+  },
+  {
+    "id": "task_2",
+    "title": "Design dashboard layout with shadcn/ui components",
+    "description": "Build clean, accessible task cards, dialogs, and filters using Tailwind CSS.",
+    "completed": false,
+    "status": "IN_PROGRESS",
+    "priority": "MEDIUM",
+    "dueDate": "2026-10-03T15:35:37.523Z",
+    "userId": "user_demo_default",
+    "createdAt": "2026-10-01T15:35:37.523Z",
+    "updatedAt": "2026-10-01T15:35:37.523Z"
+  },
+  {
+    "id": "task_3",
+    "title": "Implement task search and priority sorting",
+    "description": "Allow users to quickly search by title and filter by status and priority.",
+    "completed": false,
+    "status": "PENDING",
+    "priority": "LOW",
+    "dueDate": "2026-10-04T15:35:37.523Z",
+    "userId": "user_demo_default",
+    "createdAt": "2026-10-01T15:35:37.523Z",
+    "updatedAt": "2026-10-01T15:35:37.523Z"
+  }
+]

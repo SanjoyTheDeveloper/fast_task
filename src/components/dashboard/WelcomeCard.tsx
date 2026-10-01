@@ -33,23 +33,23 @@ export function WelcomeCard({
   }, []);
 
   return (
-    <div className="relative w-full rounded-3xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] p-6 sm:p-7 shadow-[0_4px_20px_rgba(49,91,255,0.04)] overflow-hidden">
+    <div className="relative w-full rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] p-4 sm:p-6 lg:p-7 shadow-[0_4px_20px_rgba(49,91,255,0.04)] overflow-hidden">
       {/* Decorative ambient subtle background glows */}
       <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-blue-400/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-16 right-1/4 h-52 w-52 rounded-full bg-indigo-300/10 blur-3xl" />
 
-      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
         {/* Left Column: Greeting, Subtitle & Action */}
-        <div className="space-y-3 max-w-xl">
+        <div className="space-y-2.5 sm:space-y-3 max-w-xl w-full">
           {/* Top Badge: Semester & Academic Week */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-[#D0DFFF] shadow-2xs text-[11px] font-semibold text-[#315BFF]">
-            <GraduationCap className="h-3.5 w-3.5" />
-            <span>{semesterText}</span>
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-white/90 border border-[#D0DFFF] shadow-2xs text-[10px] sm:text-[11px] font-semibold text-[#315BFF] max-w-full">
+            <GraduationCap className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate max-w-[210px] sm:max-w-none">{semesterText}</span>
             {onOpenSemesterSetup && (
               <button
                 type="button"
                 onClick={onOpenSemesterSetup}
-                className="ml-1 hover:text-blue-800 transition-colors cursor-pointer"
+                className="ml-1 hover:text-blue-800 transition-colors cursor-pointer shrink-0"
                 title="Configure semester duration"
                 aria-label="Configure semester"
               >
@@ -59,7 +59,10 @@ export function WelcomeCard({
           </div>
 
           {/* Heading */}
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-[#172033] leading-tight">
+          <h1
+            className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-[#172033] leading-tight break-words"
+            suppressHydrationWarning
+          >
             {greeting},{" "}
             <span className="text-[#315BFF] font-black">{userName}</span> 👋
           </h1>
@@ -70,12 +73,12 @@ export function WelcomeCard({
           </p>
 
           {/* Action button: + Add Assignment */}
-          <div className="pt-2">
+          <div className="pt-1.5 sm:pt-2">
             <Button
               type="button"
               onClick={onOpenCreateModal}
               size="default"
-              className="h-10 px-5 text-xs font-bold rounded-xl"
+              className="h-10.5 sm:h-10 px-5 text-xs sm:text-sm font-bold rounded-xl active:scale-95 cursor-pointer shadow-xs shadow-blue-500/20"
             >
               <Plus className="h-4 w-4 stroke-[2.5]" />
               <span>Add Assignment</span>

@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -112,10 +113,10 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
           <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
             <Link
               href="/dashboard"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDashboard
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+                  ? "bg-blue-50 text-blue-700 shadow-xs shadow-blue-500/10 border border-blue-200/50"
+                  : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 hover:shadow-2xs"
               }`}
             >
               <LayoutGrid className="h-3.5 w-3.5" />
@@ -123,10 +124,10 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
             </Link>
             <Link
               href="/kanban"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isKanban
-                  ? "bg-indigo-50 text-indigo-700"
-                  : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+                  ? "bg-indigo-50 text-indigo-700 shadow-xs shadow-indigo-500/10 border border-indigo-200/50"
+                  : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 hover:shadow-2xs"
               }`}
             >
               <Kanban className="h-3.5 w-3.5" />
@@ -134,14 +135,21 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
             </Link>
             <Link
               href="/lms"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] focus:outline-none focus:ring-2 focus:ring-purple-500 ${
                 pathname === "/lms"
-                  ? "bg-purple-100 text-purple-700 font-extrabold"
-                  : "text-purple-600 hover:text-purple-800 hover:bg-purple-50"
+                  ? "bg-purple-100 text-purple-700 font-extrabold shadow-xs shadow-purple-500/10 border border-purple-200/50"
+                  : "text-purple-600 hover:text-purple-800 hover:bg-purple-50 hover:shadow-2xs"
               }`}
             >
               <BookOpen className="h-3.5 w-3.5" />
-              <span>LMS Library</span>
+              <span>Course</span>
+            </Link>
+            <Link
+              href="/#how-it-works"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 hover:shadow-2xs transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+              <span>Features</span>
             </Link>
           </nav>
         </div>
@@ -261,7 +269,7 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
             <Link
               href="/dashboard"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] ${
                 isDashboard ? "bg-blue-50 text-blue-700" : "text-zinc-700 hover:bg-zinc-100"
               }`}
             >
@@ -271,7 +279,7 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
             <Link
               href="/kanban"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] ${
                 isKanban ? "bg-indigo-50 text-indigo-700" : "text-zinc-700 hover:bg-zinc-100"
               }`}
             >
@@ -281,12 +289,20 @@ export function Navbar({ user, onOpenCreateModal }: NavbarProps) {
             <Link
               href="/lms"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)] ${
                 pathname === "/lms" ? "bg-purple-50 text-purple-700 font-bold" : "text-purple-600 hover:bg-purple-50"
               }`}
             >
               <BookOpen className="h-4 w-4" />
-              <span>LMS Library</span>
+              <span>Course</span>
+            </Link>
+            <Link
+              href="/#how-it-works"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-zinc-700 hover:bg-zinc-100 transition-all duration-200 active:scale-95 active:shadow-[0_0_18px_rgba(49,91,255,0.4)]"
+            >
+              <Sparkles className="h-4 w-4 text-blue-600" />
+              <span>Features</span>
             </Link>
           </nav>
 

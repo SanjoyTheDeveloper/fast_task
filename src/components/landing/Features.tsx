@@ -215,9 +215,9 @@ export function Features() {
             <span>Interactive 3D Workspace Experience</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.08]">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.12] sm:leading-[1.08] break-words">
             Engineered for Academic Focus &{" "}
-            <span className="bg-gradient-to-r from-[#315BFF] via-[#4361EE] to-[#7209B7] bg-clip-text text-transparent">
+            <span className="text-[#315BFF]">
               High-Grade Results
             </span>
           </h2>
@@ -352,7 +352,7 @@ function TabletWindow({
 }) {
   return (
     <div
-      className={`w-[290px] sm:w-[350px] lg:w-[370px] h-[400px] sm:h-[450px] rounded-[28px] sm:rounded-[32px] p-5 sm:p-6 flex flex-col justify-between border transition-all duration-500 ${
+      className={`w-[275px] sm:w-[350px] lg:w-[370px] max-w-[calc(100vw-36px)] h-[400px] sm:h-[450px] rounded-[24px] sm:rounded-[32px] p-4.5 sm:p-6 flex flex-col justify-between border transition-all duration-500 ${
         isCenter
           ? "bg-white text-[#172033] border-2 border-[#315BFF]/60 shadow-[0_25px_65px_-15px_rgba(49,91,255,0.22),0_10px_30px_rgba(15,23,42,0.06)] ring-4 ring-[#315BFF]/10"
           : "bg-white/95 text-[#172033] border border-[#E5EAF2] shadow-[0_15px_40px_-10px_rgba(15,23,42,0.07)] backdrop-blur-md"

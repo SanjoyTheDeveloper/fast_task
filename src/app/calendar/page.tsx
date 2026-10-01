@@ -375,11 +375,11 @@ export default function CalendarPage() {
                   >
                     {/* Day number cell */}
                     <div
-                      className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all ${
+                      className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all duration-200 ease-out ${
                         isSelected
-                          ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/35 ring-4 ring-blue-100 scale-105"
+                          ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/40 ring-4 ring-blue-100 scale-105"
                           : isToday
-                          ? "ring-2 ring-[#315BFF] text-[#315BFF] font-black bg-blue-50/50 hover:bg-blue-100/60"
+                          ? "text-[#315BFF] font-black bg-blue-50/70 hover:bg-blue-100/70"
                           : hasStudyActivity
                           ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
                           : isWeekend

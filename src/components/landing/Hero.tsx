@@ -266,7 +266,7 @@ export function Hero({
 
   return (
     <section
-      id="features"
+      id="hero"
       className="relative pt-8 sm:pt-12 lg:pt-14 pb-16 sm:pb-20 lg:pb-24 bg-transparent text-[#172033] overflow-hidden select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -280,9 +280,9 @@ export function Hero({
         {/* 1. Header Typography */}
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-5">
           {/* Main Headline with entrance and animated gradient text */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.08] animate-fade-in-up">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-[#172033] leading-[1.12] sm:leading-[1.08] animate-fade-in-up break-words">
             Engineered for Academic Focus &{" "}
-            <span className="bg-gradient-to-r from-[#315BFF] via-[#7209B7] to-[#315BFF] bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-flow inline-block">
+            <span className="text-[#315BFF] inline-block">
               High-Grade Results
             </span>
           </h1>
@@ -560,7 +560,7 @@ function TabletWindow({
       )}
 
       <div
-        className={`w-[290px] sm:w-[350px] lg:w-[370px] h-[415px] sm:h-[445px] rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 flex flex-col justify-between border transition-all duration-500 ${
+        className={`w-[275px] sm:w-[350px] lg:w-[370px] max-w-[calc(100vw-36px)] h-[415px] sm:h-[445px] rounded-[24px] sm:rounded-[28px] p-4.5 sm:p-6 flex flex-col justify-between border transition-all duration-500 ${
           isCenter
             ? "bg-white text-[#172033] border-2 border-[#315BFF]/60 shadow-[0_0_50px_rgba(49,91,255,0.25),0_0_25px_rgba(49,91,255,0.15),0_20px_45px_-10px_rgba(15,23,42,0.12)] ring-4 ring-[#315BFF]/15 scale-[1.01]"
             : "bg-white/95 text-[#172033] border border-slate-200/90 shadow-[0_8px_25px_-5px_rgba(15,23,42,0.08),0_0_15px_rgba(49,91,255,0.06)] backdrop-blur-md"

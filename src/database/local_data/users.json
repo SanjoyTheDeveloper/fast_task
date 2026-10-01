@@ -1,0 +1,35 @@
+[
+  {
+    "id": "usr_1790869168673_7nv8m",
+    "name": "Demo Student",
+    "email": "student@fasttask.dev",
+    "password": "$2b$10$gsrmMh8iytmrF3pFglfdqu5k/AXCtjVAG2oLXRoCwv0kU0z.X4Vhu",
+    "emailVerified": "2026-10-01T15:39:24.542Z",
+    "verificationToken": "2c08b5e144fc516ade8d0281185f001a1983ec175889bb716d9bc865fb925756",
+    "verificationTokenExpires": "2026-10-02T15:39:24.542Z",
+    "createdAt": "2026-10-01T15:39:28.673Z",
+    "updatedAt": "2026-10-01T15:39:28.673Z"
+  },
+  {
+    "id": "usr_1790869243532_2plez",
+    "name": "sanjoy  chandro Bhowmick",
+    "email": "info.sanjoy.bh@gmail.com",
+    "password": "$2b$10$czEVjSdq.lr0g4LlEQGlP.WwkOQ2y4HRm.6nx4BuvXZ0HjOYRP5Ie",
+    "emailVerified": "2026-10-01T15:40:39.384Z",
+    "verificationToken": "5977127ac17f941e43ca3fc11c00d0df0660dc947a32d808c7451432fb9425df",
+    "verificationTokenExpires": "2026-10-02T15:40:39.384Z",
+    "createdAt": "2026-10-01T15:40:43.532Z",
+    "updatedAt": "2026-10-01T15:40:43.532Z"
+  },
+  {
+    "id": "usr_1790875793090_s4uk4",
+    "name": "sanjoy  chandro Bhowmick",
+    "email": "sanjoy1vhowmick1@gmail.com",
+    "password": "$2b$10$aJR7UChiTTxjwdR84P2UbuZYxC2En2vu3RvZAEkSoRdeeCp7gHRQ.",
+    "emailVerified": "2026-10-01T17:29:48.892Z",
+    "verificationToken": "6acb05cc842439ab7adf4519393a22b9c4f080d8a6b141e9fa628388ed56d2d1",
+    "verificationTokenExpires": "2026-10-02T17:29:48.892Z",
+    "createdAt": "2026-10-01T17:29:53.090Z",
+    "updatedAt": "2026-10-01T17:29:53.090Z"
+  }
+]

@@ -76,16 +76,10 @@ function DashboardContent() {
   const [isZenOpen, setIsZenOpen] = React.useState(false);
   const [semesterConfig, setSemesterConfig] = React.useState<SemesterConfig>(DEFAULT_SEMESTER_CONFIG);
   const [selectedScheduleDay, setSelectedScheduleDay] = React.useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return new Date().toLocaleDateString("en-US", { weekday: "short" });
-    }
-    return "Tue";
+    return new Date().toLocaleDateString("en-US", { weekday: "short" });
   });
   const [selectedCalendarDate, setSelectedCalendarDate] = React.useState<number>(() => {
-    if (typeof window !== "undefined") {
-      return new Date().getDate();
-    }
-    return 29;
+    return new Date().getDate();
   });
 
   // Keep state synced with current actual date on client mount
@@ -410,20 +404,7 @@ function DashboardContent() {
                   const diff = targetDayIdx - currentDayIdx;
                   const targetDate = new Date(now);
                   targetDate.setDate(now.getDate() + diff);
-                  if (targetDate.getMonth() === now.getMonth()) {
-                    setSelectedCalendarDate(targetDate.getDate());
-                  } else {
-                    const fallbackMap: Record<string, number> = {
-                      Sun: 27,
-                      Mon: 28,
-                      Tue: 29,
-                      Wed: 30,
-                      Thu: 24,
-                      Fri: 25,
-                      Sat: 26,
-                    };
-                    setSelectedCalendarDate(fallbackMap[day] || targetDate.getDate());
-                  }
+                  setSelectedCalendarDate(targetDate.getDate());
                 }
               }}
               onManageRoutine={() => setIsRoutineModalOpen(true)}
@@ -496,6 +477,7 @@ function DashboardContent() {
                     onStatusToggle={handleStatusToggle}
                     onOpenCreateModal={handleOpenCreateModal}
                     updatingTaskId={updatingTaskId}
+                    onOpenZenMode={() => setIsZenOpen(true)}
                   />
 
                   {/* Pagination Controls */}
@@ -515,7 +497,7 @@ function DashboardContent() {
               )}
             </div>
 
-            {/* Right Area: Calendar, Upcoming Tasks & Focus Pomodoro */}
+            {/* Right Area: Calendar & Upcoming Tasks */}
             <div id="calendar" className="lg:col-span-4 space-y-6">
               {/* Compact Calendar Widget & Upcoming Tasks */}
               <CalendarWidget
@@ -523,7 +505,8 @@ function DashboardContent() {
                 onSelectDate={(day, dayOfWeek) => {
                   setSelectedCalendarDate(day);
                   setSelectedScheduleDay(dayOfWeek);
-                  toast.success(`Showing ${dayOfWeek} (Sep ${day}) schedule`);
+                  const monthShort = new Date().toLocaleDateString("en-US", { month: "short" });
+                  toast.success(`Showing ${dayOfWeek} (${monthShort} ${day}) schedule`);
                   const scheduleElement = document.getElementById("schedule");
                   scheduleElement?.scrollIntoView({ behavior: "smooth", block: "nearest" });
                 }}
@@ -533,9 +516,6 @@ function DashboardContent() {
                   tasksElement?.scrollIntoView({ behavior: "smooth" });
                 }}
               />
-
-              {/* Dark Navy Focus Pomodoro Widget */}
-              <FocusPomodoro onOpenZenMode={() => setIsZenOpen(true)} />
             </div>
           </div>
         </main>

@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Antigravity — The Next-Generation Autonomous Quantum Cloud & Zero-G Compute Engine." />
+  <title>Antigravity | Quantum Zero-G Computing</title>
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. CSS RESET & VARIABLES (MOBILE-FIRST)
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      /* Futuristic Deep-Space Dark Palette */
+      --bg-dark: #050713;
+      --bg-surface: #0b0f26;
+      --bg-card: rgba(16, 23, 56, 0.65);
+      --bg-glass: rgba(11, 15, 38, 0.85);
+      
+      /* Vibrant Electric Neon Accents */
+      --cyan: #00f2fe;
+      --blue: #4facfe;
+      --purple: #8a2be2;
+      --violet: #e100ff;
+      --emerald: #00f5a0;
+      
+      /* Text Colors */
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      /* Borders & Glass */
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 242, 254, 0.35);
+      --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --glow-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+      
+      /* Fonts */
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      /* Layout & Nav heights */
+      --nav-height: 68px;
+      --container-max: 1240px;
+      --min-tap: 44px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient animated background grid */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-ambient-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.08) 0%, rgba(138, 43, 226, 0.05) 50%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+      transition: transform 0.2s ease-out;
+    }
+
+    /* Interactive Canvas for Floating Zero-G Elements */
+    #antigravity-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: var(--container-max);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: clamp(1rem, 4vw, 2rem);
+      padding-right: clamp(1rem, 4vw, 2rem);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ==========================================================================
+       2. NAVIGATION & RESPONSIVE SEARCH BAR
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      background: rgba(5, 7, 19, 0.95);
+      border-bottom-color: rgba(0, 242, 254, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      gap: 1rem;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      letter-spacing: -0.02em;
+      min-height: var(--min-tap);
+      min-width: var(--min-tap);
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+      position: relative;
+      animation: rotateGyro 12s linear infinite;
+    }
+
+    @keyframes rotateGyro {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .logo-badge {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Search Bar (Mobile & Desktop) */
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 380px;
+      margin: 0 0.5rem;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 3.2rem 0 2.6rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .search-input:focus {
+      background: rgba(16, 23, 56, 0.9);
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2), 0 0 20px rgba(0, 242, 254, 0.2);
+    }
+
+    .search-icon-left {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    .search-input:focus ~ .search-icon-left {
+      color: var(--cyan);
+    }
+
+    .search-actions {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .search-kbd {
+      display: none;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .search-clear {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+
+    .search-clear:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Desktop Navigation Links */
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-height: var(--min-tap);
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--cyan);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      transition: width 0.25s ease;
+      border-radius: 2px;
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Nav Buttons */
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0 1.25rem;
+      height: 42px;
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      min-height: var(--min-tap);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #3b82f6);
+      color: #050713;
+      border: none;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    /* Mobile Menu Buttons */
+    .mobile-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .icon-btn {
+      width: var(--min-tap);
+      height: var(--min-tap);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.94);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mobile Navigation Drawer */
+    .mobile-drawer {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      width: 100%;
+      height: calc(100vh - var(--nav-height));
+      height: calc(100dvh - var(--nav-height));
+      background: rgba(5, 7, 19, 0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border-subtle);
+      padding: 1.5rem;
+      display: flex;
+      flex-col: column;
+      flex-direction: column;
+      justify-content: space-between;
+      transform: translateY(-120%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 99;
+      overflow-y: auto;
+    }
+
+    .mobile-drawer.open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      list-style: none;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+      min-height: var(--min-tap);
+      transition: all 0.2s;
+    }
+
+    .mobile-nav-link:active, .mobile-nav-link:hover {
+      background: rgba(0, 242, 254, 0.1);
+      border-color: rgba(0, 242, 254, 0.3);
+      color: var(--cyan);
+    }
+
+    /* Mobile Expanded Search Drawer */
+    .mobile-search-bar {
+      display: none;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(5, 7, 19, 0.98);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 98;
+    }
+
+    .mobile-search-bar.open {
+      display: block;
+      animation: slideDown 0.25s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       3. HERO SECTION (LEVITATION & QUANTUM AESTHETICS)
+       ========================================================================== */
+    .hero {
+      position: relative;
+      padding: clamp(3rem, 10vw, 6.5rem) 0 clamp(3.5rem, 8vw, 6rem);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-badge-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      color: var(--cyan);
+      font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      animation: floatBadge 4s ease-in-out infinite;
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5.5vw + 1rem, 4.25rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      word-break: break-word;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 20%, var(--cyan) 60%, var(--violet) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline;
+    }
+
+    .hero-desc {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      align-items: center;
+      justify-content: center;
+      max-width: 440px;
+      margin: 0 auto 3rem;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Floating Core Interactive Orb */
+    .hero-core-container {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .floating-card-orb {
+      position: relative;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(16, 23, 56, 0.8), rgba(6, 8, 20, 0.95));
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      padding: clamp(1.25rem, 3.5vw, 2rem);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 242, 254, 0.15);
+      animation: levitate 6s ease-in-out infinite;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    @keyframes levitate {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 242, 254, 0.15);
+      }
+      50% {
+        transform: translateY(-14px) rotate(0.5deg);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 45px rgba(0, 242, 254, 0.28);
+      }
+    }
+
+    .orb-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .status-pulse {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--emerald);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+      animation: blink 1.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .orb-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .orb-stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 0.85rem;
+      text-align: left;
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 3vw, 1.6rem);
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    /* ==========================================================================
+       4. FEATURE MODULES WITH INSTANT LIVE FILTERING
+       ========================================================================== */
+    .section {
+      padding: clamp(3.5rem, 8vw, 6rem) 0;
+      position: relative;
+    }
+
+    .section-header {
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .section-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    /* Category Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      scrollbar-width: none;
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1.15rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: var(--min-tap);
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, var(--cyan), #3b82f6);
+      color: #050713;
+      border-color: transparent;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: clamp(1.25rem, 3.5vw, 1.75rem);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      padding: 1px;
+      background: linear-gradient(135deg, transparent 40%, rgba(0, 242, 254, 0.4));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 242, 254, 0.4);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 242, 254, 0.15);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cyan);
+    }
+
+    .card-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag-chip {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-dim);
+    }
+
+    /* Empty state */
+    .empty-search-state {
+      display: none;
+      text-align: center;
+      padding: 3.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 24px;
+    }
+
+    /* ==========================================================================
+       5. INTERACTIVE TERMINAL FORM (CONTACT / WAITLIST)
+       ========================================================================== */
+    .terminal-container {
+      max-width: 640px;
+      margin: 0 auto;
+      border-radius: 24px;
+      background: #080c1d;
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 242, 254, 0.1);
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .term-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .term-dot.r { background: #ff5f56; }
+    .term-dot.y { background: #ffbd2e; }
+    .term-dot.g { background: #27c93f; }
+
+    .term-title {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--text-dim);
+    }
+
+    .terminal-body {
+      padding: clamp(1.25rem, 4vw, 2rem);
+    }
+
+    .terminal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 1rem; /* iOS zoom prevention */
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+      background: rgba(16, 23, 56, 0.6);
+    }
+
+    .form-input.invalid {
+      border-color: #ff5f56;
+      box-shadow: 0 0 0 3px rgba(255, 95, 86, 0.2);
+    }
+
+    .error-hint {
+      font-size: 0.75rem;
+      color: #ff5f56;
+      display: none;
+    }
+
+    .form-status-msg {
+      display: none;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      background: rgba(0, 245, 160, 0.12);
+      border: 1px solid rgba(0, 245, 160, 0.3);
+      color: var(--emerald);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       6. FOOTER
+       ========================================================================== */
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: clamp(3rem, 6vw, 4.5rem) 0 2rem;
+      background: rgba(5, 7, 19, 0.95);
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .footer-link {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .footer-link:hover {
+      color: var(--cyan);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* ==========================================================================
+       7. RESPONSIVE BREAKPOINTS (TABLET & DESKTOP)
+       ========================================================================== */
+
+    /* Tablet: 481px – 768px */
+    @media (min-width: 481px) {
+      .hero-actions {
+        flex-direction: row;
+        max-width: 100%;
+      }
+
+      .btn-full {
+        width: auto;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Laptop & Desktop: 769px and above */
+    @media (min-width: 769px) {
+      .mobile-controls {
+        display: none;
+      }
+
+      .search-container {
+        display: block;
+      }
+
+      .search-kbd {
+        display: inline-flex;
+      }
+
+      .nav-links {
+        display: flex;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.75rem;
+      }
+
+      .footer-grid {
+        grid-template-columns: 2fr repeat(3, 1fr);
+      }
+
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    /* Small Mobile: 320px – 380px specific safeguard */
+    @media (max-width: 380px) {
+      .search-container {
+        display: none;
+      }
+      .orb-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Grid and Cursor Glow -->
+  <div class="bg-grid"></div>
+  <div class="bg-ambient-glow" id="ambient-glow"></div>
+
+  <!-- Interactive Zero-G Floating Particle Canvas -->
+  <canvas id="antigravity-canvas"></canvas>
+
+  <!-- Sticky Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <!-- Logo -->
+      <a href="#" class="logo" aria-label="Antigravity Home">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#050713" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+        </div>
+        <span>Antigravity</span>
+        <span class="logo-badge">v2.0</span>
+      </a>
+
+      <!-- Desktop Search Bar -->
+      <div class="search-container" id="desktop-search-container">
+        <div class="search-wrapper">
+          <svg class="search-icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="desktop-search-input"
+            class="search-input" 
+            placeholder="Search modules, APIs, specs..." 
+            autocomplete="off"
+            aria-label="Search platform features"
+          />
+          <div class="search-actions">
+            <button type="button" class="search-clear" id="desktop-search-clear" aria-label="Clear search">×</button>
+            <span class="search-kbd" id="search-kbd-hint">Ctrl K</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links">
+        <li><a href="#modules" class="nav-link">Modules</a></li>
+        <li><a href="#architecture" class="nav-link">Architecture</a></li>
+        <li><a href="#terminal" class="nav-link">Terminal</a></li>
+      </ul>
+
+      <!-- Desktop CTA Action -->
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <a href="#terminal" class="nav-cta btn-primary" style="display: none;" id="desktop-deploy-cta">Launch Node</a>
+
+        <!-- Mobile Controls (Search trigger + Hamburger) -->
+        <div class="mobile-controls">
+          <button class="icon-btn" id="mobile-search-trigger" aria-label="Open search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+          <button class="icon-btn" id="mobile-menu-trigger" aria-label="Toggle navigation menu" aria-expanded="false">
+            <svg id="hamburger-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Collapsible Search Bar -->
+  <div class="mobile-search-bar" id="mobile-search-bar">
+    <div class="search-wrapper">
+      <svg class="search-icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input 
+        type="text" 
+        id="mobile-search-input"
+        class="search-input" 
+        placeholder="Filter modules & specs..." 
+        autocomplete="off"
+        aria-label="Filter modules on mobile"
+      />
+      <div class="search-actions">
+        <button type="button" class="search-clear" id="mobile-search-clear" aria-label="Clear mobile search">×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <ul class="mobile-nav-list">
+      <li>
+        <a href="#modules" class="mobile-nav-link" data-close="true">
+          <span>01. Modules & Specs</span>
+          <span>→</span>
+        </a>
+      </li>
+      <li>
+        <a href="#architecture" class="mobile-nav-link" data-close="true">
+          <span>02. Architecture Comparison</span>
+          <span>→</span>
+        </a>
+      </li>
+      <li>
+        <a href="#terminal" class="mobile-nav-link" data-close="true">
+          <span>03. Zero-G Terminal</span>
+          <span>→</span>
+        </a>
+      </li>
+    </ul>
+
+    <div style="padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+      <a href="#terminal" class="nav-cta btn-primary btn-full" data-close="true">Launch Quantum Node →</a>
+      <p style="text-align: center; font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem;">
+        Antigravity Global Compute Network v2.0
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-badge-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>AUTONOMOUS ZERO-G QUANTUM FABRIC</span>
+        </div>
+
+        <h1 class="hero-title">
+          Defy Compute Limits with <br />
+          <span class="gradient-text">Anti-Gravity Intelligence</span>
+        </h1>
+
+        <p class="hero-desc">
+          Break free from classical cloud friction. Antigravity delivers distributed memory virtualization, frictionless neural tensor flows, and sub-millisecond quantum consensus.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#terminal" class="nav-cta btn-primary btn-full">
+            <span>Deploy Quantum Core</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="#modules" class="nav-cta btn-secondary btn-full">
+            <span>Explore Modules</span>
+          </a>
+        </div>
+
+        <!-- Floating Core Card Display -->
+        <div class="hero-core-container">
+          <div class="floating-card-orb">
+            <div class="orb-header">
+              <div style="text-align: left;">
+                <p style="font-size: 0.7rem; font-family: monospace; color: var(--text-dim);">CORE_KERNEL: ANTIGRAV-X</p>
+                <h2 style="font-size: 1.15rem; font-family: var(--font-display); font-weight: 700; color: #fff;">Quantum Zero-G Node</h2>
+              </div>
+              <div class="status-pulse">
+                <span class="pulse-dot"></span>
+                <span>Active 99.999%</span>
+              </div>
+            </div>
+
+            <div class="orb-stats-grid">
+              <div class="orb-stat-card">
+                <div class="stat-val" id="stat-latency">0.02ms</div>
+                <div class="stat-lbl">Global Mesh Latency</div>
+              </div>
+              <div class="orb-stat-card">
+                <div class="stat-val" id="stat-tps">1.2M</div>
+                <div class="stat-lbl">Tensor Ops / Sec</div>
+              </div>
+              <div class="orb-stat-card">
+                <div class="stat-val">100%</div>
+                <div class="stat-lbl">Frictionless Compute</div>
+              </div>
+              <div class="orb-stat-card">
+                <div class="stat-val">256-Qubit</div>
+                <div class="stat-lbl">Post-Quantum Key</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULES & LIVE SEARCH SECTION -->
+    <section class="section" id="modules">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">MODULAR ARCHITECTURE</span>
+          <h2 class="section-title">Zero-G Engine Capabilities</h2>
+          <p style="color: var(--text-muted); max-width: 580px; margin-top: 0.5rem; font-size: 0.95rem;">
+            Filter and search across high-density quantum modules in real-time.
+          </p>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="filter-tabs" id="category-tabs" role="tablist" aria-label="Filter modules">
+          <button class="filter-btn active" data-category="all" role="tab">All Modules</button>
+          <button class="filter-btn" data-category="kernel" role="tab">Kernel</button>
+          <button class="filter-btn" data-category="neural" role="tab">Neural Engine</button>
+          <button class="filter-btn" data-category="mesh" role="tab">Mesh Network</button>
+          <button class="filter-btn" data-category="security" role="tab">Security</button>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid" id="modules-grid">
+          <!-- Card 1 -->
+          <article class="feature-card" data-category="kernel" data-keywords="kernel virtual memory zero friction execution runtime">
+            <div>
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                  </svg>
+                </div>
+                <span class="card-badge">Kernel Core</span>
+              </div>
+              <h3 class="card-title">Zero-G Virtualization</h3>
+              <p class="card-desc">
+                Decouples computational threads from physical hardware constraints, eliminating execution friction across memory pages.
+              </p>
+            </div>
+            <div class="card-tags">
+              <span class="tag-chip">POSIX Compliant</span>
+              <span class="tag-chip">0ns Lock Wait</span>
+              <span class="tag-chip">Hot Migration</span>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="feature-card" data-category="neural" data-keywords="neural tensor flow ai machine learning weights inference">
+            <div>
+              <div class="card-top">
+                <div class="card-icon" style="background: rgba(138, 43, 226, 0.12); color: var(--violet); border-color: rgba(138, 43, 226, 0.3);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.07 6.24 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58c2.93-1.18 5-4.06 5-7.42a8 8 0 0 0-8-8z"></path>
+                  </svg>
+                </div>
+                <span class="card-badge">Neural</span>
+              </div>
+              <h3 class="card-title">Kinetic Tensor Fabric</h3>
+              <p class="card-desc">
+                High-bandwidth neural weight distribution. Executes LLM inference across millions of edge devices with automated weight sharding.
+              </p>
+            </div>
+            <div class="card-tags">
+              <span class="tag-chip">FP8 Native</span>
+              <span class="tag-chip">Dynamic Sharding</span>
+              <span class="tag-chip">2.4x Throughput</span>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="feature-card" data-category="mesh" data-keywords="mesh network warp synchronization sub-millisecond p2p latency">
+            <div>
+              <div class="card-top">
+                <div class="card-icon" style="background: rgba(0, 245, 160, 0.1); color: var(--emerald); border-color: rgba(0, 245, 160, 0.25);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                </div>
+                <span class="card-badge">Networking</span>
+              </div>
+              <h3 class="card-title">Quantum Warp Mesh</h3>
+              <p class="card-desc">
+                Self-healing P2P topology bypassing traditional BGP routing hurdles with instant packet gravity tunneling and 0.02ms latency.
+              </p>
+            </div>
+            <div class="card-tags">
+              <span class="tag-chip">Multi-Hop</span>
+              <span class="tag-chip">Zero BGP Lag</span>
+              <span class="tag-chip">Global Anycast</span>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="feature-card" data-category="security" data-keywords="security cryptography post-quantum keys encryption zero trust">
+            <div>
+              <div class="card-top">
+                <div class="card-icon" style="background: rgba(255, 95, 86, 0.1); color: #ff5f56; border-color: rgba(255, 95, 86, 0.3);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+                <span class="card-badge">Security</span>
+              </div>
+              <h3 class="card-title">Singularity Cryptography</h3>
+              <p class="card-desc">
+                NIST-compliant post-quantum lattice keys. Guarantees end-to-end mathematical protection against future decryption engines.
+              </p>
+            </div>
+            <div class="card-tags">
+              <span class="tag-chip">Kyber-1024</span>
+              <span class="tag-chip">Zero-Trust Enclave</span>
+              <span class="tag-chip">FIPS Verified</span>
+            </div>
+          </article>
+
+          <!-- Card 5 -->
+          <article class="feature-card" data-category="kernel" data-keywords="telemetry metrics chronos observability anomaly prediction">
+            <div>
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <span class="card-badge">Telemetry</span>
+              </div>
+              <h3 class="card-title">Chronos Multi-Timeline</h3>
+              <p class="card-desc">
+                Predictive system telemetry that detects state regressions up to 45 seconds before they manifest in real compute workloads.
+              </p>
+            </div>
+            <div class="card-tags">
+              <span class="tag-chip">Predictive eBPF</span>
+              <span class="tag-chip">Time-Series</span>
+              <span class="tag-chip">Autofix Triggers</span>
+            </div>
+          </article>
+
+          <!-- Card 6 -->
+          <article class="feature-card" data-category="mesh" data-keywords="nebula cloud bridge edge serverless microservices container">
+            <div>
+              <div class="card-top">
+                <div class="card-icon" style="background: rgba(0, 242, 254, 0.15); color: var(--cyan); border-color: var(--border-glow);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                  </svg>
+                </div>
+                <span class="card-badge">Bridge</span>
+              </div>
+              <h3 class="card-title">Nebula Hybrid Gateway</h3>
+              <p class="card-desc">
+                Instantly tunnel legacy Docker, Kubernetes, and bare-metal nodes directly into the Antigravity zero-G quantum network.
+              </p>
+            </div>
+            <div class="card-tags">
+              <span class="tag-chip">K8s Ingress</span>
+              <span class="tag-chip">WASM Runtime</span>
+              <span class="tag-chip">1-Click CLI</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Search Empty State -->
+        <div class="empty-search-state" id="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5" style="margin-bottom: 0.75rem;">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">No matching zero-G modules found</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Try adjusting your search query or reset the filter category.
+          </p>
+          <button class="nav-cta btn-secondary" id="reset-search-btn">Reset Search</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE COMPARISON SECTION -->
+    <section class="section" id="architecture" style="background: rgba(11, 15, 38, 0.4); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">PARADIGM SHIFT</span>
+          <h2 class="section-title">Classical Cloud vs. Antigravity</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem;">
+          <!-- Traditional Cloud -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); border-radius: 20px; padding: clamp(1.25rem, 3vw, 1.75rem);">
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f56;"></span>
+              <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--text-muted);">Legacy Cloud Infrastructure</h3>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.88rem; color: var(--text-muted);">
+              <li>❌ Rigid regional boundaries with inter-AZ data fees</li>
+              <li>❌ Cold start delays up to 1.5 seconds on serverless lambdas</li>
+              <li>❌ Heavy centralized hypervisors consuming 20% system overhead</li>
+              <li>❌ Complex manual orchestration with brittle YAML manifests</li>
+            </ul>
+          </div>
+
+          <!-- Antigravity Zero-G -->
+          <div style="background: linear-gradient(135deg, rgba(0, 242, 254, 0.08), rgba(138, 43, 226, 0.08)); border: 1px solid var(--border-glow); border-radius: 20px; padding: clamp(1.25rem, 3vw, 1.75rem); box-shadow: var(--glow-shadow);">
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></span>
+              <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: #fff;">Antigravity Autonomous Core</h3>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.88rem; color: #e2e8f0;">
+              <li>⚡ Unified global memory fabric with zero egress tax</li>
+              <li>⚡ Near-instantaneous sub-millisecond execution starts (0.02ms)</li>
+              <li>⚡ Microsecond tensor virtualization with negligible overhead</li>
+              <li>⚡ Autonomous self-healing kinetic scheduler</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TERMINAL WAITLIST & CONTACT FORM -->
+    <section class="section" id="terminal">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">ACCESS PROTOCOL</span>
+          <h2 class="section-title">Initialize Zero-G Node</h2>
+          <p style="color: var(--text-muted); max-width: 520px; margin-top: 0.5rem; font-size: 0.95rem;">
+            Claim your early quantum node allocation and access the developer beta.
+          </p>
+        </div>
+
+        <div class="terminal-container">
+          <div class="terminal-bar">
+            <div class="term-dots">
+              <span class="term-dot r"></span>
+              <span class="term-dot y"></span>
+              <span class="term-dot g"></span>
+            </div>
+            <span class="term-title">antigravity@quantum-node:~$</span>
+            <div style="width: 32px;"></div>
+          </div>
+
+          <div class="terminal-body">
+            <form class="terminal-form" id="quantum-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="user-name">
+                  <span>Developer Handle / Name</span>
+                  <span style="font-size: 0.7rem; color: var(--text-dim);">Required</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="user-name" 
+                  class="form-input" 
+                  placeholder="e.g. alex_quant" 
+                  required 
+                  minlength="2"
+                />
+                <span class="error-hint" id="name-error">Please enter at least 2 characters.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="user-email">
+                  <span>Primary Node Contact Email</span>
+                  <span style="font-size: 0.7rem; color: var(--text-dim);">Required</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="user-email" 
+                  class="form-input" 
+                  placeholder="developer@domain.com" 
+                  required 
+                />
+                <span class="error-hint" id="email-error">Please enter a valid email address.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="node-type">
+                  <span>Selected Node Capability</span>
+                </label>
+                <select id="node-type" class="form-input" style="cursor: pointer;">
+                  <option value="neural">Neural Tensor Node (LLM Inference)</option>
+                  <option value="kernel">Core Zero-G Compute Worker</option>
+                  <option value="mesh">Quantum Mesh Transit Gateway</option>
+                </select>
+              </div>
+
+              <button type="submit" class="nav-cta btn-primary btn-full" id="submit-btn" style="height: 48px; margin-top: 0.5rem;">
+                <span id="btn-text">Authenticate & Provision Node</span>
+                <svg id="btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none; animation: spin 1s linear infinite;">
+                  <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                  <path d="M12 2a10 10 0 0 1 10 10"></path>
+                </svg>
+              </button>
+
+              <div class="form-status-msg" id="form-status">
+                🎉 Node authorization granted! Quantum key dispatched to your inbox.
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="#" class="logo" style="margin-bottom: 0.85rem;">
+            <div class="logo-icon" style="width: 28px; height: 28px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#050713" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+              </svg>
+            </div>
+            <span>Antigravity</span>
+          </a>
+          <p style="font-size: 0.85rem; color: var(--text-dim); max-width: 320px; line-height: 1.6;">
+            The autonomous zero-gravity compute fabric designed to transcend legacy physical boundaries.
+          </p>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-size: 0.75rem; color: var(--emerald);">
+            <span class="pulse-dot" style="width: 6px; height: 6px;"></span>
+            <span>All Quantum Systems Operational</span>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#modules" class="footer-link">Kernel Core</a></li>
+            <li><a href="#modules" class="footer-link">Neural Tensor Mesh</a></li>
+            <li><a href="#modules" class="footer-link">Warp Networking</a></li>
+            <li><a href="#modules" class="footer-link">Post-Quantum Keys</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="#architecture" class="footer-link">Architecture Specs</a></li>
+            <li><a href="#terminal" class="footer-link">CLI Quickstart</a></li>
+            <li><a href="#terminal" class="footer-link">API Documentation</a></li>
+            <li><a href="#terminal" class="footer-link">System Status</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Network</h4>
+          <ul class="footer-links">
+            <li><a href="#terminal" class="footer-link">Deploy Validator</a></li>
+            <li><a href="#terminal" class="footer-link">Global Nodes</a></li>
+            <li><a href="#terminal" class="footer-link">Security Disclosures</a></li>
+            <li><a href="#terminal" class="footer-link">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Antigravity Quantum Inc. All dimensions reserved.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#" style="color: var(--text-dim); text-decoration: none;">Privacy Protocol</a>
+          <a href="#" style="color: var(--text-dim); text-decoration: none;">Security Spec</a>
+          <a href="#" style="color: var(--text-dim); text-decoration: none;">Zero-G SLA</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       8. JAVASCRIPT: PARTICLES, SEARCH, FILTERING, & FORM VALIDATION
+       ========================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      // 1. Detect OS for Search Shortcut Hint (Ctrl+K or Cmd+K)
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const kbdHint = document.getElementById("search-kbd-hint");
+      if (kbdHint) {
+        kbdHint.textContent = isMac ? "⌘ K" : "Ctrl K";
+      }
+
+      // 2. Interactive Ambient Cursor Glow
+      const ambientGlow = document.getElementById("ambient-glow");
+      window.addEventListener("pointermove", (e) => {
+        if (ambientGlow) {
+          ambientGlow.style.transform = `translate(${e.clientX - 300}px, ${e.clientY - 300}px)`;
+        }
+      });
+
+      // 3. Floating Zero-G Particle Canvas Simulation
+      const canvas = document.getElementById("antigravity-canvas");
+      const ctx = canvas.getContext("2d");
+      let width, height;
+      let particles = [];
+      let mouseX = -1000;
+      let mouseY = -1000;
+
+      function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initParticles();
+      }
+
+      function initParticles() {
+        particles = [];
+        // Adaptive particle count: fewer on mobile (35) for smooth 60fps, more on desktop (75)
+        const count = width < 768 ? 32 : 70;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: (Math.random() - 0.5) * 0.45,
+            radius: Math.random() * 2 + 1,
+            color: Math.random() > 0.4 ? "rgba(0, 242, 254, " : "rgba(138, 43, 226, ",
+            alpha: Math.random() * 0.4 + 0.15,
+            floatFactor: Math.random() * 2 + 1
+          });
+        }
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("pointermove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      resizeCanvas();
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+
+          // Gentle zero-g buoyancy motion
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Wrap edges smoothly
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          // Interactive subtle repel from pointer
+          const dx = mouseX - p.x;
+          const dy = mouseY - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            const force = (120 - dist) / 120;
+            p.x -= (dx / dist) * force * 2.5;
+            p.y -= (dy / dist) * force * 2.5;
+          }
+
+          // Render particle
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + p.alpha + ")";
+          ctx.fill();
+
+          // Connect neighboring particles with constellation lines
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const distBetween = Math.hypot(p.x - p2.x, p.y - p2.y);
+            if (distBetween < 90) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(0, 242, 254, ${0.12 * (1 - distBetween / 90)})`;
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(animateParticles);
+      }
+
+      animateParticles();
+
+      // 4. Sticky Navbar Scroll Treatment
+      const navbar = document.getElementById("navbar");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 30) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      }, { passive: true });
+
+      // 5. Mobile Drawer & Mobile Search Logic
+      const menuTrigger = document.getElementById("mobile-menu-trigger");
+      const mobileDrawer = document.getElementById("mobile-drawer");
+      const searchTrigger = document.getElementById("mobile-search-trigger");
+      const mobileSearchBar = document.getElementById("mobile-search-bar");
+      const desktopSearchInput = document.getElementById("desktop-search-input");
+      const mobileSearchInput = document.getElementById("mobile-search-input");
+
+      function toggleMobileDrawer() {
+        const isOpen = mobileDrawer.classList.toggle("open");
+        menuTrigger.setAttribute("aria-expanded", String(isOpen));
+        if (isOpen) {
+          mobileSearchBar.classList.remove("open");
+          document.body.style.overflow = "hidden";
+        } else {
+          document.body.style.overflow = "";
+        }
+      }
+
+      menuTrigger.addEventListener("click", toggleMobileDrawer);
+
+      // Close drawer on clicking internal link
+      document.querySelectorAll("[data-close='true']").forEach((el) => {
+        el.addEventListener("click", () => {
+          mobileDrawer.classList.remove("open");
+          document.body.style.overflow = "";
+          menuTrigger.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      // Mobile search trigger
+      searchTrigger.addEventListener("click", () => {
+        const isOpen = mobileSearchBar.classList.toggle("open");
+        if (isOpen) {
+          mobileDrawer.classList.remove("open");
+          document.body.style.overflow = "";
+          mobileSearchInput.focus();
+        }
+      });
+
+      // 6. Global Keyboard Shortcut for Search (Ctrl+K / Cmd+K)
+      window.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          if (window.innerWidth >= 769) {
+            desktopSearchInput.focus();
+            desktopSearchInput.select();
+          } else {
+            mobileSearchBar.classList.add("open");
+            mobileSearchInput.focus();
+            mobileSearchInput.select();
+          }
+        }
+        if (e.key === "Escape") {
+          if (document.activeElement === desktopSearchInput) desktopSearchInput.blur();
+          if (document.activeElement === mobileSearchInput) mobileSearchInput.blur();
+          mobileSearchBar.classList.remove("open");
+          mobileDrawer.classList.remove("open");
+          document.body.style.overflow = "";
+        }
+      });
+
+      // 7. Instant Dynamic Search & Category Filtering
+      const cards = Array.from(document.querySelectorAll(".feature-card"));
+      const emptyState = document.getElementById("empty-state");
+      const categoryTabs = document.getElementById("category-tabs");
+      const desktopClearBtn = document.getElementById("desktop-search-clear");
+      const mobileClearBtn = document.getElementById("mobile-search-clear");
+      const resetSearchBtn = document.getElementById("reset-search-btn");
+
+      let currentQuery = "";
+      let currentCategory = "all";
+
+      function applyFilter() {
+        const queryNorm = currentQuery.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+          const cardCat = card.getAttribute("data-category") || "";
+          const cardKeywords = card.getAttribute("data-keywords") || "";
+          const cardText = card.textContent.toLowerCase();
+
+          const matchesCat = (currentCategory === "all" || cardCat === currentCategory);
+          const matchesQuery = (!queryNorm || cardText.includes(queryNorm) || cardKeywords.includes(queryNorm));
+
+          if (matchesCat && matchesQuery) {
+            card.style.display = "flex";
+            visibleCount++;
+          } else {
+            card.style.display = "none";
+          }
+        });
+
+        // Show/hide empty state
+        if (visibleCount === 0) {
+          emptyState.style.display = "block";
+        } else {
+          emptyState.style.display = "none";
+        }
+
+        // Toggle clear buttons
+        desktopClearBtn.style.display = currentQuery ? "inline-flex" : "none";
+        mobileClearBtn.style.display = currentQuery ? "inline-flex" : "none";
+      }
+
+      function handleSearchInput(val) {
+        currentQuery = val;
+        // Sync both desktop and mobile search inputs
+        if (desktopSearchInput.value !== val) desktopSearchInput.value = val;
+        if (mobileSearchInput.value !== val) mobileSearchInput.value = val;
+        applyFilter();
+      }
+
+      desktopSearchInput.addEventListener("input", (e) => handleSearchInput(e.target.value));
+      mobileSearchInput.addEventListener("input", (e) => handleSearchInput(e.target.value));
+
+      function clearSearch() {
+        handleSearchInput("");
+        desktopSearchInput.focus();
+      }
+
+      desktopClearBtn.addEventListener("click", clearSearch);
+      mobileClearBtn.addEventListener("click", () => {
+        handleSearchInput("");
+        mobileSearchInput.focus();
+      });
+
+      resetSearchBtn.addEventListener("click", () => {
+        currentCategory = "all";
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-category") === "all");
+        });
+        clearSearch();
+      });
+
+      // Category tab switcher
+      categoryTabs.addEventListener("click", (e) => {
+        const target = e.target.closest(".filter-btn");
+        if (!target) return;
+
+        document.querySelectorAll(".filter-btn").forEach((btn) => btn.classList.remove("active"));
+        target.classList.add("active");
+        currentCategory = target.getAttribute("data-category") || "all";
+        applyFilter();
+      });
+
+      // 8. Dynamic Live Metrics Simulator (Subtle live feed)
+      setInterval(() => {
+        const latencyEl = document.getElementById("stat-latency");
+        if (latencyEl) {
+          const val = (0.018 + Math.random() * 0.006).toFixed(3);
+          latencyEl.textContent = val + "ms";
+        }
+      }, 3500);
+
+      // 9. Interactive Form Validation and Authentication Flow
+      const form = document.getElementById("quantum-form");
+      const nameInput = document.getElementById("user-name");
+      const emailInput = document.getElementById("user-email");
+      const nameError = document.getElementById("name-error");
+      const emailError = document.getElementById("email-error");
+      const submitBtn = document.getElementById("submit-btn");
+      const btnText = document.getElementById("btn-text");
+      const btnSpinner = document.getElementById("btn-spinner");
+      const formStatus = document.getElementById("form-status");
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let isValid = true;
+
+        // Name check
+        if (!nameInput.value.trim() || nameInput.value.trim().length < 2) {
+          nameInput.classList.add("invalid");
+          nameError.style.display = "block";
+          isValid = false;
+        } else {
+          nameInput.classList.remove("invalid");
+          nameError.style.display = "none";
+        }
+
+        // Email check
+        if (!validateEmail(emailInput.value.trim())) {
+          emailInput.classList.add("invalid");
+          emailError.style.display = "block";
+          isValid = false;
+        } else {
+          emailInput.classList.remove("invalid");
+          emailError.style.display = "none";
+        }
+
+        if (!isValid) return;
+
+        // Simulated provision handshake
+        submitBtn.disabled = true;
+        btnText.textContent = "Synthesizing Quantum Node Key...";
+        btnSpinner.style.display = "inline-block";
+
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          btnText.textContent = "Node Provisioned Successfully";
+          btnSpinner.style.display = "none";
+          formStatus.style.display = "block";
+          form.reset();
+
+          setTimeout(() => {
+            btnText.textContent = "Authenticate & Provision Node";
+          }, 4000);
+        }, 1400);
+      });
+
+      // Clear validation error on typing
+      nameInput.addEventListener("input", () => {
+        nameInput.classList.remove("invalid");
+        nameError.style.display = "none";
+      });
+
+      emailInput.addEventListener("input", () => {
+        emailInput.classList.remove("invalid");
+        emailError.style.display = "none";
+      });
+
+    })();
+  </script>
+</body>
+</html>

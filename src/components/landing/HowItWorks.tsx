@@ -73,7 +73,7 @@ const steps: StepItem[] = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-16 sm:py-24 lg:py-32 bg-transparent">
+    <section id="how-it-works" className="relative py-16 sm:py-24 lg:py-32 bg-transparent scroll-mt-20 sm:scroll-mt-24">
       {/* Background ambient radial glow */}
       <div className="pointer-events-none absolute right-1/4 top-1/2 -z-10 h-96 w-96 rounded-full bg-blue-400/10 blur-[120px]" />
 

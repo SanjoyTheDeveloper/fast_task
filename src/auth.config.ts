@@ -6,6 +6,23 @@ export const authConfig = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days persistent session across PC reboots
+    updateAge: 24 * 60 * 60,
+  },
+  cookies: {
+    sessionToken: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-authjs.session-token"
+          : "authjs.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60, // 30 days cookie lifetime
+      },
+    },
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -33,13 +50,14 @@ export const authConfig = {
         return true;
       }
 
-      // Protected routes: Only internal dashboard, kanban, schedule, and task routes require authentication
+      // Protected routes: Only internal dashboard, kanban, schedule, task, and LMS course routes require authentication
       const isProtectedRoute =
         pathname.startsWith("/dashboard") ||
         pathname.startsWith("/kanban") ||
         pathname.startsWith("/schedule") ||
         pathname.startsWith("/calendar") ||
         pathname.startsWith("/settings") ||
+        pathname.startsWith("/lms") ||
         pathname.startsWith("/task");
 
       if (isProtectedRoute && !isLoggedIn) {

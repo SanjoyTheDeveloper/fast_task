@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
 import { KanbanBoard } from "@/components/tasks/KanbanBoard";
 import { TaskDialog } from "@/components/tasks/TaskDialog";
 import { TaskFilters, FilterState } from "@/components/tasks/taskfilter";
@@ -348,7 +347,6 @@ export default function KanbanPage() {
       <div className="pointer-events-none absolute top-32 right-10 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
 
       <Toaster position="top-right" richColors />
-      <Navbar user={currentUser} />
 
       <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-6 space-y-6">
         {/* Top Header Bar */}
