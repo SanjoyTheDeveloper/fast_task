@@ -133,8 +133,8 @@ export function Navbar({
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-200 ${
         scrolled
-          ? "border-b border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-[0_2px_12px_rgba(15,23,42,0.03)]"
-          : "border-b border-slate-200/60 bg-white/80 backdrop-blur-md"
+          ? "border-b border-[#E5EAF2] bg-white/95 backdrop-blur-xl shadow-[0_2px_12px_rgba(15,23,42,0.03)]"
+          : "border-b border-[#E5EAF2] bg-white/80 backdrop-blur-md"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
