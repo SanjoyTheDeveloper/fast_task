@@ -109,71 +109,50 @@ function LoginForm() {
     setServerError(null);
 
     try {
-      const res = await signIn("credentials", {
-        email: values.email.trim(),
-        password: values.password,
-        redirect: false,
+      // 1. Fast pre-validation check against login API (handles invalid email/password & verification instantly)
+      const verifyRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: values.email.trim(),
+          password: values.password,
+        }),
       });
 
-      if (res?.error) {
-        if (
-          res.error.toLowerCase().includes("verify") ||
-          res.error.toLowerCase().includes("email_not_verified") ||
-          res.code?.toLowerCase().includes("verify")
-        ) {
+      const verifyData = await verifyRes.json().catch(() => ({}));
+
+      if (!verifyRes.ok) {
+        if (verifyData.code === "email_not_verified") {
           setServerError("Please verify your email before logging in");
         } else {
-          try {
-            const checkRes = await fetch("/api/auth/resend-verification", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: values.email.trim(), checkOnly: true }),
-            });
-            const checkData = await checkRes.json();
-            if (checkData.unverified) {
-              setServerError("Please verify your email before logging in");
-              setIsLoading(false);
-              return;
-            }
-          } catch {
-            // Ignore check failure
-          }
-          setServerError("Invalid email or password. Please try again.");
+          setServerError(verifyData.message || "Invalid email or password. Please try again.");
         }
         setIsLoading(false);
         return;
       }
 
-      router.push(from);
-      router.refresh();
-    } catch (err: any) {
+      // 2. Credentials are valid! Trigger NextAuth session establishment
+      const targetDestination = from.startsWith("http")
+        ? from
+        : `${window.location.origin}${from.startsWith("/") ? from : `/${from}`}`;
+
       try {
-        const checkRes = await fetch("/api/auth/resend-verification", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: values.email.trim(), checkOnly: true }),
+        await signIn("credentials", {
+          email: values.email.trim(),
+          password: values.password,
+          redirectTo: targetDestination,
+          redirect: false,
         });
-        const checkData = await checkRes.json();
-        if (checkData.unverified) {
-          setServerError("Please verify your email before logging in");
-          setIsLoading(false);
-          return;
-        }
-      } catch {
-        // Ignore check failure
+      } catch (signInErr) {
+        console.warn("SignIn redirect notice:", signInErr);
       }
 
-      const msg = err?.message || "";
-      if (
-        msg.toLowerCase().includes("verify") ||
-        msg.toLowerCase().includes("inbox") ||
-        msg.toLowerCase().includes("email_not_verified")
-      ) {
-        setServerError("Please verify your email before logging in");
-      } else {
-        setServerError("Invalid email or password. Please try again.");
-      }
-      setIsLoading(false);
+      // 3. Immediately hard-navigate with the session cookie to destination
+      window.location.href = from;
+    } catch (err: any) {
+      console.error("Login unexpected error:", err);
+      // Fallback navigation if cookie is set
+      window.location.href = from;
     }
   };
 

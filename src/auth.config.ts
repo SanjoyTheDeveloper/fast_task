@@ -1,6 +1,10 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  secret:
+    process.env.AUTH_SECRET ||
+    process.env.NEXTAUTH_SECRET ||
+    "fast-task-ultra-secure-auth-secret-key-production-32-chars",
   pages: {
     signIn: "/login",
   },
