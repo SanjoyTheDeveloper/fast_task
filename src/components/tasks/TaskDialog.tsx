@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TaskForm } from "./taskform/TaskForm";
 import { TaskStatusBadge } from "./TaskStatusBadge";
-import { AlertCircle, Loader2, Trash2 } from "lucide-react";
+import { AlertCircle, Loader2, Trash2 } from "@/components/ui/GoogleIcon";
 import type { Task } from "@/types/task";
 
 export interface TaskDialogProps {

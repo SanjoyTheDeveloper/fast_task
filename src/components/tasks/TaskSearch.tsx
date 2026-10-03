@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Input } from "@/components/ui/input";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2 } from "@/components/ui/GoogleIcon";
 
 export interface TaskSearchProps {
   value: string;

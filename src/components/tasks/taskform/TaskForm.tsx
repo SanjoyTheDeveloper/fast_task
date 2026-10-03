@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Calendar, GraduationCap, Tag, ChevronDown } from "lucide-react";
+import { Loader2, Calendar, GraduationCap, Tag, ChevronDown } from "@/components/ui/GoogleIcon";
 import type { Task } from "@/types/task";
 import { COURSES, CATEGORIES } from "@/lib/academic";
 

@@ -37,7 +37,7 @@ import {
   AlertCircle,
   RotateCcw,
   Sparkles,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 import { COURSES } from "@/lib/academic";
 

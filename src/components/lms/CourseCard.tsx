@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Bookmark, Heart, Star, CheckCircle, Clock } from "lucide-react";
+import { Bookmark, Heart, Star, CheckCircle, Clock } from "@/components/ui/GoogleIcon";
 
 export interface CourseCardData {
   id: string;

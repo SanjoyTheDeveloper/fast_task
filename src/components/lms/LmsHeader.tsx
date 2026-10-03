@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, Bell, Moon, Sun, Radio, Menu, X } from "lucide-react";
+import { Search, Bell, Moon, Sun, Radio, Menu, X } from "@/components/ui/GoogleIcon";
 import Image from "next/image";
 
 export interface LmsHeaderProps {

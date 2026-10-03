@@ -10,6 +10,7 @@ import {
   Sparkles,
   Coffee,
 } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 
 export interface ScheduleItem {
   id: string;
@@ -282,7 +283,7 @@ export function TodaySchedule({
         {/* Left: “Today’s Schedule” with calendar icon + date “(Sunday, Sep 27)” + subtitle */}
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-xl bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center shrink-0 shadow-2xs">
-            <Calendar className="h-5 w-5" />
+            <GIcon name="calendar_month" size={20} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-2">
@@ -400,7 +401,7 @@ export function TodaySchedule({
               className="text-xs font-bold text-[#315BFF] hover:text-[#254BE3] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View Routine</span>
-              <ArrowRight className="h-3 w-3" />
+              <GIcon name="arrow_forward" size={12} />
             </button>
           )}
         </div>
@@ -413,7 +414,7 @@ export function TodaySchedule({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <div className="h-11 w-11 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
-                <Coffee className="h-5 w-5" />
+                <GIcon name="coffee" size={20} />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -436,13 +437,13 @@ export function TodaySchedule({
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs font-bold shadow-sm shadow-blue-500/25 transition-all cursor-pointer shrink-0"
             >
               <span>Preview Sunday&apos;s Classes</span>
-              <ArrowRight className="h-3.5 w-3.5" />
+              <GIcon name="arrow_forward" size={14} />
             </button>
           </div>
 
           <div className="p-3 rounded-xl bg-white/85 border border-amber-200/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-2 text-slate-700">
-              <Clock className="h-3.5 w-3.5 text-[#315BFF] shrink-0" />
+              <GIcon name="schedule" size={14} className="text-[#315BFF] shrink-0" />
               <span>
                 <strong>রবিবার (Sunday) সকাল ১১:০০ টায়</strong> রুম <strong>A/507</strong>-এ{" "}
                 <span className="text-[#315BFF] font-bold">0611CSE321 (AIES)</span> দিয়ে ক্লাস শুরু হবে।
@@ -484,7 +485,7 @@ export function TodaySchedule({
                 <div className="space-y-1.5 text-[11px] text-slate-500">
                   {/* Time with clock icon */}
                   <div className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-[#315BFF] shrink-0" />
+                    <GIcon name="schedule" size={14} className="text-[#315BFF] shrink-0" />
                     <span className="font-semibold text-slate-700">
                       {item.startTime} - {item.endTime}
                     </span>
@@ -492,13 +493,13 @@ export function TodaySchedule({
 
                   {/* Room with location icon */}
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <GIcon name="location_on" size={14} className="text-slate-400 shrink-0" />
                     <span className="truncate max-w-[190px]">{item.location}</span>
                   </div>
 
                   {/* Faculty with person/user icon */}
                   <div className="flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5 text-[#5B63E6] shrink-0" />
+                    <GIcon name="person" size={14} className="text-[#5B63E6] shrink-0" />
                     <span>
                       Faculty: <strong className="text-slate-700 font-semibold">{item.faculty}</strong>
                     </span>
@@ -507,7 +508,7 @@ export function TodaySchedule({
 
                 {/* Small circular arrow button on the right side of each card */}
                 <div className="h-8 w-8 rounded-full bg-[#EEF3FF] text-[#315BFF] group-hover:bg-[#315BFF] group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  <GIcon name="arrow_forward" size={16} className="transition-transform group-hover:translate-x-0.5" />
                 </div>
               </div>
             </div>

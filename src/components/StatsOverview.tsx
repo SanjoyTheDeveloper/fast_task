@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, Clock, ListTodo, TrendingUp, Sparkles } from "lucide-react";
+import { CheckCircle2, Clock, ListTodo, TrendingUp, Sparkles } from "@/components/ui/GoogleIcon";
 import type { Task } from "@/types/task";
 
 interface StatsOverviewProps {

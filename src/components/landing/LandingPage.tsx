@@ -1,5 +1,7 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { KpiShowcase } from "@/components/landing/KpiShowcase";
+import { GlitchReality } from "@/components/landing/GlitchReality";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
@@ -24,7 +26,13 @@ export function LandingPage() {
         {/* 2. Hero 3D Curved Showcase Section (Directly after Navbar) */}
         <Hero />
 
-        {/* 4. How It Works Section */}
+        {/* 3. KPI Showcase Section Matching Reference Design */}
+        <KpiShowcase />
+
+        {/* 4. Glitch Reality Showcase Section */}
+        <GlitchReality />
+
+        {/* 5. How It Works Section */}
         <HowItWorks />
 
         {/* 5. Final Call To Action Section */}

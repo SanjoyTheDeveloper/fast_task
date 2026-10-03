@@ -20,7 +20,7 @@ import {
   ArrowRight,
   RefreshCw,
   LogIn,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 
 type VerificationStatus = "loading" | "success" | "error";
 

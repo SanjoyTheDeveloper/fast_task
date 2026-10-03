@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
-import { CheckSquare, Loader2, Lock, Mail, AlertCircle } from "lucide-react";
+import { CheckSquare, Loader2, Lock, Mail, AlertCircle } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 
 function LoginForm() {

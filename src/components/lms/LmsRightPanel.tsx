@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Star, Flame, Trophy, CheckCircle2, ArrowRight } from "lucide-react";
+import { Star, Flame, Trophy, CheckCircle2, ArrowRight } from "@/components/ui/GoogleIcon";
 import { toast } from "sonner";
 
 export interface StudentAchievement {

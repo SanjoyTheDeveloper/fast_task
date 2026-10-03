@@ -17,7 +17,7 @@ import {
   Library,
   BookMarked,
   Layers,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 
 export interface NavItem {
   id: string;

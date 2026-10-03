@@ -24,7 +24,7 @@ import {
   BookOpen,
   Coffee,
   User,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 import { WEEKLY_SCHEDULE } from "@/components/dashboard/TodaySchedule";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, Sparkles, Check, ArrowRight } from "lucide-react";
+import { X, Sparkles, Check, ArrowRight } from "@/components/ui/GoogleIcon";
 import { toast } from "sonner";
 
 export interface LmsProModalProps {

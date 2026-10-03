@@ -7,7 +7,7 @@ import { TaskDialog } from "@/components/tasks/TaskDialog";
 import { TaskFilters, FilterState } from "@/components/tasks/taskfilter";
 import type { Task } from "@/types/task";
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, Kanban, Plus } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import { toast, Toaster } from "sonner";
 
 // Initial Semester Tasks for instant zero-latency render (Batch 82A)
@@ -353,7 +353,7 @@ export default function KanbanPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white/80 backdrop-blur-md border border-zinc-200/80 shadow-xs">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-md shadow-indigo-500/25">
-              <Kanban className="h-5 w-5" />
+              <GIcon name="view_kanban" size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -383,7 +383,7 @@ export default function KanbanPage() {
               size="sm"
               className="h-9 gap-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/25 flex-1 sm:flex-initial justify-center"
             >
-              <Plus className="h-4 w-4" />
+              <GIcon name="add" size={16} />
               <span>Add Task</span>
             </Button>
           </div>

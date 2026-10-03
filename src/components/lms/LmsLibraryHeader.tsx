@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, Menu, X, ChevronDown, Sparkles, Upload } from "lucide-react";
+import { Search, Menu, X, ChevronDown, Sparkles, Upload } from "@/components/ui/GoogleIcon";
 import { useStudentProfile } from "@/lib/studentProfile";
 import Link from "next/link";
 

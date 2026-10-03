@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, CheckCircle2, Clock, ShieldAlert, GraduationCap, BookOpen, LayoutGrid, Kanban } from "lucide-react";
+import { RotateCcw, CheckCircle2, Clock, ShieldAlert, GraduationCap, BookOpen, LayoutGrid, Kanban } from "@/components/ui/GoogleIcon";
 import { COURSES } from "@/lib/academic";
 
 export interface FilterState {

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, AlertTriangle, CheckCircle2, Clock, Calendar } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import type { Task } from "@/types/task";
 
 export interface StudentStatsProps {
@@ -82,7 +82,7 @@ export function StudentStats({
           <p className="text-xs text-slate-400">Course homework & lab write-ups</p>
         </div>
         <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center shrink-0 bg-amber-50 text-amber-600 border border-amber-200/60 shadow-sm">
-          <BookOpen className="h-6 w-6 stroke-[2.2]" />
+          <GIcon name="menu_book" size={24} />
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export function StudentStats({
           <p className="text-xs text-slate-400">Midterms, quizzes & project submissions</p>
         </div>
         <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center shrink-0 bg-rose-50 text-rose-600 border border-rose-200/60 shadow-sm">
-          <Calendar className="h-6 w-6 stroke-[2.2]" />
+          <GIcon name="event" size={24} />
         </div>
       </div>
 
@@ -135,7 +135,7 @@ export function StudentStats({
           </div>
         </div>
         <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center shrink-0 bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-sm ml-3">
-          <CheckCircle2 className="h-6 w-6 stroke-[2.2]" />
+          <GIcon name="task_alt" size={24} filled />
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles } from "@/components/ui/GoogleIcon";
 
 export interface LmsHeroBannerProps {
   userName?: string;

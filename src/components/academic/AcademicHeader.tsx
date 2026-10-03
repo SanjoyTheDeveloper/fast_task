@@ -13,21 +13,7 @@ import {
   sortSessionsChronologically,
 } from "@/lib/academic";
 import { Button } from "@/components/ui/button";
-import {
-  GraduationCap,
-  Calendar,
-  Clock,
-  MapPin,
-  Plus,
-  Pencil,
-  Sparkles,
-  Layers,
-  Coffee,
-  CheckCircle2,
-  Settings2,
-  AlertCircle,
-  CalendarDays,
-} from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import { CourseScheduleModal } from "./CourseScheduleModal";
 import { SemesterSetupModal } from "./SemesterSetupModal";
 import { toast } from "sonner";
@@ -204,13 +190,13 @@ export function AcademicHeader({
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-700 text-xs font-bold shadow-2xs backdrop-blur-xs hover:bg-blue-500/20 hover:border-blue-400/50 transition-all cursor-pointer group"
               title="Click to edit semester dates"
             >
-              <GraduationCap className="h-3.5 w-3.5 text-blue-600" />
+              <GIcon name="school" size={14} className="text-blue-600" />
               <span>{semesterStatus.message}</span>
-              <Settings2 className="h-3 w-3 text-blue-500 opacity-60 group-hover:opacity-100 transition-opacity ml-0.5" />
+              <GIcon name="tune" size={12} className="text-blue-500 opacity-60 group-hover:opacity-100 transition-opacity ml-0.5" />
             </button>
 
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-slate-600 text-xs font-semibold backdrop-blur-xs">
-              <Calendar className="h-3 w-3 text-slate-500" />
+              <GIcon name="calendar_month" size={12} className="text-slate-500" />
               <span>{todayFormatted}</span>
             </span>
           </div>
@@ -234,7 +220,7 @@ export function AcademicHeader({
             className="w-full sm:w-auto h-11 px-6 gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-md shadow-indigo-500/25 border border-indigo-400/30 active:scale-[0.98] transition-all rounded-xl cursor-pointer justify-center"
             aria-label="Add new assignment or task"
           >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <GIcon name="add" size={16} weight={600} />
             <span>Add Assignment</span>
           </Button>
         </div>
@@ -253,7 +239,7 @@ export function AcademicHeader({
         <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[#315BFF] border border-blue-200/60 shadow-2xs">
-              <Clock className="h-3.5 w-3.5" />
+              <GIcon name="schedule" size={14} />
             </span>
             <div>
               <h2 className="text-xs sm:text-sm font-bold tracking-tight text-[#172033] uppercase flex items-center gap-2">
@@ -290,7 +276,7 @@ export function AcademicHeader({
               className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               title="Configure semester duration and term name"
             >
-              <CalendarDays className="h-3 w-3 text-[#315BFF]" />
+              <GIcon name="event" size={12} className="text-[#315BFF]" />
               <span className="hidden sm:inline">Term Dates</span>
             </button>
 
@@ -301,7 +287,7 @@ export function AcademicHeader({
               className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               title="Toggle weekly timetable"
             >
-              <Layers className="h-3 w-3" />
+              <GIcon name="layers" size={12} />
               <span>{viewMode === "today" ? "Weekly Timetable" : "Today Only"}</span>
             </button>
 
@@ -311,7 +297,7 @@ export function AcademicHeader({
               onClick={handleOpenAddSession}
               className="px-3 py-1 text-xs font-semibold rounded-lg bg-[#315BFF] hover:bg-[#254BE3] text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
-              <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+              <GIcon name="add" size={14} weight={600} />
               <span>Setup Course Schedule</span>
             </button>
           </div>
@@ -321,7 +307,7 @@ export function AcademicHeader({
         {semesterStatus.status === "not_started" && (
           <div className="mb-3.5 p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs text-amber-800">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
+              <GIcon name="warning" size={16} className="text-amber-600 shrink-0" />
               <span>
                 <strong>Upcoming Semester:</strong> {semesterStatus.message}. Weekly routine is previewed below.
               </span>
@@ -338,7 +324,7 @@ export function AcademicHeader({
         {semesterStatus.status === "ended" && (
           <div className="mb-3.5 p-3 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-between text-xs text-purple-800">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-purple-600 shrink-0" />
+              <GIcon name="check_circle" size={16} filled className="text-purple-600 shrink-0" />
               <span>
                 <strong>Term Concluded:</strong> {semesterStatus.message}. Great job completing this academic term!
               </span>
@@ -382,7 +368,7 @@ export function AcademicHeader({
                           {session.type}
                         </span>
                         <span className="opacity-0 group-hover:opacity-100 p-1 rounded-md bg-slate-200/60 text-slate-600 transition-opacity">
-                          <Pencil className="h-2.5 w-2.5" />
+                          <GIcon name="edit" size={10} />
                         </span>
                       </div>
                     </div>
@@ -393,11 +379,11 @@ export function AcademicHeader({
 
                   <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-200/60">
                     <span className="flex items-center gap-1 text-[#315BFF] font-semibold">
-                      <Clock className="h-3 w-3 text-[#315BFF]" />
+                      <GIcon name="schedule" size={12} className="text-[#315BFF]" />
                       {formattedTime}
                     </span>
                     <span className="flex items-center gap-1 text-slate-500 truncate max-w-[130px]">
-                      <MapPin className="h-3 w-3 shrink-0 text-slate-400" />
+                      <GIcon name="location_on" size={12} className="shrink-0 text-slate-400" />
                       <span className="truncate">{session.room}</span>
                     </span>
                   </div>
@@ -427,7 +413,7 @@ export function AcademicHeader({
           /* Attractive Empty State for Off-Day / No Classes */
           <div className="p-6 sm:p-8 text-center rounded-xl bg-[#F8FAFC] border border-dashed border-slate-200 flex flex-col items-center justify-center space-y-2.5">
             <div className="h-12 w-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-amber-500 mb-1 shadow-2xs">
-              <Coffee className="h-6 w-6 text-amber-500" />
+              <GIcon name="local_cafe" size={24} className="text-amber-500" />
             </div>
             <p className="text-sm sm:text-base font-bold text-[#172033]">
               No classes scheduled for today. Take rest or catch up on study!
@@ -441,7 +427,7 @@ export function AcademicHeader({
                 onClick={() => setViewMode("all")}
                 className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
-                <Layers className="h-3.5 w-3.5" />
+                <GIcon name="layers" size={14} />
                 <span>View Full Weekly Timetable</span>
               </button>
               <button
@@ -449,7 +435,7 @@ export function AcademicHeader({
                 onClick={handleOpenAddSession}
                 className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#315BFF] hover:bg-[#254BE3] text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                <GIcon name="add" size={14} weight={600} />
                 <span>Add a Class for {currentDayOfWeek}</span>
               </button>
             </div>

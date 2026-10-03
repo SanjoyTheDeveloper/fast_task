@@ -1,20 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  ListTodo,
-  Flame,
-  Clock,
-  MapPin,
-  Hourglass,
-  Pin,
-  Sparkles,
-  X,
-  BookOpen,
-} from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 
 export interface DayEvent {
   hasClasses?: boolean;
@@ -225,7 +212,7 @@ export function CalendarWidget({
       <div className="flex items-center justify-between pb-1">
         {/* 5-Day Study Streak Pill */}
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50/90 text-amber-800 border border-amber-200/60 shadow-2xs text-[11px] font-bold">
-          <Flame className="h-3.5 w-3.5 text-amber-500 fill-amber-500 animate-pulse" />
+          <GIcon name="local_fire_department" size={14} filled className="text-amber-500 animate-pulse" />
           <span>5-Day Study Streak</span>
         </div>
 
@@ -260,7 +247,7 @@ export function CalendarWidget({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="h-6 w-6 rounded-lg bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center">
-            <CalendarIcon className="h-3.5 w-3.5" />
+            <GIcon name="calendar_month" size={14} />
           </div>
           <h3 className="text-xs font-bold text-[#172033]">
             {monthName} {year}
@@ -274,7 +261,7 @@ export function CalendarWidget({
             className="h-6 w-6 rounded-md hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
             aria-label="Previous month"
           >
-            <ChevronLeft className="h-3.5 w-3.5" />
+            <GIcon name="chevron_left" size={14} />
           </button>
           <button
             type="button"
@@ -282,7 +269,7 @@ export function CalendarWidget({
             className="h-6 w-6 rounded-md hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
             aria-label="Next month"
           >
-            <ChevronRight className="h-3.5 w-3.5" />
+            <GIcon name="chevron_right" size={14} />
           </button>
         </div>
       </div>
@@ -379,7 +366,7 @@ export function CalendarWidget({
         <div className="p-3.5 rounded-xl bg-white border border-[#DCE7FC] shadow-sm space-y-2 animate-in fade-in-50 duration-200">
           <div className="flex items-center justify-between text-xs pb-1.5 border-b border-slate-100">
             <span className="font-bold text-[#172033] flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-[#315BFF]" />
+              <GIcon name="auto_awesome" size={14} className="text-[#315BFF]" />
               <span>
                 {activeDayShort}, {monthName.slice(0, 3)} {activePopoverDate}
               </span>
@@ -431,7 +418,7 @@ export function CalendarWidget({
                         {session.title.split("•")[0]}
                       </p>
                       <p className="text-[10px] text-slate-500 truncate flex items-center gap-1">
-                        <MapPin className="h-2.5 w-2.5 shrink-0" />
+                        <GIcon name="location_on" size={10} className="shrink-0" />
                         <span>{session.location}</span>
                       </p>
                     </div>
@@ -453,7 +440,7 @@ export function CalendarWidget({
             <div className="pt-1 space-y-1 text-[11px]">
               {activeEvent.assignmentTitle && (
                 <div className="flex items-center gap-1.5 text-rose-600 bg-rose-50/70 p-1.5 rounded-lg border border-rose-100">
-                  <Pin className="h-3 w-3 shrink-0" />
+                  <GIcon name="push_pin" size={12} className="shrink-0" />
                   <span className="font-semibold truncate">
                     Deadline: {activeEvent.assignmentTitle}
                   </span>
@@ -461,7 +448,7 @@ export function CalendarWidget({
               )}
               {activeEvent.quizTitle && (
                 <div className="flex items-center gap-1.5 text-purple-600 bg-purple-50/70 p-1.5 rounded-lg border border-purple-100">
-                  <Hourglass className="h-3 w-3 shrink-0" />
+                  <GIcon name="hourglass_empty" size={12} className="shrink-0" />
                   <span className="font-semibold truncate">
                     Quiz: {activeEvent.quizTitle}
                   </span>
@@ -511,7 +498,7 @@ export function CalendarWidget({
       <div className="pt-3 border-t border-slate-100 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <ListTodo className="h-3.5 w-3.5 text-[#315BFF]" />
+            <GIcon name="format_list_bulleted" size={14} className="text-[#315BFF]" />
             <h4 className="text-xs font-bold text-[#172033]">Upcoming Tasks</h4>
           </div>
           <button

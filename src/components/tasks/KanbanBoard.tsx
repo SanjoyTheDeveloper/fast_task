@@ -17,7 +17,7 @@ import {
   Calendar,
   AlertCircle,
   Tag,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import {
   DropdownMenu,
   DropdownMenuContent,

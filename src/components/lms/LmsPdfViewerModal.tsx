@@ -15,7 +15,7 @@ import {
   CheckCircle,
   FileSearch,
   Bookmark,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { LmsPdfDocument } from "./LmsLibraryCard";
 import { PdfDocumentIcon } from "./PdfDocumentIcon";
 import { toast } from "sonner";

@@ -18,7 +18,7 @@ import {
   Minimize2,
   Sliders,
   ChevronDown,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { ZenSoundEngine, SoundType } from "@/lib/zen-sound-engine";
 import type { Task } from "@/types/task";
 import { toast } from "sonner";

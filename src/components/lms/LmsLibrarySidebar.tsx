@@ -12,7 +12,7 @@ import {
   CheckCircle2,
   Sparkles,
   UploadCloud,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { COURSE_THEMES } from "@/lib/courseThemes";
 
 export type LmsNavSection = "all" | "courses" | "bookmarks" | "uploads";

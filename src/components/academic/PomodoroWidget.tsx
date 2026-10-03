@@ -16,7 +16,7 @@ import {
   Timer,
   ChevronDown,
   ChevronUp,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 
 type Mode = "focus" | "shortBreak" | "longBreak";
 

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, GraduationCap, Clock, Sparkles } from "lucide-react";
+import { Calendar, GraduationCap, Clock, Sparkles } from "@/components/ui/GoogleIcon";
 import { SemesterConfig } from "@/lib/academic";
 
 interface SemesterSetupModalProps {

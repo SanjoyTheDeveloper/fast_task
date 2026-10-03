@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, RegisterInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
-import { CheckSquare, Loader2, Lock, Mail, User } from "lucide-react";
+import { CheckSquare, Loader2, Lock, Mail, User } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 
 export default function RegisterPage() {

@@ -14,7 +14,7 @@ import {
   Trash2,
   Sparkles,
   Bookmark,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import {
   getCourseTheme,
   cleanDocumentTitle,

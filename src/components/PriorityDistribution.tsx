@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Card } from "@/components/ui/card";
-import { CheckCircle2, Clock, Zap, Target } from "lucide-react";
+import { CheckCircle2, Clock, Zap, Target } from "@/components/ui/GoogleIcon";
 import type { Task } from "@/types/task";
 
 interface PriorityDistributionProps {

@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { CourseCardData } from "./CourseCard";
-import { Star, Clock, BookOpen, CheckCircle2, Play, Bookmark, X } from "lucide-react";
+import { Star, Clock, BookOpen, CheckCircle2, Play, Bookmark, X } from "@/components/ui/GoogleIcon";
 import { toast } from "sonner";
 
 export interface CourseDetailModalProps {

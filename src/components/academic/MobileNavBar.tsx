@@ -6,7 +6,7 @@ import {
   CalendarDays,
   CheckSquare,
   Timer,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 
 interface NavTab {
   id: string;

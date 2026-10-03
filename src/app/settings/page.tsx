@@ -24,7 +24,8 @@ import {
   RotateCcw,
   Mail,
   Loader2,
-} from "lucide-react";
+  ExternalLink,
+} from "@/components/ui/GoogleIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -84,6 +85,12 @@ export default function SettingsPage() {
     }
     return DEFAULT_STUDENT_PROFILE.avatarColor;
   });
+  const [linkedin, setLinkedin] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return getStoredProfile().linkedin || "";
+    }
+    return DEFAULT_STUDENT_PROFILE.linkedin || "";
+  });
 
   // Track initial state for dirty check / revert
   const [initialProfile, setInitialProfile] = React.useState<StudentProfile>(() => {
@@ -109,12 +116,14 @@ export default function SettingsPage() {
           const resolvedDepartment = stored.department || "Department of Computer Science & Engineering";
           const resolvedBatch = stored.batch || "Batch 82A";
           const resolvedAvatar = stored.avatarColor || "purple";
+          const resolvedLinkedin = stored.linkedin || "";
 
           setName(resolvedName);
           setStudentId(resolvedStudentId);
           setDepartment(resolvedDepartment);
           setBatch(resolvedBatch);
           setAvatarColor(resolvedAvatar);
+          setLinkedin(resolvedLinkedin);
 
           setInitialProfile({
             name: resolvedName,
@@ -122,6 +131,7 @@ export default function SettingsPage() {
             department: resolvedDepartment,
             batch: resolvedBatch,
             avatarColor: resolvedAvatar,
+            linkedin: resolvedLinkedin,
           });
         } else if (res.status === 401) {
           router.push("/login");
@@ -133,7 +143,6 @@ export default function SettingsPage() {
     loadUser();
   }, [router]);
 
-  // Handle saving profile changes
   // Handle saving profile changes
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,6 +158,7 @@ export default function SettingsPage() {
       department,
       batch: batch.trim() || "Batch 82A",
       avatarColor,
+      linkedin: linkedin.trim(),
     };
 
     try {
@@ -192,6 +202,7 @@ export default function SettingsPage() {
     setDepartment(initialProfile.department);
     setBatch(initialProfile.batch);
     setAvatarColor(initialProfile.avatarColor);
+    setLinkedin(initialProfile.linkedin || "");
     toast.info("Changes reverted.");
   };
 
@@ -218,7 +229,8 @@ export default function SettingsPage() {
     studentId !== initialProfile.studentId ||
     department !== initialProfile.department ||
     batch !== initialProfile.batch ||
-    avatarColor !== initialProfile.avatarColor;
+    avatarColor !== initialProfile.avatarColor ||
+    linkedin !== (initialProfile.linkedin || "");
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
@@ -300,6 +312,22 @@ export default function SettingsPage() {
                     <span className="truncate max-w-[200px] sm:max-w-[280px]">
                       {department.replace("Department of ", "")}
                     </span>
+                    {linkedin && (
+                      <>
+                        <span>•</span>
+                        <a
+                          href={linkedin.startsWith("http") ? linkedin : `https://${linkedin}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#60A5FA] hover:text-white flex items-center gap-1 transition-colors"
+                        >
+                          <svg className="h-3 w-3 fill-current text-[#0A66C2]" viewBox="0 0 24 24">
+                            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                          </svg>
+                          <span>LinkedIn</span>
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -455,6 +483,47 @@ export default function SettingsPage() {
                       Verified
                     </span>
                   </div>
+                </div>
+
+                {/* LinkedIn Profile Input */}
+                <div className="space-y-1.5 sm:col-span-2">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="linkedin-url" className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <svg className="h-3.5 w-3.5 text-[#0A66C2] fill-current shrink-0" viewBox="0 0 24 24">
+                        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                      </svg>
+                      <span>LinkedIn Profile</span>
+                    </label>
+                    {linkedin.trim() && (
+                      <a
+                        href={linkedin.startsWith("http") ? linkedin : `https://${linkedin}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-bold text-[#0A66C2] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Visit Profile</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                  <div className="relative flex items-center">
+                    <div className="absolute left-3 flex items-center pointer-events-none text-[#0A66C2]">
+                      <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                      </svg>
+                    </div>
+                    <Input
+                      id="linkedin-url"
+                      type="text"
+                      value={linkedin}
+                      onChange={(e) => setLinkedin(e.target.value)}
+                      placeholder="https://linkedin.com/in/username"
+                      className="h-10 text-xs rounded-xl border-slate-200 pl-9.5 focus-visible:ring-2 focus-visible:ring-[#315BFF]"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Add your LinkedIn profile link to connect with batchmates and showcase your professional presence.
+                  </p>
                 </div>
               </div>
 

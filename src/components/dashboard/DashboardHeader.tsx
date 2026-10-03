@@ -4,16 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import {
-  CheckSquare,
-  LogOut,
-  Plus,
-  LayoutGrid,
-  Kanban,
-  User as UserIcon,
-  Menu,
-  X,
-} from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -87,7 +78,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
             aria-label="FastTask Home"
           >
             <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 text-white shadow-md shadow-blue-500/25 shrink-0">
-              <CheckSquare className="h-5 w-5 stroke-[2.5]" />
+              <GIcon name="task_alt" size={20} filled />
               <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500" />
@@ -118,7 +109,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                   : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
               }`}
             >
-              <LayoutGrid className="h-3.5 w-3.5" />
+              <GIcon name="grid_view" size={14} />
               <span>Dashboard</span>
             </Link>
             <Link
@@ -129,7 +120,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                   : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
               }`}
             >
-              <Kanban className="h-3.5 w-3.5" />
+              <GIcon name="view_kanban" size={14} />
               <span>Kanban</span>
             </Link>
           </nav>
@@ -144,7 +135,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
               className="h-9 px-3 sm:px-4 gap-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-xs shadow-blue-500/30 transition-transform active:scale-95 cursor-pointer focus:ring-2 focus:ring-blue-500 shrink-0"
               aria-label="Create new task"
             >
-              <Plus className="h-4 w-4" />
+              <GIcon name="add" size={16} />
               <span className="hidden sm:inline font-semibold">Add Task</span>
             </Button>
           )}
@@ -158,7 +149,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                   aria-label="User account menu"
                 >
                   <div className="h-6 w-6 sm:h-7 sm:w-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-2xs shrink-0">
-                    {user.name ? user.name.charAt(0).toUpperCase() : <UserIcon className="h-3.5 w-3.5" />}
+                    {user.name ? user.name.charAt(0).toUpperCase() : <GIcon name="person" size={14} />}
                   </div>
                   <div className="hidden sm:flex flex-col text-left">
                     <span className="text-xs font-bold text-zinc-800 leading-tight">
@@ -180,13 +171,13 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard" className="cursor-pointer rounded-lg p-2 text-xs font-medium">
-                    <LayoutGrid className="mr-2 h-4 w-4 text-zinc-500" />
+                    <GIcon name="grid_view" size={16} className="mr-2 text-zinc-500" />
                     <span>Dashboard</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/kanban" className="cursor-pointer rounded-lg p-2 text-xs font-medium">
-                    <Kanban className="mr-2 h-4 w-4 text-zinc-500" />
+                    <GIcon name="view_kanban" size={16} className="mr-2 text-zinc-500" />
                     <span>Kanban Board</span>
                   </Link>
                 </DropdownMenuItem>
@@ -197,7 +188,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                   className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer rounded-lg p-2 text-xs font-medium"
                   aria-label="Log out"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <GIcon name="logout" size={16} className="mr-2" />
                   <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -224,9 +215,9 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
             aria-controls="mobile-navigation-menu"
           >
             {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
+              <GIcon name="close" size={20} />
             ) : (
-              <Menu className="h-5 w-5" />
+              <GIcon name="menu" size={20} />
             )}
           </Button>
         </div>
@@ -242,7 +233,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
           {user && (
             <div className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
-                {user.name ? user.name.charAt(0).toUpperCase() : <UserIcon className="h-4 w-4" />}
+                {user.name ? user.name.charAt(0).toUpperCase() : <GIcon name="person" size={16} />}
               </div>
               <div className="flex flex-col min-w-0 flex-1">
                 <span className="text-xs font-bold text-zinc-900 truncate">{user.name || "User"}</span>
@@ -260,7 +251,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                 isDashboard ? "bg-blue-50 text-blue-700" : "text-zinc-700 hover:bg-zinc-100"
               }`}
             >
-              <LayoutGrid className="h-4 w-4" />
+              <GIcon name="grid_view" size={16} />
               <span>Dashboard</span>
             </Link>
             <Link
@@ -270,7 +261,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                 isKanban ? "bg-indigo-50 text-indigo-700" : "text-zinc-700 hover:bg-zinc-100"
               }`}
             >
-              <Kanban className="h-4 w-4" />
+              <GIcon name="view_kanban" size={16} />
               <span>Kanban Board</span>
             </Link>
           </nav>
@@ -285,7 +276,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                 }}
                 className="h-10 w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-xs"
               >
-                <Plus className="h-4 w-4" />
+                <GIcon name="add" size={16} />
                 <span>Add New Task</span>
               </Button>
             )}
@@ -300,7 +291,7 @@ export function DashboardHeader({ user, onOpenCreateModal }: DashboardHeaderProp
                 disabled={isLoggingOut}
                 className="h-10 w-full gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl"
               >
-                <LogOut className="h-4 w-4" />
+                <GIcon name="logout" size={16} />
                 <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
               </Button>
             ) : (

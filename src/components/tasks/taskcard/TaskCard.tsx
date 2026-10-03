@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Pencil, Trash2, ExternalLink, Clock, Loader2, Calendar } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, ExternalLink, Clock, Loader2, Calendar } from "@/components/ui/GoogleIcon";
 import { formatDate } from "@/lib/utils";
 import { TaskStatusBadge } from "../TaskStatusBadge";
 import type { Task } from "@/types/task";

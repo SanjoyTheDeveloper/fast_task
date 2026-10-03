@@ -36,7 +36,7 @@ import {
   X,
   RotateCcw,
   Loader2,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 import type { Task } from "@/types/task";
 import { COURSES } from "@/lib/academic";

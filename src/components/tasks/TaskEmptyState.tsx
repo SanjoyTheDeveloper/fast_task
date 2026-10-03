@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Inbox, Plus, FilterX, SearchX } from "lucide-react";
+import { Inbox, Plus, FilterX, SearchX } from "@/components/ui/GoogleIcon";
 import { FocusPomodoro } from "@/components/dashboard/FocusPomodoro";
 
 export interface TaskEmptyStateProps {

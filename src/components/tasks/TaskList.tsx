@@ -5,7 +5,7 @@ import { TaskCard } from "./taskcard/TaskCard";
 import { TaskEmptyState } from "./TaskEmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, RotateCcw } from "lucide-react";
+import { AlertCircle, RotateCcw } from "@/components/ui/GoogleIcon";
 import type { Task } from "@/types/task";
 
 export interface TaskListProps {

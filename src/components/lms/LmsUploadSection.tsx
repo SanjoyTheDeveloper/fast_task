@@ -12,7 +12,7 @@ import {
   ChevronUp,
   FileCheck,
   AlertCircle,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { LmsPdfDocument } from "./LmsLibraryCard";
 import { toast } from "sonner";
 

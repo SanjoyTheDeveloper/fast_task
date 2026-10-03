@@ -302,17 +302,6 @@ export function Hero({
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </Button>
-
-            <Button
-              asChild
-              variant="outline"
-              size="pillLg"
-              className="w-full sm:w-auto bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
-            >
-              <Link href="/dashboard">
-                <span>Explore Dashboard</span>
-              </Link>
-            </Button>
           </div>
         </div>
 

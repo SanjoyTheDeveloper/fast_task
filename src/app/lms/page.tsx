@@ -14,7 +14,7 @@ import {
   List,
   SlidersHorizontal,
   Plus,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { Toaster, toast } from "sonner";
 import { LmsLibrarySidebar, LmsNavSection } from "@/components/lms/LmsLibrarySidebar";
 import { LmsLibraryHeader } from "@/components/lms/LmsLibraryHeader";

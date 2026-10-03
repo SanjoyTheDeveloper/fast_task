@@ -14,7 +14,7 @@ import {
   X,
   BookOpen,
   Sparkles,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

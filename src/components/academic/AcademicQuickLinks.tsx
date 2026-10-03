@@ -10,7 +10,7 @@ import {
   Bookmark,
   Plus,
   Compass,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 
 interface QuickLinkItem {
   id: string;

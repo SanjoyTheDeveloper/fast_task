@@ -18,7 +18,7 @@ import {
   BookOpen,
   Trash2,
   Check,
-} from "lucide-react";
+} from "@/components/ui/GoogleIcon";
 import {
   CourseSession,
   DayOfWeek,

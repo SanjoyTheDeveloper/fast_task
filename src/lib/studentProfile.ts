@@ -8,6 +8,7 @@ export interface StudentProfile {
   department: string;
   batch: string;
   avatarColor: string;
+  linkedin?: string;
 }
 
 export interface AvatarPalette {
@@ -44,6 +45,7 @@ export const DEFAULT_STUDENT_PROFILE: StudentProfile = {
   department: "Department of Computer Science & Engineering",
   batch: "Batch 82A",
   avatarColor: "purple",
+  linkedin: "",
 };
 
 export function getStoredProfile(): StudentProfile {
