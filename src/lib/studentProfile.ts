@@ -77,13 +77,6 @@ export function useStudentProfile(
   initialFallback?: Partial<StudentProfile> | { name?: string | null }
 ) {
   const [profile, setProfile] = React.useState<StudentProfile>(() => {
-    if (typeof window !== "undefined") {
-      const stored = getStoredProfile();
-      if (initialFallback?.name && (!stored.name || stored.name === DEFAULT_STUDENT_PROFILE.name)) {
-        return { ...stored, name: initialFallback.name };
-      }
-      return stored;
-    }
     return {
       ...DEFAULT_STUDENT_PROFILE,
       ...(initialFallback?.name ? { name: initialFallback.name } : {}),

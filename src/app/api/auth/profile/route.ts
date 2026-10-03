@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { db } from "@/lib/db";
 
 export async function GET() {
   try {
@@ -9,10 +9,14 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthenticated" }, { status: 401 });
     }
 
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: { id: true, name: true, email: true },
-    });
+    let dbUser = null;
+    try {
+      dbUser = await db.user.findUnique({
+        where: { id: user.id },
+      });
+    } catch (e) {
+      console.warn("Profile fetch db fallback:", e);
+    }
 
     return NextResponse.json({
       success: true,
@@ -45,10 +49,9 @@ export async function PATCH(req: NextRequest) {
     let updatedDbUser = null;
     if (name && typeof name === "string" && name.trim()) {
       try {
-        updatedDbUser = await prisma.user.update({
+        updatedDbUser = await db.user.update({
           where: { id: user.id },
           data: { name: name.trim() },
-          select: { id: true, name: true, email: true },
         });
       } catch (dbErr) {
         console.warn("Database user update fallback:", dbErr);
