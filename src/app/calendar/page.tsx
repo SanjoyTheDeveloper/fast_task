@@ -268,22 +268,20 @@ export default function CalendarPage() {
               <button
                 type="button"
                 onClick={() => setViewMode("month")}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  viewMode === "month"
-                    ? "bg-[#315BFF] text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${viewMode === "month"
+                  ? "bg-[#315BFF] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+                  }`}
               >
                 Month
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("week")}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  viewMode === "week"
-                    ? "bg-[#315BFF] text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${viewMode === "week"
+                  ? "bg-[#315BFF] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+                  }`}
               >
                 Week
               </button>
@@ -335,9 +333,8 @@ export default function CalendarPage() {
                 return (
                   <div
                     key={day}
-                    className={`py-1 ${
-                      isWeekend ? "text-slate-400 font-medium" : "text-slate-700"
-                    }`}
+                    className={`py-1 ${isWeekend ? "text-slate-400 font-medium" : "text-slate-700"
+                      }`}
                   >
                     {day}
                   </div>
@@ -376,17 +373,16 @@ export default function CalendarPage() {
                   >
                     {/* Day number cell */}
                     <div
-                      className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all duration-200 ease-out ${
-                        isSelected
-                          ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/40 ring-4 ring-blue-100 scale-105"
-                          : isToday
+                      className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all duration-200 ease-out ${isSelected
+                        ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/40 ring-4 ring-blue-100 scale-105"
+                        : isToday
                           ? "text-[#315BFF] font-black bg-blue-50/70 hover:bg-blue-100/70"
                           : hasStudyActivity
-                          ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
-                          : isWeekend
-                          ? "text-slate-400 hover:bg-slate-100"
-                          : "text-slate-800 font-medium hover:bg-blue-50/50"
-                      }`}
+                            ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
+                            : isWeekend
+                              ? "text-slate-400 hover:bg-slate-100"
+                              : "text-slate-800 font-medium hover:bg-blue-50/50"
+                        }`}
                     >
                       <span>{day}</span>
                     </div>
