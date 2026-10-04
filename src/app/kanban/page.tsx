@@ -5,9 +5,10 @@ import Link from "next/link";
 import { KanbanBoard } from "@/components/tasks/KanbanBoard";
 import { TaskDialog } from "@/components/tasks/TaskDialog";
 import { TaskFilters, FilterState } from "@/components/tasks/taskfilter";
-import type { Task } from "@/types/task";
+import type { Task, SessionUser } from "@/types";
 import { Button } from "@/components/ui/button";
 import { GIcon } from "@/components/ui/GIcon";
+import { LayoutGrid } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 
 // Initial Semester Tasks for instant zero-latency render (Batch 82A)
@@ -67,7 +68,7 @@ const DEFAULT_SEMESTER_TASKS: Task[] = [
 ];
 
 export default function KanbanPage() {
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   // Initialize with DEFAULT_SEMESTER_TASKS for immediate instant display without empty flash
   const [tasks, setTasks] = React.useState<Task[]>(DEFAULT_SEMESTER_TASKS);
   const [isLoading, setIsLoading] = React.useState(false);

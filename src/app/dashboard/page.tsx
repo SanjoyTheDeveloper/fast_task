@@ -29,7 +29,7 @@ import {
   CourseSession,
 } from "@/lib/academic";
 import { toast, Toaster } from "sonner";
-import type { Task, PaginationMeta, PaginatedTasksResponse } from "@/types/task";
+import type { Task, PaginationMeta, PaginatedTasksResponse, SessionUser } from "@/types";
 
 function DashboardContent() {
   const router = useRouter();
@@ -50,7 +50,7 @@ function DashboardContent() {
   );
 
   // User & Task State
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [pagination, setPagination] = React.useState<PaginationMeta>({
     page: 1,

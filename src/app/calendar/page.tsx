@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { SessionUser } from "@/types";
 import {
   Sidebar,
   TopHeader,
@@ -133,7 +134,7 @@ const UPCOMING_TASKS_LIST = [
 
 export default function CalendarPage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
 

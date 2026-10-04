@@ -45,63 +45,39 @@ import {
   getStoredProfile,
   saveStoredProfile,
 } from "@/lib/studentProfile";
+import type { SessionUser } from "@/types";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [isSavedRecently, setIsSavedRecently] = React.useState(false);
 
-  // Profile Form State - Initialized from stored profile if available
-  const [name, setName] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile().name;
-    }
-    return DEFAULT_STUDENT_PROFILE.name;
-  });
-  const [studentId, setStudentId] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile().studentId;
-    }
-    return DEFAULT_STUDENT_PROFILE.studentId;
-  });
-  const [department, setDepartment] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile().department;
-    }
-    return DEFAULT_STUDENT_PROFILE.department;
-  });
-  const [batch, setBatch] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile().batch;
-    }
-    return DEFAULT_STUDENT_PROFILE.batch;
-  });
-  const [avatarColor, setAvatarColor] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile().avatarColor;
-    }
-    return DEFAULT_STUDENT_PROFILE.avatarColor;
-  });
-  const [linkedin, setLinkedin] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile().linkedin || "";
-    }
-    return DEFAULT_STUDENT_PROFILE.linkedin || "";
-  });
+  // Profile Form State - Initialized consistently to avoid SSR hydration mismatch
+  const [name, setName] = React.useState(DEFAULT_STUDENT_PROFILE.name);
+  const [studentId, setStudentId] = React.useState(DEFAULT_STUDENT_PROFILE.studentId);
+  const [department, setDepartment] = React.useState(DEFAULT_STUDENT_PROFILE.department);
+  const [batch, setBatch] = React.useState(DEFAULT_STUDENT_PROFILE.batch);
+  const [avatarColor, setAvatarColor] = React.useState(DEFAULT_STUDENT_PROFILE.avatarColor);
+  const [linkedin, setLinkedin] = React.useState(DEFAULT_STUDENT_PROFILE.linkedin || "");
 
   // Track initial state for dirty check / revert
-  const [initialProfile, setInitialProfile] = React.useState<StudentProfile>(() => {
-    if (typeof window !== "undefined") {
-      return getStoredProfile();
-    }
-    return DEFAULT_STUDENT_PROFILE;
-  });
+  const [initialProfile, setInitialProfile] = React.useState<StudentProfile>(DEFAULT_STUDENT_PROFILE);
 
   // Load authenticated user and saved student metadata
   React.useEffect(() => {
+    // Sync with local storage on client mount
+    const stored = getStoredProfile();
+    setName(stored.name || DEFAULT_STUDENT_PROFILE.name);
+    setStudentId(stored.studentId || DEFAULT_STUDENT_PROFILE.studentId);
+    setDepartment(stored.department || DEFAULT_STUDENT_PROFILE.department);
+    setBatch(stored.batch || DEFAULT_STUDENT_PROFILE.batch);
+    setAvatarColor(stored.avatarColor || DEFAULT_STUDENT_PROFILE.avatarColor);
+    setLinkedin(stored.linkedin || "");
+    setInitialProfile(stored);
+
     async function loadUser() {
       try {
         const res = await fetch("/api/auth/me");
@@ -109,14 +85,14 @@ export default function SettingsPage() {
           const data = await res.json();
           setCurrentUser(data.user);
 
-          const stored = getStoredProfile();
+          const currentStored = getStoredProfile();
           const resolvedName =
-            stored.name || data.user?.name || (data.user?.email ? data.user.email.split("@")[0] : "Student");
-          const resolvedStudentId = stored.studentId || "2026-CSE-082";
-          const resolvedDepartment = stored.department || "Department of Computer Science & Engineering";
-          const resolvedBatch = stored.batch || "Batch 82A";
-          const resolvedAvatar = stored.avatarColor || "purple";
-          const resolvedLinkedin = stored.linkedin || "";
+            currentStored.name || data.user?.name || (data.user?.email ? data.user.email.split("@")[0] : "Student");
+          const resolvedStudentId = currentStored.studentId || "2026-CSE-082";
+          const resolvedDepartment = currentStored.department || "Department of Computer Science & Engineering";
+          const resolvedBatch = currentStored.batch || "Batch 82A";
+          const resolvedAvatar = currentStored.avatarColor || "purple";
+          const resolvedLinkedin = currentStored.linkedin || "";
 
           setName(resolvedName);
           setStudentId(resolvedStudentId);
@@ -173,10 +149,14 @@ export default function SettingsPage() {
       });
 
       // 3. Update local component state
-      setCurrentUser((prev: any) => ({
-        ...prev,
-        name: payload.name,
-      }));
+      setCurrentUser((prev) =>
+        prev
+          ? {
+              ...prev,
+              name: payload.name,
+            }
+          : null
+      );
 
       setInitialProfile(payload);
       setIsSavedRecently(true);
@@ -261,17 +241,10 @@ export default function SettingsPage() {
         {/* Settings Page Content */}
         <main className="flex-1 w-full max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Header Title */}
-          <div className="flex items-center justify-between">
+          <div>
             <h1 className="text-xl sm:text-2xl font-black text-[#172033] tracking-tight">
               Settings &amp; Account
             </h1>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs hover:shadow-xs transition-all border border-slate-200 cursor-pointer"
-            >
-              <Home className="h-3.5 w-3.5 text-[#315BFF]" />
-              <span>Home Page</span>
-            </Link>
           </div>
 
           {/* Top section - Profile Preview Card (Deep Navy) */}

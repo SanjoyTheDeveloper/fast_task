@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import type { SessionUser } from "@/types";
 import {
   Sidebar,
   TopHeader,
@@ -91,7 +92,7 @@ export default function NotesPage() {
   const router = useRouter();
 
   // Core State
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [isLoaded, setIsLoaded] = React.useState(false);
 

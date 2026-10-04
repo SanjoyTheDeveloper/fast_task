@@ -31,12 +31,13 @@ import {
   getStoredDeletedIds,
   saveStoredDeletedId,
 } from "@/lib/lmsStorage";
+import type { SessionUser } from "@/types";
 
 const initialLibraryDocuments: LmsPdfDocument[] = [];
 
 export default function LmsPage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [documents, setDocuments] = React.useState<LmsPdfDocument[]>([]);
   const [isLoaded, setIsLoaded] = React.useState(false);
 

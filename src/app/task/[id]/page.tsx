@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { TaskDialog } from "@/components/tasks/TaskDialog";
 import { TaskNote } from "@/components/tasks/tasknote/TaskNote";
-import type { Task } from "@/types/task";
+import type { Task, SessionUser } from "@/types";
 import { formatDate } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -36,7 +36,7 @@ export default function TaskDetailPage() {
   const taskId = params?.id as string;
 
   const [task, setTask] = React.useState<Task | null>(null);
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);

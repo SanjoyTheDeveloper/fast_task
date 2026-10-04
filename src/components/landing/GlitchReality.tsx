@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   CheckCircle2,
   Terminal,
+  Timer,
+  BookOpen,
 } from "lucide-react";
 import { useStudentProfile } from "@/lib/studentProfile";
 
@@ -83,7 +85,7 @@ export function GlitchReality() {
         {/* ============================================================ */}
         {/* RECREATED POSTER DESIGN USING DASHBOARD PALETTE */}
         {/* ============================================================ */}
-        <div className="relative mx-auto max-w-5xl rounded-3xl bg-white border border-[#E5EAF2] shadow-[-10px_20px_50px_-10px_rgba(15,23,42,0.1),0_25px_60px_-15px_rgba(49,91,255,0.08)] p-6 sm:p-10 lg:p-12 overflow-hidden transition-all duration-300 hover:shadow-[-12px_24px_60px_-10px_rgba(15,23,42,0.14),0_30px_70px_-15px_rgba(49,91,255,0.12)]">
+        <div className="relative mx-auto w-full rounded-3xl bg-white border border-[#E5EAF2] shadow-[-10px_20px_50px_-10px_rgba(15,23,42,0.1),0_25px_60px_-15px_rgba(49,91,255,0.08)] p-6 sm:p-10 lg:p-12 overflow-hidden transition-all duration-300 hover:shadow-[-12px_24px_60px_-10px_rgba(15,23,42,0.14),0_30px_70px_-15px_rgba(49,91,255,0.12)]">
           
           {/* Subtle architectural grid pattern */}
           <div
@@ -191,7 +193,7 @@ export function GlitchReality() {
               {/* Frame Container for Artwork (Dashboard Daylight Palette) */}
               <div
                 onClick={triggerGlitchEffect}
-                className="group relative w-full max-w-[460px] aspect-[16/11] rounded-2xl bg-[#F8FAFC] border-2 border-[#E5EAF2] shadow-[-8px_16px_36px_-6px_rgba(15,23,42,0.08),0_20px_45px_-8px_rgba(49,91,255,0.06)] overflow-hidden cursor-pointer transition-all duration-500 hover:border-[#315BFF]/40 hover:scale-[1.015]"
+                className="group relative w-full max-w-[500px] aspect-[16/11] rounded-2xl bg-[#F8FAFC] border-2 border-[#E5EAF2] shadow-[-8px_16px_36px_-6px_rgba(15,23,42,0.08),0_20px_45px_-8px_rgba(49,91,255,0.06)] overflow-hidden cursor-pointer transition-all duration-500 hover:border-[#315BFF]/40 hover:scale-[1.015]"
               >
                 {/* Artwork Image in Dashboard Color Palette */}
                 <Image
@@ -201,7 +203,7 @@ export function GlitchReality() {
                   className={`object-cover object-center transition-all duration-700 ease-out group-hover:scale-105 ${
                     isGlitching ? "filter contrast-125 brightness-105" : ""
                   }`}
-                  sizes="(max-width: 640px) 100vw, 460px"
+                  sizes="(max-width: 640px) 100vw, 500px"
                   priority
                 />
 
@@ -243,47 +245,65 @@ export function GlitchReality() {
         </div>
 
         {/* ============================================================ */}
-        {/* 3 PROFESSIONAL DASHBOARD CARDS BELOW THE POSTER */}
+        {/* 3 CLEAN PROFESSIONAL ACADEMIC CARDS */}
         {/* ============================================================ */}
-        <div className="mt-10 sm:mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="mt-10 sm:mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 w-full mx-auto">
           
-          {/* Feature 1 */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E5EAF2] shadow-xs hover:border-[#315BFF]/50 hover:shadow-md transition-all duration-200">
-            <div className="w-9 h-9 rounded-xl bg-[#EEF3FF] border border-[#D0DFFF] text-[#315BFF] flex items-center justify-center mb-3.5">
-              <Layers className="w-4 h-4" />
+          {/* Card 1: Structured Study Intervals */}
+          <div className="rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.08)] hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center mb-4">
+                <Timer className="w-5 h-5" />
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                Structured Study Intervals
+              </h3>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                Stay in deep flow with built-in 25-minute Pomodoro study cycles and automatic rest cues tailored for heavy CS problem-solving.
+              </p>
             </div>
-            <h4 className="text-sm font-bold text-[#172033] mb-1.5">
-              Deep Cognitive Immersion
-            </h4>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Structured 25-minute Pomodoro study intervals with clear rest cues for hard CS problem-solving.
-            </p>
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Study Session</span>
+              <span className="font-semibold text-slate-800">25m focus · 5m rest</span>
+            </div>
           </div>
 
-          {/* Feature 2 */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E5EAF2] shadow-xs hover:border-[#315BFF]/50 hover:shadow-md transition-all duration-200">
-            <div className="w-9 h-9 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mb-3.5">
-              <ShieldCheck className="w-4 h-4" />
+          {/* Card 2: Smart Deadline Radar */}
+          <div className="rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.08)] hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                Clear Priority Radar
+              </h3>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                Filter out everyday noise and surface imminent assignment deadlines, lab submissions, and lecture venues first.
+              </p>
             </div>
-            <h4 className="text-sm font-bold text-[#172033] mb-1.5">
-              Zero Noise Architecture
-            </h4>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Eliminates mental clutter by surfacing active syllabus topics, venue rooms, and lab deadlines first.
-            </p>
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Priority Filter</span>
+              <span className="font-semibold text-slate-800">Auto syllabus & routine sync</span>
+            </div>
           </div>
 
-          {/* Feature 3 */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E5EAF2] shadow-xs hover:border-[#315BFF]/50 hover:shadow-md transition-all duration-200">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mb-3.5">
-              <CheckCircle2 className="w-4 h-4" />
+          {/* Card 3: Verified Course Notes */}
+          <div className="rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.08)] hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                Verified Course Notes
+              </h3>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                Direct access to curated revision decks, lecture notes, and sample solutions organized by course code for exam prep.
+              </p>
             </div>
-            <h4 className="text-sm font-bold text-[#172033] mb-1.5">
-              Verified Course Notes
-            </h4>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Direct access to curated semester materials for CS 102, 201, 202, and 301 revision decks.
-            </p>
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Curated Decks</span>
+              <span className="font-semibold text-slate-800">CS 102 · 201 · 202 · 301</span>
+            </div>
           </div>
 
         </div>

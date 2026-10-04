@@ -38,7 +38,7 @@ import {
   Loader2,
 } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
-import type { Task } from "@/types/task";
+import type { Task, SessionUser } from "@/types";
 import { COURSES } from "@/lib/academic";
 
 const COURSE_LABELS: Record<string, string> = {
@@ -94,7 +94,7 @@ export default function MyTasksPage() {
   const router = useRouter();
 
   // Core Data
-  const [currentUser, setCurrentUser] = React.useState<any>(null);
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);

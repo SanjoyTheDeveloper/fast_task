@@ -105,8 +105,19 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[Register API Error]:", error);
+    const err = error as { code?: string; message?: string };
+    if (
+      err?.code === "P2002" ||
+      err?.message?.includes("already exists") ||
+      err?.message?.includes("unique")
+    ) {
+      return NextResponse.json(
+        { message: "An account with this email address already exists" },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { message: "An unexpected error occurred during registration" },
       { status: 500 }

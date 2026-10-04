@@ -47,7 +47,23 @@ export function errorResponse(
 
 import { parseTaskDescription } from "@/lib/academic";
 
-export function serializeTask(task: any): Task {
+export interface RawDbTask {
+  id: string | number;
+  title: string;
+  description?: string | null;
+  completed?: boolean | null;
+  status?: string | null;
+  dueDate?: Date | string | null;
+  course?: string | null;
+  category?: string | null;
+  priority?: string | null;
+  userId: string | number;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  [key: string]: unknown;
+}
+
+export function serializeTask(task: RawDbTask): Task {
   const createdAt = task.createdAt instanceof Date ? task.createdAt.toISOString() : new Date(task.createdAt).toISOString();
   const updatedAt = task.updatedAt instanceof Date ? task.updatedAt.toISOString() : new Date(task.updatedAt).toISOString();
 

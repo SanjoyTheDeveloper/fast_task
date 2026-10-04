@@ -74,7 +74,7 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     }
 
     // Parse JSON body safely
-    let body: any;
+    let body: unknown;
     try {
       body = await req.json();
     } catch {

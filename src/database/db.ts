@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import net from "net";
 import fs from "fs";
 import path from "path";
@@ -14,10 +14,41 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: [], // Suppress noisy connect retry errors in dev when offline
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+/**
+ * Determines whether an error thrown during a Prisma operation is a genuine
+ * connectivity failure (allowing graceful fallback to local disk store), or
+ * an application/query engine error (constraint violation, invalid input, etc.)
+ * which MUST be re-thrown so data integrity is not silently compromised.
+ */
+function isConnectionError(error: unknown): boolean {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    // P1xxx are database connection errors (P1001, P1002, etc.)
+    // P2xxx are query engine errors (P2002 unique constraint, P2025 record not found, etc.)
+    return error.code.startsWith("P1");
+  }
+  if (error instanceof Prisma.PrismaClientInitializationError) {
+    return true;
+  }
+  if (error instanceof Prisma.PrismaClientRustPanicError) {
+    return true;
+  }
+  if (error instanceof Prisma.PrismaClientUnknownRequestError) {
+    const msg = error.message.toLowerCase();
+    return msg.includes("connect") || msg.includes("econnrefused") || msg.includes("timeout");
+  }
+  if (error && typeof error === "object" && "code" in error) {
+    const code = String((error as { code?: unknown }).code);
+    if (code === "ECONNREFUSED" || code === "ETIMEDOUT" || code === "ENOTFOUND") {
+      return true;
+    }
+  }
+  return false;
+}
 
 /**
  * Fast, non-blocking check to determine if PostgreSQL server is reachable.
@@ -46,13 +77,26 @@ export async function isPostgresAvailable(): Promise<boolean> {
       let host = "localhost";
       let port = 5432;
 
-      if (dbUrl.includes("@")) {
-        const afterAt = dbUrl.split("@")[1];
-        const hostPort = afterAt.split("/")[0];
-        const parts = hostPort.split(":");
-        host = parts[0] || "localhost";
-        port = parts[1] ? parseInt(parts[1], 10) : 5432;
+      if (dbUrl) {
+        try {
+          const parsed = new URL(
+            dbUrl.replace(/^postgresql:/i, "http:").replace(/^postgres:/i, "http:")
+          );
+          host = parsed.hostname || "localhost";
+          port = parsed.port ? parseInt(parsed.port, 10) : 5432;
+        } catch {
+          if (dbUrl.includes("@")) {
+            const afterAt = dbUrl.split("@").pop() || "";
+            const hostPort = afterAt.split("/")[0];
+            const parts = hostPort.split(":");
+            host = parts[0] || "localhost";
+            port = parts[1] ? parseInt(parts[1], 10) : 5432;
+          }
+        }
       }
+
+      const isLocal = host === "localhost" || host === "127.0.0.1" || host === "::1";
+      const timeoutMs = isLocal ? 300 : 2000;
 
       const socket = new net.Socket();
       let finished = false;
@@ -68,7 +112,7 @@ export async function isPostgresAvailable(): Promise<boolean> {
         }
       };
 
-      socket.setTimeout(120);
+      socket.setTimeout(timeoutMs);
       socket.on("connect", () => done(true));
       socket.on("timeout", () => done(false));
       socket.on("error", () => done(false));
@@ -257,24 +301,29 @@ export const db = {
   async $transaction<T extends (Promise<any> | any)[]>(
     arg: T | ((prisma: PrismaClient) => Promise<any>)
   ): Promise<any> {
-    if (await isPostgresAvailable()) {
-      try {
-        return await (prisma.$transaction as any)(arg);
-      } catch {
-        globalForPrisma.postgresAvailable = false;
+    if (typeof arg === "function") {
+      if (await isPostgresAvailable()) {
+        try {
+          return await prisma.$transaction(arg as any);
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
+          globalForPrisma.postgresAvailable = false;
+        }
       }
+      return await arg(prisma);
     }
     if (Array.isArray(arg)) {
       return await Promise.all(arg);
     }
-    return await arg(prisma);
+    return await Promise.resolve(arg);
   },
   user: {
     async findUnique({ where }: { where: { id?: string; email?: string; verificationToken?: string } }) {
       if (await isPostgresAvailable()) {
         try {
           return await prisma.user.findUnique({ where: where as any });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -303,7 +352,8 @@ export const db = {
       if (await isPostgresAvailable()) {
         try {
           return await prisma.user.create({ data: data as any });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -339,7 +389,8 @@ export const db = {
       if (await isPostgresAvailable()) {
         try {
           return await prisma.user.update({ where: where as any, data });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -365,7 +416,8 @@ export const db = {
       if (await isPostgresAvailable()) {
         try {
           return await prisma.task.count({ where });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -414,7 +466,8 @@ export const db = {
             skip,
             take,
           });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -492,7 +545,8 @@ export const db = {
       if (await isPostgresAvailable()) {
         try {
           return await prisma.task.findUnique({ where });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -519,7 +573,8 @@ export const db = {
             payload.completed = payload.status === "COMPLETED";
           }
           return await prisma.task.create({ data: payload });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -565,7 +620,8 @@ export const db = {
             payload.completed = payload.status === "COMPLETED";
           }
           return await prisma.task.update({ where, data: payload });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }
@@ -590,7 +646,8 @@ export const db = {
       if (await isPostgresAvailable()) {
         try {
           return await prisma.task.delete({ where });
-        } catch {
+        } catch (error) {
+          if (!isConnectionError(error)) throw error;
           globalForPrisma.postgresAvailable = false;
         }
       }

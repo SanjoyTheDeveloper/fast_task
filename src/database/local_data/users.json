@@ -31,5 +31,16 @@
     "verificationTokenExpires": "2026-10-02T17:29:48.892Z",
     "createdAt": "2026-10-01T17:29:53.090Z",
     "updatedAt": "2026-10-01T17:29:53.090Z"
+  },
+  {
+    "id": "usr_1791094791535_tb42b",
+    "name": "Sanjoy  Bhowmick",
+    "email": "info.stamford.sa@gmail.com",
+    "password": "$2b$10$imxSLcx/B9Zbia.ClLwbkONpyNFj3JVvHHkTT6eEfYa0LRGoLhnJW",
+    "emailVerified": "2026-10-04T06:19:51.349Z",
+    "verificationToken": "47c4138883e72f1e68f38d249783e159ac12025c6abd67f05fcf5b6fde225972",
+    "verificationTokenExpires": "2026-10-05T06:19:51.349Z",
+    "createdAt": "2026-10-04T06:19:51.535Z",
+    "updatedAt": "2026-10-04T06:28:48.363Z"
   }
 ]

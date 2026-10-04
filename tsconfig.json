@@ -20,11 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/ui/*": ["./src/ui/*", "./ui/*"],
       "@/api/*": ["./src/api/*", "./api/*"],
       "@/components/*": ["./src/components/*"],
       "@/backend/*": ["./src/backend/*"],
-      "@/frontend/*": ["./src/frontend/*"],
       "@/database/*": ["./src/database/*"]
     }
   },

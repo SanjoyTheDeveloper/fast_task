@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Safely parse JSON body
-    let body: any;
+    let body: unknown;
     try {
       body = await req.json();
     } catch {
