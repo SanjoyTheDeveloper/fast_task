@@ -158,7 +158,6 @@ function LoginForm() {
 
   return (
     <div className="relative rounded-3xl border border-[#DCE7FC] bg-white shadow-[0_20px_50px_rgba(49,91,255,0.06)] overflow-hidden p-6 sm:p-8 space-y-6">
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#315BFF] via-[#5B63E6] to-[#8B5CF6]" />
       <div className="space-y-1">
         <h2 className="text-xl font-black text-[#172033] tracking-tight">Sign In</h2>
         <p className="text-xs sm:text-sm text-slate-500">

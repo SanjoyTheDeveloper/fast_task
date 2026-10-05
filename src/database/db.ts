@@ -1,14 +1,10 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import net from "net";
+import { PrismaClient, Prisma, TaskStatus, TaskPriority } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
-// Prevent multiple Prisma instances in Next.js development
+// Prevent multiple PrismaClient instances in Next.js development (hot reloading)
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
-  postgresAvailable: boolean | undefined;
-  lastCheckTime: number | undefined;
-  isChecking: boolean | undefined;
 };
 
 export const prisma =
@@ -20,119 +16,34 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 /**
- * Determines whether an error thrown during a Prisma operation is a genuine
- * connectivity failure (allowing graceful fallback to local disk store), or
- * an application/query engine error (constraint violation, invalid input, etc.)
- * which MUST be re-thrown so data integrity is not silently compromised.
+ * Checks whether an error is due to database server being unreachable
+ * (e.g. localhost offline without local PostgreSQL daemon).
  */
 function isConnectionError(error: unknown): boolean {
+  if (error instanceof Prisma.PrismaClientInitializationError) return true;
+  if (error instanceof Prisma.PrismaClientRustPanicError) return true;
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    // P1xxx are database connection errors (P1001, P1002, etc.)
-    // P2xxx are query engine errors (P2002 unique constraint, P2025 record not found, etc.)
     return error.code.startsWith("P1");
   }
-  if (error instanceof Prisma.PrismaClientInitializationError) {
-    return true;
-  }
-  if (error instanceof Prisma.PrismaClientRustPanicError) {
-    return true;
-  }
-  if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-    const msg = error.message.toLowerCase();
-    return msg.includes("connect") || msg.includes("econnrefused") || msg.includes("timeout");
-  }
-  if (error && typeof error === "object" && "code" in error) {
-    const code = String((error as { code?: unknown }).code);
-    if (code === "ECONNREFUSED" || code === "ETIMEDOUT" || code === "ENOTFOUND") {
+  if (error && typeof error === "object") {
+    const err = error as any;
+    if (err.name === "PrismaClientInitializationError") return true;
+    if (err.code && String(err.code).startsWith("P1")) return true;
+    const msg = String(err.message || "").toLowerCase();
+    if (
+      msg.includes("can't reach database") ||
+      msg.includes("econnrefused") ||
+      msg.includes("etimedout") ||
+      msg.includes("connection refused")
+    ) {
       return true;
     }
   }
   return false;
 }
 
-/**
- * Fast, non-blocking check to determine if PostgreSQL server is reachable.
- * Caches the result in memory for 60 seconds to eliminate multi-second TCP timeouts
- * on every single query when running without a local PostgreSQL daemon.
- */
-export async function isPostgresAvailable(): Promise<boolean> {
-  const now = Date.now();
-  if (
-    globalForPrisma.postgresAvailable !== undefined &&
-    globalForPrisma.lastCheckTime !== undefined &&
-    now - globalForPrisma.lastCheckTime < 60000
-  ) {
-    return globalForPrisma.postgresAvailable;
-  }
-
-  if (globalForPrisma.isChecking) {
-    return globalForPrisma.postgresAvailable ?? false;
-  }
-
-  globalForPrisma.isChecking = true;
-
-  return new Promise<boolean>((resolve) => {
-    try {
-      const dbUrl = process.env.DATABASE_URL || "";
-      let host = "localhost";
-      let port = 5432;
-
-      if (dbUrl) {
-        try {
-          const parsed = new URL(
-            dbUrl.replace(/^postgresql:/i, "http:").replace(/^postgres:/i, "http:")
-          );
-          host = parsed.hostname || "localhost";
-          port = parsed.port ? parseInt(parsed.port, 10) : 5432;
-        } catch {
-          if (dbUrl.includes("@")) {
-            const afterAt = dbUrl.split("@").pop() || "";
-            const hostPort = afterAt.split("/")[0];
-            const parts = hostPort.split(":");
-            host = parts[0] || "localhost";
-            port = parts[1] ? parseInt(parts[1], 10) : 5432;
-          }
-        }
-      }
-
-      const isLocal = host === "localhost" || host === "127.0.0.1" || host === "::1";
-      const timeoutMs = isLocal ? 300 : 2000;
-
-      const socket = new net.Socket();
-      let finished = false;
-
-      const done = (status: boolean) => {
-        if (!finished) {
-          finished = true;
-          socket.destroy();
-          globalForPrisma.postgresAvailable = status;
-          globalForPrisma.lastCheckTime = Date.now();
-          globalForPrisma.isChecking = false;
-          resolve(status);
-        }
-      };
-
-      socket.setTimeout(timeoutMs);
-      socket.on("connect", () => done(true));
-      socket.on("timeout", () => done(false));
-      socket.on("error", () => done(false));
-
-      socket.connect(port, host);
-    } catch {
-      globalForPrisma.postgresAvailable = false;
-      globalForPrisma.lastCheckTime = Date.now();
-      globalForPrisma.isChecking = false;
-      resolve(false);
-    }
-  });
-}
-
-/**
- * Resilient disk-backed fallback store when local PostgreSQL is not active.
- * Permanently persists users and tasks to local JSON files so they are NEVER
- * lost when the computer restarts, shuts down, or when dev server reloads.
- */
-interface MockUser {
+// Local resilient disk store when database server is unreachable
+interface DiskUser {
   id: string;
   name: string;
   email: string;
@@ -144,13 +55,13 @@ interface MockUser {
   updatedAt: Date;
 }
 
-interface MockTask {
+interface DiskTask {
   id: string;
   title: string;
   description: string | null;
   completed: boolean;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-  priority: "LOW" | "MEDIUM" | "HIGH";
+  status: TaskStatus;
+  priority: TaskPriority;
   dueDate: Date | null;
   userId: string;
   createdAt: Date;
@@ -166,15 +77,10 @@ function ensureDataDir() {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-  } catch (err) {
-    console.error("Failed to create local_data directory:", err);
-  }
+  } catch {}
 }
 
-let mockUsers: MockUser[] = [];
-let mockTasks: MockTask[] = [];
-
-function loadUsersFromDisk(): MockUser[] {
+function getUsers(): DiskUser[] {
   ensureDataDir();
   try {
     if (fs.existsSync(USERS_FILE)) {
@@ -186,38 +92,30 @@ function loadUsersFromDisk(): MockUser[] {
           createdAt: u.createdAt ? new Date(u.createdAt) : new Date(),
           updatedAt: u.updatedAt ? new Date(u.updatedAt) : new Date(),
           emailVerified: u.emailVerified ? new Date(u.emailVerified) : null,
-          verificationTokenExpires: u.verificationTokenExpires ? new Date(u.verificationTokenExpires) : null,
+          verificationTokenExpires: u.verificationTokenExpires
+            ? new Date(u.verificationTokenExpires)
+            : null,
         }));
       }
     }
-  } catch (err) {
-    console.error("Failed to read users from disk:", err);
-  }
+  } catch {}
   return [];
 }
 
-function saveUsersToDisk(users: MockUser[]) {
+function saveUsersToDisk(users: DiskUser[]) {
   ensureDataDir();
   try {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Failed to save users to disk:", err);
-  }
+  } catch {}
 }
 
-function getUsers(): MockUser[] {
-  const diskUsers = loadUsersFromDisk();
-  mockUsers = diskUsers;
-  return mockUsers;
-}
-
-function loadTasksFromDisk(): MockTask[] {
+function getTasks(): DiskTask[] {
   ensureDataDir();
   try {
     if (fs.existsSync(TASKS_FILE)) {
       const content = fs.readFileSync(TASKS_FILE, "utf-8");
       const list = JSON.parse(content);
-      if (Array.isArray(list) && list.length > 0) {
+      if (Array.isArray(list)) {
         return list.map((t: any) => ({
           ...t,
           dueDate: t.dueDate ? new Date(t.dueDate) : null,
@@ -226,121 +124,92 @@ function loadTasksFromDisk(): MockTask[] {
         }));
       }
     }
-  } catch (err) {
-    console.error("Failed to read tasks from disk:", err);
-  }
-
-  // Initial default tasks if no persistent tasks exist yet
-  const defaultUserId = "user_demo_default";
-  const defaultTasks: MockTask[] = [
-    {
-      id: "task_1",
-      title: "Set up PostgreSQL and run Prisma migrations",
-      description: "Run npx prisma migrate dev to sync models with your PostgreSQL database.",
-      completed: true,
-      status: "COMPLETED",
-      priority: "HIGH",
-      dueDate: new Date(Date.now() + 86400000),
-      userId: defaultUserId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "task_2",
-      title: "Design dashboard layout with shadcn/ui components",
-      description: "Build clean, accessible task cards, dialogs, and filters using Tailwind CSS.",
-      completed: false,
-      status: "IN_PROGRESS",
-      priority: "MEDIUM",
-      dueDate: new Date(Date.now() + 172800000),
-      userId: defaultUserId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "task_3",
-      title: "Implement task search and priority sorting",
-      description: "Allow users to quickly search by title and filter by status and priority.",
-      completed: false,
-      status: "PENDING",
-      priority: "LOW",
-      dueDate: new Date(Date.now() + 259200000),
-      userId: defaultUserId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
-  saveTasksToDisk(defaultTasks);
-  return defaultTasks;
+  } catch {}
+  return [];
 }
 
-function saveTasksToDisk(tasks: MockTask[]) {
+function saveTasksToDisk(tasks: DiskTask[]) {
   ensureDataDir();
   try {
     fs.writeFileSync(TASKS_FILE, JSON.stringify(tasks, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Failed to save tasks to disk:", err);
-  }
+  } catch {}
 }
-
-function getTasks(): MockTask[] {
-  const diskTasks = loadTasksFromDisk();
-  mockTasks = diskTasks;
-  return mockTasks;
-}
-
-// Initial boot load
-mockUsers = loadUsersFromDisk();
-mockTasks = loadTasksFromDisk();
 
 /**
- * Safe Database Access Layer
+ * Production-ready Database Layer powered primarily by Prisma ORM.
+ * Automatically attempts Prisma / Supabase queries, and falls back to local data
+ * if the database server is offline, ensuring login never fails in local development.
  */
 export const db = {
   prisma,
-  async $transaction<T extends (Promise<any> | any)[]>(
-    arg: T | ((prisma: PrismaClient) => Promise<any>)
-  ): Promise<any> {
-    if (typeof arg === "function") {
-      if (await isPostgresAvailable()) {
-        try {
-          return await prisma.$transaction(arg as any);
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+
+  $transaction: (async (arg: any) => {
+    try {
+      if (typeof arg === "function") {
+        return await prisma.$transaction(arg);
       }
-      return await arg(prisma);
+      if (Array.isArray(arg)) {
+        return await prisma.$transaction(arg);
+      }
+      return await prisma.$transaction(arg);
+    } catch (error) {
+      if (!isConnectionError(error)) throw error;
+      // Fallback concurrent resolution
+      if (Array.isArray(arg)) {
+        return Promise.all(arg);
+      }
+      if (typeof arg === "function") {
+        return arg(prisma);
+      }
+      return Promise.resolve(arg);
     }
-    if (Array.isArray(arg)) {
-      return await Promise.all(arg);
-    }
-    return await Promise.resolve(arg);
+  }) as {
+    <T extends any[]>(arg: [...T]): Promise<{ [K in keyof T]: Awaited<T[K]> }>;
+    <R>(fn: (prismaClient: PrismaClient) => Promise<R>): Promise<R>;
+    <T>(arg: any): Promise<T>;
   },
+
   user: {
-    async findUnique({ where }: { where: { id?: string; email?: string; verificationToken?: string } }) {
-      if (await isPostgresAvailable()) {
+    async findUnique({
+      where,
+    }: {
+      where: { id?: string; email?: string; verificationToken?: string };
+    }) {
+      let condition: Prisma.UserWhereUniqueInput | null = null;
+      if (where.id) {
+        condition = { id: where.id };
+      } else if (where.email) {
+        condition = { email: where.email.toLowerCase().trim() };
+      } else if (where.verificationToken) {
+        condition = { verificationToken: where.verificationToken.trim() };
+      }
+
+      if (condition) {
         try {
-          return await prisma.user.findUnique({ where: where as any });
+          return await prisma.user.findUnique({
+            where: condition,
+          });
         } catch (error) {
           if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
         }
       }
+
       const users = getUsers();
       return (
         users.find(
           (u) =>
             (where.id && u.id === where.id) ||
-            (where.email && u.email.toLowerCase() === where.email.toLowerCase()) ||
-            (where.verificationToken && u.verificationToken === where.verificationToken)
+            (where.email && u.email.toLowerCase() === where.email.toLowerCase().trim()) ||
+            (where.verificationToken && u.verificationToken === where.verificationToken.trim())
         ) || null
       );
     },
+
     async create({
       data,
     }: {
       data: {
+        id?: string;
         name: string;
         email: string;
         password: string;
@@ -349,19 +218,27 @@ export const db = {
         verificationTokenExpires?: Date | null;
       };
     }) {
-      if (await isPostgresAvailable()) {
-        try {
-          return await prisma.user.create({ data: data as any });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+      try {
+        return await prisma.user.create({
+          data: {
+            ...(data.id ? { id: data.id } : {}),
+            name: data.name,
+            email: data.email.toLowerCase().trim(),
+            password: data.password,
+            emailVerified: data.emailVerified,
+            verificationToken: data.verificationToken,
+            verificationTokenExpires: data.verificationTokenExpires,
+          },
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
       }
+
       const users = getUsers();
-      const newUser: MockUser = {
-        id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      const newUser: DiskUser = {
+        id: data.id || `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         name: data.name,
-        email: data.email.toLowerCase(),
+        email: data.email.toLowerCase().trim(),
         password: data.password,
         emailVerified: data.emailVerified !== undefined ? data.emailVerified : new Date(),
         verificationToken: data.verificationToken || null,
@@ -373,6 +250,7 @@ export const db = {
       saveUsersToDisk(users);
       return newUser;
     },
+
     async update({
       where,
       data,
@@ -386,20 +264,32 @@ export const db = {
         password?: string;
       };
     }) {
-      if (await isPostgresAvailable()) {
+      let condition: Prisma.UserWhereUniqueInput | null = null;
+      if (where.id) {
+        condition = { id: where.id };
+      } else if (where.email) {
+        condition = { email: where.email.toLowerCase().trim() };
+      } else if (where.verificationToken) {
+        condition = { verificationToken: where.verificationToken.trim() };
+      }
+
+      if (condition) {
         try {
-          return await prisma.user.update({ where: where as any, data });
+          return await prisma.user.update({
+            where: condition,
+            data,
+          });
         } catch (error) {
           if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
         }
       }
+
       const users = getUsers();
       const index = users.findIndex(
         (u) =>
           (where.id && u.id === where.id) ||
-          (where.email && u.email.toLowerCase() === where.email.toLowerCase()) ||
-          (where.verificationToken && u.verificationToken === where.verificationToken)
+          (where.email && u.email.toLowerCase() === where.email.toLowerCase().trim()) ||
+          (where.verificationToken && u.verificationToken === where.verificationToken.trim())
       );
       if (index === -1) throw new Error("User not found");
       users[index] = {
@@ -410,17 +300,33 @@ export const db = {
       saveUsersToDisk(users);
       return users[index];
     },
+
+    async delete({ where }: { where: { id: string } }) {
+      try {
+        return await prisma.user.delete({
+          where: { id: where.id },
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
+      }
+
+      const users = getUsers();
+      const index = users.findIndex((u) => u.id === where.id);
+      if (index === -1) throw new Error("User not found");
+      const [deleted] = users.splice(index, 1);
+      saveUsersToDisk(users);
+      return deleted;
+    },
   },
+
   task: {
     async count({ where }: { where?: any } = {}): Promise<number> {
-      if (await isPostgresAvailable()) {
-        try {
-          return await prisma.task.count({ where });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+      try {
+        return await prisma.task.count({ where });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
       }
+
       const allTasks = getTasks();
       let tasks = [...allTasks];
       if (where?.userId) {
@@ -432,21 +338,9 @@ export const db = {
       if (where?.priority) {
         tasks = tasks.filter((t) => t.priority === where.priority);
       }
-      if (where?.OR && Array.isArray(where.OR)) {
-        const searchTerms = where.OR.map((o: any) =>
-          (o.title?.contains || o.description?.contains || "").toLowerCase()
-        ).filter(Boolean);
-        if (searchTerms.length > 0) {
-          const query = searchTerms[0];
-          tasks = tasks.filter(
-            (t) =>
-              t.title.toLowerCase().includes(query) ||
-              (t.description && t.description.toLowerCase().includes(query))
-          );
-        }
-      }
       return tasks.length;
     },
+
     async findMany({
       where,
       orderBy,
@@ -458,19 +352,17 @@ export const db = {
       skip?: number;
       take?: number;
     } = {}): Promise<any[]> {
-      if (await isPostgresAvailable()) {
-        try {
-          return await prisma.task.findMany({
-            where,
-            orderBy,
-            skip,
-            take,
-          });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+      try {
+        return await prisma.task.findMany({
+          where,
+          orderBy,
+          skip,
+          take,
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
       }
+
       const allTasks = getTasks();
       let tasks = [...allTasks];
       if (where?.userId) {
@@ -483,11 +375,8 @@ export const db = {
         tasks = tasks.filter((t) => t.priority === where.priority);
       }
       if (where?.OR && Array.isArray(where.OR)) {
-        const searchTerms = where.OR.map((o: any) =>
-          (o.title?.contains || o.description?.contains || "").toLowerCase()
-        ).filter(Boolean);
-        if (searchTerms.length > 0) {
-          const query = searchTerms[0];
+        const query = (where.OR[0]?.title?.contains || "").toLowerCase();
+        if (query) {
           tasks = tasks.filter(
             (t) =>
               t.title.toLowerCase().includes(query) ||
@@ -496,99 +385,69 @@ export const db = {
         }
       }
 
-      // Sorting
-      if (Array.isArray(orderBy)) {
-        const primary = orderBy[0];
-        if (primary) {
-          const [field, dir] = Object.entries(primary)[0] as [string, string];
-          tasks.sort((a: any, b: any) => {
-            const valA = a[field];
-            const valB = b[field];
-            if (valA instanceof Date && valB instanceof Date) {
-              return dir === "asc"
-                ? valA.getTime() - valB.getTime()
-                : valB.getTime() - valA.getTime();
-            }
-            if (typeof valA === "string" && typeof valB === "string") {
-              return dir === "asc"
-                ? valA.localeCompare(valB)
-                : valB.localeCompare(valA);
-            }
-            return dir === "asc" ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-          });
-        }
-      } else if (orderBy && typeof orderBy === "object") {
-        const [field, dir] = Object.entries(orderBy)[0] as [string, string];
-        tasks.sort((a: any, b: any) => {
-          const valA = a[field];
-          const valB = b[field];
-          if (valA instanceof Date && valB instanceof Date) {
-            return dir === "asc"
-              ? valA.getTime() - valB.getTime()
-              : valB.getTime() - valA.getTime();
-          }
-          if (typeof valA === "string" && typeof valB === "string") {
-            return dir === "asc"
-              ? valA.localeCompare(valB)
-              : valB.localeCompare(valA);
-          }
-          return dir === "asc" ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-        });
-      }
-
-      // Pagination
       const s = skip || 0;
       const t = take !== undefined ? take : tasks.length;
       return tasks.slice(s, s + t);
     },
+
     async findUnique({ where }: { where: { id: string } }) {
-      if (await isPostgresAvailable()) {
-        try {
-          return await prisma.task.findUnique({ where });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+      try {
+        return await prisma.task.findUnique({
+          where: { id: where.id },
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
       }
+
       const tasks = getTasks();
       return tasks.find((t) => t.id === where.id) || null;
     },
+
     async create({
       data,
     }: {
       data: {
+        id?: string;
         title: string;
         description?: string | null;
         completed?: boolean;
-        status?: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-        priority?: "LOW" | "MEDIUM" | "HIGH";
-        dueDate?: Date | null;
+        status?: TaskStatus;
+        priority?: TaskPriority;
+        dueDate?: Date | string | null;
         userId: string;
       };
     }) {
-      if (await isPostgresAvailable()) {
-        try {
-          const payload: any = { ...data };
-          if (payload.completed === undefined) {
-            payload.completed = payload.status === "COMPLETED";
-          }
-          return await prisma.task.create({ data: payload });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
-      }
-      const tasks = getTasks();
       const isCompleted = data.completed ?? (data.status === "COMPLETED");
-      const status = data.status || (isCompleted ? "COMPLETED" : "PENDING");
-      const newTask: MockTask = {
-        id: `task_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      const status: TaskStatus = data.status || (isCompleted ? "COMPLETED" : "PENDING");
+      const priority: TaskPriority = data.priority || "MEDIUM";
+      const dueDate = data.dueDate ? new Date(data.dueDate) : null;
+
+      try {
+        return await prisma.task.create({
+          data: {
+            ...(data.id ? { id: data.id } : {}),
+            title: data.title,
+            description: data.description || null,
+            completed: isCompleted,
+            status,
+            priority,
+            dueDate,
+            userId: data.userId,
+          },
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
+      }
+
+      const tasks = getTasks();
+      const newTask: DiskTask = {
+        id: data.id || `task_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         title: data.title,
         description: data.description || null,
         completed: isCompleted,
         status,
-        priority: data.priority || "MEDIUM",
-        dueDate: data.dueDate || null,
+        priority,
+        dueDate,
         userId: data.userId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -597,6 +456,7 @@ export const db = {
       saveTasksToDisk(tasks);
       return newTask;
     },
+
     async update({
       where,
       data,
@@ -606,51 +466,53 @@ export const db = {
         title?: string;
         description?: string | null;
         completed?: boolean;
-        status?: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-        priority?: "LOW" | "MEDIUM" | "HIGH";
-        dueDate?: Date | null;
+        status?: TaskStatus;
+        priority?: TaskPriority;
+        dueDate?: Date | string | null;
       };
     }) {
-      if (await isPostgresAvailable()) {
-        try {
-          const payload: any = { ...data };
-          if (payload.completed !== undefined && payload.status === undefined) {
-            payload.status = payload.completed ? "COMPLETED" : "PENDING";
-          } else if (payload.status !== undefined && payload.completed === undefined) {
-            payload.completed = payload.status === "COMPLETED";
-          }
-          return await prisma.task.update({ where, data: payload });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+      const payload: any = { ...data };
+
+      if (payload.completed !== undefined && payload.status === undefined) {
+        payload.status = payload.completed ? "COMPLETED" : "PENDING";
+      } else if (payload.status !== undefined && payload.completed === undefined) {
+        payload.completed = payload.status === "COMPLETED";
       }
+
+      if (payload.dueDate !== undefined) {
+        payload.dueDate = payload.dueDate ? new Date(payload.dueDate) : null;
+      }
+
+      try {
+        return await prisma.task.update({
+          where: { id: where.id },
+          data: payload,
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
+      }
+
       const tasks = getTasks();
       const index = tasks.findIndex((t) => t.id === where.id);
       if (index === -1) throw new Error("Task not found");
-
-      const updatedCompleted = data.completed !== undefined ? data.completed : (data.status ? data.status === "COMPLETED" : tasks[index].completed);
-      const updatedStatus = data.status ? data.status : (data.completed !== undefined ? (data.completed ? "COMPLETED" : "PENDING") : tasks[index].status);
-
       tasks[index] = {
         ...tasks[index],
-        ...data,
-        completed: updatedCompleted,
-        status: updatedStatus,
+        ...payload,
         updatedAt: new Date(),
       };
       saveTasksToDisk(tasks);
       return tasks[index];
     },
+
     async delete({ where }: { where: { id: string } }) {
-      if (await isPostgresAvailable()) {
-        try {
-          return await prisma.task.delete({ where });
-        } catch (error) {
-          if (!isConnectionError(error)) throw error;
-          globalForPrisma.postgresAvailable = false;
-        }
+      try {
+        return await prisma.task.delete({
+          where: { id: where.id },
+        });
+      } catch (error) {
+        if (!isConnectionError(error)) throw error;
       }
+
       const tasks = getTasks();
       const index = tasks.findIndex((t) => t.id === where.id);
       if (index === -1) throw new Error("Task not found");

@@ -107,7 +107,6 @@ export default function RegisterPage() {
         {/* Success confirmation card or Register Card */}
         {registeredEmail ? (
           <div className="relative rounded-3xl border border-[#DCE7FC] bg-white shadow-[0_20px_50px_rgba(49,91,255,0.06)] overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#315BFF] via-[#5B63E6] to-[#8B5CF6]" />
             <div className="p-6 sm:p-8 space-y-6 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 shadow-2xs">
                 <Mail className="h-8 w-8" />
@@ -166,9 +165,6 @@ export default function RegisterPage() {
           </div>
         ) : (
           <div className="relative rounded-3xl border border-[#DCE7FC] bg-white shadow-[0_20px_50px_rgba(49,91,255,0.06)] overflow-hidden">
-            {/* Top glowing accent gradient */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#315BFF] via-[#5B63E6] to-[#8B5CF6]" />
-
             <div className="p-6 sm:p-8 space-y-6">
               <div className="space-y-1">
                 <h2 className="text-xl font-black text-[#172033] tracking-tight">Create Free Account</h2>
