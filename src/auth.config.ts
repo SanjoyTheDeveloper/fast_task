@@ -8,26 +8,12 @@ export const authConfig = {
     "fast-task-ultra-secure-auth-secret-key-production-32-chars",
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days persistent session across PC reboots
     updateAge: 24 * 60 * 60,
-  },
-  cookies: {
-    sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-authjs.session-token"
-          : "authjs.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 30 * 24 * 60 * 60, // 30 days cookie lifetime
-      },
-    },
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
