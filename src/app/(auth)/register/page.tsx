@@ -131,9 +131,21 @@ export default function RegisterPage() {
                 </span>
               </div>
 
+              {!isAutoVerified && (
+                <Button
+                  asChild
+                  className="w-full h-11 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/25 transition-all cursor-pointer"
+                >
+                  <Link href={`/verify-email?email=${encodeURIComponent(registeredEmail)}`}>
+                    Enter 6-Digit OTP Code
+                  </Link>
+                </Button>
+              )}
+
               <Button
                 asChild
-                className="w-full h-11 rounded-xl text-sm font-bold text-white bg-[#315BFF] hover:bg-[#254BE3] shadow-md shadow-blue-500/25 transition-all cursor-pointer"
+                variant="outline"
+                className="w-full h-11 rounded-xl text-sm font-bold border-slate-200 text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
               >
                 <Link href={`/login?email=${encodeURIComponent(registeredEmail)}`}>
                   Proceed to Sign In

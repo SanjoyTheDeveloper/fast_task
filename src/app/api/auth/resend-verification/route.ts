@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 import { db } from "@/lib/db";
-import { sendVerificationEmail } from "@/lib/email";
+import { sendVerificationEmail } from "@/lib/mail";
+
+/**
+ * Generate a 6-digit verification code (OTP)
+ */
+function generateOTP(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,15 +50,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate new secure verification token and 24h expiration
-    const verificationToken = crypto.randomBytes(32).toString("hex");
-    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    // Generate new 6-digit OTP code and 10-minute expiration
+    const verificationCode = generateOTP();
+    const verificationTokenExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // Update user record with new token & expiry
+    // Update user record with new OTP & expiry
     await db.user.update({
       where: { id: user.id },
       data: {
-        verificationToken,
+        verificationToken: verificationCode,
         verificationTokenExpires,
       },
     });
@@ -62,24 +68,27 @@ export async function POST(req: NextRequest) {
       process.env.NEXTAUTH_URL ||
       process.env.NEXT_PUBLIC_APP_URL ||
       "http://localhost:3000";
-    const verificationUrl = `${baseUrl.replace(/\/$/, "")}/verify-email?token=${encodeURIComponent(
-      verificationToken
-    )}`;
 
-    // Send verification email using Resend
-    const emailResult = await sendVerificationEmail(user.email, verificationToken);
+    const verificationUrl = `${baseUrl.replace(/\/$/, "")}/verify-email?code=${encodeURIComponent(
+      verificationCode
+    )}&email=${encodeURIComponent(user.email)}`;
 
     console.log(`\n============================================================`);
-    console.log(`[DEV] DIRECT VERIFICATION LINK FOR: ${user.email}`);
-    console.log(`>>> ${verificationUrl} <<<`);
+    console.log(`[RESEND OTP] NEW 6-DIGIT CODE FOR: ${user.email}`);
+    console.log(`>>> OTP: ${verificationCode} <<<`);
+    console.log(`>>> Link: ${verificationUrl} <<<`);
     console.log(`============================================================\n`);
 
+    // Send verification email using Nodemailer Gmail SMTP
+    const emailResult = await sendVerificationEmail(user.email, verificationCode);
+
     if (!emailResult.success) {
-      console.warn("[Resend Warning] Could not deliver email via Resend:", emailResult.error);
+      console.warn("[Nodemailer Warning] Could not deliver email:", emailResult.error);
       return NextResponse.json(
         {
-          message: `Email could not be delivered to Gmail: ${emailResult.error}`,
+          message: `Email could not be delivered: ${emailResult.error}`,
           verificationUrl,
+          verificationCode,
           emailSent: false,
         },
         { status: 200 }
@@ -88,8 +97,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Verification email sent successfully. Please check your inbox.",
+        message: "A new 6-digit verification code has been sent to your email.",
         verificationUrl,
+        verificationCode,
         emailSent: true,
       },
       { status: 200 }
@@ -97,7 +107,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Resend verification error:", error);
     return NextResponse.json(
-      { message: "An unexpected error occurred while resending verification email." },
+      { message: "An unexpected error occurred while resending verification code." },
       { status: 500 }
     );
   }

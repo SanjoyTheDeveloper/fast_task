@@ -42,5 +42,16 @@
     "verificationTokenExpires": "2026-10-05T06:19:51.349Z",
     "createdAt": "2026-10-04T06:19:51.535Z",
     "updatedAt": "2026-10-04T06:28:48.363Z"
+  },
+  {
+    "id": "usr_1791368219533_pvev7",
+    "name": "sanjoy  chandro Bhowmick",
+    "email": "sanjoy8787@gmail.com",
+    "password": "$2b$10$4tNB0bCwdwTagQJHoBKZgOHSluJj6B9lLHLm7pQCMrY/o1946G3oW",
+    "emailVerified": "2026-10-07T10:16:55.385Z",
+    "verificationToken": "766564",
+    "verificationTokenExpires": "2026-10-07T10:26:55.385Z",
+    "createdAt": "2026-10-07T10:16:59.533Z",
+    "updatedAt": "2026-10-07T10:16:59.533Z"
   }
 ]

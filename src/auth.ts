@@ -45,9 +45,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!isPasswordValid) return null;
 
         const isEmailServiceActive =
-          !!process.env.RESEND_API_KEY &&
-          !process.env.RESEND_API_KEY.includes("xxxx") &&
-          !process.env.RESEND_API_KEY.includes("placeholder");
+          (!!process.env.EMAIL_USER &&
+            !process.env.EMAIL_USER.includes("your-email") &&
+            !!process.env.EMAIL_PASS) ||
+          (!!process.env.RESEND_API_KEY &&
+            !process.env.RESEND_API_KEY.includes("xxxx") &&
+            !process.env.RESEND_API_KEY.includes("placeholder"));
 
         // If email service is active and user is unverified, require verification
         if (isEmailServiceActive && !user.emailVerified) {
