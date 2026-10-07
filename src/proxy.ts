@@ -5,9 +5,12 @@ import type { NextRequest } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth(async (req: NextRequest) => {
+const authProxy = auth(async (req: NextRequest) => {
   return await updateSession(req);
 });
+
+export const proxy = authProxy;
+export default authProxy;
 
 export const config = {
   matcher: [
