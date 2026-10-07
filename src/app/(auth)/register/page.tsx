@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, RegisterInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
-import { CheckSquare, Loader2, Lock, Mail, User } from "@/components/ui/GoogleIcon";
+import { AlertCircle, CheckSquare, Loader2, Lock, Mail, User } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 
 export default function RegisterPage() {
@@ -21,6 +21,7 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -187,8 +188,22 @@ export default function RegisterPage() {
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {serverError && (
-                  <div className="p-3.5 text-sm rounded-xl border bg-rose-50 text-rose-700 border-rose-200">
-                    {serverError}
+                  <div className="p-3.5 text-sm rounded-xl border bg-rose-50 text-rose-800 border-rose-200 space-y-2">
+                    <div className="flex items-center gap-2 font-medium">
+                      <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+                      <span>{serverError}</span>
+                    </div>
+                    {serverError.toLowerCase().includes("already exists") && (
+                      <div className="pt-2 flex items-center justify-between border-t border-rose-200/80 text-xs">
+                        <span className="text-rose-600">Already registered?</span>
+                        <Link
+                          href={`/login?email=${encodeURIComponent(watch("email") || "")}`}
+                          className="font-bold text-[#315BFF] hover:underline"
+                        >
+                          Sign In Instead →
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 )}
 
