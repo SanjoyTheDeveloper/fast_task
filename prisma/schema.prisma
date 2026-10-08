@@ -21,8 +21,8 @@ enum TaskPriority {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
+  id                       String    @id @default(cuid())
+  name                     String
   email                    String    @unique
   password                 String
   emailVerified            DateTime?
@@ -30,7 +30,7 @@ model User {
   verificationTokenExpires DateTime?
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
-  tasks     Task[]
+  tasks                    Task[]
 
   @@map("users")
 }

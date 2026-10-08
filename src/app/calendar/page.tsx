@@ -27,7 +27,167 @@ import {
   User,
 } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
-import { WEEKLY_SCHEDULE } from "@/components/dashboard/TodaySchedule";
+import { WEEKLY_SCHEDULE, ScheduleItem } from "@/components/dashboard/TodaySchedule";
+
+// ==============================================================================
+// 1. COURSE COLOR REGISTRY & DYNAMIC PALETTE
+// ==============================================================================
+
+export interface CourseColorInfo {
+  code: string;
+  shortName: string;
+  fullName: string;
+  color: string;      // Safe Hex color for inline styles e.g. "#6366F1"
+  bgLight: string;    // Light tint background for legend e.g. "#EEF2FF"
+  borderColor: string;// Border tint e.g. "#C7D2FE"
+  textColor: string;  // Text color e.g. "#4338CA"
+}
+
+/**
+ * Standard university courses mapped to distinct, curated, high-contrast colors
+ */
+export const COURSE_COLOR_REGISTRY: Record<string, CourseColorInfo> = {
+  AIES: {
+    code: "0611CSE321",
+    shortName: "AIES",
+    fullName: "Artificial Intelligence & Expert Systems",
+    color: "#6366F1", // Indigo
+    bgLight: "#EEF2FF",
+    borderColor: "#C7D2FE",
+    textColor: "#4338CA",
+  },
+  AP: {
+    code: "0613CSE333",
+    shortName: "AP",
+    fullName: "Advanced Programming",
+    color: "#2563EB", // Royal Blue
+    bgLight: "#EFF6FF",
+    borderColor: "#BFDBFE",
+    textColor: "#1D4ED8",
+  },
+  CN: {
+    code: "0612CSE315",
+    shortName: "CN",
+    fullName: "Computer Networks",
+    color: "#06B6D4", // Cyan / Teal
+    bgLight: "#ECFEFF",
+    borderColor: "#A5F3FC",
+    textColor: "#0E7490",
+  },
+  MACS: {
+    code: "0541MAT337",
+    shortName: "MACS",
+    fullName: "Mathematical Analysis & Complex Systems",
+    color: "#F59E0B", // Amber / Warm Orange
+    bgLight: "#FFFBEB",
+    borderColor: "#FDE68A",
+    textColor: "#B45309",
+  },
+  TWRM: {
+    code: "0031CSE320",
+    shortName: "TWRM",
+    fullName: "Technical Writing & Research Methodology",
+    color: "#8B5CF6", // Purple / Violet
+    bgLight: "#F5F3FF",
+    borderColor: "#DDD6FE",
+    textColor: "#6D28D9",
+  },
+  LABS: {
+    code: "Sessionals",
+    shortName: "Labs",
+    fullName: "Practical & Laboratory Sessions",
+    color: "#10B981", // Emerald
+    bgLight: "#ECFDF5",
+    borderColor: "#A7F3D0",
+    textColor: "#047857",
+  },
+};
+
+/**
+ * Aesthetic fallback palette for dynamic courses from database or custom additions
+ */
+export const PALETTE_FALLBACKS: Array<Omit<CourseColorInfo, "code" | "shortName" | "fullName">> = [
+  { color: "#6366F1", bgLight: "#EEF2FF", borderColor: "#C7D2FE", textColor: "#4338CA" }, // Indigo
+  { color: "#2563EB", bgLight: "#EFF6FF", borderColor: "#BFDBFE", textColor: "#1D4ED8" }, // Blue
+  { color: "#06B6D4", bgLight: "#ECFEFF", borderColor: "#A5F3FC", textColor: "#0E7490" }, // Cyan
+  { color: "#F59E0B", bgLight: "#FFFBEB", borderColor: "#FDE68A", textColor: "#B45309" }, // Amber
+  { color: "#8B5CF6", bgLight: "#F5F3FF", borderColor: "#DDD6FE", textColor: "#6D28D9" }, // Purple
+  { color: "#10B981", bgLight: "#ECFDF5", borderColor: "#A7F3D0", textColor: "#047857" }, // Emerald
+  { color: "#F43F5E", bgLight: "#FFF1F2", borderColor: "#FECDD3", textColor: "#BE123C" }, // Rose
+  { color: "#0D9488", bgLight: "#F0FDFA", borderColor: "#99F6E4", textColor: "#0F766E" }, // Teal
+  { color: "#D946EF", bgLight: "#FDF4FF", borderColor: "#F5D0FE", textColor: "#A21CAF" }, // Fuchsia
+  { color: "#EA580C", bgLight: "#FFF7ED", borderColor: "#FFEDD5", textColor: "#C2410C" }, // Orange
+];
+
+/**
+ * Returns the exact unique color info for any course by ID, code, or title
+ */
+export function getCourseColor(courseIdOrName?: string, explicitColor?: string): CourseColorInfo {
+  // If an explicit hex color is provided in the model/DB, prioritize it
+  if (explicitColor && explicitColor.startsWith("#")) {
+    return {
+      code: courseIdOrName || "COURSE",
+      shortName: courseIdOrName || "Course",
+      fullName: courseIdOrName || "Course Event",
+      color: explicitColor,
+      bgLight: `${explicitColor}15`,
+      borderColor: `${explicitColor}40`,
+      textColor: explicitColor,
+    };
+  }
+
+  if (!courseIdOrName) {
+    return {
+      code: "GEN",
+      shortName: "General",
+      fullName: "General Academic Schedule",
+      color: "#64748B",
+      bgLight: "#F8FAFC",
+      borderColor: "#E2E8F0",
+      textColor: "#475569",
+    };
+  }
+
+  const norm = courseIdOrName.trim().toUpperCase();
+
+  if (norm.includes("AIES") || norm.includes("0611CSE321") || norm.includes("0611CSE322") || norm.includes("EXPERT SYSTEMS")) {
+    return COURSE_COLOR_REGISTRY.AIES;
+  }
+  if (norm.includes("AP") || norm.includes("0613CSE333") || norm.includes("0613CSE334") || norm.includes("ADVANCED PROGRAMMING")) {
+    return COURSE_COLOR_REGISTRY.AP;
+  }
+  if (norm.includes("CN") || norm.includes("0612CSE315") || norm.includes("0612CSE316") || norm.includes("COMPUTER NETWORKS") || norm.includes("NETWORK")) {
+    return COURSE_COLOR_REGISTRY.CN;
+  }
+  if (norm.includes("MACS") || norm.includes("0541MAT337") || norm.includes("MATH") || norm.includes("COMPLEX SYSTEMS")) {
+    return COURSE_COLOR_REGISTRY.MACS;
+  }
+  if (norm.includes("TWRM") || norm.includes("0031CSE320") || norm.includes("TECHNICAL WRITING") || norm.includes("RESEARCH")) {
+    return COURSE_COLOR_REGISTRY.TWRM;
+  }
+  if (norm.includes("LAB") || norm.includes("SESS") || norm.includes("SESSIONAL")) {
+    return COURSE_COLOR_REGISTRY.LABS;
+  }
+
+  // Deterministic hash-based color picking for custom courses
+  let hash = 0;
+  for (let i = 0; i < courseIdOrName.length; i++) {
+    hash = (hash << 5) - hash + courseIdOrName.charCodeAt(i);
+    hash |= 0;
+  }
+  const picked = PALETTE_FALLBACKS[Math.abs(hash) % PALETTE_FALLBACKS.length];
+
+  return {
+    code: courseIdOrName,
+    shortName: courseIdOrName.length > 8 ? courseIdOrName.slice(0, 6) : courseIdOrName,
+    fullName: courseIdOrName,
+    ...picked,
+  };
+}
+
+// ==============================================================================
+// 2. CALENDAR EVENTS & TASKS DEFINITION
+// ==============================================================================
 
 export interface DayEvent {
   hasClasses?: boolean;
@@ -104,7 +264,6 @@ const UPCOMING_TASKS_LIST = [
     courseCode: "0612CSE315",
     dueDate: "Sep 29, 2026",
     time: "09:30 AM",
-    dotColor: "bg-[#06B6D4]", // Cyan
   },
   {
     id: "task-2",
@@ -112,7 +271,6 @@ const UPCOMING_TASKS_LIST = [
     courseCode: "0541MAT337",
     dueDate: "Sep 29, 2026",
     time: "03:30 PM",
-    dotColor: "bg-[#F59E0B]", // Orange
   },
   {
     id: "task-3",
@@ -120,7 +278,6 @@ const UPCOMING_TASKS_LIST = [
     courseCode: "0031CSE320",
     dueDate: "Sep 30, 2026",
     time: "11:00 AM",
-    dotColor: "bg-[#8B5CF6]", // Purple
   },
   {
     id: "task-4",
@@ -128,7 +285,6 @@ const UPCOMING_TASKS_LIST = [
     courseCode: "0613CSE333",
     dueDate: "Oct 01, 2026",
     time: "12:30 PM",
-    dotColor: "bg-[#315BFF]", // Blue
   },
 ];
 
@@ -196,6 +352,65 @@ export default function CalendarPage() {
   const selectedDayFullName = dayNameFullMap[selectedDayShort] || selectedDayShort;
   const selectedDaySessions = WEEKLY_SCHEDULE[selectedDayShort] || [];
 
+  /**
+   * Deduplicates and retrieves all distinct courses active for any given date
+   */
+  const getCoursesForDay = React.useCallback(
+    (day: number): CourseColorInfo[] => {
+      const dObj = new Date(year, month, day);
+      const dayShort = daysOfWeek[dObj.getDay()];
+      const event = SEPTEMBER_EVENTS[day];
+      const courseMap = new Map<string, CourseColorInfo>();
+
+      // 1. Routine scheduled classes for that weekday
+      if (event?.hasClasses !== false) {
+        const routineSessions = WEEKLY_SCHEDULE[dayShort] || [];
+        routineSessions.forEach((session) => {
+          const info = getCourseColor(session.courseCode || session.title);
+          if (info && !courseMap.has(info.code)) {
+            courseMap.set(info.code, info);
+          }
+        });
+      }
+
+      // 2. Assignment deadline course
+      if (event?.assignmentTitle) {
+        const info = getCourseColor(event.assignmentTitle);
+        if (info && !courseMap.has(info.code)) {
+          courseMap.set(info.code, info);
+        }
+      }
+
+      // 3. Quiz / Exam reminder course
+      if (event?.quizTitle) {
+        const info = getCourseColor(event.quizTitle);
+        if (info && !courseMap.has(info.code)) {
+          courseMap.set(info.code, info);
+        }
+      }
+
+      // 4. Upcoming task due date match
+      const monthNames = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      ];
+      const curMonthShort = monthNames[month];
+      UPCOMING_TASKS_LIST.forEach((task) => {
+        const formattedDay1 = `${curMonthShort} ${day < 10 ? `0${day}` : day}`;
+        const formattedDay2 = `${curMonthShort} ${day}`;
+        if (task.dueDate.includes(formattedDay1) || task.dueDate.includes(formattedDay2)) {
+          const info = getCourseColor(task.courseCode || task.title);
+          if (info && !courseMap.has(info.code)) {
+            courseMap.set(info.code, info);
+          }
+        }
+      });
+
+      return Array.from(courseMap.values());
+    },
+    [year, month, daysOfWeek]
+  );
+
   // Week view calculation
   const currentWeekDays = React.useMemo(() => {
     const targetDay = selectedDate || todayDate;
@@ -216,7 +431,16 @@ export default function CalendarPage() {
     setSelectedDate(day);
     const dObj = new Date(year, month, day);
     const dStr = dayNameFullMap[daysOfWeek[dObj.getDay()]];
-    toast.info(`Viewing ${dStr} (${monthName.slice(0, 3)} ${day}) schedule`);
+    const coursesOnDay = getCoursesForDay(day);
+    if (coursesOnDay.length > 0) {
+      toast.info(
+        `Viewing ${dStr} (${monthName.slice(0, 3)} ${day}) • ${coursesOnDay
+          .map((c) => c.shortName)
+          .join(", ")}`
+      );
+    } else {
+      toast.info(`Viewing ${dStr} (${monthName.slice(0, 3)} ${day}) schedule`);
+    }
   };
 
   const handlePrevMonth = () => {
@@ -268,20 +492,22 @@ export default function CalendarPage() {
               <button
                 type="button"
                 onClick={() => setViewMode("month")}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${viewMode === "month"
-                  ? "bg-[#315BFF] text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-                  }`}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  viewMode === "month"
+                    ? "bg-[#315BFF] text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
               >
                 Month
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("week")}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${viewMode === "week"
-                  ? "bg-[#315BFF] text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-                  }`}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  viewMode === "week"
+                    ? "bg-[#315BFF] text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
               >
                 Week
               </button>
@@ -333,8 +559,9 @@ export default function CalendarPage() {
                 return (
                   <div
                     key={day}
-                    className={`py-1 ${isWeekend ? "text-slate-400 font-medium" : "text-slate-700"
-                      }`}
+                    className={`py-1 ${
+                      isWeekend ? "text-slate-400 font-medium" : "text-slate-700"
+                    }`}
                   >
                     {day}
                   </div>
@@ -351,10 +578,7 @@ export default function CalendarPage() {
                 ))}
 
               {/* Days list (full month or current week) */}
-              {(viewMode === "week"
-                ? currentWeekDays
-                : daysInMonth
-              ).map((day) => {
+              {(viewMode === "week" ? currentWeekDays : daysInMonth).map((day) => {
                 const isToday = isCurrentMonth && day === todayDate;
                 const isSelected = selectedDate === day;
                 const event = SEPTEMBER_EVENTS[day];
@@ -365,6 +589,9 @@ export default function CalendarPage() {
                 const dayOfWeekIdx = dObj.getDay();
                 const isWeekend = dayOfWeekIdx === 5 || dayOfWeekIdx === 6;
 
+                // Extract all unique courses for this day
+                const dayCourses = getCoursesForDay(day);
+
                 return (
                   <div
                     key={day}
@@ -373,40 +600,82 @@ export default function CalendarPage() {
                   >
                     {/* Day number cell */}
                     <div
-                      className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all duration-200 ease-out ${isSelected
-                        ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/40 ring-4 ring-blue-100 scale-105"
-                        : isToday
+                      className={`h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center transition-all duration-200 ease-out ${
+                        isSelected
+                          ? "bg-[#315BFF] text-white font-black shadow-md shadow-blue-500/40 ring-4 ring-blue-100 scale-105"
+                          : isToday
                           ? "text-[#315BFF] font-black bg-blue-50/70 hover:bg-blue-100/70"
                           : hasStudyActivity
-                            ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
-                            : isWeekend
-                              ? "text-slate-400 hover:bg-slate-100"
-                              : "text-slate-800 font-medium hover:bg-blue-50/50"
-                        }`}
+                          ? "bg-emerald-50/80 text-emerald-950 font-semibold hover:bg-emerald-100"
+                          : isWeekend
+                          ? "text-slate-400 hover:bg-slate-100"
+                          : "text-slate-800 font-medium hover:bg-blue-50/50"
+                      }`}
                     >
                       <span>{day}</span>
                     </div>
 
-                    {/* Small colored dots under dates */}
-                    {event && (
-                      <div className="flex items-center justify-center gap-1 mt-1 h-1.5 pointer-events-none">
-                        {/* Green: Classes / sessions */}
-                        {event.hasClasses && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-2xs" />
-                        )}
-                        {/* Blue: Assignment deadlines */}
-                        {event.hasAssignmentDeadline && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-[#315BFF] shadow-2xs" />
-                        )}
-                        {/* Purple: Quizzes & exams */}
-                        {event.hasQuizOrExam && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-purple-500 shadow-2xs" />
+                    {/* Dynamic Course Colored Dots under date */}
+                    {dayCourses.length > 0 ? (
+                      <div className="flex items-center justify-center gap-1 mt-1.5 h-2 pointer-events-none max-w-[42px] overflow-hidden">
+                        {dayCourses.slice(0, 4).map((c) => (
+                          <span
+                            key={c.code}
+                            title={`${c.shortName} • ${c.fullName}`}
+                            className="h-1.5 w-1.5 rounded-full shadow-2xs transition-transform group-hover:scale-125 shrink-0"
+                            style={{ backgroundColor: c.color }}
+                          />
+                        ))}
+                        {dayCourses.length > 4 && (
+                          <span
+                            title={`+${dayCourses.length - 4} more courses`}
+                            className="h-1 w-1 rounded-full bg-slate-400 shrink-0"
+                          />
                         )}
                       </div>
+                    ) : (
+                      /* Placeholder spacing to keep cell vertical alignment steady */
+                      <div className="h-2 mt-1.5" />
                     )}
                   </div>
                 );
               })}
+            </div>
+
+            {/* ========================================================== */}
+            {/* 3. COURSE COLOR LEGEND (LIZEND) SECTION                    */}
+            {/* ========================================================== */}
+            <div className="rounded-2xl bg-slate-50/80 border border-[#E5EAF2] p-4 shadow-2xs space-y-3">
+              <div className="pb-2 border-b border-slate-200/80">
+                <span className="text-xs font-bold text-[#172033] uppercase tracking-wider">
+                  Academic Course Color Legend
+                </span>
+              </div>
+
+              {/* Course Badges Grid */}
+              <div className="flex flex-wrap items-center gap-2">
+                {Object.values(COURSE_COLOR_REGISTRY).map((c) => (
+                  <div
+                    key={c.code}
+                    title={c.fullName}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all hover:scale-105 cursor-default select-none shadow-2xs"
+                    style={{
+                      backgroundColor: c.bgLight,
+                      borderColor: c.borderColor,
+                      color: c.textColor,
+                    }}
+                  >
+                    <span
+                      className="h-2 w-2 rounded-full shrink-0 shadow-2xs"
+                      style={{ backgroundColor: c.color }}
+                    />
+                    <span>{c.shortName}</span>
+                    <span className="text-[10px] font-medium opacity-75">
+                      ({c.code})
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Below the Calendar Grid: Comprehensive Day Schedule */}
@@ -419,7 +688,9 @@ export default function CalendarPage() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-base font-bold text-[#172033] tracking-tight">
-                        {isCurrentMonth && selectedDate === todayDate ? "Today's Schedule" : `${selectedDayFullName}'s Schedule`}
+                        {isCurrentMonth && selectedDate === todayDate
+                          ? "Today's Schedule"
+                          : `${selectedDayFullName}'s Schedule`}
                       </h3>
                       <span className="text-xs font-semibold text-[#315BFF] bg-[#EEF3FF] border border-[#D0DFFF] px-2 py-0.5 rounded-md">
                         {monthName.slice(0, 3)} {selectedDate}, {year}
@@ -465,49 +736,54 @@ export default function CalendarPage() {
               {/* Class Schedule Cards Grid */}
               {selectedDaySessions.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
-                  {selectedDaySessions.map((session) => (
-                    <div
-                      key={session.id}
-                      onClick={() => toast.info(`${session.courseCode}: ${session.title}`)}
-                      className="group p-4 rounded-xl bg-white border border-[#E5EAF2] hover:border-[#315BFF]/60 hover:shadow-md transition-all flex flex-col justify-between space-y-3 cursor-pointer"
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span
-                            className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${session.courseColor}`}
-                          >
-                            {session.courseCode}
-                          </span>
-                          <span
-                            className={`text-[11px] font-bold uppercase tracking-wider ${session.typeColor}`}
-                          >
-                            {session.type}
-                          </span>
-                        </div>
-                        <h4 className="text-xs font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors line-clamp-2 leading-snug">
-                          {session.title}
-                        </h4>
-                      </div>
+                  {selectedDaySessions.map((session) => {
+                    const courseInfo = getCourseColor(session.courseCode || session.title);
 
-                      <div className="space-y-1.5 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
-                            <Clock className="h-3 w-3 text-[#315BFF]" />
-                            <span>
-                              {session.startTime} - {session.endTime}
+                    return (
+                      <div
+                        key={session.id}
+                        onClick={() => toast.info(`${session.courseCode}: ${session.title}`)}
+                        className="group p-4 rounded-xl bg-white border border-[#E5EAF2] hover:border-[#315BFF]/60 hover:shadow-md transition-all flex flex-col justify-between space-y-3 cursor-pointer"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span
+                              className="px-2 py-0.5 rounded-md text-[11px] font-bold text-white shadow-2xs"
+                              style={{ backgroundColor: courseInfo.color }}
+                            >
+                              {session.courseCode}
                             </span>
-                          </span>
-                          <span className="text-[10px] text-slate-400 font-medium">
-                            Faculty: {session.faculty}
-                          </span>
+                            <span
+                              className={`text-[11px] font-bold uppercase tracking-wider ${session.typeColor}`}
+                            >
+                              {session.type}
+                            </span>
+                          </div>
+                          <h4 className="text-xs font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors line-clamp-2 leading-snug">
+                            {session.title}
+                          </h4>
                         </div>
-                        <div className="flex items-center gap-1.5 text-slate-500 truncate">
-                          <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
-                          <span className="truncate">{session.location}</span>
+
+                        <div className="space-y-1.5 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
+                          <div className="flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
+                              <Clock className="h-3 w-3 text-[#315BFF]" />
+                              <span>
+                                {session.startTime} - {session.endTime}
+                              </span>
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium">
+                              Faculty: {session.faculty}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-slate-500 truncate">
+                            <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+                            <span className="truncate">{session.location}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 /* Off-Day Empty State */
@@ -569,7 +845,7 @@ export default function CalendarPage() {
 
           {/* Next Section: Two Milestone Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Light blue rounded card: Next Quiz: CN (Computer Networks) */}
+            {/* Light blue rounded card: Active Quiz */}
             <div className="rounded-2xl bg-gradient-to-r from-sky-50/90 to-blue-50/70 border border-sky-100/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
                 <div className="h-10 w-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 shadow-2xs">
@@ -632,30 +908,35 @@ export default function CalendarPage() {
               </Link>
             </div>
 
-            {/* List of 4 tasks with colored dots */}
+            {/* List of 4 tasks with dynamically coordinated colored dots */}
             <div className="space-y-3">
-              {UPCOMING_TASKS_LIST.map((task) => (
-                <div
-                  key={task.id}
-                  onClick={() => toast.info(`Task selected: ${task.title}`)}
-                  className="p-3 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100/80 flex items-center justify-between gap-3 cursor-pointer group"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    {/* Colored dot */}
-                    <span
-                      className={`h-2.5 w-2.5 rounded-full ${task.dotColor} shrink-0`}
-                    />
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors truncate">
-                        {task.title}
-                      </p>
-                      <p className="text-[10px] text-slate-400">
-                        {task.courseCode} • {task.dueDate} • {task.time}
-                      </p>
+              {UPCOMING_TASKS_LIST.map((task) => {
+                const taskCourse = getCourseColor(task.courseCode || task.title);
+
+                return (
+                  <div
+                    key={task.id}
+                    onClick={() => toast.info(`Task selected: ${task.title}`)}
+                    className="p-3 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100/80 flex items-center justify-between gap-3 cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* Dynamic Course-coordinated dot */}
+                      <span
+                        className="h-2.5 w-2.5 rounded-full shrink-0 shadow-2xs"
+                        style={{ backgroundColor: taskCourse.color }}
+                      />
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-[#172033] group-hover:text-[#315BFF] transition-colors truncate">
+                          {task.title}
+                        </p>
+                        <p className="text-[10px] text-slate-400">
+                          {task.courseCode} • {task.dueDate} • {task.time}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </main>
