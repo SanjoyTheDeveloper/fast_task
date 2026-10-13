@@ -39,8 +39,16 @@ export default async function RootLayout({
   let session = null;
   try {
     session = await auth();
-  } catch (error) {
-    console.warn("Session check in RootLayout skipped/failed:", error);
+  } catch (error: any) {
+    // Next.js uses internal errors to signal dynamic rendering and redirects
+    if (
+      error?.digest === "DYNAMIC_SERVER_USAGE" ||
+      error?.message?.includes("DYNAMIC_SERVER_USAGE") ||
+      error?.digest?.startsWith?.("NEXT_")
+    ) {
+      throw error;
+    }
+    console.warn("Session check in RootLayout skipped/failed:", error?.message || error);
   }
 
   return (
