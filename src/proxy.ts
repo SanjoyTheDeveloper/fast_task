@@ -1,12 +1,17 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import { updateSession } from "@/utils/supabase/middleware";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
 const authProxy = auth(async (req: NextRequest) => {
-  return await updateSession(req);
+  try {
+    return await updateSession(req);
+  } catch (error) {
+    console.warn("Proxy session error:", error);
+    return NextResponse.next({ request: req });
+  }
 });
 
 export const proxy = authProxy;
