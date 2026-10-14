@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
-import { updateSession } from "@/utils/supabase/middleware";
+import { updateSession } from "@/lib/supabase/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 
 const { auth } = NextAuth(authConfig);

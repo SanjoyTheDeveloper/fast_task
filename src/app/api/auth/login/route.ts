@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { loginSchema } from "@/lib/validations";
 import { db } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth";
+import { isEmailConfigured } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,13 +39,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isEmailServiceActive =
-      (!!process.env.EMAIL_USER &&
-        !process.env.EMAIL_USER.includes("your-email") &&
-        !!process.env.EMAIL_PASS) ||
-      (!!process.env.RESEND_API_KEY &&
-        !process.env.RESEND_API_KEY.includes("xxxx") &&
-        !process.env.RESEND_API_KEY.includes("placeholder"));
+    const isEmailServiceActive = isEmailConfigured();
 
     // Check if user email is verified
     if (isEmailServiceActive && !user.emailVerified) {

@@ -52,16 +52,8 @@ export function LmsLibraryHeader({
     <header className="w-full bg-white/80 backdrop-blur-md border-b border-slate-100 py-3 sm:py-3.5 px-3.5 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 transition-all">
       {/* Top Bar on Mobile / Left Section on Desktop */}
       <div className="flex items-center justify-between w-full md:w-auto gap-3">
-        {/* Mobile Toggle & Page Title */}
+        {/* Page Title */}
         <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={onToggleMobileMenu}
-            className="h-9 w-9 flex lg:hidden items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 shadow-2xs cursor-pointer active:scale-95"
-            aria-label="Toggle Navigation"
-          >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
           <div>
             <h1 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 tracking-[-0.02em] leading-tight">
               Course Notes &amp; Library

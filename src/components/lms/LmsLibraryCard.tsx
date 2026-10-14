@@ -34,6 +34,9 @@ export interface LmsPdfDocument {
   fileUrl?: string;
   isCustomUpload?: boolean;
   materialType?: string;
+  schedule?: string;
+  tag?: string;
+  userId?: string;
 }
 
 export interface LmsLibraryCardProps {
@@ -113,6 +116,11 @@ export function LmsLibraryCard({
             <h3 className="text-sm font-semibold tracking-[-0.015em] text-slate-900 group-hover:text-slate-950 transition-colors truncate">
               {cleanTitle}
             </h3>
+            {doc.schedule && (
+              <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+                📅 {doc.schedule}
+              </span>
+            )}
           </div>
         </div>
 
@@ -250,7 +258,7 @@ export function LmsLibraryCard({
         </div>
       </div>
 
-      {/* Card Content: Document Title */}
+      {/* Card Content: Document Title & Schedule */}
       <div className="flex-1 min-h-[46px] mb-4">
         <h3
           className="text-[14.5px] font-semibold tracking-[-0.015em] text-slate-900 leading-snug line-clamp-2 group-hover:text-slate-950 transition-colors"
@@ -258,6 +266,12 @@ export function LmsLibraryCard({
         >
           {cleanTitle}
         </h3>
+        {doc.schedule && (
+          <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5 mt-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+            <span>{doc.schedule}</span>
+          </p>
+        )}
       </div>
 
       {/* Action Buttons Row: Read & PDF */}

@@ -98,6 +98,7 @@ export function LmsUploadModal({
   const [customCourseName, setCustomCourseName] = React.useState("");
   const [customCourseCode, setCustomCourseCode] = React.useState("");
   const [title, setTitle] = React.useState("");
+  const [schedule, setSchedule] = React.useState("");
   const [materialType, setMaterialType] = React.useState(MATERIAL_TYPES[0]);
 
   // PDF File state
@@ -141,6 +142,7 @@ export function LmsUploadModal({
 
   const handleClear = () => {
     setTitle("");
+    setSchedule("");
     setSelectedFile(null);
     setErrorMsg(null);
     if (fileInputRef.current) {
@@ -189,6 +191,8 @@ export function LmsUploadModal({
       courseName: finalCourseName,
       size: formattedSize,
       category: finalCategory,
+      tag: finalCategory,
+      schedule: schedule.trim() || undefined,
       pages: 18,
       uploadedAt: "Just now",
       isBookmarked: false,
@@ -450,6 +454,21 @@ export function LmsUploadModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="What is your chapter name"
+              className="w-full h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-xs text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-2xs"
+            />
+          </div>
+
+          {/* Schedule / Routine Date Input */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+              <span>Date / Schedule</span>
+              <span className="text-[10px] text-slate-400 font-normal">Optional</span>
+            </label>
+            <input
+              type="text"
+              value={schedule}
+              onChange={(e) => setSchedule(e.target.value)}
+              placeholder="e.g. Mon 11:00 AM - 12:30 PM or Oct 15"
               className="w-full h-10 px-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 text-xs text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-2xs"
             />
           </div>

@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 import { db } from "@/lib/db";
 import { loginSchema } from "@/lib/validations";
+import { isEmailConfigured } from "@/lib/mail";
 
 export class EmailNotVerifiedError extends CredentialsSignin {
   code = "email_not_verified";
@@ -44,13 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) return null;
 
-        const isEmailServiceActive =
-          (!!process.env.EMAIL_USER &&
-            !process.env.EMAIL_USER.includes("your-email") &&
-            !!process.env.EMAIL_PASS) ||
-          (!!process.env.RESEND_API_KEY &&
-            !process.env.RESEND_API_KEY.includes("xxxx") &&
-            !process.env.RESEND_API_KEY.includes("placeholder"));
+        const isEmailServiceActive = isEmailConfigured();
 
         // If email service is active and user is unverified, require verification
         if (isEmailServiceActive && !user.emailVerified) {

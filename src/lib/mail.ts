@@ -1,16 +1,49 @@
 import nodemailer from "nodemailer";
 
 /**
- * Nodemailer Gmail Transporter Configuration
- * Uses EMAIL_USER and EMAIL_PASS (Google App Password) from .env
+ * Checks if email delivery is properly configured via environment variables
  */
-export const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+export function isEmailConfigured(): boolean {
+  const user = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+  return Boolean(
+    user &&
+    !user.includes("your-email") &&
+    pass &&
+    !pass.includes("xxxx") &&
+    !pass.includes("placeholder")
+  );
+}
+
+/**
+ * Creates and returns a Nodemailer transporter.
+ * Supports:
+ * - Gmail SMTP (service: 'gmail' or smtp.gmail.com) with App Password (spaces automatically removed)
+ * - Custom SMTP server via SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_SECURE
+ */
+export function getTransporter() {
+  const emailUser = (process.env.SMTP_USER || process.env.EMAIL_USER || "").trim();
+  const rawPass = process.env.SMTP_PASS || process.env.EMAIL_PASS || "";
+  // Google App Passwords often have spaces (e.g. 'abcd efgh ijkl mnop') - strip them out
+  const emailPass = rawPass.replace(/\s+/g, "").trim();
+  const host = process.env.SMTP_HOST?.trim() || "smtp.gmail.com";
+  const port = Number(process.env.SMTP_PORT) || 587;
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: process.env.SMTP_SECURE === "true" || port === 465,
+    auth: {
+      user: emailUser,
+      pass: emailPass,
+    },
+  });
+}
+
+/**
+ * Export default transporter for backward compatibility
+ */
+export const transporter = getTransporter();
 
 export interface SendMailResult {
   success: boolean;
@@ -29,8 +62,7 @@ export async function sendVerificationEmail(
   email: string,
   code: string
 ): Promise<SendMailResult> {
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
+  const emailUser = process.env.EMAIL_USER || process.env.SMTP_USER;
 
   const baseUrl =
     process.env.NEXTAUTH_URL ||
@@ -46,7 +78,7 @@ export async function sendVerificationEmail(
     `"FastTask" <${emailUser || "no-reply@fasttask.app"}>`;
 
   console.log("\n============================================================");
-  console.log("📧 [NODEMAILER / GMAIL] SENDING VERIFICATION OTP");
+  console.log("📧 [NODEMAILER SMTP] SENDING VERIFICATION OTP");
   console.log("============================================================");
   console.log(`  To:           ${email}`);
   console.log(`  From:         ${fromAddress}`);
@@ -54,9 +86,9 @@ export async function sendVerificationEmail(
   console.log(`  Direct Link:  ${verificationUrl}`);
   console.log("============================================================\n");
 
-  if (!emailUser || !emailPass || emailUser.includes("your-email")) {
+  if (!isEmailConfigured()) {
     const errorMsg =
-      "EMAIL_USER or EMAIL_PASS is not configured in .env. Please configure your Gmail credentials.";
+      "EMAIL_USER or EMAIL_PASS is not properly configured in .env. Please configure your Gmail credentials or custom SMTP.";
     console.error(`❌ [Nodemailer Error]: ${errorMsg}`);
     return {
       success: false,
@@ -284,7 +316,7 @@ If you did not create a FastTask account, you can safely ignore this email.
   `.trim();
 
   try {
-    const info = await transporter.sendMail({
+    const info = await getTransporter().sendMail({
       from: fromAddress,
       to: email,
       subject,
@@ -304,6 +336,62 @@ If you did not create a FastTask account, you can safely ignore this email.
     const errorMessage = error?.message || "Failed to send email via Gmail SMTP";
     console.error("❌ [Nodemailer Exception]:", errorMessage);
     console.log("============================================================\n");
+    return {
+      success: false,
+      error: errorMessage,
+    };
+  }
+}
+
+export interface SendEmailOptions {
+  to: string | string[];
+  subject: string;
+  html?: string;
+  text?: string;
+  from?: string;
+}
+
+/**
+ * Generic email sending function using Nodemailer transporter
+ */
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  text,
+  from,
+}: SendEmailOptions): Promise<SendMailResult> {
+  const fromAddress =
+    from ||
+    process.env.EMAIL_FROM ||
+    `"FastTask" <${process.env.SMTP_USER || process.env.EMAIL_USER || "no-reply@fasttask.app"}>`;
+
+  if (!isEmailConfigured()) {
+    const errorMsg =
+      "SMTP credentials (SMTP_USER/SMTP_PASS) are not configured in .env.";
+    console.error(`❌ [Nodemailer Error]: ${errorMsg}`);
+    return {
+      success: false,
+      error: errorMsg,
+    };
+  }
+
+  try {
+    const info = await getTransporter().sendMail({
+      from: fromAddress,
+      to,
+      subject,
+      text,
+      html,
+    });
+
+    return {
+      success: true,
+      messageId: info.messageId,
+    };
+  } catch (error: any) {
+    const errorMessage = error?.message || "Failed to send email via SMTP";
+    console.error("❌ [Nodemailer Exception]:", errorMessage);
     return {
       success: false,
       error: errorMessage,

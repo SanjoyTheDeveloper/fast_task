@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { registerSchema } from "@/lib/validations";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
-import { sendVerificationEmail } from "@/lib/mail";
+import { sendVerificationEmail, isEmailConfigured } from "@/lib/mail";
 
 /**
  * Generate a 6-digit verification code (OTP)
@@ -29,13 +29,7 @@ export async function POST(req: NextRequest) {
     console.log("\n[Register API] ========== NEW REGISTRATION ATTEMPT ==========");
     console.log(`[Register API] Processing signup for email: ${cleanEmail}`);
 
-    const isEmailServiceActive =
-      (!!process.env.EMAIL_USER &&
-        !process.env.EMAIL_USER.includes("your-email") &&
-        !!process.env.EMAIL_PASS) ||
-      (!!process.env.RESEND_API_KEY &&
-        !process.env.RESEND_API_KEY.includes("xxxx") &&
-        !process.env.RESEND_API_KEY.includes("placeholder"));
+    const isEmailServiceActive = isEmailConfigured();
 
     // Check if user already exists
     const existingUser = await db.user.findUnique({

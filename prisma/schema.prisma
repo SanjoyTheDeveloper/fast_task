@@ -31,8 +31,35 @@ model User {
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
   tasks                    Task[]
+  materials                CourseMaterial[]
 
   @@map("users")
+}
+
+model CourseMaterial {
+  id           String    @id @default(cuid())
+  title        String
+  courseCode   String
+  courseName   String?
+  category     String
+  tag          String?
+  schedule     String?
+  fileUrl      String?   @db.Text
+  fileSize     String?
+  pages        Int?      @default(1)
+  description  String?   @db.Text
+  materialType String?
+  isBookmarked Boolean   @default(false)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([userId, category])
+  @@index([userId, courseCode])
+  @@index([userId, createdAt])
+  @@map("course_materials")
 }
 
 model Task {

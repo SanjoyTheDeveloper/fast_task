@@ -16,7 +16,7 @@ import {
   Plus,
 } from "@/components/ui/GoogleIcon";
 import { Toaster, toast } from "sonner";
-import { LmsLibrarySidebar, LmsNavSection } from "@/components/lms/LmsLibrarySidebar";
+import type { LmsNavSection } from "@/components/lms/LmsLibrarySidebar";
 import { LmsLibraryHeader } from "@/components/lms/LmsLibraryHeader";
 import { LmsLibraryCard, LmsPdfDocument } from "@/components/lms/LmsLibraryCard";
 import { LmsPdfViewerModal } from "@/components/lms/LmsPdfViewerModal";
@@ -33,70 +33,22 @@ import {
 } from "@/lib/lmsStorage";
 import type { SessionUser } from "@/types";
 
-const initialLibraryDocuments: LmsPdfDocument[] = [];
+const STANDARD_CATEGORIES = [
+  "All",
+  "TWRM",
+  "CN",
+  "MACS",
+  "AIES",
+  "AP",
+  "Labs & Sessionals",
+];
 
 export default function LmsPage() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [documents, setDocuments] = React.useState<LmsPdfDocument[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [isLoaded, setIsLoaded] = React.useState(false);
-
-  // Load documents safely on the client to avoid SSR hydration mismatches
-  React.useEffect(() => {
-    let isMounted = true;
-    const deletedIds = getStoredDeletedIds();
-    const bookmarks = getStoredBookmarks();
-
-    // 1. Quick initial sync from localStorage
-    try {
-      const stored =
-        localStorage.getItem("fasttask_course_uploads_v2") ||
-        localStorage.getItem("fasttask_course_uploads");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0 && isMounted) {
-          const customFiltered = parsed
-            .filter((d: LmsPdfDocument) => !deletedIds.has(d.id))
-            .map((d: LmsPdfDocument) => ({
-              ...d,
-              isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
-            }));
-          setDocuments(customFiltered);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load initial storage:", e);
-    }
-
-    // 2. Re-hydrate full PDF blobs from IndexedDB so uploaded PDFs can be previewed/downloaded after reboot
-    loadPersistedCourseUploads()
-      .then((customDocs) => {
-        if (!isMounted || !customDocs) return;
-        setDocuments(
-          customDocs
-            .filter((d) => !deletedIds.has(d.id))
-            .map((d) => ({
-              ...d,
-              isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
-            }))
-        );
-        setIsLoaded(true);
-      })
-      .catch((err) => {
-        console.warn("Could not rehydrate IndexedDB course uploads:", err);
-        if (isMounted) setIsLoaded(true);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
-  const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = React.useState<"recent" | "name" | "size">("recent");
 
   // Load authenticated user strictly from auth session
   React.useEffect(() => {
@@ -120,6 +72,86 @@ export default function LmsPage() {
     loadUser();
   }, []);
 
+  // Fetch only user-uploaded materials directly from the database API
+  React.useEffect(() => {
+    let isMounted = true;
+    setIsLoading(true);
+
+    async function fetchMaterials() {
+      try {
+        const res = await fetch("/api/materials", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            const mappedDocs: LmsPdfDocument[] = json.data.map((item: any) => ({
+              id: item.id,
+              title: item.title,
+              courseCode: item.courseCode,
+              courseName: item.courseName || item.category,
+              category: item.category,
+              tag: item.tag || item.category,
+              schedule: item.schedule || undefined,
+              size: item.fileSize || "1.5 MB",
+              pages: item.pages || 1,
+              isBookmarked: Boolean(item.isBookmarked),
+              isCustomUpload: true,
+              fileUrl: item.fileUrl || undefined,
+              description: item.description || undefined,
+              materialType: item.materialType || undefined,
+              userId: item.userId,
+              uploadedAt: item.createdAt
+                ? new Date(item.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                : "Recent",
+            }));
+
+            if (isMounted) {
+              setDocuments(mappedDocs);
+              setIsLoading(false);
+              setIsLoaded(true);
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch materials from database API, trying offline fallback:", err);
+      }
+
+      // Offline / Local storage fallback if API unreachable
+      if (isMounted) {
+        loadPersistedCourseUploads()
+          .then((localDocs) => {
+            if (!isMounted) return;
+            if (localDocs && localDocs.length > 0) {
+              setDocuments(localDocs);
+            }
+            setIsLoading(false);
+            setIsLoaded(true);
+          })
+          .catch(() => {
+            if (isMounted) {
+              setIsLoading(false);
+              setIsLoaded(true);
+            }
+          });
+      }
+    }
+
+    fetchMaterials();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
+  const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = React.useState<"recent" | "name" | "size">("recent");
+
   const loggedInName =
     currentUser?.name ||
     (currentUser?.email ? currentUser.email.split("@")[0] : "Student");
@@ -128,19 +160,19 @@ export default function LmsPage() {
   const [previewDoc, setPreviewDoc] = React.useState<LmsPdfDocument | null>(null);
   const [isViewerOpen, setIsViewerOpen] = React.useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  // Toggle Bookmark
-  const handleToggleBookmark = (id: string) => {
+  // Toggle Bookmark with API sync
+  const handleToggleBookmark = async (id: string) => {
+    let nextState = false;
     setDocuments((prev) =>
       prev.map((d) => {
         if (d.id === id) {
-          const updated = !d.isBookmarked;
-          saveStoredBookmark(id, updated);
+          nextState = !d.isBookmarked;
+          saveStoredBookmark(id, nextState);
           toast.info(
-            updated ? `Bookmarked "${d.title}" 🔖` : `Removed "${d.title}" from bookmarks`
+            nextState ? `Bookmarked "${d.title}" 🔖` : `Removed "${d.title}" from bookmarks`
           );
-          return { ...d, isBookmarked: updated };
+          return { ...d, isBookmarked: nextState };
         }
         return d;
       })
@@ -152,6 +184,16 @@ export default function LmsPage() {
       }
       return prev;
     });
+
+    try {
+      await fetch(`/api/materials/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isBookmarked: nextState }),
+      });
+    } catch (e) {
+      console.warn("Could not sync bookmark state to database:", e);
+    }
   };
 
   // Preview Handler - Functional Read
@@ -160,18 +202,14 @@ export default function LmsPage() {
     setIsViewerOpen(true);
   };
 
-  // Upload Document Handler
-  const handleUploadDocument = (
+  // Upload Document Handler with Immediate Dynamic UI Update
+  const handleUploadDocument = async (
     newDoc: LmsPdfDocument,
     autoOpenViewer: boolean = false,
     rawFile?: File | null
   ) => {
+    // 1. Immediate optimistic UI update (appears instantly without full page reload)
     setDocuments((prev) => [newDoc, ...prev.filter((d) => d.id !== newDoc.id)]);
-
-    // Permanently write to IndexedDB & localStorage backup
-    persistCoursePdfUpload(newDoc, rawFile).catch((err) => {
-      console.warn("Could not persist upload to IndexedDB:", err);
-    });
 
     toast.success(`"${newDoc.title}" added to ${newDoc.courseName || newDoc.category}! 🎉`, {
       action: {
@@ -192,16 +230,89 @@ export default function LmsPage() {
     if (autoOpenViewer) {
       handlePreview(newDoc);
     }
+
+    // 2. Persist to Postgres database via API
+    try {
+      const sendSaveRequest = async (fileUrlToSave?: string) => {
+        const res = await fetch("/api/materials", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newDoc.title,
+            courseCode: newDoc.courseCode,
+            courseName: newDoc.courseName,
+            category: newDoc.category,
+            tag: newDoc.tag || newDoc.category,
+            schedule: newDoc.schedule,
+            fileUrl: fileUrlToSave || newDoc.fileUrl,
+            fileSize: newDoc.size,
+            pages: newDoc.pages,
+            description: newDoc.description,
+            materialType: newDoc.materialType,
+          }),
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            const saved = json.data;
+            // Update document in state with server-generated ID
+            setDocuments((prev) =>
+              prev.map((item) =>
+                item.id === newDoc.id
+                  ? {
+                      ...item,
+                      id: saved.id,
+                      schedule: saved.schedule || item.schedule,
+                      tag: saved.tag || item.tag,
+                      uploadedAt: "Just now",
+                    }
+                  : item
+              )
+            );
+          }
+        }
+      };
+
+      // Convert small file to Data URL if feasible, or send existing URL
+      if (rawFile && rawFile.size <= 4 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result as string;
+          sendSaveRequest(dataUrl);
+        };
+        reader.readAsDataURL(rawFile);
+      } else {
+        await sendSaveRequest(newDoc.fileUrl);
+      }
+    } catch (dbErr) {
+      console.error("Failed to save course material to database:", dbErr);
+    }
+
+    // 3. Local IndexedDB backup
+    persistCoursePdfUpload(newDoc, rawFile).catch((err) => {
+      console.warn("Could not persist upload to IndexedDB:", err);
+    });
   };
 
-  // Delete Document Handler
-  const handleDeleteDocument = (id: string) => {
+  // Delete Document Handler with immediate state update & API sync
+  const handleDeleteDocument = async (id: string) => {
+    // 1. Immediate client state update
     setDocuments((prev) => prev.filter((d) => d.id !== id));
+    toast.info("Document removed from library");
+
+    // 2. Database deletion
+    try {
+      await fetch(`/api/materials/${id}`, { method: "DELETE" });
+    } catch (err) {
+      console.error("Failed to delete from database:", err);
+    }
+
+    // 3. Cleanup local caches
     removePersistedCourseUpload(id).catch((err) => {
       console.warn("Could not delete from IndexedDB:", err);
     });
     saveStoredDeletedId(id);
-    toast.info("Document removed from library");
   };
 
   // Quick open upload modal
@@ -237,6 +348,14 @@ export default function LmsPage() {
     }
   };
 
+  // Dynamic filter pills: standard course codes + any custom courses uploaded by the user
+  const availableCategories = React.useMemo(() => {
+    const uploadedCustomCats = documents
+      .map((d) => d.category || d.courseName)
+      .filter((c): c is string => typeof c === "string" && c.trim().length > 0 && !STANDARD_CATEGORIES.includes(c));
+    return Array.from(new Set([...STANDARD_CATEGORIES, ...uploadedCustomCats]));
+  }, [documents]);
+
   // Filtered & Sorted Documents
   const filteredDocuments = React.useMemo(() => {
     const list = documents.filter((doc) => {
@@ -251,12 +370,15 @@ export default function LmsPage() {
       // 2. Category tab check (applies across all views)
       if (selectedCategory !== "All") {
         const catNorm = selectedCategory.trim().toLowerCase();
-        const matchesCategory = doc.category.trim().toLowerCase() === catNorm;
+        const matchesCategory = doc.category?.trim().toLowerCase() === catNorm;
+        const matchesTag = doc.tag ? doc.tag.trim().toLowerCase() === catNorm : false;
         const matchesCourseName = doc.courseName
           ? doc.courseName.trim().toLowerCase() === catNorm
           : false;
-        const matchesCourseCode = doc.courseCode.toLowerCase().includes(catNorm);
-        if (!matchesCategory && !matchesCourseName && !matchesCourseCode) {
+        const matchesCourseCode = doc.courseCode
+          ? doc.courseCode.toLowerCase().includes(catNorm)
+          : false;
+        if (!matchesCategory && !matchesTag && !matchesCourseName && !matchesCourseCode) {
           return false;
         }
       }
@@ -268,7 +390,14 @@ export default function LmsPage() {
         const matchesCourse = doc.courseCode.toLowerCase().includes(q);
         const matchesCourseName = doc.courseName ? doc.courseName.toLowerCase().includes(q) : false;
         const matchesCategory = doc.category.toLowerCase().includes(q);
-        if (!matchesTitle && !matchesCourse && !matchesCourseName && !matchesCategory) {
+        const matchesSchedule = doc.schedule ? doc.schedule.toLowerCase().includes(q) : false;
+        if (
+          !matchesTitle &&
+          !matchesCourse &&
+          !matchesCourseName &&
+          !matchesCategory &&
+          !matchesSchedule
+        ) {
           return false;
         }
       }
@@ -302,40 +431,16 @@ export default function LmsPage() {
     return Array.from(map.entries());
   }, [filteredDocuments]);
 
-  // Dynamically derive actual courses and categories strictly from uploaded documents
-  const enrolledCourses = React.useMemo(() => {
-    const map = new Map<string, { key: string; label: string; code: string; count: number }>();
-    documents.forEach((d) => {
-      const key = d.category || d.courseName || "General";
-      if (!map.has(key)) {
-        map.set(key, {
-          key: key,
-          label: d.courseName || key,
-          code: d.courseCode || key,
-          count: 0,
-        });
-      }
-      map.get(key)!.count += 1;
-    });
-    return Array.from(map.values());
-  }, [documents]);
-
-  const availableCategories = React.useMemo(() => {
-    const cats = enrolledCourses.map((c) => c.key);
-    return ["All", ...cats];
-  }, [enrolledCourses]);
-
-  // Counts for sidebar badges
+  // Counts for toolbar indicators
   const sidebarCounts = React.useMemo(() => {
     const bookmarksCount = documents.filter((d) => d.isBookmarked).length;
     const uploadsCount = documents.filter((d) => d.isCustomUpload).length;
     return {
       all: documents.length,
-      courses: enrolledCourses.length,
       bookmarks: bookmarksCount,
       uploads: uploadsCount,
     };
-  }, [documents, enrolledCourses]);
+  }, [documents]);
 
   const courseDotMap: Record<string, string> = {
     All: "bg-slate-400",
@@ -355,66 +460,16 @@ export default function LmsPage() {
 
       <Toaster richColors position="top-right" />
 
-
-
-      {/* Main LMS Library Floating Canvas Window */}
-      <div className="relative z-10 max-w-[1560px] w-full mx-auto bg-white rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.04)] border border-slate-200/90 overflow-hidden flex flex-col lg:flex-row min-h-[820px]">
-        {/* 1. Left Sidebar */}
-        <div className="hidden lg:block shrink-0 border-r border-slate-100 bg-[#FAF9FD]/80">
-          <LmsLibrarySidebar
-            activeSection={activeSection}
-            onSelectSection={(sec) => {
-              setActiveSection(sec);
-              if (sec === "courses") setSelectedCategory("All");
-            }}
-            selectedCategory={selectedCategory}
-            onSelectCategory={(cat) => setSelectedCategory(cat)}
-            onOpenUpload={handleOpenUploadModal}
-            counts={sidebarCounts}
-            enrolledCourses={enrolledCourses}
-          />
-        </div>
-
-        {/* Mobile Sidebar Overlay Drawer */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex">
-            <div className="w-72 bg-white h-full shadow-2xl animate-in slide-in-from-left duration-200 p-2">
-              <LmsLibrarySidebar
-                activeSection={activeSection}
-                onSelectSection={(sec) => {
-                  setActiveSection(sec);
-                  setIsMobileMenuOpen(false);
-                }}
-                selectedCategory={selectedCategory}
-                onSelectCategory={(cat) => {
-                  setSelectedCategory(cat);
-                  setIsMobileMenuOpen(false);
-                }}
-                onOpenUpload={() => {
-                  setIsMobileMenuOpen(false);
-                  handleOpenUploadModal();
-                }}
-                counts={sidebarCounts}
-                enrolledCourses={enrolledCourses}
-              />
-            </div>
-            <div
-              className="flex-1 h-full"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-          </div>
-        )}
-
-        {/* 2. Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-[#FAF9FD]/25">
+      {/* Main LMS Library Floating Canvas Window - Full Width */}
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto bg-white rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.04)] border border-slate-200/90 overflow-hidden flex flex-col min-h-[820px]">
+        {/* Main Content Area (Full Width) */}
+        <div className="w-full flex-1 flex flex-col min-w-0 bg-[#FAF9FD]/25">
           {/* Header Bar */}
           <LmsLibraryHeader
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             userName={loggedInName}
             userEmail={currentUser?.email}
-            isMobileMenuOpen={isMobileMenuOpen}
-            onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             onOpenUpload={handleOpenUploadModal}
           />
 
@@ -422,7 +477,7 @@ export default function LmsPage() {
           <div className="p-4 sm:p-6 lg:p-7 flex-1 flex flex-col space-y-5">
             {/* Filter Tabs & View Controls Toolbar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-100">
-              {/* Category Filter Chips / Tabs */}
+              {/* Category Filter Chips / Tabs (All, TWRM, CN, MACS, etc.) */}
               <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
                 {availableCategories.map((cat) => {
                   const isCatActive = selectedCategory === cat;
@@ -451,19 +506,65 @@ export default function LmsPage() {
                     </button>
                   );
                 })}
+
+                <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
+
+                {/* Quick Toggle: Bookmarks */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveSection(activeSection === "bookmarks" ? "all" : "bookmarks");
+                  }}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
+                    activeSection === "bookmarks"
+                      ? "bg-amber-500 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80"
+                  }`}
+                  title="View Bookmarked Notes"
+                >
+                  <Bookmark className={`h-3.5 w-3.5 ${activeSection === "bookmarks" ? "fill-white" : "text-amber-500"}`} />
+                  <span>Bookmarks</span>
+                  {sidebarCounts.bookmarks > 0 && (
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeSection === "bookmarks" ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600"}`}>
+                      {sidebarCounts.bookmarks}
+                    </span>
+                  )}
+                </button>
+
+                {/* Quick Toggle: My Uploads */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveSection(activeSection === "uploads" ? "all" : "uploads");
+                  }}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
+                    activeSection === "uploads"
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80"
+                  }`}
+                  title="View My Uploaded Notes"
+                >
+                  <Sparkles className={`h-3.5 w-3.5 ${activeSection === "uploads" ? "text-white" : "text-emerald-500"}`} />
+                  <span>My Uploads</span>
+                  {sidebarCounts.uploads > 0 && (
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeSection === "uploads" ? "bg-emerald-700 text-white" : "bg-slate-100 text-slate-600"}`}>
+                      {sidebarCounts.uploads}
+                    </span>
+                  )}
+                </button>
               </div>
 
               {/* Right View, Add & Sort Controls */}
               <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
                 <span className="text-xs font-medium text-slate-500 tabular-nums hidden xl:inline-block">
-                  {filteredDocuments.length} {filteredDocuments.length === 1 ? "note" : "notes"}
+                  {filteredDocuments.length} {filteredDocuments.length === 1 ? "item" : "items"}
                 </span>
 
                 {/* Add Material Button */}
                 <button
                   type="button"
                   onClick={() => setIsUploadModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs font-bold shadow-xs shadow-blue-500/20 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs font-bold shadow-xs shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
                   title="Add Course Note or PDF"
                 >
                   <Plus className="h-3.5 w-3.5" />
@@ -550,27 +651,38 @@ export default function LmsPage() {
             )}
 
             {/* Main Documents Grid / Section Views */}
-            {documents.length === 0 ? (
-              /* Empty state when no courses or notes have been uploaded yet */
+            {isLoading ? (
+              /* Loading skeleton */
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5 animate-pulse py-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-44 rounded-2xl bg-slate-100 border border-slate-200/60 p-5 space-y-3">
+                    <div className="h-8 w-24 bg-slate-200 rounded-lg" />
+                    <div className="h-4 w-3/4 bg-slate-200 rounded" />
+                    <div className="h-3 w-1/2 bg-slate-200 rounded" />
+                  </div>
+                ))}
+              </div>
+            ) : documents.length === 0 ? (
+              /* Empty state when no schedule/materials uploaded yet */
               <div className="flex-1 flex flex-col items-center justify-center p-8 sm:p-14 text-center rounded-3xl bg-white border border-dashed border-slate-200/90 space-y-4 my-4 min-h-[380px]">
                 <div className="h-16 w-16 rounded-2xl bg-blue-50 text-[#315BFF] flex items-center justify-center shadow-xs">
                   <BookOpen className="h-8 w-8 stroke-[2.2]" />
                 </div>
                 <div className="space-y-1.5 max-w-sm">
                   <h3 className="text-base font-bold text-slate-900">
-                    No Courses Uploaded Yet
+                    No schedule/materials uploaded yet. Click &apos;Upload&apos; to add your first item.
                   </h3>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    This course page only displays the courses and materials you upload. Click the button below to upload your first course PDF.
+                    Upload course handouts, routine schedules, lab manuals, or lecture notes to populate your library.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleOpenUploadModal}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-500/25 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-500/25 transition-all cursor-pointer active:scale-95"
                 >
                   <Plus className="h-4 w-4" />
-                  <span>Upload First Course PDF</span>
+                  <span>Upload</span>
                 </button>
               </div>
             ) : activeSection === "courses" ? (
@@ -582,14 +694,14 @@ export default function LmsPage() {
                       <Folder className="h-4 w-4 text-blue-600" />
                       <h3 className="text-sm font-bold text-slate-900">{groupKey}</h3>
                       <span className="text-[11px] text-slate-400 font-semibold">
-                        ({groupDocs.length} notes)
+                        ({groupDocs.length} items)
                       </span>
                     </div>
 
                     <div
                       className={
                         viewMode === "grid"
-                          ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5"
+                          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5"
                           : "space-y-2.5"
                       }
                     >
@@ -615,7 +727,7 @@ export default function LmsPage() {
                   <div
                     className={
                       viewMode === "grid"
-                        ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5"
+                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5"
                         : "space-y-2.5"
                     }
                   >
@@ -645,12 +757,12 @@ export default function LmsPage() {
                       <h4 className="text-sm font-bold text-slate-800">
                         {activeSection === "bookmarks"
                           ? "No Bookmarked Notes Yet"
-                          : "No notes found"}
+                          : `No items found for ${selectedCategory}`}
                       </h4>
                       <p className="text-xs text-slate-500 max-w-sm">
                         {activeSection === "bookmarks"
                           ? "Click the bookmark icon 🔖 on any course note or PDF to pin it here for quick access."
-                          : "No documents matched your current search or category filter. Try clearing filters or resetting."}
+                          : "No uploaded items matched this filter. Try selecting 'All' or uploading an item for this course."}
                       </p>
                     </div>
                     <button
@@ -662,7 +774,7 @@ export default function LmsPage() {
                       }}
                       className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
                     >
-                      {activeSection === "bookmarks" ? "Browse All Course Notes" : "Reset Filters"}
+                      {activeSection === "bookmarks" ? "Browse All Items" : "Reset Filters"}
                     </button>
                   </div>
                 )}

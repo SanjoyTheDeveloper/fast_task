@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { KanbanBoard } from "@/components/tasks/KanbanBoard";
 import { TaskDialog } from "@/components/tasks/TaskDialog";
-import { TaskFilters, FilterState } from "@/components/tasks/taskfilter";
+import { TaskFilters, FilterState } from "@/components/tasks/TaskFilters";
 import type { Task, SessionUser } from "@/types";
 import { Button } from "@/components/ui/button";
 import { GIcon } from "@/components/ui/GIcon";

@@ -1,2 +1,2 @@
 export * from "./task";
-export type { SessionUser } from "@/backend/auth";
+export type { SessionUser } from "@/lib/auth";
