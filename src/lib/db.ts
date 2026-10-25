@@ -1,4 +1,47 @@
 import { PrismaClient, Prisma, TaskStatus, TaskPriority } from "@prisma/client";
+import fs from "node:fs";
+import path from "node:path";
+
+interface FallbackRoutineSlot {
+  id: string;
+  userId: string;
+  courseCode: string;
+  courseTitle: string;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+  roomNo: string | null;
+  instructor: string | null;
+  semester: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const FALLBACK_DIR = path.join(process.cwd(), ".data");
+const ROUTINE_FILE = path.join(FALLBACK_DIR, "routine_schedules.json");
+
+function readFallbackRoutines(): FallbackRoutineSlot[] {
+  try {
+    if (!fs.existsSync(ROUTINE_FILE)) return [];
+    const content = fs.readFileSync(ROUTINE_FILE, "utf-8");
+    const parsed = JSON.parse(content);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    console.warn("[db.fallback] Could not read routine_schedules.json:", err);
+    return [];
+  }
+}
+
+function writeFallbackRoutines(slots: FallbackRoutineSlot[]): void {
+  try {
+    if (!fs.existsSync(FALLBACK_DIR)) {
+      fs.mkdirSync(FALLBACK_DIR, { recursive: true });
+    }
+    fs.writeFileSync(ROUTINE_FILE, JSON.stringify(slots, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("[db.fallback] Could not write routine_schedules.json:", err);
+  }
+}
 
 // Prevent multiple PrismaClient instances in Next.js development (hot reloading)
 const globalForPrisma = globalThis as unknown as {
@@ -323,6 +366,234 @@ export const db = {
       });
     },
   },
+
+  routineSchedule: {
+    async count({ where }: { where?: Prisma.RoutineScheduleWhereInput } = {}): Promise<number> {
+      try {
+        return await prisma.routineSchedule.count({ where });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.count] Falling back to local store:", err?.message || err);
+        const slots = readFallbackRoutines();
+        if (where?.userId && typeof where.userId === "string") {
+          return slots.filter((s) => s.userId === where.userId).length;
+        }
+        return slots.length;
+      }
+    },
+
+    async findMany({
+      where,
+      orderBy = { startTime: "asc" },
+      skip,
+      take,
+    }: {
+      where?: Prisma.RoutineScheduleWhereInput;
+      orderBy?: Prisma.RoutineScheduleOrderByWithRelationInput | Prisma.RoutineScheduleOrderByWithRelationInput[];
+      skip?: number;
+      take?: number;
+    } = {}): Promise<any[]> {
+      try {
+        return await prisma.routineSchedule.findMany({
+          where,
+          orderBy,
+          skip,
+          take,
+        });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.findMany] Falling back to local store:", err?.message || err);
+        let list = readFallbackRoutines();
+        if (where?.userId && typeof where.userId === "string") {
+          list = list.filter((s) => s.userId === where.userId);
+        }
+        if (where?.dayOfWeek) {
+          const targetDay =
+            typeof where.dayOfWeek === "string"
+              ? where.dayOfWeek.toLowerCase()
+              : typeof (where.dayOfWeek as any)?.equals === "string"
+              ? (where.dayOfWeek as any).equals.toLowerCase()
+              : "";
+          if (targetDay) {
+            list = list.filter((s) => s.dayOfWeek.toLowerCase() === targetDay);
+          }
+        }
+        list.sort((a, b) => a.startTime.localeCompare(b.startTime));
+        if (typeof skip === "number") list = list.slice(skip);
+        if (typeof take === "number") list = list.slice(0, take);
+        return list;
+      }
+    },
+
+    async findUnique({ where }: { where: { id: string } }) {
+      try {
+        return await prisma.routineSchedule.findUnique({
+          where: { id: where.id },
+        });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.findUnique] Falling back to local store:", err?.message || err);
+        const list = readFallbackRoutines();
+        return list.find((s) => s.id === where.id) || null;
+      }
+    },
+
+    async create({
+      data,
+    }: {
+      data: {
+        id?: string;
+        userId: string;
+        courseCode: string;
+        courseTitle: string;
+        dayOfWeek: string;
+        startTime: string;
+        endTime: string;
+        roomNo?: string | null;
+        instructor?: string | null;
+        semester?: string | null;
+      };
+    }) {
+      try {
+        return await prisma.routineSchedule.create({
+          data: {
+            ...(data.id ? { id: data.id } : {}),
+            userId: data.userId,
+            courseCode: data.courseCode.trim(),
+            courseTitle: data.courseTitle.trim(),
+            dayOfWeek: data.dayOfWeek.trim(),
+            startTime: data.startTime.trim(),
+            endTime: data.endTime.trim(),
+            roomNo: data.roomNo?.trim() || null,
+            instructor: data.instructor?.trim() || null,
+            semester: data.semester?.trim() || null,
+          },
+        });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.create] Falling back to local store:", err?.message || err);
+        const list = readFallbackRoutines();
+        const id = data.id || `slot_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        const now = new Date().toISOString();
+        const newSlot: FallbackRoutineSlot = {
+          id,
+          userId: data.userId,
+          courseCode: data.courseCode.trim(),
+          courseTitle: data.courseTitle.trim(),
+          dayOfWeek: data.dayOfWeek.trim(),
+          startTime: data.startTime.trim(),
+          endTime: data.endTime.trim(),
+          roomNo: data.roomNo?.trim() || null,
+          instructor: data.instructor?.trim() || null,
+          semester: data.semester?.trim() || null,
+          createdAt: now,
+          updatedAt: now,
+        };
+        list.push(newSlot);
+        writeFallbackRoutines(list);
+        return newSlot;
+      }
+    },
+
+    async createMany({ data }: { data: any[] }) {
+      try {
+        return await prisma.routineSchedule.createMany({
+          data: data.map((d) => ({
+            id: d.id,
+            userId: d.userId,
+            courseCode: (d.courseCode || d.code || "").trim(),
+            courseTitle: (d.courseTitle || d.title || "").trim(),
+            dayOfWeek: (d.dayOfWeek || d.day || "").trim(),
+            startTime: (d.startTime || "").trim(),
+            endTime: (d.endTime || "").trim(),
+            roomNo: (d.roomNo || d.roomNumber || d.room || "")?.trim() || null,
+            instructor: (d.instructor || d.teacherName || d.faculty || "")?.trim() || null,
+            semester: (d.semester || d.batch || "")?.trim() || null,
+          })),
+          skipDuplicates: true,
+        });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.createMany] Falling back to local store:", err?.message || err);
+        const list = readFallbackRoutines();
+        const createdList = data.map((d, idx) => ({
+          id: d.id || `slot_${Date.now()}_${idx}_${Math.random().toString(36).substring(2, 8)}`,
+          userId: d.userId,
+          courseCode: (d.courseCode || d.code || "").trim(),
+          courseTitle: (d.courseTitle || d.title || "").trim(),
+          dayOfWeek: (d.dayOfWeek || d.day || "").trim(),
+          startTime: (d.startTime || "").trim(),
+          endTime: (d.endTime || "").trim(),
+          roomNo: (d.roomNo || d.roomNumber || d.room || "")?.trim() || null,
+          instructor: (d.instructor || d.teacherName || d.faculty || "")?.trim() || null,
+          semester: (d.semester || d.batch || "")?.trim() || null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }));
+        list.push(...createdList);
+        writeFallbackRoutines(list);
+        return { count: createdList.length, data: createdList };
+      }
+    },
+
+    async update({
+      where,
+      data,
+    }: {
+      where: { id: string };
+      data: {
+        courseCode?: string;
+        courseTitle?: string;
+        dayOfWeek?: string;
+        startTime?: string;
+        endTime?: string;
+        roomNo?: string | null;
+        instructor?: string | null;
+        semester?: string | null;
+      };
+    }) {
+      try {
+        return await prisma.routineSchedule.update({
+          where: { id: where.id },
+          data,
+        });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.update] Falling back to local store:", err?.message || err);
+        const list = readFallbackRoutines();
+        const idx = list.findIndex((s) => s.id === where.id);
+        if (idx === -1) {
+          throw new Error(`Routine slot ${where.id} not found`);
+        }
+        list[idx] = {
+          ...list[idx],
+          ...(data.courseCode ? { courseCode: data.courseCode.trim() } : {}),
+          ...(data.courseTitle ? { courseTitle: data.courseTitle.trim() } : {}),
+          ...(data.dayOfWeek ? { dayOfWeek: data.dayOfWeek.trim() } : {}),
+          ...(data.startTime ? { startTime: data.startTime.trim() } : {}),
+          ...(data.endTime ? { endTime: data.endTime.trim() } : {}),
+          ...(data.roomNo !== undefined ? { roomNo: data.roomNo?.trim() || null } : {}),
+          ...(data.instructor !== undefined ? { instructor: data.instructor?.trim() || null } : {}),
+          ...(data.semester !== undefined ? { semester: data.semester?.trim() || null } : {}),
+          updatedAt: new Date().toISOString(),
+        };
+        writeFallbackRoutines(list);
+        return list[idx];
+      }
+    },
+
+    async delete({ where }: { where: { id: string } }) {
+      try {
+        return await prisma.routineSchedule.delete({
+          where: { id: where.id },
+        });
+      } catch (err: any) {
+        console.warn("[db.routineSchedule.delete] Falling back to local store:", err?.message || err);
+        const list = readFallbackRoutines();
+        const target = list.find((s) => s.id === where.id);
+        const filtered = list.filter((s) => s.id !== where.id);
+        writeFallbackRoutines(filtered);
+        return target || { id: where.id };
+      }
+    },
+  },
 };
+
+(db as any).routineSlot = db.routineSchedule;
+export const routineSlot = db.routineSchedule;
 
 export default prisma;

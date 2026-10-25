@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { SessionUser } from "@/types";
 import {
-  Sidebar,
   TopHeader,
 } from "@/components/dashboard";
 import {
@@ -291,7 +290,6 @@ const UPCOMING_TASKS_LIST = [
 export default function CalendarPage() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
 
   // Real today from system/browser
@@ -337,6 +335,49 @@ export default function CalendarPage() {
 
   const activeEvent = SEPTEMBER_EVENTS[selectedDate] || null;
 
+  // User routine sessions from API
+  const [userRoutines, setUserRoutines] = React.useState<Record<string, ScheduleItem[]>>({});
+
+  React.useEffect(() => {
+    let isMounted = true;
+    async function loadRoutine() {
+      try {
+        const res = await fetch("/api/routine", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && isMounted) {
+            const map: Record<string, ScheduleItem[]> = {
+              Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
+            };
+            json.data.forEach((slot: any) => {
+              const dayShort = slot.dayOfWeek?.slice(0, 3);
+              if (map[dayShort]) {
+                map[dayShort].push({
+                  id: slot.id,
+                  courseCode: slot.courseCode,
+                  courseColor: "bg-[#315BFF] text-white",
+                  type: "Class Session",
+                  typeColor: "text-[#315BFF]",
+                  title: slot.courseTitle,
+                  startTime: slot.startTime,
+                  endTime: slot.endTime,
+                  location: slot.roomNo || "Campus",
+                  faculty: slot.instructor || "Faculty",
+                  borderColor: "border-[#D0DFFF]",
+                });
+              }
+            });
+            setUserRoutines(map);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load user routine:", err);
+      }
+    }
+    loadRoutine();
+    return () => { isMounted = false; };
+  }, []);
+
   const selectedDateObj = new Date(year, month, selectedDate);
   const selectedDayOfWeekIdx = selectedDateObj.getDay();
   const selectedDayShort = daysOfWeek[selectedDayOfWeekIdx];
@@ -350,7 +391,7 @@ export default function CalendarPage() {
     Sat: "Saturday",
   };
   const selectedDayFullName = dayNameFullMap[selectedDayShort] || selectedDayShort;
-  const selectedDaySessions = WEEKLY_SCHEDULE[selectedDayShort] || [];
+  const selectedDaySessions = userRoutines[selectedDayShort] || [];
 
   /**
    * Deduplicates and retrieves all distinct courses active for any given date
@@ -364,7 +405,7 @@ export default function CalendarPage() {
 
       // 1. Routine scheduled classes for that weekday
       if (event?.hasClasses !== false) {
-        const routineSessions = WEEKLY_SCHEDULE[dayShort] || [];
+        const routineSessions = userRoutines[dayShort] || [];
         routineSessions.forEach((session) => {
           const info = getCourseColor(session.courseCode || session.title);
           if (info && !courseMap.has(info.code)) {
@@ -455,26 +496,11 @@ export default function CalendarPage() {
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
 
-      {/* 1. Left Fixed Sidebar */}
-      <Sidebar
-        isOpen={isMobileSidebarOpen}
-        onClose={() => setIsMobileSidebarOpen(false)}
-      />
-
-      {/* Mobile Backdrop */}
-      {isMobileSidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
-          onClick={() => setIsMobileSidebarOpen(false)}
-        />
-      )}
-
-      {/* 2. Main Wrapper with Left Margin for Desktop Sidebar */}
-      <div className="lg:pl-60 flex flex-col min-h-screen">
+      {/* Main Wrapper */}
+      <div className="flex flex-col min-h-screen">
         {/* Top Header */}
         <TopHeader
           user={currentUser}
-          onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
         />
 
         {/* Calendar Page Content */}

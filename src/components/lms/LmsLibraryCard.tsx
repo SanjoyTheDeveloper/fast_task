@@ -67,6 +67,44 @@ function CourseIcon({ type, className }: { type: string; className?: string }) {
   }
 }
 
+function getCourseBadgeStyle(key?: string) {
+  const norm = (key || "").trim().toUpperCase();
+  if (norm.includes("CN") || norm.includes("0612CSE315")) {
+    return {
+      badge: "bg-emerald-50 text-emerald-700 border-emerald-200/50",
+      iconBg: "bg-emerald-50 text-emerald-600 border-emerald-200/50",
+    };
+  }
+  if (norm.includes("MACS") || norm.includes("0541MAT337")) {
+    return {
+      badge: "bg-amber-50 text-amber-700 border-amber-200/50",
+      iconBg: "bg-amber-50 text-amber-600 border-amber-200/50",
+    };
+  }
+  if (norm.includes("TWRM") || norm.includes("0031CSE320")) {
+    return {
+      badge: "bg-rose-50 text-rose-700 border-rose-200/50",
+      iconBg: "bg-rose-50 text-rose-600 border-rose-200/50",
+    };
+  }
+  if (norm.includes("LAB") || norm.includes("SESS")) {
+    return {
+      badge: "bg-purple-50 text-purple-700 border-purple-200/50",
+      iconBg: "bg-purple-50 text-purple-600 border-purple-200/50",
+    };
+  }
+  if (norm.includes("AIES") || norm.includes("0611CSE321")) {
+    return {
+      badge: "bg-indigo-50 text-indigo-700 border-indigo-200/50",
+      iconBg: "bg-indigo-50 text-indigo-600 border-indigo-200/50",
+    };
+  }
+  return {
+    badge: "bg-blue-50 text-blue-700 border-blue-200/50",
+    iconBg: "bg-blue-50 text-blue-600 border-blue-200/50",
+  };
+}
+
 export function LmsLibraryCard({
   doc,
   onPreview,
@@ -83,41 +121,30 @@ export function LmsLibraryCard({
     return (
       <div
         onClick={() => onPreview(doc)}
-        className={`group relative ${theme.cardBg} hover:bg-white rounded-2xl border ${theme.cardBorder} p-4 sm:px-5 flex items-center justify-between gap-4 transition-all duration-200 ${theme.cardShadow} ${theme.cardHoverShadow} hover:-translate-y-0.5 cursor-pointer`}
+        className="group relative bg-white border border-slate-200/80 rounded-2xl p-4 sm:px-5 flex items-center justify-between gap-4 shadow-xs hover:shadow-md hover:border-blue-200 transition-all duration-200 cursor-pointer"
       >
         <div className="flex items-center gap-3.5 min-w-0 flex-1">
-          {/* Course Icon Badge */}
-          <div
-            className={`h-10 w-10 rounded-xl ${theme.iconBg} ${theme.iconColor} border ${theme.badgeBorder} flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform`}
-          >
-            <CourseIcon type={theme.iconType} className="h-5 w-5" />
-          </div>
-
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span
-                className={`text-[11px] font-semibold tracking-[-0.01em] px-2 py-0.5 rounded-md ${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder}`}
-              >
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="bg-blue-50 text-blue-700 border border-blue-200/50 font-bold text-xs px-2.5 py-1 rounded-lg">
                 {doc.courseName || theme.name}
               </span>
-              <span
-                className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-md border tabular-nums ${theme.codeBadge}`}
-              >
+              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border border-slate-200/80 bg-slate-50 text-slate-600 tabular-nums">
                 {doc.courseCode}
               </span>
               {doc.isCustomUpload && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/50 flex items-center gap-1 shadow-2xs">
                   <Sparkles className="h-2.5 w-2.5" />
                   Uploaded
                 </span>
               )}
             </div>
 
-            <h3 className="text-sm font-semibold tracking-[-0.015em] text-slate-900 group-hover:text-slate-950 transition-colors truncate">
+            <h3 className="text-slate-900 font-bold text-base line-clamp-1 group-hover:text-blue-600 transition-colors">
               {cleanTitle}
             </h3>
             {doc.schedule && (
-              <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+              <span className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
                 📅 {doc.schedule}
               </span>
             )}
@@ -152,7 +179,7 @@ export function LmsLibraryCard({
           <button
             type="button"
             onClick={() => onPreview(doc)}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl ${theme.primaryButton} text-xs font-semibold tracking-[-0.01em] transition-all cursor-pointer`}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             title="Read Document"
           >
             <Eye className="h-3.5 w-3.5" />
@@ -162,11 +189,11 @@ export function LmsLibraryCard({
           <button
             type="button"
             onClick={() => onDownload(doc)}
-            className="h-8 w-8 sm:h-auto sm:px-3 sm:py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium tracking-[-0.01em] transition-all border border-slate-200 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+            className="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
             title="Download PDF"
           >
             <Download className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">PDF</span>
+            <span>PDF</span>
           </button>
 
           {doc.isCustomUpload && onDelete && (
@@ -184,105 +211,91 @@ export function LmsLibraryCard({
     );
   }
 
-  // Grid View - Clean, focused box with functional controls & Bookmark
+  // Grid View - Unified Clean Card matching FastTask Dashboard Specifications
   return (
     <div
       onClick={() => onPreview(doc)}
-      className={`group relative ${theme.cardBg} rounded-2xl border ${theme.cardBorder} p-5 flex flex-col justify-between ${theme.cardShadow} ${theme.cardHoverShadow} hover:-translate-y-1 transition-all duration-200 cursor-pointer`}
+      className="group relative bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col justify-between h-full cursor-pointer"
     >
-      {/* Top Header Row: Course Icon + Badges + Bookmark & Delete */}
-      <div className="flex items-center justify-between gap-3 mb-3.5">
-        <div className="flex items-center gap-3 min-w-0 flex-1">
-          {/* Refined Rounded Icon Tile */}
-          <div
-            className={`h-10 w-10 rounded-xl ${theme.iconBg} ${theme.iconColor} border ${theme.badgeBorder} flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform`}
-          >
-            <CourseIcon type={theme.iconType} className="h-5 w-5" />
-          </div>
-
-          <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-            {/* Course Name Badge */}
-            <span
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold tracking-[-0.01em] ${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder}`}
-            >
+      <div>
+        {/* Header area: Course tag pill along with course code and status badge */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap min-w-0 flex-1">
+            <span className="bg-blue-50 text-blue-700 border border-blue-200/50 font-bold text-xs px-2.5 py-1 rounded-lg">
               {doc.courseName || theme.name}
             </span>
 
-            {/* Course Code Badge */}
-            <span
-              className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border tabular-nums ${theme.codeBadge}`}
-            >
+            <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border border-slate-200/80 bg-slate-50 text-slate-600 tabular-nums">
               {doc.courseCode}
             </span>
 
             {doc.isCustomUpload && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/50 shadow-2xs">
                 <Sparkles className="h-2.5 w-2.5" />
                 Uploaded
               </span>
             )}
           </div>
-        </div>
 
-        <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
-          {onToggleBookmark && (
-            <button
-              type="button"
-              onClick={() => onToggleBookmark(doc.id)}
-              className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                doc.isBookmarked
-                  ? "bg-amber-50 text-amber-600 border border-amber-200 shadow-2xs"
-                  : "text-slate-300 hover:text-amber-500 hover:bg-amber-50/60"
-              }`}
-              title={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
-              aria-label={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
-            >
-              <Bookmark
-                className={`h-4 w-4 ${
-                  doc.isBookmarked ? "fill-amber-500 text-amber-600" : ""
+          <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+            {onToggleBookmark && (
+              <button
+                type="button"
+                onClick={() => onToggleBookmark(doc.id)}
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                  doc.isBookmarked
+                    ? "bg-amber-50 text-amber-600 border border-amber-200 shadow-2xs"
+                    : "text-slate-300 hover:text-amber-500 hover:bg-amber-50/60"
                 }`}
-              />
-            </button>
-          )}
+                title={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
+                aria-label={doc.isBookmarked ? "Remove bookmark" : "Add to bookmarks"}
+              >
+                <Bookmark
+                  className={`h-4 w-4 ${
+                    doc.isBookmarked ? "fill-amber-500 text-amber-600" : ""
+                  }`}
+                />
+              </button>
+            )}
 
-          {doc.isCustomUpload && onDelete && (
-            <button
-              type="button"
-              onClick={() => onDelete(doc.id)}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-              title="Delete uploaded note"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </button>
-          )}
+            {doc.isCustomUpload && onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(doc.id)}
+                className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                title="Delete uploaded note"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Card Content: Document Title & Schedule */}
-      <div className="flex-1 min-h-[46px] mb-4">
+        {/* Title: text-slate-900 font-bold text-base mt-3 line-clamp-2 */}
         <h3
-          className="text-[14.5px] font-semibold tracking-[-0.015em] text-slate-900 leading-snug line-clamp-2 group-hover:text-slate-950 transition-colors"
+          className="text-slate-900 font-bold text-base mt-3 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors"
           title={cleanTitle}
         >
           {cleanTitle}
         </h3>
+
         {doc.schedule && (
-          <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5 mt-1.5">
+          <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-2">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
             <span>{doc.schedule}</span>
           </p>
         )}
       </div>
 
-      {/* Action Buttons Row: Read & PDF */}
+      {/* Action buttons at bottom: Read & PDF */}
       <div
-        className="flex items-center justify-between gap-2 pt-1"
+        className="flex items-center justify-between gap-2 pt-4 mt-4 border-t border-slate-100"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={() => onPreview(doc)}
-          className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-xl ${theme.primaryButton} text-xs font-semibold tracking-[-0.01em] transition-all cursor-pointer`}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2 px-4 rounded-xl flex-1 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           title="Read Document"
         >
           <Eye className="h-3.5 w-3.5" />
@@ -292,7 +305,7 @@ export function LmsLibraryCard({
         <button
           type="button"
           onClick={() => onDownload(doc)}
-          className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-xs font-semibold tracking-[-0.01em] transition-all border border-slate-200 shadow-2xs cursor-pointer"
+          className="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
           title="Download PDF"
         >
           <Download className="h-3.5 w-3.5" />

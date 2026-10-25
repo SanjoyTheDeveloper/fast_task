@@ -172,8 +172,52 @@ export function CalendarWidget({
   // Active day info
   const activeDayDateObj = new Date(year, month, activePopoverDate);
   const activeDayShort = daysOfWeek[activeDayDateObj.getDay()];
-  const activeDaySessions = activeDayShort ? (WEEKLY_SCHEDULE[activeDayShort] || []) : [];
-  const activeEvent = SEPTEMBER_EVENTS[activePopoverDate] || null;
+
+  // Dynamic user routines fetched from database API
+  const [userRoutines, setUserRoutines] = React.useState<Record<string, ScheduleItem[]>>({});
+
+  React.useEffect(() => {
+    let isMounted = true;
+    async function loadRoutine() {
+      try {
+        const res = await fetch("/api/routine", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && isMounted) {
+            const map: Record<string, ScheduleItem[]> = {
+              Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
+            };
+            json.data.forEach((slot: any) => {
+              const dayShort = slot.dayOfWeek?.slice(0, 3);
+              if (map[dayShort]) {
+                map[dayShort].push({
+                  id: slot.id,
+                  courseCode: slot.courseCode,
+                  courseColor: "bg-[#315BFF] text-white",
+                  type: "Class Session",
+                  typeColor: "text-[#315BFF]",
+                  title: slot.courseTitle,
+                  startTime: slot.startTime,
+                  endTime: slot.endTime,
+                  location: slot.roomNo || "Campus",
+                  faculty: slot.instructor || "Faculty",
+                  borderColor: "border-[#D0DFFF]",
+                });
+              }
+            });
+            setUserRoutines(map);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load user routine:", err);
+      }
+    }
+    loadRoutine();
+    return () => { isMounted = false; };
+  }, []);
+
+  const activeDaySessions = activeDayShort ? (userRoutines[activeDayShort] || []) : [];
+  const activeEvent: DayEvent | null = SEPTEMBER_EVENTS[activePopoverDate] || null;
 
   // Current week days for week view
   const currentWeekDays = React.useMemo(() => {

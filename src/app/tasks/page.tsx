@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Sidebar,
   TopHeader,
 } from "@/components/dashboard";
 import { TaskDialog } from "@/components/tasks/TaskDialog";
@@ -99,8 +98,6 @@ export default function MyTasksPage() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);
 
-  // Layout State
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
 
   // Dialog States
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -337,28 +334,13 @@ export default function MyTasksPage() {
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
 
-      {/* 1. Left Fixed Sidebar */}
-      <Sidebar
-        isOpen={isMobileSidebarOpen}
-        onClose={() => setIsMobileSidebarOpen(false)}
-      />
-
-      {/* Mobile Backdrop Overlay */}
-      {isMobileSidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
-          onClick={() => setIsMobileSidebarOpen(false)}
-        />
-      )}
-
-      {/* 2. Main Wrapper */}
-      <div className="lg:pl-60 flex flex-col min-h-screen">
+      {/* Main Wrapper */}
+      <div className="flex flex-col min-h-screen">
         {/* Top Header */}
         <TopHeader
           user={currentUser}
           searchQuery=""
           onSearchChange={(q) => setSearchQuery(q)}
-          onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
         />
 
         {/* Page Main Content */}

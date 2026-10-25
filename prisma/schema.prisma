@@ -32,6 +32,7 @@ model User {
   updatedAt                DateTime  @updatedAt
   tasks                    Task[]
   materials                CourseMaterial[]
+  routines                 RoutineSchedule[]
 
   @@map("users")
 }
@@ -83,3 +84,24 @@ model Task {
   @@index([priority])
   @@map("tasks")
 }
+
+model RoutineSchedule {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseCode  String
+  courseTitle String
+  dayOfWeek   String
+  startTime   String
+  endTime     String
+  roomNo      String?
+  instructor  String?
+  semester    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, dayOfWeek])
+  @@map("routine_schedules")
+}
+

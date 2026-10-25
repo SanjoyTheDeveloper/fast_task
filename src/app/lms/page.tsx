@@ -14,9 +14,10 @@ import {
   List,
   SlidersHorizontal,
   Plus,
+  Search,
 } from "@/components/ui/GoogleIcon";
 import { Toaster, toast } from "sonner";
-import type { LmsNavSection } from "@/components/lms/LmsLibrarySidebar";
+export type LmsNavSection = "all" | "courses" | "bookmarks" | "uploads";
 import { LmsLibraryHeader } from "@/components/lms/LmsLibraryHeader";
 import { LmsLibraryCard, LmsPdfDocument } from "@/components/lms/LmsLibraryCard";
 import { LmsPdfViewerModal } from "@/components/lms/LmsPdfViewerModal";
@@ -33,22 +34,116 @@ import {
 } from "@/lib/lmsStorage";
 import type { SessionUser } from "@/types";
 
-const STANDARD_CATEGORIES = [
-  "All",
-  "TWRM",
-  "CN",
-  "MACS",
-  "AIES",
-  "AP",
-  "Labs & Sessionals",
-];
-
 export default function LmsPage() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [documents, setDocuments] = React.useState<LmsPdfDocument[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
   const [isLoaded, setIsLoaded] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
+  const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = React.useState<"recent" | "name" | "size">("recent");
+
+  // Modals state
+  const [previewDoc, setPreviewDoc] = React.useState<LmsPdfDocument | null>(null);
+  const [isViewerOpen, setIsViewerOpen] = React.useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
+
+  // Load documents safely on client: fast local sync + IndexedDB + DB API sync
+  React.useEffect(() => {
+    let isMounted = true;
+    const deletedIds = getStoredDeletedIds();
+    const bookmarks = getStoredBookmarks();
+
+    // 1. Instant sync from localStorage for 0ms visual rendering of existing cards
+    try {
+      const stored =
+        localStorage.getItem("fasttask_course_uploads_v2") ||
+        localStorage.getItem("fasttask_course_uploads");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0 && isMounted) {
+          const customFiltered = parsed
+            .filter((d: LmsPdfDocument) => !deletedIds.has(d.id))
+            .map((d: LmsPdfDocument) => ({
+              ...d,
+              isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
+            }));
+          setDocuments(customFiltered);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to load initial localStorage:", e);
+    }
+
+    // 2. Re-hydrate full PDF blobs from IndexedDB so uploaded PDFs can be previewed/downloaded
+    loadPersistedCourseUploads()
+      .then((customDocs) => {
+        if (!isMounted || !customDocs) return;
+        setDocuments(
+          customDocs
+            .filter((d) => !deletedIds.has(d.id))
+            .map((d) => ({
+              ...d,
+              isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
+            }))
+        );
+        setIsLoaded(true);
+      })
+      .catch((err) => {
+        console.warn("Could not rehydrate IndexedDB course uploads:", err);
+        if (isMounted) setIsLoaded(true);
+      });
+
+    // 3. Background sync with PostgreSQL database via /api/materials
+    fetch("/api/materials", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!isMounted || !json?.success || !Array.isArray(json.data) || json.data.length === 0) return;
+        const dbDocs: LmsPdfDocument[] = json.data.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          courseCode: item.courseCode,
+          courseName: item.courseName || item.category,
+          category: item.category,
+          tag: item.tag || item.category,
+          schedule: item.schedule || undefined,
+          size: item.fileSize || "1.5 MB",
+          pages: item.pages || 1,
+          isBookmarked: Boolean(item.isBookmarked),
+          isCustomUpload: true,
+          fileUrl: item.fileUrl || undefined,
+          description: item.description || undefined,
+          materialType: item.materialType || undefined,
+          userId: item.userId,
+          uploadedAt: item.createdAt
+            ? new Date(item.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })
+            : "Recent",
+        }));
+
+        setDocuments((prev) => {
+          const map = new Map<string, LmsPdfDocument>();
+          [...prev, ...dbDocs].forEach((d) => {
+            if (!deletedIds.has(d.id)) {
+              map.set(d.id, {
+                ...d,
+                isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
+              });
+            }
+          });
+          return Array.from(map.values());
+        });
+      })
+      .catch((err) => console.warn("Background API sync notice:", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Load authenticated user strictly from auth session
   React.useEffect(() => {
@@ -72,96 +167,11 @@ export default function LmsPage() {
     loadUser();
   }, []);
 
-  // Fetch only user-uploaded materials directly from the database API
-  React.useEffect(() => {
-    let isMounted = true;
-    setIsLoading(true);
-
-    async function fetchMaterials() {
-      try {
-        const res = await fetch("/api/materials", { cache: "no-store" });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && Array.isArray(json.data)) {
-            const mappedDocs: LmsPdfDocument[] = json.data.map((item: any) => ({
-              id: item.id,
-              title: item.title,
-              courseCode: item.courseCode,
-              courseName: item.courseName || item.category,
-              category: item.category,
-              tag: item.tag || item.category,
-              schedule: item.schedule || undefined,
-              size: item.fileSize || "1.5 MB",
-              pages: item.pages || 1,
-              isBookmarked: Boolean(item.isBookmarked),
-              isCustomUpload: true,
-              fileUrl: item.fileUrl || undefined,
-              description: item.description || undefined,
-              materialType: item.materialType || undefined,
-              userId: item.userId,
-              uploadedAt: item.createdAt
-                ? new Date(item.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "Recent",
-            }));
-
-            if (isMounted) {
-              setDocuments(mappedDocs);
-              setIsLoading(false);
-              setIsLoaded(true);
-              return;
-            }
-          }
-        }
-      } catch (err) {
-        console.warn("Could not fetch materials from database API, trying offline fallback:", err);
-      }
-
-      // Offline / Local storage fallback if API unreachable
-      if (isMounted) {
-        loadPersistedCourseUploads()
-          .then((localDocs) => {
-            if (!isMounted) return;
-            if (localDocs && localDocs.length > 0) {
-              setDocuments(localDocs);
-            }
-            setIsLoading(false);
-            setIsLoaded(true);
-          })
-          .catch(() => {
-            if (isMounted) {
-              setIsLoading(false);
-              setIsLoaded(true);
-            }
-          });
-      }
-    }
-
-    fetchMaterials();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
-  const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = React.useState<"recent" | "name" | "size">("recent");
-
   const loggedInName =
     currentUser?.name ||
     (currentUser?.email ? currentUser.email.split("@")[0] : "Student");
 
-  // Modals
-  const [previewDoc, setPreviewDoc] = React.useState<LmsPdfDocument | null>(null);
-  const [isViewerOpen, setIsViewerOpen] = React.useState(false);
-  const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
-
-  // Toggle Bookmark with API sync
+  // Toggle Bookmark
   const handleToggleBookmark = async (id: string) => {
     let nextState = false;
     setDocuments((prev) =>
@@ -202,14 +212,19 @@ export default function LmsPage() {
     setIsViewerOpen(true);
   };
 
-  // Upload Document Handler with Immediate Dynamic UI Update
+  // Upload Document Handler with immediate dynamic UI update
   const handleUploadDocument = async (
     newDoc: LmsPdfDocument,
     autoOpenViewer: boolean = false,
     rawFile?: File | null
   ) => {
-    // 1. Immediate optimistic UI update (appears instantly without full page reload)
+    // Immediate client update
     setDocuments((prev) => [newDoc, ...prev.filter((d) => d.id !== newDoc.id)]);
+
+    // Permanently write to IndexedDB & localStorage backup
+    persistCoursePdfUpload(newDoc, rawFile).catch((err) => {
+      console.warn("Could not persist upload to IndexedDB:", err);
+    });
 
     toast.success(`"${newDoc.title}" added to ${newDoc.courseName || newDoc.category}! 🎉`, {
       action: {
@@ -231,9 +246,9 @@ export default function LmsPage() {
       handlePreview(newDoc);
     }
 
-    // 2. Persist to Postgres database via API
+    // Persist to database via API
     try {
-      const sendSaveRequest = async (fileUrlToSave?: string) => {
+      const sendSave = async (fileUrlToSave?: string) => {
         const res = await fetch("/api/materials", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -255,18 +270,10 @@ export default function LmsPage() {
         if (res.ok) {
           const json = await res.json();
           if (json.success && json.data) {
-            const saved = json.data;
-            // Update document in state with server-generated ID
             setDocuments((prev) =>
               prev.map((item) =>
                 item.id === newDoc.id
-                  ? {
-                      ...item,
-                      id: saved.id,
-                      schedule: saved.schedule || item.schedule,
-                      tag: saved.tag || item.tag,
-                      uploadedAt: "Just now",
-                    }
+                  ? { ...item, id: json.data.id, uploadedAt: "Just now" }
                   : item
               )
             );
@@ -274,45 +281,34 @@ export default function LmsPage() {
         }
       };
 
-      // Convert small file to Data URL if feasible, or send existing URL
       if (rawFile && rawFile.size <= 4 * 1024 * 1024) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const dataUrl = reader.result as string;
-          sendSaveRequest(dataUrl);
+          sendSave(reader.result as string);
         };
         reader.readAsDataURL(rawFile);
       } else {
-        await sendSaveRequest(newDoc.fileUrl);
+        await sendSave(newDoc.fileUrl);
       }
-    } catch (dbErr) {
-      console.error("Failed to save course material to database:", dbErr);
+    } catch (e) {
+      console.warn("API upload sync:", e);
     }
-
-    // 3. Local IndexedDB backup
-    persistCoursePdfUpload(newDoc, rawFile).catch((err) => {
-      console.warn("Could not persist upload to IndexedDB:", err);
-    });
   };
 
-  // Delete Document Handler with immediate state update & API sync
+  // Delete Document Handler
   const handleDeleteDocument = async (id: string) => {
-    // 1. Immediate client state update
     setDocuments((prev) => prev.filter((d) => d.id !== id));
-    toast.info("Document removed from library");
-
-    // 2. Database deletion
-    try {
-      await fetch(`/api/materials/${id}`, { method: "DELETE" });
-    } catch (err) {
-      console.error("Failed to delete from database:", err);
-    }
-
-    // 3. Cleanup local caches
     removePersistedCourseUpload(id).catch((err) => {
       console.warn("Could not delete from IndexedDB:", err);
     });
     saveStoredDeletedId(id);
+    toast.info("Document removed from library");
+
+    try {
+      await fetch(`/api/materials/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.warn("API delete notice:", e);
+    }
   };
 
   // Quick open upload modal
@@ -348,14 +344,6 @@ export default function LmsPage() {
     }
   };
 
-  // Dynamic filter pills: standard course codes + any custom courses uploaded by the user
-  const availableCategories = React.useMemo(() => {
-    const uploadedCustomCats = documents
-      .map((d) => d.category || d.courseName)
-      .filter((c): c is string => typeof c === "string" && c.trim().length > 0 && !STANDARD_CATEGORIES.includes(c));
-    return Array.from(new Set([...STANDARD_CATEGORIES, ...uploadedCustomCats]));
-  }, [documents]);
-
   // Filtered & Sorted Documents
   const filteredDocuments = React.useMemo(() => {
     const list = documents.filter((doc) => {
@@ -370,15 +358,12 @@ export default function LmsPage() {
       // 2. Category tab check (applies across all views)
       if (selectedCategory !== "All") {
         const catNorm = selectedCategory.trim().toLowerCase();
-        const matchesCategory = doc.category?.trim().toLowerCase() === catNorm;
-        const matchesTag = doc.tag ? doc.tag.trim().toLowerCase() === catNorm : false;
+        const matchesCategory = doc.category.trim().toLowerCase() === catNorm;
         const matchesCourseName = doc.courseName
           ? doc.courseName.trim().toLowerCase() === catNorm
           : false;
-        const matchesCourseCode = doc.courseCode
-          ? doc.courseCode.toLowerCase().includes(catNorm)
-          : false;
-        if (!matchesCategory && !matchesTag && !matchesCourseName && !matchesCourseCode) {
+        const matchesCourseCode = doc.courseCode.toLowerCase().includes(catNorm);
+        if (!matchesCategory && !matchesCourseName && !matchesCourseCode) {
           return false;
         }
       }
@@ -390,14 +375,7 @@ export default function LmsPage() {
         const matchesCourse = doc.courseCode.toLowerCase().includes(q);
         const matchesCourseName = doc.courseName ? doc.courseName.toLowerCase().includes(q) : false;
         const matchesCategory = doc.category.toLowerCase().includes(q);
-        const matchesSchedule = doc.schedule ? doc.schedule.toLowerCase().includes(q) : false;
-        if (
-          !matchesTitle &&
-          !matchesCourse &&
-          !matchesCourseName &&
-          !matchesCategory &&
-          !matchesSchedule
-        ) {
+        if (!matchesTitle && !matchesCourse && !matchesCourseName && !matchesCategory) {
           return false;
         }
       }
@@ -431,21 +409,36 @@ export default function LmsPage() {
     return Array.from(map.entries());
   }, [filteredDocuments]);
 
-  // Counts for toolbar indicators
-  const sidebarCounts = React.useMemo(() => {
-    const bookmarksCount = documents.filter((d) => d.isBookmarked).length;
-    const uploadsCount = documents.filter((d) => d.isCustomUpload).length;
-    return {
-      all: documents.length,
-      bookmarks: bookmarksCount,
-      uploads: uploadsCount,
-    };
+  // Dynamically derive actual courses and categories strictly from uploaded documents
+  const enrolledCourses = React.useMemo(() => {
+    const map = new Map<string, { key: string; label: string; code: string; count: number }>();
+    documents.forEach((d) => {
+      const key = d.category || d.courseName || "General";
+      if (!map.has(key)) {
+        map.set(key, {
+          key: key,
+          label: d.courseName || key,
+          code: d.courseCode || key,
+          count: 0,
+        });
+      }
+      map.get(key)!.count += 1;
+    });
+    return Array.from(map.values());
   }, [documents]);
+
+  const defaultCategories = ["All", "TWRM", "CN", "MACS", "Labs & Sessionals"];
+  const availableCategories = React.useMemo(() => {
+    const cats = enrolledCourses.map((c) => c.key);
+    const set = new Set([...defaultCategories, ...cats]);
+    return Array.from(set);
+  }, [enrolledCourses]);
 
   const courseDotMap: Record<string, string> = {
     All: "bg-slate-400",
     AIES: "bg-indigo-500",
     AP: "bg-blue-500",
+    "AP Sess.": "bg-blue-500",
     CN: "bg-emerald-500",
     MACS: "bg-amber-500",
     TWRM: "bg-rose-500",
@@ -453,336 +446,280 @@ export default function LmsPage() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-[#F8FAFC] text-slate-900 p-3 sm:p-5 lg:p-7 flex flex-col justify-between selection:bg-[#315BFF] selection:text-white">
+    <div className="min-h-screen w-full bg-[#F8FAFC] py-6 px-6 sm:px-8 max-w-7xl mx-auto space-y-6 selection:bg-blue-600 selection:text-white relative">
       {/* Subtle ambient lighting */}
       <div className="pointer-events-none fixed -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-100/40 blur-3xl" />
       <div className="pointer-events-none fixed -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-indigo-100/30 blur-3xl" />
 
       <Toaster richColors position="top-right" />
 
-      {/* Main LMS Library Floating Canvas Window - Full Width */}
-      <div className="relative z-10 w-full max-w-[1600px] mx-auto bg-white rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.04)] border border-slate-200/90 overflow-hidden flex flex-col min-h-[820px]">
-        {/* Main Content Area (Full Width) */}
-        <div className="w-full flex-1 flex flex-col min-w-0 bg-[#FAF9FD]/25">
-          {/* Header Bar */}
-          <LmsLibraryHeader
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            userName={loggedInName}
-            userEmail={currentUser?.email}
-            onOpenUpload={handleOpenUploadModal}
-          />
+      {/* Top Header & Action Bar */}
+      <LmsLibraryHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        userName={loggedInName}
+        userEmail={currentUser?.email}
+        onOpenUpload={handleOpenUploadModal}
+      />
 
-          {/* Inner Content Body */}
-          <div className="p-4 sm:p-6 lg:p-7 flex-1 flex flex-col space-y-5">
-            {/* Filter Tabs & View Controls Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-100">
-              {/* Category Filter Chips / Tabs (All, TWRM, CN, MACS, etc.) */}
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-                {availableCategories.map((cat) => {
-                  const isCatActive = selectedCategory === cat;
-                  const dotColor = courseDotMap[cat] || "bg-slate-400";
-                  const theme = COURSE_THEMES[cat];
-                  const activeClass = theme?.activePill || "bg-slate-900 text-white shadow-xs";
+      {/* Top Banner / Header Card */}
+      <div className="relative w-full rounded-3xl bg-gradient-to-r from-blue-100/70 via-indigo-50/40 to-white border border-blue-100/80 p-6 shadow-xs overflow-hidden">
+        {/* Decorative ambient subtle background glows */}
+        <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-blue-400/10 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-16 right-1/4 h-52 w-52 rounded-full bg-indigo-300/10 blur-3xl" />
 
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory(cat);
-                        if (activeSection === "bookmarks" || activeSection === "uploads") {
-                          setActiveSection("all");
-                        }
-                      }}
-                      className={`text-xs font-semibold tracking-[-0.01em] px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
-                        isCatActive
-                          ? activeClass
-                          : "text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80"
-                      }`}
-                    >
-                      <span className={`h-1.5 w-1.5 rounded-full ${isCatActive ? "bg-white" : dotColor}`} />
-                      <span>{cat}</span>
-                    </button>
-                  );
-                })}
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="bg-white/90 text-blue-700 font-semibold text-xs px-3 py-1 rounded-full border border-blue-200/60 inline-flex items-center gap-2 shadow-2xs">
+              <BookOpen className="h-3.5 w-3.5" />
+              <span>Academic Resource Vault • FastTask LMS</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Course Notes &amp; Library <span className="text-blue-600">• Batch 82A</span>
+            </h1>
+            <p className="text-slate-500 text-sm mt-1 leading-relaxed">
+              Quickly browse, preview, and download your lecture notes, handouts, and laboratory manuals with seamless offline support.
+            </p>
+          </div>
 
-                <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
-
-                {/* Quick Toggle: Bookmarks */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveSection(activeSection === "bookmarks" ? "all" : "bookmarks");
-                  }}
-                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
-                    activeSection === "bookmarks"
-                      ? "bg-amber-500 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80"
-                  }`}
-                  title="View Bookmarked Notes"
-                >
-                  <Bookmark className={`h-3.5 w-3.5 ${activeSection === "bookmarks" ? "fill-white" : "text-amber-500"}`} />
-                  <span>Bookmarks</span>
-                  {sidebarCounts.bookmarks > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeSection === "bookmarks" ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600"}`}>
-                      {sidebarCounts.bookmarks}
-                    </span>
-                  )}
-                </button>
-
-                {/* Quick Toggle: My Uploads */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveSection(activeSection === "uploads" ? "all" : "uploads");
-                  }}
-                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
-                    activeSection === "uploads"
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80"
-                  }`}
-                  title="View My Uploaded Notes"
-                >
-                  <Sparkles className={`h-3.5 w-3.5 ${activeSection === "uploads" ? "text-white" : "text-emerald-500"}`} />
-                  <span>My Uploads</span>
-                  {sidebarCounts.uploads > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeSection === "uploads" ? "bg-emerald-700 text-white" : "bg-slate-100 text-slate-600"}`}>
-                      {sidebarCounts.uploads}
-                    </span>
-                  )}
-                </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="hidden sm:flex items-center gap-4 bg-white/80 backdrop-blur-xs px-4 py-2.5 rounded-2xl border border-blue-100/80 shadow-2xs text-xs">
+              <div>
+                <span className="text-slate-400 block text-[10px] font-semibold uppercase tracking-wider">Total Notes</span>
+                <span className="font-extrabold text-slate-800 text-sm tabular-nums">{documents.length}</span>
               </div>
-
-              {/* Right View, Add & Sort Controls */}
-              <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
-                <span className="text-xs font-medium text-slate-500 tabular-nums hidden xl:inline-block">
-                  {filteredDocuments.length} {filteredDocuments.length === 1 ? "item" : "items"}
-                </span>
-
-                {/* Add Material Button */}
-                <button
-                  type="button"
-                  onClick={() => setIsUploadModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs font-bold shadow-xs shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
-                  title="Add Course Note or PDF"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  <span>Add Material</span>
-                </button>
-
-                {/* Sort dropdown */}
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer hover:border-slate-300 shadow-2xs"
-                >
-                  <option value="recent">Sort: Newest</option>
-                  <option value="name">Sort: A-Z</option>
-                  <option value="size">Sort: File Size</option>
-                </select>
-
-                {/* View switcher (Grid vs List) */}
-                <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/60 shadow-2xs">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("grid")}
-                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                      viewMode === "grid"
-                        ? "bg-white text-slate-900 shadow-xs"
-                        : "text-slate-400 hover:text-slate-700"
-                    }`}
-                    title="Grid View"
-                  >
-                    <LayoutGrid className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("list")}
-                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                      viewMode === "list"
-                        ? "bg-white text-slate-900 shadow-xs"
-                        : "text-slate-400 hover:text-slate-700"
-                    }`}
-                    title="List View"
-                  >
-                    <List className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+              <div className="h-6 w-px bg-slate-200" />
+              <div>
+                <span className="text-slate-400 block text-[10px] font-semibold uppercase tracking-wider">Courses</span>
+                <span className="font-extrabold text-slate-800 text-sm tabular-nums">{enrolledCourses.length || 5}</span>
               </div>
             </div>
 
-            {/* Bookmark indicator badge */}
-            {activeSection === "bookmarks" && (
-              <div className="flex items-center justify-between gap-3 p-1 pl-3 pr-1.5 rounded-full bg-amber-50 border border-amber-200/80 text-xs w-fit shadow-2xs">
-                <div className="flex items-center gap-2">
-                  <Bookmark className="h-3.5 w-3.5 text-amber-500 fill-amber-500 shrink-0" />
-                  <span className="font-bold text-amber-900 text-xs">
-                    {filteredDocuments.length} bookmarked {filteredDocuments.length === 1 ? "document" : "documents"}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveSection("all")}
-                  className="px-2.5 py-0.5 rounded-full bg-white hover:bg-amber-100 text-[11px] font-bold text-amber-800 border border-amber-200 shadow-2xs transition-colors cursor-pointer"
-                >
-                  View All
-                </button>
-              </div>
-            )}
-
-            {/* Uploads indicator badge */}
-            {activeSection === "uploads" && (
-              <div className="flex items-center justify-between gap-3 p-1 pl-3 pr-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs w-fit shadow-2xs">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span className="font-bold text-emerald-900 text-xs">
-                    {filteredDocuments.length} uploaded {filteredDocuments.length === 1 ? "document" : "documents"}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveSection("all")}
-                  className="px-2.5 py-0.5 rounded-full bg-white hover:bg-emerald-100 text-[11px] font-bold text-emerald-800 border border-emerald-200 shadow-2xs transition-colors cursor-pointer"
-                >
-                  View All
-                </button>
-              </div>
-            )}
-
-            {/* Main Documents Grid / Section Views */}
-            {isLoading ? (
-              /* Loading skeleton */
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5 animate-pulse py-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-44 rounded-2xl bg-slate-100 border border-slate-200/60 p-5 space-y-3">
-                    <div className="h-8 w-24 bg-slate-200 rounded-lg" />
-                    <div className="h-4 w-3/4 bg-slate-200 rounded" />
-                    <div className="h-3 w-1/2 bg-slate-200 rounded" />
-                  </div>
-                ))}
-              </div>
-            ) : documents.length === 0 ? (
-              /* Empty state when no schedule/materials uploaded yet */
-              <div className="flex-1 flex flex-col items-center justify-center p-8 sm:p-14 text-center rounded-3xl bg-white border border-dashed border-slate-200/90 space-y-4 my-4 min-h-[380px]">
-                <div className="h-16 w-16 rounded-2xl bg-blue-50 text-[#315BFF] flex items-center justify-center shadow-xs">
-                  <BookOpen className="h-8 w-8 stroke-[2.2]" />
-                </div>
-                <div className="space-y-1.5 max-w-sm">
-                  <h3 className="text-base font-bold text-slate-900">
-                    No schedule/materials uploaded yet. Click &apos;Upload&apos; to add your first item.
-                  </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Upload course handouts, routine schedules, lab manuals, or lecture notes to populate your library.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleOpenUploadModal}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-500/25 transition-all cursor-pointer active:scale-95"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Upload</span>
-                </button>
-              </div>
-            ) : activeSection === "courses" ? (
-              /* Grouped by Courses View */
-              <div className="space-y-6">
-                {groupedByCourse.map(([groupKey, groupDocs]) => (
-                  <div key={groupKey} className="space-y-3">
-                    <div className="flex items-center gap-2 pb-1.5 border-b border-slate-200/60">
-                      <Folder className="h-4 w-4 text-blue-600" />
-                      <h3 className="text-sm font-bold text-slate-900">{groupKey}</h3>
-                      <span className="text-[11px] text-slate-400 font-semibold">
-                        ({groupDocs.length} items)
-                      </span>
-                    </div>
-
-                    <div
-                      className={
-                        viewMode === "grid"
-                          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5"
-                          : "space-y-2.5"
-                      }
-                    >
-                      {groupDocs.map((doc) => (
-                        <LmsLibraryCard
-                          key={doc.id}
-                          doc={doc}
-                          onPreview={handlePreview}
-                          onDownload={handleDownload}
-                          onToggleBookmark={handleToggleBookmark}
-                          onDelete={handleDeleteDocument}
-                          viewMode={viewMode}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              /* Standard Library View (Grid or List) */
-              <>
-                {filteredDocuments.length > 0 ? (
-                  <div
-                    className={
-                      viewMode === "grid"
-                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5"
-                        : "space-y-2.5"
-                    }
-                  >
-                    {filteredDocuments.map((doc) => (
-                      <LmsLibraryCard
-                        key={doc.id}
-                        doc={doc}
-                        onPreview={handlePreview}
-                        onDownload={handleDownload}
-                        onToggleBookmark={handleToggleBookmark}
-                        onDelete={handleDeleteDocument}
-                        viewMode={viewMode}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  /* Empty state if search/filter returned nothing */
-                  <div className="flex-1 flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-white border border-dashed border-slate-200 space-y-3 min-h-[300px]">
-                    <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
-                      {activeSection === "bookmarks" ? (
-                        <Bookmark className="h-6 w-6 text-amber-500" />
-                      ) : (
-                        <FileText className="h-6 w-6" />
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="text-sm font-bold text-slate-800">
-                        {activeSection === "bookmarks"
-                          ? "No Bookmarked Notes Yet"
-                          : `No items found for ${selectedCategory}`}
-                      </h4>
-                      <p className="text-xs text-slate-500 max-w-sm">
-                        {activeSection === "bookmarks"
-                          ? "Click the bookmark icon 🔖 on any course note or PDF to pin it here for quick access."
-                          : "No uploaded items matched this filter. Try selecting 'All' or uploading an item for this course."}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory("All");
-                        setSearchQuery("");
-                        setActiveSection("all");
-                      }}
-                      className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
-                    >
-                      {activeSection === "bookmarks" ? "Browse All Items" : "Reset Filters"}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+            <button
+              type="button"
+              onClick={handleOpenUploadModal}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer active:scale-95 text-sm"
+              title="Add Material or Upload PDF"
+            >
+              <Plus className="h-4 w-4" />
+              <span>+ Add Material</span>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Search & Filter Bar */}
+      <div className="space-y-3.5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          {/* Search input container */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search course materials, codes, topics..."
+              className="w-full bg-white border border-slate-200/80 text-slate-900 placeholder:text-slate-400 rounded-2xl pl-10 pr-4 py-2.5 shadow-xs focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          {/* Right Action Controls: Note counter, Sort, View switcher */}
+          <div className="flex items-center justify-between md:justify-end gap-2.5 shrink-0">
+            <span className="text-xs font-medium text-slate-500 tabular-nums hidden sm:inline-block">
+              {filteredDocuments.length} {filteredDocuments.length === 1 ? "note" : "notes"}
+            </span>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="text-xs font-semibold text-slate-700 bg-white border border-slate-200/80 rounded-xl px-3 py-2 outline-none cursor-pointer hover:border-slate-300 shadow-2xs focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="recent">Sort: Newest</option>
+              <option value="name">Sort: A-Z</option>
+              <option value="size">Sort: File Size</option>
+            </select>
+
+            <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/60 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                  viewMode === "grid"
+                    ? "bg-white text-slate-900 shadow-xs"
+                    : "text-slate-400 hover:text-slate-700"
+                }`}
+                title="Grid View"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                  viewMode === "list"
+                    ? "bg-white text-slate-900 shadow-xs"
+                    : "text-slate-400 hover:text-slate-700"
+                }`}
+                title="List View"
+              >
+                <List className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Category Filter Pills ("All", "TWRM", "CN", "MACS", "Labs") */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          {availableCategories.map((cat) => {
+            const isCatActive = selectedCategory === cat;
+
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  if (activeSection === "bookmarks" || activeSection === "uploads") {
+                    setActiveSection("all");
+                  }
+                }}
+                className={`cursor-pointer transition-all shrink-0 ${
+                  isCatActive
+                    ? "bg-blue-600 text-white font-semibold shadow-xs rounded-xl px-4 py-1.5 text-sm"
+                    : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-slate-200/80 rounded-xl px-4 py-1.5 text-sm font-medium transition-all"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main Documents Grid / Section Views */}
+      {documents.length === 0 ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-8 sm:p-14 text-center rounded-3xl bg-white border border-dashed border-slate-200/90 space-y-4 my-4 min-h-[380px] shadow-xs">
+          <div className="h-16 w-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-xs border border-blue-100/60">
+            <BookOpen className="h-8 w-8 stroke-[2.2]" />
+          </div>
+          <div className="space-y-1.5 max-w-sm">
+            <h3 className="text-base font-bold text-slate-900">
+              No Courses Uploaded Yet
+            </h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              This course page only displays the courses and materials you upload. Click the button below to upload your first course PDF.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenUploadModal}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Upload First Course PDF</span>
+          </button>
+        </div>
+      ) : activeSection === "courses" ? (
+        <div className="space-y-6">
+          {groupedByCourse.map(([groupKey, groupDocs]) => (
+            <div key={groupKey} className="space-y-3">
+              <div className="flex items-center gap-2 pb-1.5 border-b border-slate-200/60">
+                <Folder className="h-4 w-4 text-blue-600" />
+                <h3 className="text-sm font-bold text-slate-900">{groupKey}</h3>
+                <span className="text-[11px] text-slate-400 font-semibold">
+                  ({groupDocs.length} notes)
+                </span>
+              </div>
+
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    : "space-y-3"
+                }
+              >
+                {groupDocs.map((doc) => (
+                  <LmsLibraryCard
+                    key={doc.id}
+                    doc={doc}
+                    onPreview={handlePreview}
+                    onDownload={handleDownload}
+                    onToggleBookmark={handleToggleBookmark}
+                    onDelete={handleDeleteDocument}
+                    viewMode={viewMode}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {filteredDocuments.length > 0 ? (
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  : "space-y-3"
+              }
+            >
+              {filteredDocuments.map((doc) => (
+                <LmsLibraryCard
+                  key={doc.id}
+                  doc={doc}
+                  onPreview={handlePreview}
+                  onDownload={handleDownload}
+                  onToggleBookmark={handleToggleBookmark}
+                  onDelete={handleDeleteDocument}
+                  viewMode={viewMode}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-white border border-dashed border-slate-200 space-y-3 min-h-[300px]">
+              <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
+                {activeSection === "bookmarks" ? (
+                  <Bookmark className="h-6 w-6 text-amber-500" />
+                ) : (
+                  <FileText className="h-6 w-6" />
+                )}
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-bold text-slate-800">
+                  {activeSection === "bookmarks"
+                    ? "No Bookmarked Notes Yet"
+                    : "No notes found"}
+                </h4>
+                <p className="text-xs text-slate-500 max-w-sm">
+                  {activeSection === "bookmarks"
+                    ? "Click the bookmark icon 🔖 on any course note or PDF to pin it here for quick access."
+                    : "No documents matched your current search or category filter. Try clearing filters or resetting."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSearchQuery("");
+                  setActiveSection("all");
+                }}
+                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
+              >
+                {activeSection === "bookmarks" ? "Browse All Course Notes" : "Reset Filters"}
+              </button>
+            </div>
+          )}
+        </>
+      )}
 
       {/* PDF Interactive Viewer Modal */}
       <LmsPdfViewerModal
@@ -803,7 +740,7 @@ export default function LmsPage() {
       />
 
       {/* Footer copyright */}
-      <div className="relative z-10 text-center py-4 text-xs text-slate-400">
+      <div className="text-center py-6 text-xs text-slate-400">
         <p>© 2026 Course Materials Vault • FastTask Academic Suite</p>
       </div>
     </div>

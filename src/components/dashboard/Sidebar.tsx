@@ -14,6 +14,7 @@ import {
   Rocket,
   X,
   BookOpen,
+  Clock,
 } from "lucide-react";
 
 export interface SidebarProps {
@@ -46,6 +47,13 @@ export function Sidebar({ isOpen, onClose, onNavigateTab }: SidebarProps) {
       icon: CalendarIcon,
       href: "/calendar",
       isActive: pathname === "/calendar",
+    },
+    {
+      id: "schedule",
+      label: "Routine",
+      icon: Clock,
+      href: "/schedule",
+      isActive: pathname === "/schedule",
     },
     {
       id: "kanban",
