@@ -16,7 +16,7 @@ export function TaskStatusBadge({
   if (completed) {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 font-medium text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 backdrop-blur-xs ${className}`}
+        className={`inline-flex items-center gap-1.5 font-medium text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 ${className}`}
         aria-label="Status: Completed"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.7)]" />
@@ -28,7 +28,7 @@ export function TaskStatusBadge({
   if (dueSoon) {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 font-medium text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 border border-amber-300/60 shadow-2xs backdrop-blur-xs ${className}`}
+        className={`inline-flex items-center gap-1.5 font-medium text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 border border-amber-300/60 shadow-2xs ${className}`}
         aria-label="Status: Due Soon"
       >
         <span className="relative flex h-2 w-2">
@@ -42,7 +42,7 @@ export function TaskStatusBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-medium text-[11px] px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-700 border border-blue-300/50 shadow-2xs backdrop-blur-xs ${className}`}
+      className={`inline-flex items-center gap-1.5 font-medium text-[11px] px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-700 border border-blue-300/50 shadow-2xs ${className}`}
       aria-label="Status: Active"
     >
       <span className="relative flex h-2 w-2">

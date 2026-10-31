@@ -8,7 +8,6 @@ import {
   FileText,
   Library,
   Bookmark,
-  Plus,
   Compass,
 } from "@/components/ui/GoogleIcon";
 

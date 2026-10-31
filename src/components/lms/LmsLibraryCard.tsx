@@ -5,39 +5,17 @@ import {
   Eye,
   Download,
   FileText,
-  Brain,
-  Code2,
-  Network,
-  Binary,
-  PenTool,
-  FlaskConical,
   Trash2,
-  Sparkles,
   Bookmark,
+  Sparkles,
 } from "@/components/ui/GoogleIcon";
 import {
   getCourseTheme,
   cleanDocumentTitle,
 } from "@/lib/courseThemes";
 
-export interface LmsPdfDocument {
-  id: string;
-  title: string;
-  courseCode: string;
-  courseName?: string;
-  size: string;
-  category: string;
-  pages?: number;
-  uploadedAt?: string;
-  description?: string;
-  isBookmarked?: boolean;
-  fileUrl?: string;
-  isCustomUpload?: boolean;
-  materialType?: string;
-  schedule?: string;
-  tag?: string;
-  userId?: string;
-}
+import type { LmsPdfDocument } from "@/types";
+export type { LmsPdfDocument };
 
 export interface LmsLibraryCardProps {
   doc: LmsPdfDocument;
@@ -48,62 +26,7 @@ export interface LmsLibraryCardProps {
   viewMode?: "grid" | "list";
 }
 
-function CourseIcon({ type, className }: { type: string; className?: string }) {
-  switch (type) {
-    case "brain":
-      return <Brain className={className} />;
-    case "code":
-      return <Code2 className={className} />;
-    case "network":
-      return <Network className={className} />;
-    case "math":
-      return <Binary className={className} />;
-    case "writing":
-      return <PenTool className={className} />;
-    case "lab":
-      return <FlaskConical className={className} />;
-    default:
-      return <FileText className={className} />;
-  }
-}
 
-function getCourseBadgeStyle(key?: string) {
-  const norm = (key || "").trim().toUpperCase();
-  if (norm.includes("CN") || norm.includes("0612CSE315")) {
-    return {
-      badge: "bg-emerald-50 text-emerald-700 border-emerald-200/50",
-      iconBg: "bg-emerald-50 text-emerald-600 border-emerald-200/50",
-    };
-  }
-  if (norm.includes("MACS") || norm.includes("0541MAT337")) {
-    return {
-      badge: "bg-amber-50 text-amber-700 border-amber-200/50",
-      iconBg: "bg-amber-50 text-amber-600 border-amber-200/50",
-    };
-  }
-  if (norm.includes("TWRM") || norm.includes("0031CSE320")) {
-    return {
-      badge: "bg-rose-50 text-rose-700 border-rose-200/50",
-      iconBg: "bg-rose-50 text-rose-600 border-rose-200/50",
-    };
-  }
-  if (norm.includes("LAB") || norm.includes("SESS")) {
-    return {
-      badge: "bg-purple-50 text-purple-700 border-purple-200/50",
-      iconBg: "bg-purple-50 text-purple-600 border-purple-200/50",
-    };
-  }
-  if (norm.includes("AIES") || norm.includes("0611CSE321")) {
-    return {
-      badge: "bg-indigo-50 text-indigo-700 border-indigo-200/50",
-      iconBg: "bg-indigo-50 text-indigo-600 border-indigo-200/50",
-    };
-  }
-  return {
-    badge: "bg-blue-50 text-blue-700 border-blue-200/50",
-    iconBg: "bg-blue-50 text-blue-600 border-blue-200/50",
-  };
-}
 
 export function LmsLibraryCard({
   doc,
@@ -121,15 +44,15 @@ export function LmsLibraryCard({
     return (
       <div
         onClick={() => onPreview(doc)}
-        className="group relative bg-white border border-slate-200/80 rounded-2xl p-4 sm:px-5 flex items-center justify-between gap-4 shadow-xs hover:shadow-md hover:border-blue-200 transition-all duration-200 cursor-pointer"
+        className={`group relative ${theme.cardBg || "bg-white"} border ${theme.cardBorder || "border-slate-200/80"} rounded-2xl p-4 sm:px-5 flex items-center justify-between gap-4 shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden`}
       >
         <div className="flex items-center gap-3.5 min-w-0 flex-1">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="bg-blue-50 text-blue-700 border border-blue-200/50 font-bold text-xs px-2.5 py-1 rounded-lg">
+              <span className={`font-bold text-xs px-2.5 py-1 rounded-lg border ${theme.badgeBg} ${theme.badgeText} ${theme.badgeBorder}`}>
                 {doc.courseName || theme.name}
               </span>
-              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border border-slate-200/80 bg-slate-50 text-slate-600 tabular-nums">
+              <span className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border tabular-nums ${theme.codeBadge || "border-slate-200/80 bg-slate-50 text-slate-600"}`}>
                 {doc.courseCode}
               </span>
               {doc.isCustomUpload && (
@@ -215,17 +138,17 @@ export function LmsLibraryCard({
   return (
     <div
       onClick={() => onPreview(doc)}
-      className="group relative bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col justify-between h-full cursor-pointer"
+      className={`group relative ${theme.cardBg || "bg-white"} border ${theme.cardBorder || "border-slate-200/80"} rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full cursor-pointer`}
     >
       <div>
         {/* Header area: Course tag pill along with course code and status badge */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 flex-wrap min-w-0 flex-1">
-            <span className="bg-blue-50 text-blue-700 border border-blue-200/50 font-bold text-xs px-2.5 py-1 rounded-lg">
+            <span className={`font-bold text-xs px-2.5 py-1 rounded-lg border ${theme.badgeBg} ${theme.badgeText} ${theme.badgeBorder}`}>
               {doc.courseName || theme.name}
             </span>
 
-            <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border border-slate-200/80 bg-slate-50 text-slate-600 tabular-nums">
+            <span className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-lg border tabular-nums ${theme.codeBadge || "border-slate-200/80 bg-slate-50 text-slate-600"}`}>
               {doc.courseCode}
             </span>
 
@@ -281,7 +204,7 @@ export function LmsLibraryCard({
 
         {doc.schedule && (
           <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-2">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+            <span className={`inline-block h-1.5 w-1.5 rounded-full ${theme.colorDot || "bg-blue-500"} shrink-0 shadow-[0_0_6px_rgba(59,130,246,0.5)]`} />
             <span>{doc.schedule}</span>
           </p>
         )}
@@ -295,7 +218,7 @@ export function LmsLibraryCard({
         <button
           type="button"
           onClick={() => onPreview(doc)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2 px-4 rounded-xl flex-1 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          className={`font-semibold text-xs py-2 px-4 rounded-xl flex-1 flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme.primaryButton || "bg-blue-600 hover:bg-blue-700 text-white"}`}
           title="Read Document"
         >
           <Eye className="h-3.5 w-3.5" />

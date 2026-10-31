@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Plus, GraduationCap, Calendar, Sliders } from "lucide-react";
+import { Plus, GraduationCap, Sliders } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStudentProfile } from "@/lib/studentProfile";
 

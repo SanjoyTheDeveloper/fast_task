@@ -75,14 +75,19 @@ export function serializeTask(task: RawDbTask): Task {
     dueDate = task.dueDate instanceof Date ? task.dueDate.toISOString() : new Date(task.dueDate).toISOString();
   }
 
+  const courseVal =
+    typeof task.course === "object" && task.course !== null
+      ? (task.course as { code?: string }).code
+      : (task.course as string | undefined);
+
   return {
     id: String(task.id),
     title: String(task.title),
     description: parsedMeta.description,
     completed: Boolean(task.completed ?? task.status === "COMPLETED"),
     dueDate,
-    course: task.course || parsedMeta.course,
-    category: task.category || parsedMeta.category,
+    course: courseVal || parsedMeta.course || null,
+    category: task.category || parsedMeta.category || null,
     priority: task.priority || "MEDIUM",
     userId: String(task.userId),
     createdAt,

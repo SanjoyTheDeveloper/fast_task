@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, RegisterInput } from "@/lib/validations";
@@ -64,8 +63,9 @@ export default function RegisterPage() {
         toast.success("Account created successfully! Please check your email.");
       }
       setIsLoading(false);
-    } catch (err: any) {
-      setServerError(err.message || "An unexpected error occurred. Please try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An unexpected error occurred. Please try again.";
+      setServerError(message);
       setIsLoading(false);
     }
   };

@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, Bell, Moon, Sun, Radio, Menu, X } from "@/components/ui/GoogleIcon";
-import Image from "next/image";
+import { Search, Bell, Moon, Sun, Menu, X } from "@/components/ui/GoogleIcon";
 
 export interface LmsHeaderProps {
   searchQuery?: string;

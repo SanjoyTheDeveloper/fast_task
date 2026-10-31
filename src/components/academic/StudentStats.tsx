@@ -12,7 +12,7 @@ export interface StudentStatsProps {
 
 export function StudentStats({
   tasks = [],
-  totalCount = 0,
+  totalCount: _totalCount = 0,
   className = "",
 }: StudentStatsProps) {
   // 1. Pending Assignments
@@ -25,7 +25,7 @@ export function StudentStats({
 
   const assignmentsDueSoon = React.useMemo(() => {
     const now = new Date();
-    const threeDaysFromNow = new Date(Date.now() + 3 * 86400000);
+    const threeDaysFromNow = new Date(now.getTime() + 3 * 86400000);
     return pendingAssignments.filter((t) => {
       if (!t.dueDate) return false;
       const due = new Date(t.dueDate);
@@ -35,9 +35,10 @@ export function StudentStats({
 
   // 2. Upcoming Exams / Deadlines
   const upcomingExams = React.useMemo(() => {
+    const now = new Date();
     return tasks.filter((t) => {
       if (t.completed) return false;
-      return t.category === "Exam" || (t.dueDate && new Date(t.dueDate) >= new Date());
+      return t.category === "Exam" || (t.dueDate && new Date(t.dueDate).getTime() >= now.getTime());
     });
   }, [tasks]);
 

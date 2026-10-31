@@ -7,8 +7,6 @@ import {
   Pause,
   RotateCcw,
   Sparkles,
-  Volume2,
-  VolumeX,
   CloudRain,
   Flame,
   Brain,
@@ -78,7 +76,6 @@ export function ZenFlowModal({
     wind: 0.4,
   });
   const [isSoundPanelOpen, setIsSoundPanelOpen] = React.useState(false);
-  const [masterVolume, setMasterVolume] = React.useState(0.8);
   const [mantraIndex, setMantraIndex] = React.useState(0);
 
   // Initialize Sound Engine
@@ -150,7 +147,7 @@ export function ZenFlowModal({
   // Audio Chime on finish
   const playChime = () => {
     try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) {
         const ctx = new AudioCtx();
         const osc = ctx.createOscillator();

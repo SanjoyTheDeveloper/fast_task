@@ -3,13 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import {
-  Calendar,
-  Clock,
-  MapPin,
-  User,
   ArrowRight,
-  Sparkles,
-  Coffee,
   Pencil,
   Trash2,
   Plus,
@@ -143,13 +137,15 @@ export interface TodayScheduleProps {
   onSelectSession?: (item: ScheduleItem) => void;
   selectedDay?: string;
   onSelectDay?: (day: string) => void;
+  showAddButton?: boolean;
 }
 
 export function TodaySchedule({
-  onManageRoutine,
+  onManageRoutine: _onManageRoutine,
   onSelectSession,
   selectedDay: propSelectedDay,
   onSelectDay,
+  showAddButton = false,
 }: TodayScheduleProps) {
   const { profile } = useStudentProfile();
 
@@ -263,7 +259,6 @@ export function TodaySchedule({
   }, [routineSlots]);
 
   const activeSlots = weeklyMap[selectedDay] || [];
-  const isOffDay = activeSlots.length === 0;
   const totalClassesCount = routineSlots.length;
 
   // Handle slot saved from modal (single or multiple)
@@ -406,21 +401,23 @@ export function TodaySchedule({
 
         {/* Right Status / Actions */}
         <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={handleOpenAdd}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs font-bold shadow-xs shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
-            title="Add Class to Routine"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <span>Add Class</span>
-          </button>
+          {showAddButton && (
+            <button
+              type="button"
+              onClick={handleOpenAdd}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs font-bold shadow-xs shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
+              title="Add Class to Routine"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Add Class</span>
+            </button>
+          )}
 
           <Link
-            href="/schedule"
+            href="/routine"
             className="text-xs font-bold text-[#315BFF] hover:text-[#254BE3] hover:underline flex items-center gap-1 cursor-pointer"
           >
-            <span>View Routine</span>
+            <span>View Full Routine</span>
             <GIcon name="arrow_forward" size={12} />
           </Link>
         </div>

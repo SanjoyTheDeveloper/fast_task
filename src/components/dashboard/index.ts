@@ -7,3 +7,8 @@ export * from "./TodaySchedule";
 export * from "./StatCards";
 export * from "./CalendarWidget";
 export * from "./FocusPomodoro";
+export * from "./ProjectOverviewCards";
+export * from "./TaskProgressGauge";
+export * from "./LatestActivityTimeline";
+export * from "./TasksOverviewTable";
+export * from "./NotesOverviewCard";

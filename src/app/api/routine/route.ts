@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth";
 import { db, prisma } from "@/lib/db";
+import type { RawRoutineSlotInput } from "@/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -46,7 +48,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const dayParam = searchParams.get("dayOfWeek")?.trim().toLowerCase();
 
-    const where: any = {
+    const where: Prisma.RoutineScheduleWhereInput = {
       userId: user.id,
     };
 
@@ -114,7 +116,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     // 1. Extract raw slot array or individual records
-    let rawSlots: any[] = [];
+    let rawSlots: RawRoutineSlotInput[] = [];
     if (Array.isArray(body.slots) && body.slots.length > 0) {
       rawSlots = body.slots;
     } else if (Array.isArray(body.daysOfWeek) && body.daysOfWeek.length > 0) {
@@ -132,7 +134,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Normalize fields according to Prisma model & payload requirements
-    const normalizedSlots = rawSlots.map((s: any) => {
+    const normalizedSlots = rawSlots.map((s: RawRoutineSlotInput) => {
       const rawDay = (s.dayOfWeek || s.day || "Sunday").trim();
       const normDay = DAY_NORMALIZATION[rawDay.toLowerCase()] || rawDay;
       const cTitle = (s.courseTitle || s.title || body.courseTitle || "").trim();
@@ -157,7 +159,7 @@ export async function POST(req: NextRequest) {
     });
 
     // 3. Perform database insert with zero-failure fallback
-    let savedSlots: any[] = [];
+    let savedSlots: Array<Record<string, unknown>> = [];
 
     try {
       savedSlots = await prisma.$transaction(
@@ -167,8 +169,7 @@ export async function POST(req: NextRequest) {
           })
         )
       );
-    } catch (txErr: any) {
-      console.warn("Transactional routine insert failed, attempting createMany / db fallback:", txErr?.message || txErr);
+    } catch {
       try {
         await prisma.routineSchedule.createMany({
           data: normalizedSlots,
@@ -180,7 +181,7 @@ export async function POST(req: NextRequest) {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }));
-      } catch (createManyErr: any) {
+      } catch (createManyErr: unknown) {
         console.error("Routine creation error:", createManyErr);
         // Seamless fallback to persistent local store in db.ts
         savedSlots = await Promise.all(
@@ -202,14 +203,15 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Routine creation error:", error);
+    const msg = error instanceof Error ? error.message : "Failed to create class routine";
     return NextResponse.json(
       {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: error?.message || "Failed to create class routine",
+          message: msg,
         },
       },
       { status: 500 }

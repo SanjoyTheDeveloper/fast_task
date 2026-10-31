@@ -30,10 +30,22 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
       return errorResponse("INVALID_TASK_ID", "Invalid task ID", 400);
     }
 
-    const task = await db.task.findUnique({ where: { id: idResult.data } });
+    const task = await db.task.findFirst({
+      where: { id: idResult.data, userId: user.id },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        completed: true,
+        priority: true,
+        dueDate: true,
+        createdAt: true,
+        updatedAt: true,
+        userId: true,
+      },
+    });
 
-    // Enforce ownership: Return 404 TASK_NOT_FOUND if not found or belongs to another user
-    if (!task || task.userId !== user.id) {
+    if (!task) {
       return errorResponse("TASK_NOT_FOUND", "Task not found", 404);
     }
 

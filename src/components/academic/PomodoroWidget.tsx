@@ -1,15 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Play,
   Pause,
   RotateCcw,
-  Sparkles,
   Volume2,
   VolumeX,
-  Maximize2,
-  Minimize2,
   CheckCircle2,
   Coffee,
   Brain,
@@ -60,6 +57,40 @@ export function PomodoroWidget() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const playBeep = useCallback(() => {
+    if (!soundEnabled) return;
+    try {
+      const audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6);
+    } catch {
+      // AudioContext not allowed or unsupported
+    }
+  }, [soundEnabled]);
+
+  const handleComplete = useCallback(() => {
+    setIsRunning(false);
+    playBeep();
+    if (mode === "focus") {
+      setCompletedSessions((prev) => prev + 1);
+      // switch to short break automatically
+      setMode("shortBreak");
+      setTimeLeft(MODE_CONFIG.shortBreak.duration);
+    } else {
+      setMode("focus");
+      setTimeLeft(MODE_CONFIG.focus.duration);
+    }
+  }, [mode, playBeep]);
+
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
@@ -78,41 +109,7 @@ export function PomodoroWidget() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning, mode]);
-
-  const playBeep = () => {
-    if (!soundEnabled) return;
-    try {
-      const audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.6);
-    } catch {
-      // AudioContext not allowed or unsupported
-    }
-  };
-
-  const handleComplete = () => {
-    setIsRunning(false);
-    playBeep();
-    if (mode === "focus") {
-      setCompletedSessions((prev) => prev + 1);
-      // switch to short break automatically
-      setMode("shortBreak");
-      setTimeLeft(MODE_CONFIG.shortBreak.duration);
-    } else {
-      setMode("focus");
-      setTimeLeft(MODE_CONFIG.focus.duration);
-    }
-  };
+  }, [isRunning, handleComplete]);
 
   const switchMode = (newMode: Mode) => {
     setIsRunning(false);

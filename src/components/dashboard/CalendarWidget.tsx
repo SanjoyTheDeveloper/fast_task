@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { GIcon } from "@/components/ui/GIcon";
+import { RoutineSlot } from "@/types";
 
 export interface DayEvent {
   hasClasses?: boolean;
@@ -116,7 +117,7 @@ export const defaultUpcomingTasks: UpcomingTaskItem[] = [
   },
 ];
 
-import { WEEKLY_SCHEDULE, ScheduleItem } from "./TodaySchedule";
+import { ScheduleItem } from "./TodaySchedule";
 
 export interface CalendarWidgetProps {
   onSelectTask?: (id: string) => void;
@@ -187,7 +188,7 @@ export function CalendarWidget({
             const map: Record<string, ScheduleItem[]> = {
               Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
             };
-            json.data.forEach((slot: any) => {
+            json.data.forEach((slot: RoutineSlot) => {
               const dayShort = slot.dayOfWeek?.slice(0, 3);
               if (map[dayShort]) {
                 map[dayShort].push({
@@ -220,20 +221,18 @@ export function CalendarWidget({
   const activeEvent: DayEvent | null = SEPTEMBER_EVENTS[activePopoverDate] || null;
 
   // Current week days for week view
-  const currentWeekDays = React.useMemo(() => {
-    const targetDay = selectedDate || todayDate;
-    const targetDate = new Date(year, month, targetDay);
-    const dayOfWeek = targetDate.getDay();
-    const days: number[] = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(targetDate);
-      d.setDate(targetDate.getDate() + (i - dayOfWeek));
-      if (d.getMonth() === month) {
-        days.push(d.getDate());
-      }
+  const targetDay = selectedDate || todayDate;
+  const targetDate = new Date(year, month, targetDay);
+  const dayOfWeek = targetDate.getDay();
+  const currentWeekDaysList: number[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(targetDate);
+    d.setDate(targetDate.getDate() + (i - dayOfWeek));
+    if (d.getMonth() === month) {
+      currentWeekDaysList.push(d.getDate());
     }
-    return days.length > 0 ? days : [27, 28, 29, 30];
-  }, [year, month, selectedDate, todayDate]);
+  }
+  const currentWeekDays = currentWeekDaysList.length > 0 ? currentWeekDaysList : [27, 28, 29, 30];
 
   const handleDateClick = (day: number) => {
     setInternalSelectedDate(day);

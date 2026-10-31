@@ -26,9 +26,6 @@ export async function POST(req: NextRequest) {
     const { name, email, password } = result.data;
     const cleanEmail = email.toLowerCase().trim();
 
-    console.log("\n[Register API] ========== NEW REGISTRATION ATTEMPT ==========");
-    console.log(`[Register API] Processing signup for email: ${cleanEmail}`);
-
     const isEmailServiceActive = isEmailConfigured();
 
     // Check if user already exists
@@ -45,7 +42,6 @@ export async function POST(req: NextRequest) {
 
     if (existingUser) {
       if (existingUser.emailVerified) {
-        console.warn(`[Register API] Registration rejected: Email ${cleanEmail} already exists`);
         return NextResponse.json(
           { message: "An account with this email address already exists" },
           { status: 409 }
@@ -64,8 +60,6 @@ export async function POST(req: NextRequest) {
           emailVerified: initialEmailVerified,
         },
       });
-
-      console.log(`[Register API] Re-issued verification OTP for unverified user: ${user.id}`);
     } else {
       // Create new user with 6-digit OTP code
       const hashedPassword = await hashPassword(password);
@@ -79,12 +73,6 @@ export async function POST(req: NextRequest) {
           verificationTokenExpires,
         },
       });
-
-      console.log(
-        `[Register API] ✓ User created with ID: ${user.id} and emailVerified: ${
-          initialEmailVerified ? "Verified (Active)" : "Pending"
-        }`
-      );
     }
 
     // Prepare verification URL (with both code and email)
@@ -96,15 +84,6 @@ export async function POST(req: NextRequest) {
     const verificationUrl = `${baseUrl.replace(/\/$/, "")}/verify-email?code=${encodeURIComponent(
       verificationCode
     )}&email=${encodeURIComponent(user.email)}`;
-
-    console.log(`\n============================================================`);
-    console.log(`[REGISTER API] NEW USER REGISTRATION`);
-    console.log(`  - Name:               ${user.name}`);
-    console.log(`  - Recipient Email:    ${user.email}`);
-    console.log(`  - DB emailVerified:   ${initialEmailVerified ? "ACTIVE" : "PENDING"}`);
-    console.log(`  - 6-Digit OTP:        ${verificationCode}`);
-    console.log(`  - Verification URL:   ${verificationUrl}`);
-    console.log(`============================================================\n`);
 
     // Dispatch verification email with 6-digit OTP via Gmail SMTP (Nodemailer)
     let emailSent = false;

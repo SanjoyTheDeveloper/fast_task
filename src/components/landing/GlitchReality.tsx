@@ -1,18 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
 import {
   ArrowRight,
-  Sparkles,
-  Zap,
   Activity,
-  Layers,
-  Clock,
   ShieldCheck,
-  CheckCircle2,
   Terminal,
   Timer,
   BookOpen,
@@ -26,26 +19,12 @@ export function GlitchReality() {
     ? (rawLinkedin.startsWith("http") ? rawLinkedin : `https://${rawLinkedin}`)
     : "https://www.linkedin.com";
 
-  const { data: session } = useSession();
-  const isLoggedIn = !!session?.user;
-  const targetUrl = isLoggedIn ? "/tasks" : "/login?from=/tasks";
-
-  const [progressWidth, setProgressWidth] = useState(38);
-  const [isGlitching, setIsGlitching] = useState(false);
-
-  // Gentle animated progress bar pulsation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgressWidth((prev) => (prev >= 94 ? 38 : prev + 14));
-    }, 2400);
-    return () => clearInterval(interval);
-  }, []);
+  const [isGlitching, setIsGlitching] = React.useState(false);
+  const progressWidth = 72;
 
   const triggerGlitchEffect = () => {
-    if (isGlitching) return;
     setIsGlitching(true);
-    setProgressWidth((prev) => (prev > 80 ? 44 : prev + 16));
-    setTimeout(() => setIsGlitching(false), 850);
+    setTimeout(() => setIsGlitching(false), 500);
   };
 
   return (
@@ -53,14 +32,14 @@ export function GlitchReality() {
       id="glitch-reality"
       className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] text-[#172033] overflow-hidden select-none"
     >
-      {/* Soft ambient daylight glows consistent with dashboard & KPI showcase */}
+      {/* Soft ambient daylight glows with hardware-friendly CSS radial gradients */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-12 left-1/4 -z-10 h-[500px] w-[500px] rounded-full bg-blue-400/10 blur-[130px]"
+        className="pointer-events-none absolute top-12 left-1/4 -z-10 h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(96,165,250,0.12)_0%,transparent_70%)]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-8 right-1/4 -z-10 h-[450px] w-[450px] rounded-full bg-indigo-300/10 blur-[120px]"
+        className="pointer-events-none absolute bottom-8 right-1/4 -z-10 h-[450px] w-[450px] rounded-full bg-[radial-gradient(circle_at_center,rgba(165,180,252,0.1)_0%,transparent_70%)]"
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -204,11 +183,11 @@ export function GlitchReality() {
                     isGlitching ? "filter contrast-125 brightness-105" : ""
                   }`}
                   sizes="(max-width: 640px) 100vw, 500px"
-                  priority
+                  loading="lazy"
                 />
 
                 {/* Live session pill on top left */}
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md border border-[#E5EAF2] text-[11px] font-semibold text-[#172033] shadow-xs flex items-center gap-1.5">
+                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/95 border border-[#E5EAF2] text-[11px] font-semibold text-[#172033] shadow-xs flex items-center gap-1.5">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#315BFF] opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#315BFF]" />

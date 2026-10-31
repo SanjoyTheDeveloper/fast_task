@@ -8,7 +8,6 @@ import {
   RotateCcw,
   Volume2,
   VolumeX,
-  ChevronDown,
   Sparkles,
 } from "lucide-react";
 
@@ -44,16 +43,15 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
       setIsRunning(false);
       // Play sound if not muted
       if (!isMuted && typeof window !== "undefined") {
-        try {
-          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          const audioCtx = new AudioCtx();
           const osc = audioCtx.createOscillator();
           osc.type = "sine";
           osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
           osc.connect(audioCtx.destination);
           osc.start();
           osc.stop(audioCtx.currentTime + 0.3);
-        } catch {
-          // AudioContext unsupported
         }
       }
     }

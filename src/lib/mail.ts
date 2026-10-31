@@ -77,14 +77,7 @@ export async function sendVerificationEmail(
     process.env.EMAIL_FROM ||
     `"FastTask" <${emailUser || "no-reply@fasttask.app"}>`;
 
-  console.log("\n============================================================");
-  console.log("📧 [NODEMAILER SMTP] SENDING VERIFICATION OTP");
-  console.log("============================================================");
-  console.log(`  To:           ${email}`);
-  console.log(`  From:         ${fromAddress}`);
-  console.log(`  Code (OTP):   ${code}`);
-  console.log(`  Direct Link:  ${verificationUrl}`);
-  console.log("============================================================\n");
+
 
   if (!isEmailConfigured()) {
     const errorMsg =
@@ -324,18 +317,13 @@ If you did not create a FastTask account, you can safely ignore this email.
       html,
     });
 
-    console.log("✅ [Nodemailer Success] Email delivered!");
-    console.log(`   Message ID: ${info.messageId}`);
-    console.log("============================================================\n");
-
     return {
       success: true,
       messageId: info.messageId,
     };
-  } catch (error: any) {
-    const errorMessage = error?.message || "Failed to send email via Gmail SMTP";
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to send email via Gmail SMTP";
     console.error("❌ [Nodemailer Exception]:", errorMessage);
-    console.log("============================================================\n");
     return {
       success: false,
       error: errorMessage,
@@ -389,8 +377,8 @@ export async function sendEmail({
       success: true,
       messageId: info.messageId,
     };
-  } catch (error: any) {
-    const errorMessage = error?.message || "Failed to send email via SMTP";
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to send email via SMTP";
     console.error("❌ [Nodemailer Exception]:", errorMessage);
     return {
       success: false,

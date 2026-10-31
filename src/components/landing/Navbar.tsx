@@ -133,8 +133,8 @@ export function Navbar({
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-200 ${
         scrolled
-          ? "border-b border-[#E5EAF2] bg-white/95 backdrop-blur-xl shadow-[0_2px_12px_rgba(15,23,42,0.03)]"
-          : "border-b border-[#E5EAF2] bg-white/80 backdrop-blur-md"
+          ? "border-b border-[#E5EAF2] bg-white/98 shadow-[0_2px_12px_rgba(15,23,42,0.03)]"
+          : "border-b border-[#E5EAF2] bg-white/90"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -159,7 +159,7 @@ export function Navbar({
 
         {/* Center: Clean Human-Crafted Navigation Links (Desktop) */}
         <nav
-          className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100/60 border border-slate-200/50 backdrop-blur-md"
+          className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100/90 border border-slate-200/60"
           aria-label="Main Navigation"
         >
           {navItems.map((item) => {
@@ -231,7 +231,7 @@ export function Navbar({
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-16 bottom-0 bg-white/98 backdrop-blur-2xl border-b border-slate-200 p-6 flex flex-col justify-between z-50 animate-in fade-in duration-200">
+        <div className="md:hidden fixed inset-x-0 top-16 bottom-0 bg-white/98 border-b border-slate-200 p-6 flex flex-col justify-between z-50 animate-in fade-in duration-200">
             <nav className="flex flex-col space-y-1.5">
               {navItems.map((item) => {
                 const isClicked = clickedItem === item.label;

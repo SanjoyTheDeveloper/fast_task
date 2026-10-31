@@ -5,12 +5,11 @@ import Image from "next/image";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
 import { CourseCardData } from "./CourseCard";
-import { Star, Clock, BookOpen, CheckCircle2, Play, Bookmark, X } from "@/components/ui/GoogleIcon";
+import { Star, Clock, BookOpen, CheckCircle2, Play } from "@/components/ui/GoogleIcon";
 import { toast } from "sonner";
 
 export interface CourseDetailModalProps {

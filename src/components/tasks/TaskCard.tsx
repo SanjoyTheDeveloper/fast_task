@@ -52,7 +52,7 @@ export function TaskCard({
 
   return (
     <Card
-      className={`group relative border-l-4 ${borderColor} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/90 border-slate-200/80 bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden`}
+      className={`group relative border-l-4 ${borderColor} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300/90 border-slate-200/80 bg-white rounded-2xl overflow-hidden`}
     >
       <CardHeader className="p-4 pb-2">
         <div className="flex items-start justify-between gap-2">

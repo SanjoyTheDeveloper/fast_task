@@ -4,10 +4,6 @@ import * as React from "react";
 import {
   X,
   Upload,
-  FileText,
-  CheckCircle2,
-  Sparkles,
-  BookOpen,
   FileCheck,
   AlertCircle,
 } from "@/components/ui/GoogleIcon";

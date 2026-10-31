@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   Upload,
   FileText,
-  CheckCircle2,
   X,
   BookOpen,
   Sparkles,

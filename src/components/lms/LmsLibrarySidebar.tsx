@@ -1,16 +1,13 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import {
   FileText,
   Folder,
   Bookmark,
   Layers,
-  GraduationCap,
   HardDrive,
   CheckCircle2,
-  Sparkles,
   UploadCloud,
 } from "@/components/ui/GoogleIcon";
 import { COURSE_THEMES } from "@/lib/courseThemes";
@@ -37,7 +34,6 @@ export function LmsLibrarySidebar({
   onSelectSection,
   selectedCategory = "All",
   onSelectCategory,
-  onOpenUpload,
   counts,
   enrolledCourses,
 }: LmsLibrarySidebarProps) {

@@ -73,17 +73,10 @@ export async function POST(req: NextRequest) {
       verificationCode
     )}&email=${encodeURIComponent(user.email)}`;
 
-    console.log(`\n============================================================`);
-    console.log(`[RESEND OTP] NEW 6-DIGIT CODE FOR: ${user.email}`);
-    console.log(`>>> OTP: ${verificationCode} <<<`);
-    console.log(`>>> Link: ${verificationUrl} <<<`);
-    console.log(`============================================================\n`);
-
     // Send verification email using Nodemailer Gmail SMTP
     const emailResult = await sendVerificationEmail(user.email, verificationCode);
 
     if (!emailResult.success) {
-      console.warn("[Nodemailer Warning] Could not deliver email:", emailResult.error);
       return NextResponse.json(
         {
           message: `Email could not be delivered: ${emailResult.error}`,

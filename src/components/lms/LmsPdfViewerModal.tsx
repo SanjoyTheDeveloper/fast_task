@@ -4,15 +4,11 @@ import * as React from "react";
 import {
   X,
   Download,
-  BookOpen,
-  FileText,
-  Clock,
   Sparkles,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
   Printer,
-  CheckCircle,
   FileSearch,
   Bookmark,
 } from "@/components/ui/GoogleIcon";

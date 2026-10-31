@@ -12,11 +12,7 @@ import {
   ArrowRight,
   GripVertical,
   CheckCircle2,
-  Circle,
   Sparkles,
-  Calendar,
-  AlertCircle,
-  Tag,
 } from "@/components/ui/GoogleIcon";
 import {
   DropdownMenu,
@@ -31,11 +27,11 @@ import type { Task } from "@/types/task";
 
 interface KanbanBoardProps {
   tasks: Task[];
-  onEdit: (task: Task) => void;
-  onDelete: (taskId: string) => void;
+  onEdit?: (task: Task) => void;
+  onDelete?: (taskId: string) => void;
   onStatusToggle: (task: Task) => void;
   onStatusChange?: (taskId: string, completed: boolean) => void;
-  onOpenCreateModal: (defaultCompleted?: boolean) => void;
+  onOpenCreateModal?: (defaultCompleted?: boolean) => void;
   onLoadStarterTasks?: () => void;
 }
 
@@ -60,8 +56,10 @@ export function KanbanBoard({
       completedValue: false,
       title: "To Do",
       subtitle: "Pending & Active Studies",
-      dotColor: "bg-blue-600",
-      badgeColor: "bg-blue-100 text-blue-700",
+      dotColor: "bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.7)]",
+      badgeColor: "bg-blue-50 text-blue-700 border border-blue-200/80",
+      bgGradient: "bg-gradient-to-b from-blue-50/30 via-slate-50/40 to-slate-100/60",
+      accentLine: "bg-gradient-to-r from-blue-500 to-indigo-500",
       borderColor: "hover:border-blue-300",
       items: pendingTasks,
     },
@@ -70,8 +68,10 @@ export function KanbanBoard({
       completedValue: true,
       title: "Completed",
       subtitle: "Finished & Verified",
-      dotColor: "bg-emerald-600",
-      badgeColor: "bg-emerald-100 text-emerald-700",
+      dotColor: "bg-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.7)]",
+      badgeColor: "bg-emerald-50 text-emerald-700 border border-emerald-200/80",
+      bgGradient: "bg-gradient-to-b from-emerald-50/30 via-slate-50/40 to-slate-100/60",
+      accentLine: "bg-gradient-to-r from-emerald-500 to-teal-500",
       borderColor: "hover:border-emerald-300",
       items: completedTasks,
     },
@@ -151,10 +151,10 @@ export function KanbanBoard({
               onDragOver={(e) => handleDragOver(e, col.id)}
               onDragLeave={(e) => handleDragLeave(e, col.id)}
               onDrop={(e) => handleDrop(e, col.completedValue)}
-              className={`flex flex-col rounded-2xl border transition-all duration-200 min-h-[580px] p-3.5 space-y-3 ${
+              className={`flex flex-col rounded-2xl border transition-all duration-200 min-h-[580px] p-4 space-y-3 ${
                 isOver
                   ? "border-blue-400 bg-blue-50/50 shadow-md ring-2 ring-blue-400/20"
-                  : "border-slate-200/80 bg-slate-100/70"
+                  : `border-slate-200/90 ${col.bgGradient} shadow-2xs`
               }`}
             >
               {/* Column Header (Linear / Jira style) */}
@@ -164,34 +164,36 @@ export function KanbanBoard({
                   <h3 className="font-bold text-sm text-slate-800 tracking-tight">
                     {col.title}
                   </h3>
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${col.badgeColor}`}>
+                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold border ${col.badgeColor}`}>
                     {col.items.length}
                   </span>
                 </div>
 
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onOpenCreateModal(col.completedValue)}
-                  className="h-7 px-2 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-200/80 gap-1 cursor-pointer"
-                  title={`Add task to ${col.title}`}
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  <span>Add</span>
-                </Button>
+                {onOpenCreateModal && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onOpenCreateModal(col.completedValue)}
+                    className="h-7 px-2 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-200/80 gap-1 cursor-pointer"
+                    title={`Add task to ${col.title}`}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    <span>Add</span>
+                  </Button>
+                )}
               </div>
 
               {/* Cards List inside column */}
               <div className="space-y-3 flex-1 flex flex-col">
                 {col.items.length === 0 ? (
-                  /* Compact Human Dropzone (No giant cartoon voids!) */
+                  /* Compact Human Dropzone */
                   <div
-                    onClick={() => onOpenCreateModal(col.completedValue)}
+                    onClick={() => onOpenCreateModal?.(col.completedValue)}
                     className="h-28 rounded-xl border-2 border-dashed border-slate-300/80 hover:border-blue-400 bg-white/40 hover:bg-white/80 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 transition-all cursor-pointer text-xs gap-1 group"
                   >
                     <div className="flex items-center gap-1 font-semibold text-slate-600 group-hover:text-blue-600">
-                      <Plus className="h-3.5 w-3.5" />
-                      <span>Add a task to {col.title}</span>
+                      {onOpenCreateModal && <Plus className="h-3.5 w-3.5" />}
+                      <span>{onOpenCreateModal ? `Add a task to ${col.title}` : `No tasks in ${col.title}`}</span>
                     </div>
                     <span className="text-[11px] text-slate-400">
                       or drag cards into this column
@@ -200,6 +202,17 @@ export function KanbanBoard({
                 ) : (
                   col.items.map((task) => {
                     const isDraggingThis = draggedTaskId === task.id;
+                    const courseLower = (task.course || "").toLowerCase();
+                    const courseTagStyle =
+                      courseLower.includes("aies") || courseLower.includes("321")
+                        ? "bg-blue-50 text-blue-700 border-blue-200/80"
+                        : courseLower.includes("cn") || courseLower.includes("315")
+                        ? "bg-purple-50 text-purple-700 border-purple-200/80"
+                        : courseLower.includes("macs") || courseLower.includes("337")
+                        ? "bg-amber-50 text-amber-800 border-amber-200/80"
+                        : courseLower.includes("ap") || courseLower.includes("333")
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+                        : "bg-indigo-50 text-indigo-700 border-indigo-200/80";
 
                     return (
                       <div
@@ -215,7 +228,7 @@ export function KanbanBoard({
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-1.5 flex-wrap min-w-0">
                             {task.course && (
-                              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/70 font-bold text-[10px] tracking-wide shrink-0">
+                              <span className={`px-2 py-0.5 rounded-md font-bold text-[10px] tracking-wide shrink-0 border ${courseTagStyle}`}>
                                 {task.course}
                               </span>
                             )}
@@ -232,9 +245,9 @@ export function KanbanBoard({
                                 <span
                                   className={`h-1.5 w-1.5 rounded-full ${
                                     task.priority === "HIGH"
-                                      ? "bg-rose-500"
+                                      ? "bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]"
                                       : task.priority === "MEDIUM"
-                                      ? "bg-amber-500"
+                                      ? "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.7)]"
                                       : "bg-slate-400"
                                   }`}
                                 />
@@ -261,10 +274,12 @@ export function KanbanBoard({
                                   <span>View Details</span>
                                 </Link>
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => onEdit(task)}>
-                                <Pencil className="mr-2 h-4 w-4 text-slate-500" />
-                                <span>Edit Task</span>
-                              </DropdownMenuItem>
+                              {onEdit && (
+                                <DropdownMenuItem onClick={() => onEdit(task)}>
+                                  <Pencil className="mr-2 h-4 w-4 text-slate-500" />
+                                  <span>Edit Task</span>
+                                </DropdownMenuItem>
+                              )}
                               <DropdownMenuSeparator />
                               {onStatusChange && (
                                 <DropdownMenuItem
@@ -275,13 +290,15 @@ export function KanbanBoard({
                                 </DropdownMenuItem>
                               )}
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => onDelete(task.id)}
-                                className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                <span>Delete Task</span>
-                              </DropdownMenuItem>
+                              {onDelete && (
+                                <DropdownMenuItem
+                                  onClick={() => onDelete(task.id)}
+                                  className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  <span>Delete Task</span>
+                                </DropdownMenuItem>
+                              )}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
@@ -289,7 +306,7 @@ export function KanbanBoard({
                         {/* Card Title & Description */}
                         <div>
                           <h4
-                            onClick={() => onEdit(task)}
+                            onClick={() => onEdit?.(task)}
                             className={`text-xs sm:text-sm font-bold leading-snug cursor-pointer hover:text-blue-600 transition-colors line-clamp-2 ${
                               task.completed ? "line-through text-slate-400" : "text-slate-900"
                             }`}
@@ -318,7 +335,11 @@ export function KanbanBoard({
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              onStatusChange && onStatusChange(task.id, !task.completed);
+                              if (onStatusChange) {
+                                onStatusChange(task.id, !task.completed);
+                              } else {
+                                onStatusToggle(task);
+                              }
                             }}
                             className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                               task.completed
@@ -353,14 +374,16 @@ export function KanbanBoard({
               </div>
 
               {/* Bottom Quick-Add Row (Trello / Linear style) */}
-              <button
-                type="button"
-                onClick={() => onOpenCreateModal(col.completedValue)}
-                className="w-full py-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span>Add a task to {col.title}</span>
-              </button>
+              {onOpenCreateModal && (
+                <button
+                  type="button"
+                  onClick={() => onOpenCreateModal(col.completedValue)}
+                  className="w-full py-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Add a task to {col.title}</span>
+                </button>
+              )}
             </div>
           );
         })}

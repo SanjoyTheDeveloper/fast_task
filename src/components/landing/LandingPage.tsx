@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { KpiShowcase } from "@/components/landing/KpiShowcase";
 import { GlitchReality } from "@/components/landing/GlitchReality";
@@ -19,11 +18,8 @@ export function LandingPage() {
         className="pointer-events-none absolute top-[600px] left-1/2 -z-10 h-[600px] w-full max-w-6xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.07),transparent_65%)]"
       />
 
-      {/* 1. Navbar */}
-      <Navbar />
-
       <main>
-        {/* 2. Hero 3D Curved Showcase Section (Directly after Navbar) */}
+        {/* Hero Canvas Showcase Section (Contains integrated top navigation inside canvas) */}
         <Hero />
 
         {/* 3. KPI Showcase Section Matching Reference Design */}

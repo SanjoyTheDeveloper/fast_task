@@ -4,17 +4,13 @@ import * as React from "react";
 import Link from "next/link";
 import {
   BookOpen,
-  GraduationCap,
   Users,
   UserCheck,
   Video,
   CalendarCheck,
   CreditCard,
-  Bookmark,
   BarChart3,
-  Sparkles,
   ArrowRight,
-  Library,
   BookMarked,
   Layers,
 } from "@/components/ui/GoogleIcon";

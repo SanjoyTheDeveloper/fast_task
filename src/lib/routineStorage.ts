@@ -5,7 +5,7 @@
  * preserved on the client across page refreshes, PC restarts, and network downtime.
  */
 
-import { RoutineSlot } from "@/components/routine/AddRoutineModal";
+import type { RoutineSlot } from "@/types";
 
 const STORAGE_KEY = "fasttask_routine_slots_v2";
 

@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, CheckCircle2, Clock, ShieldAlert, GraduationCap, BookOpen, LayoutGrid, Kanban } from "@/components/ui/GoogleIcon";
+import { RotateCcw, CheckCircle2, Clock, ShieldAlert, GraduationCap, LayoutGrid, Kanban } from "@/components/ui/GoogleIcon";
 import { COURSES } from "@/lib/academic";
 
 export interface FilterState {
@@ -138,7 +138,7 @@ export function TaskFilters({
   ];
 
   return (
-    <div className="w-full bg-white/90 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all space-y-3">
+    <div className="w-full bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-sm transition-all space-y-3">
       {/* 1. Top Row: Full Search Bar + View Mode Toggle & Reset */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
         <div className="flex-1 min-w-0 w-full">

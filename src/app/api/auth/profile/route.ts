@@ -14,8 +14,8 @@ export async function GET() {
       dbUser = await db.user.findUnique({
         where: { id: user.id },
       });
-    } catch (e) {
-      console.warn("Profile fetch db fallback:", e);
+    } catch {
+      // Graceful fallback to session identity if db is temporarily unreachable
     }
 
     return NextResponse.json({
@@ -53,8 +53,8 @@ export async function PATCH(req: NextRequest) {
           where: { id: user.id },
           data: { name: name.trim() },
         });
-      } catch (dbErr) {
-        console.warn("Database user update fallback:", dbErr);
+      } catch {
+        // Fallback to in-memory/session representation if update fails
       }
     }
 

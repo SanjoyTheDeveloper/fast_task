@@ -6,7 +6,7 @@
  * even after shutting down, restarting, or clearing browser cache.
  */
 
-import { LmsPdfDocument } from "@/components/lms/LmsLibraryCard";
+import type { LmsPdfDocument } from "@/types";
 
 const DB_NAME = "fasttask_lms_db";
 const DB_VERSION = 1;

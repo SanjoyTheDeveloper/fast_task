@@ -18,14 +18,14 @@ export function CTA({
   return (
     <section id="contact" className="relative px-4 pb-20 sm:px-6 sm:pb-32 lg:px-8">
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] px-6 py-14 text-center shadow-lg sm:px-16 sm:py-20">
-        {/* Ambient radial blur backdrops */}
+        {/* Hardware-friendly ambient radial gradients */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full bg-blue-400/10 blur-3xl"
+          className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,rgba(96,165,250,0.12)_0%,transparent_70%)]"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-indigo-300/15 blur-3xl"
+          className="pointer-events-none absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,rgba(165,180,252,0.15)_0%,transparent_70%)]"
         />
 
         <div className="relative mx-auto max-w-3xl">

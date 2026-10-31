@@ -16,12 +16,12 @@ interface TaskPriorityBadgeProps {
 export function TaskPriorityBadge({ priority, className = "" }: TaskPriorityBadgeProps) {
   if (!priority) return null;
 
-  const variant =
+  const variant: "high" | "medium" | "low" =
     priority === "HIGH" ? "high" : priority === "MEDIUM" ? "medium" : "low";
 
   return (
     <Badge
-      variant={variant as any}
+      variant={variant}
       className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md ${className}`}
       aria-label={`Priority: ${priority}`}
     >

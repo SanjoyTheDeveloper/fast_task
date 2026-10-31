@@ -8,7 +8,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ==========================================
+// 1. ENUMS
+// ==========================================
+
+enum UserRole {
+  STUDENT
+  CR
+  TEACHER
+  ADMIN
+}
+
 enum TaskStatus {
+  BACKLOG
   PENDING
   IN_PROGRESS
   COMPLETED
@@ -18,90 +30,259 @@ enum TaskPriority {
   LOW
   MEDIUM
   HIGH
+  URGENT
 }
 
+enum AcademicCategory {
+  ASSIGNMENT
+  EXAM
+  LAB_REPORT
+  PERSONAL_ROUTINE
+  GENERAL
+}
+
+// ==========================================
+// 2. AUTHENTICATION & USER MANAGEMENT
+// ==========================================
+
 model User {
-  id                       String    @id @default(cuid())
+  id                       String            @id @default(cuid())
   name                     String
-  email                    String    @unique
+  email                    String            @unique
   password                 String
-  emailVerified            DateTime?
-  verificationToken        String?   @unique
-  verificationTokenExpires DateTime?
-  createdAt                DateTime  @default(now())
-  updatedAt                DateTime  @updatedAt
+  image                    String?
+  role                     UserRole          @default(STUDENT)
+  emailVerified            DateTime?         @map("email_verified")
+  verificationToken        String?           @unique @map("verification_token")
+  verificationTokenExpires DateTime?         @map("verification_token_expires")
+  createdAt                DateTime          @default(now()) @map("created_at")
+  updatedAt                DateTime          @updatedAt @map("updated_at")
+
+  profile                  Profile?
+  semesters                Semester[]
+  courses                  Course[]
   tasks                    Task[]
+  notes                    Note[]
   materials                CourseMaterial[]
   routines                 RoutineSchedule[]
+  studySessions            StudySession[]
 
   @@map("users")
 }
 
-model CourseMaterial {
-  id           String    @id @default(cuid())
-  title        String
-  courseCode   String
-  courseName   String?
-  category     String
-  tag          String?
-  schedule     String?
-  fileUrl      String?   @db.Text
-  fileSize     String?
-  pages        Int?      @default(1)
-  description  String?   @db.Text
-  materialType String?
-  isBookmarked Boolean   @default(false)
-  userId       String
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId   String?  @map("student_id")
+  department  String?
+  batch       String?
+  avatarColor String   @default("purple") @map("avatar_color")
+  linkedin    String?
+  phone       String?
+  bio         String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@index([userId])
-  @@index([userId, category])
-  @@index([userId, courseCode])
-  @@index([userId, createdAt])
-  @@map("course_materials")
+  @@map("profiles")
 }
 
-model Task {
-  id          String       @id @default(cuid())
-  title       String
-  description String?
-  completed   Boolean      @default(false)
-  status      TaskStatus   @default(PENDING)
-  priority    TaskPriority @default(MEDIUM)
-  dueDate     DateTime?
-  userId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+// ==========================================
+// 3. ACADEMIC HIERARCHY (Semester & Course)
+// ==========================================
+
+model Semester {
+  id        String            @id @default(cuid())
+  userId    String            @map("user_id")
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String            // e.g. "Spring 2026", "Fall 2025"
+  code      String?           // e.g. "2026-1"
+  startDate DateTime?         @map("start_date")
+  endDate   DateTime?         @map("end_date")
+  isActive  Boolean           @default(true) @map("is_active")
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  courses   Course[]
+  routines  RoutineSchedule[]
+
+  @@index([userId, isActive])
+  @@map("semesters")
+}
+
+model Course {
+  id          String            @id @default(cuid())
+  userId      String            @map("user_id")
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semesterId  String?           @map("semester_id")
+  semester    Semester?         @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+  code        String            // e.g. "0611CSE321"
+  title       String            // e.g. "Artificial Intelligence & Expert Systems"
+  color       String?           @default("#315BFF")
+  credit      Float?            @default(3.0)
+  instructor  String?
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  tasks       Task[]
+  notes       Note[]
+  materials   CourseMaterial[]
+  routines    RoutineSchedule[]
+
+  @@unique([userId, code])
+  @@index([userId])
+  @@map("courses")
+}
+
+// ==========================================
+// 4. ROUTINE & TIMETABLE
+// ==========================================
+
+model RoutineSchedule {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String?   @map("course_id")
+  course      Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  semesterId  String?   @map("semester_id")
+  semesterRef Semester? @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+
+  courseCode  String    @map("course_code")
+  courseTitle String    @map("course_title")
+  dayOfWeek   String    @map("day_of_week") // e.g. "Monday", "Tuesday"
+  startTime   String    @map("start_time")
+  endTime     String    @map("end_time")
+  roomNo      String?   @map("room_no")
+  instructor  String?
+  semester    String?   // Backward-compatible semester string
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@index([userId, dayOfWeek])
+  @@index([userId, courseId])
+  @@map("routine_schedules")
+}
+
+// ==========================================
+// 5. TASKS, ASSIGNMENTS & SUBTASKS
+// ==========================================
+
+model Task {
+  id          String           @id @default(cuid())
+  userId      String           @map("user_id")
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String?          @map("course_id")
+  course      Course?          @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  title       String
+  description String?          @db.Text
+  completed   Boolean          @default(false)
+  status      TaskStatus       @default(PENDING)
+  priority    TaskPriority     @default(MEDIUM)
+  category    AcademicCategory @default(GENERAL)
+  dueDate     DateTime?        @map("due_date")
+  order       Int              @default(0)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  subtasks    Subtask[]
+
+  @@index([userId])
+  @@index([userId, status])
   @@index([userId, completed])
-  @@index([userId, createdAt])
+  @@index([userId, dueDate])
   @@index([userId, priority])
   @@index([status])
   @@index([priority])
   @@map("tasks")
 }
 
-model RoutineSchedule {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseCode  String
-  courseTitle String
-  dayOfWeek   String
-  startTime   String
-  endTime     String
-  roomNo      String?
-  instructor  String?
-  semester    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Subtask {
+  id        String   @id @default(cuid())
+  taskId    String   @map("task_id")
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([userId])
-  @@index([userId, dayOfWeek])
-  @@map("routine_schedules")
+  @@index([taskId])
+  @@map("subtasks")
 }
 
+// ==========================================
+// 6. ACADEMIC NOTES
+// ==========================================
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String?  @map("course_id")
+  course    Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  title     String
+  content   String   @db.Text
+  isPinned  Boolean  @default(false) @map("is_pinned")
+  tags      String[] @default([])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId, isPinned])
+  @@index([userId, courseId])
+  @@map("notes")
+}
+
+// ==========================================
+// 7. LMS & COURSE MATERIALS (PDFs / Slides)
+// ==========================================
+
+model CourseMaterial {
+  id           String    @id @default(cuid())
+  userId       String    @map("user_id")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId     String?   @map("course_id")
+  course       Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  title        String
+  courseCode   String    @map("course_code")
+  courseName   String?   @map("course_name")
+  category     String
+  tag          String?
+  schedule     String?
+  fileUrl      String?   @map("file_url") @db.Text
+  storagePath  String?   @map("storage_path")
+  fileSize     String?   @map("file_size")
+  pages        Int?      @default(1)
+  description  String?   @db.Text
+  materialType String?   @map("material_type")
+  isBookmarked Boolean   @default(false) @map("is_bookmarked")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([userId, isBookmarked])
+  @@index([userId, category])
+  @@index([userId, courseCode])
+  @@index([userId, createdAt])
+  @@map("course_materials")
+}
+
+// ==========================================
+// 8. FOCUS / STUDY SESSIONS (Pomodoro Tracker)
+// ==========================================
+
+model StudySession {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject     String?
+  durationMin Int      @map("duration_min")
+  sessionDate DateTime @default(now()) @map("session_date")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([userId, sessionDate])
+  @@map("study_sessions")
+}

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,6 @@ import { CheckSquare, Loader2, Lock, Mail, AlertCircle } from "@/components/ui/G
 import { toast, Toaster } from "sonner";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/dashboard";
 
@@ -143,13 +142,13 @@ function LoginForm() {
           redirectTo: targetDestination,
           redirect: false,
         });
-      } catch (signInErr) {
-        console.warn("SignIn redirect notice:", signInErr);
+      } catch {
+        // Fallback or ignore redirection notice
       }
 
       // 3. Immediately hard-navigate with the session cookie to destination
       window.location.href = from;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login unexpected error:", err);
       // Fallback navigation if cookie is set
       window.location.href = from;

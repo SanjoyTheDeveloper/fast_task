@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -29,7 +29,6 @@ type VerificationStatus = "idle" | "loading" | "success" | "error";
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const tokenParam = searchParams.get("token") || searchParams.get("code") || "";
   const emailParam = searchParams.get("email") || "";

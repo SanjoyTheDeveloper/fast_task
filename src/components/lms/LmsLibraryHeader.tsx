@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, Menu, X, ChevronDown, Sparkles, Upload } from "@/components/ui/GoogleIcon";
+import { ChevronDown, Upload } from "@/components/ui/GoogleIcon";
 import { useStudentProfile } from "@/lib/studentProfile";
 import Link from "next/link";
 
@@ -17,7 +17,6 @@ export interface LmsLibraryHeaderProps {
 
 export function LmsLibraryHeader({
   userName: propUserName,
-  userEmail,
   onOpenUpload,
 }: LmsLibraryHeaderProps) {
   const { profile, palette } = useStudentProfile();

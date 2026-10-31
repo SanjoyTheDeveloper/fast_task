@@ -79,8 +79,6 @@ async function processVerification(code?: string | null, email?: string | null) 
     },
   });
 
-  console.log(`\n✅ [VERIFY EMAIL API] Email verified successfully for: ${user.email}\n`);
-
   return NextResponse.json(
     {
       message: "Email verified successfully! You can now log in.",

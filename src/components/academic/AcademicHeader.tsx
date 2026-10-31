@@ -12,10 +12,18 @@ import {
   getSemesterStatus,
   sortSessionsChronologically,
 } from "@/lib/academic";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { GIcon } from "@/components/ui/GIcon";
-import { CourseScheduleModal } from "./CourseScheduleModal";
-import { SemesterSetupModal } from "./SemesterSetupModal";
+
+const CourseScheduleModal = dynamic(
+  () => import("./CourseScheduleModal").then((m) => m.CourseScheduleModal),
+  { ssr: false }
+);
+const SemesterSetupModal = dynamic(
+  () => import("./SemesterSetupModal").then((m) => m.SemesterSetupModal),
+  { ssr: false }
+);
 import { toast } from "sonner";
 
 export interface AcademicHeaderProps {
@@ -31,13 +39,12 @@ export function AcademicHeader({
   onOpenCreateModal,
 }: AcademicHeaderProps) {
   // Dynamic greeting based on current local time
-  const [greeting, setGreeting] = React.useState("Welcome back");
-  React.useEffect(() => {
+  const [greeting] = React.useState(() => {
     const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning");
-    else if (hour < 18) setGreeting("Good afternoon");
-    else setGreeting("Good evening");
-  }, []);
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  });
 
   // Today's formatted date & Day of the week
   const todayDate = React.useMemo(() => new Date(), []);
@@ -177,11 +184,12 @@ export function AcademicHeader({
   return (
     <div className="space-y-4">
       {/* 1. Main Welcome & Academic Status Banner (Frosted Glass) */}
-      <div className="w-full p-4 sm:p-6 lg:p-7 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
-        {/* Subtle top shimmer line */}
-        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-blue-500/40 via-indigo-500/60 to-purple-500/30" />
+      <div className="w-full p-4 sm:p-6 lg:p-7 rounded-2xl bg-gradient-to-r from-white via-blue-50/20 to-indigo-50/25 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
+        {/* Ambient background glows */}
+        <div className="pointer-events-none absolute -top-12 -right-12 h-44 w-44 rounded-full bg-blue-500/10 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-12 -left-12 h-44 w-44 rounded-full bg-indigo-500/10 blur-2xl" />
 
-        <div className="space-y-2 min-w-0 flex-1">
+        <div className="space-y-2 min-w-0 flex-1 relative z-10">
           {/* Semester & Academic Week Badge (Clickable to Configure Semester) */}
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -353,9 +361,10 @@ export function AcademicHeader({
                 <div
                   key={session.id}
                   onClick={() => handleOpenEditSession(session)}
-                  className="group relative flex flex-col justify-between p-3.5 rounded-xl bg-[#F8FAFC] hover:bg-white border border-slate-200/80 hover:border-blue-300 hover:shadow-sm transition-all duration-200 min-w-[260px] sm:min-w-[280px] md:min-w-0 snap-center shrink-0 md:shrink cursor-pointer"
+                  className="group relative flex flex-col justify-between p-3.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 hover:border-blue-300 hover:shadow-sm transition-all duration-200 min-w-[260px] sm:min-w-[280px] md:min-w-0 snap-center shrink-0 md:shrink cursor-pointer"
                   title="Click to edit session details"
                 >
+
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span

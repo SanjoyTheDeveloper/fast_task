@@ -126,8 +126,9 @@ export function TaskForm({ initialData, onSuccess, onCancel }: TaskFormProps) {
       // Canonical contract: read task strictly from response.data: Task
       const savedTask: Task = json.data;
       onSuccess(savedTask);
-    } catch (err: any) {
-      setServerError(err.message || "Network error occurred");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Network error occurred";
+      setServerError(message);
     } finally {
       setIsSubmitting(false);
     }

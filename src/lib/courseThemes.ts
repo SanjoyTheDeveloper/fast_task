@@ -283,6 +283,8 @@ export function getDocumentSummary(title: string, category?: string): string {
   if (t.includes("literature review")) {
     return "Systematic literature search, PRISMA framework, BibTeX referencing & synthesis.";
   }
-  return "Comprehensive course study notes, reference diagrams, and preparation review.";
+  return category
+    ? `Comprehensive ${category} course study notes, reference diagrams, and preparation review.`
+    : "Comprehensive course study notes, reference diagrams, and preparation review.";
 }
 

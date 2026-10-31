@@ -220,7 +220,6 @@ export function KpiShowcase() {
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 640px) 230px, 275px"
-                    priority
                   />
                   {/* Category Pill Tag */}
                   <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-white/95 backdrop-blur-md border border-[#E5EAF2] text-[9px] font-mono font-bold text-[#172033] shadow-xs flex items-center gap-1">

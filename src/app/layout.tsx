@@ -1,10 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -39,22 +46,23 @@ export default async function RootLayout({
   let session = null;
   try {
     session = await auth();
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { digest?: string; message?: string };
     // Next.js uses internal errors to signal dynamic rendering and redirects
     if (
-      error?.digest === "DYNAMIC_SERVER_USAGE" ||
-      error?.message?.includes("DYNAMIC_SERVER_USAGE") ||
-      error?.digest?.startsWith?.("NEXT_")
+      err?.digest === "DYNAMIC_SERVER_USAGE" ||
+      err?.message?.includes("DYNAMIC_SERVER_USAGE") ||
+      err?.digest?.startsWith?.("NEXT_")
     ) {
       throw error;
     }
-    console.warn("Session check in RootLayout skipped/failed:", error?.message || error);
+    console.warn("Session check in RootLayout skipped/failed:", err?.message || error);
   }
 
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${newsreader.variable} h-full antialiased`}
     >
       <head>
         <link

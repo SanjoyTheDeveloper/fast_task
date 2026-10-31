@@ -2,21 +2,8 @@
 
 import * as React from "react";
 
-export interface StudentProfile {
-  name: string;
-  studentId: string;
-  department: string;
-  batch: string;
-  avatarColor: string;
-  linkedin?: string;
-}
-
-export interface AvatarPalette {
-  id: string;
-  name: string;
-  gradient: string;
-  ring: string;
-}
+import type { StudentProfile, AvatarPalette } from "@/types";
+export type { StudentProfile, AvatarPalette };
 
 export const AVATAR_PALETTES: AvatarPalette[] = [
   { id: "purple", name: "Purple Indigo", gradient: "from-purple-600 via-indigo-600 to-purple-500", ring: "ring-purple-400" },

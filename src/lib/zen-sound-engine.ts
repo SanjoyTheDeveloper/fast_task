@@ -27,7 +27,7 @@ export class ZenSoundEngine {
 
   private initContext() {
     if (!this.ctx && typeof window !== "undefined") {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
         this.masterGain = this.ctx.createGain();
@@ -108,9 +108,14 @@ export class ZenSoundEngine {
       for (const node of track.nodes) {
         if (typeof node === "number") {
           window.clearInterval(node);
-        } else if (typeof (node as any).stop === "function") {
+        } else if (
+          node &&
+          typeof node === "object" &&
+          "stop" in node &&
+          typeof (node as { stop?: () => void }).stop === "function"
+        ) {
           try {
-            (node as any).stop();
+            (node as { stop: () => void }).stop();
           } catch {}
         }
       }

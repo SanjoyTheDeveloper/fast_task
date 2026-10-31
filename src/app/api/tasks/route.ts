@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { createTaskApiSchema, taskQuerySchema } from "@/lib/validations";
 import {
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
       queryValidation.data;
 
     // 1. Construct reusable Prisma WHERE condition scoped strictly to the authenticated user
-    const where: any = {
+    const where: Prisma.TaskWhereInput = {
       userId: user.id,
     };
 
@@ -98,7 +99,9 @@ export async function GET(req: NextRequest) {
     const sortField = allowedSortFields[sortBy] || "createdAt";
     const orderDirection = sortOrder?.toLowerCase() === "asc" ? "asc" : "desc";
 
-    const orderBy: any = [{ [sortField]: orderDirection }];
+    const orderBy: Prisma.TaskOrderByWithRelationInput[] = [
+      { [sortField]: orderDirection },
+    ];
     if (sortField !== "id") {
       orderBy.push({ id: "desc" });
     }
@@ -114,6 +117,25 @@ export async function GET(req: NextRequest) {
         orderBy,
         skip,
         take,
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          completed: true,
+          status: true,
+          priority: true,
+          category: true,
+          dueDate: true,
+          createdAt: true,
+          updatedAt: true,
+          userId: true,
+          course: {
+            select: {
+              code: true,
+              title: true,
+            },
+          },
+        },
       }),
       db.task.count({
         where,

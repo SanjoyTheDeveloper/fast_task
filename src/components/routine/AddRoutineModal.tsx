@@ -7,35 +7,16 @@ import {
   Clock,
   MapPin,
   GraduationCap,
-  User,
-  Plus,
   Check,
   AlertCircle,
   Copy,
   Sparkles,
-  BookOpen,
 } from "@/components/ui/GoogleIcon";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { saveStoredRoutineSlots } from "@/lib/routineStorage";
-
-export interface RoutineSlot {
-  id: string;
-  userId?: string;
-  courseCode: string;
-  courseTitle: string;
-  dayOfWeek: string;
-  day?: string;
-  startTime: string;
-  endTime: string;
-  roomNo?: string | null;
-  roomNumber?: string | null;
-  instructor?: string | null;
-  teacherName?: string | null;
-  semester?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import type { RoutineSlot } from "@/types";
+export type { RoutineSlot };
 
 export interface AddRoutineModalProps {
   isOpen: boolean;
@@ -531,8 +512,8 @@ export function AddRoutineModal({
               updatedSlot = json.data;
             }
           }
-        } catch (fetchErr) {
-          console.warn("API update notice, persisting locally:", fetchErr);
+        } catch {
+          // Gracefully persist locally
         }
 
         saveStoredRoutineSlots(updatedSlot);
@@ -611,8 +592,8 @@ export function AddRoutineModal({
                 : [json.data];
             }
           }
-        } catch (fetchErr) {
-          console.warn("API save notice, persisting locally:", fetchErr);
+        } catch {
+          // Gracefully persist locally
         }
 
         // Save persistently to localStorage
@@ -636,10 +617,11 @@ export function AddRoutineModal({
 
         onClose();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Routine save error:", err);
-      setErrorMsg(err.message || "Failed to save class routine");
-      toast.error(err.message || "Could not save class routine");
+      const message = err instanceof Error ? err.message : "Failed to save class routine";
+      setErrorMsg(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
