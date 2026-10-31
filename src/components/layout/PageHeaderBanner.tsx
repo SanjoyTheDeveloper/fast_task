@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Plus } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 
 export interface PageStatItem {
   label: string;
@@ -102,8 +102,8 @@ export function PageHeaderBanner({
               onClick={actionButton.onClick}
               className="bg-gradient-to-r from-[#2563EB] to-[#4F46E5] hover:from-[#1D4ED8] hover:to-[#4338CA] text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 transition-all duration-200 flex items-center gap-2 cursor-pointer active:scale-98 shrink-0"
             >
-              {actionButton.icon || <Plus className="h-4 w-4 stroke-[3]" />}
-              <span>{actionButton.label}</span>
+              {actionButton.icon || <GIcon name="add" size={18} weight={600} />}
+              <span>{actionButton.label.replace(/^\+\s*/, "")}</span>
             </button>
           )}
 

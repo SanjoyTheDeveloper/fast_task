@@ -1,14 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  BookOpen,
-  Hourglass,
-  CheckCircle2,
-  AlertCircle,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import type { Task } from "@/types/task";
 
 export interface StatCardsProps {
@@ -45,7 +38,7 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
       id: "total",
       label: "Total task",
       value: displayTotal,
-      icon: BookOpen,
+      iconName: "assignment",
       trend: "+7%",
       trendDirection: "up" as const,
       trendText: "from last month",
@@ -58,7 +51,7 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
       id: "progress",
       label: "On progress",
       value: displayProgress,
-      icon: Hourglass,
+      iconName: "hourglass_top",
       trend: "+3%",
       trendDirection: "up" as const,
       trendText: "from last month",
@@ -71,7 +64,7 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
       id: "completed",
       label: "Completed",
       value: displayCompleted,
-      icon: CheckCircle2,
+      iconName: "check_circle",
       trend: "+9%",
       trendDirection: "up" as const,
       trendText: "from last month",
@@ -84,7 +77,7 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
       id: "overdue",
       label: "Overdue",
       value: displayOverdue,
-      icon: AlertCircle,
+      iconName: "warning",
       trend: "-2%",
       trendDirection: "down" as const,
       trendText: "from last month",
@@ -98,7 +91,6 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       {cards.map((card) => {
-        const Icon = card.icon;
         const isUp = card.trendDirection === "up";
 
         return (
@@ -114,7 +106,7 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
               <div
                 className={`h-9 w-9 rounded-xl border flex items-center justify-center transition-all duration-300 shrink-0 ${card.iconBox}`}
               >
-                <Icon className="h-4 w-4" strokeWidth={2} />
+                <GIcon name={card.iconName} size={18} />
               </div>
             </div>
 
@@ -130,11 +122,11 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
               <div
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-bold ${card.trendBadge}`}
               >
-                {isUp ? (
-                  <TrendingUp className="h-3 w-3 stroke-[2.5]" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 stroke-[2.5]" />
-                )}
+                <GIcon
+                  name={isUp ? "trending_up" : "trending_down"}
+                  size={14}
+                  weight={600}
+                />
                 <span>{card.trend}</span>
               </div>
               <span className="text-slate-400 font-normal">

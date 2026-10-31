@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Folder, Calendar, CheckSquare, Layers } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import type { Task } from "@/types";
 
 export interface ProjectCardItem {
@@ -123,7 +123,7 @@ export function ProjectOverviewCards({
       {displayProjects.length === 0 ? (
         <div className="bg-white border border-[#E5EAF2] rounded-2xl p-8 text-center shadow-2xs">
           <div className="mx-auto w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-3">
-            <Layers className="h-6 w-6" />
+            <GIcon name="layers" size={24} />
           </div>
           <h4 className="text-sm font-bold text-slate-800">No Course Projects Found</h4>
           <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
@@ -138,10 +138,10 @@ export function ProjectOverviewCards({
             const isPurple = item.color === "purple";
 
             const folderFillColor = isGreen
-              ? "fill-[#10B981] text-[#10B981]"
+              ? "text-emerald-500"
               : isPurple
-              ? "fill-[#8B5CF6] text-[#8B5CF6]"
-              : "fill-[#3B82F6] text-[#3B82F6]";
+              ? "text-purple-500"
+              : "text-blue-500";
 
             const barColor = isGreen
               ? "bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.35)]"
@@ -175,7 +175,7 @@ export function ProjectOverviewCards({
                   {/* Folder Icon Tab at top left */}
                   <div className="flex items-center justify-between mb-3.5">
                     <div className="flex items-center gap-2">
-                      <Folder className={`h-6 w-6 ${folderFillColor}`} />
+                      <GIcon name="folder" filled size={24} className={folderFillColor} />
                     </div>
                   </div>
 
@@ -206,11 +206,11 @@ export function ProjectOverviewCards({
                   {/* Metadata Row: Deadline & Tasks Count */}
                   <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium pb-3 border-t border-slate-100">
                     <div className="flex items-center gap-1.5 pt-2.5">
-                      <Calendar className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                      <GIcon name="calendar_month" size={14} className="shrink-0 text-slate-400" />
                       <span>Deadline: {item.deadline}</span>
                     </div>
                     <div className="flex items-center gap-1.5 pt-2.5">
-                      <CheckSquare className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                      <GIcon name="check_box" size={14} className="shrink-0 text-slate-400" />
                       <span>{item.tasksCount} tasks</span>
                     </div>
                   </div>

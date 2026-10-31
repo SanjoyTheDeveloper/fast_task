@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, CheckSquare } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import { Sidebar } from "./Sidebar";
 import { useStudentProfile } from "@/lib/studentProfile";
 import { cn } from "@/lib/utils";
@@ -88,7 +88,7 @@ export function AppShell({ children, user }: AppShellProps) {
             className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
             aria-label="Close menu"
           >
-            <X className="h-4 w-4" />
+            <GIcon name="close" size={18} />
           </button>
         </div>
 
@@ -112,7 +112,7 @@ export function AppShell({ children, user }: AppShellProps) {
             className="h-9 w-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-2xs transition-colors cursor-pointer"
             aria-label="Open navigation menu"
           >
-            <Menu className="h-5 w-5" />
+            <GIcon name="menu" size={20} />
           </button>
 
           {/* Logo */}
@@ -122,7 +122,7 @@ export function AppShell({ children, user }: AppShellProps) {
             aria-label="FastTask"
           >
             <div className="h-7 w-7 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shadow-xs">
-              <CheckSquare className="h-4 w-4 stroke-[2.5]" />
+              <GIcon name="task_alt" size={16} filled className="text-white" />
             </div>
             <span className="text-base font-black tracking-tight text-[#0F172A]">
               FastTask

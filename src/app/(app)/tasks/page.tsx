@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { PageHeaderBanner } from "@/components/layout";
-import { CheckSquare } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 
 const TaskDialog = dynamic(
   () => import("@/components/tasks/TaskDialog").then((m) => m.TaskDialog),
@@ -346,7 +346,7 @@ export default function MyTasksPage() {
         <main className="flex-1 w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Top Banner matching design reference */}
           <PageHeaderBanner
-            badgeIcon={<CheckSquare className="h-3.5 w-3.5 text-blue-600" />}
+            badgeIcon={<GIcon name="task_alt" size={14} className="text-blue-600" />}
             badgeText="Task Workspace • FastTask LMS"
             title="My Tasks & Assignments"
             titleHighlight="• Batch 82A"
@@ -356,7 +356,7 @@ export default function MyTasksPage() {
               { label: "COMPLETED", value: completedCount },
             ]}
             actionButton={{
-              label: "+ New Task",
+              label: "New Task",
               onClick: () => {
                 setEditingTask(null);
                 setIsCreateModalOpen(true);

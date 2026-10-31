@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import type { SessionUser } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { BookOpen } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import {
   Dialog,
   DialogContent,
@@ -244,7 +244,7 @@ export default function NotesPage() {
         <main className="flex-1 w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Top Banner recreated exactly from design reference */}
           <PageHeaderBanner
-            badgeIcon={<BookOpen className="h-3.5 w-3.5 text-blue-600" />}
+            badgeIcon={<GIcon name="description" size={14} className="text-blue-600" />}
             badgeText="Academic Resource Vault • FastTask LMS"
             title="Course Notes & Library"
             titleHighlight="• Batch 82A"
@@ -254,7 +254,7 @@ export default function NotesPage() {
               { label: "COURSES", value: notes.filter((n) => n.course).length > 0 ? new Set(notes.map((n) => n.course).filter(Boolean)).size : 4 },
             ]}
             actionButton={{
-              label: "+ Add Material",
+              label: "Add Material",
               onClick: handleOpenCreateModal,
             }}
           />

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { SessionUser, RoutineSlot } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { Calendar } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -495,7 +495,7 @@ export default function CalendarPage() {
         <main className="flex-1 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Top Banner matching design reference */}
           <PageHeaderBanner
-            badgeIcon={<Calendar className="h-3.5 w-3.5 text-blue-600" />}
+            badgeIcon={<GIcon name="calendar_month" size={15} className="text-blue-600" />}
             badgeText="Academic Timetable • FastTask LMS"
             title="Academic Calendar & Schedule"
             titleHighlight="• Spring 2026"

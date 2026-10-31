@@ -15,7 +15,6 @@ const TaskDialog = dynamic(
 );
 import type { Task } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { Kanban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GIcon } from "@/components/ui/GIcon";
 import { LayoutGrid } from "@/components/ui/GoogleIcon";
@@ -346,7 +345,7 @@ export default function KanbanPage() {
       <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-6 space-y-6">
         {/* Top Banner matching design reference */}
         <PageHeaderBanner
-          badgeIcon={<Kanban className="h-3.5 w-3.5 text-blue-600" />}
+          badgeIcon={<GIcon name="view_kanban" size={14} className="text-blue-600" />}
           badgeText="Visual Task Workflow • FastTask LMS"
           title="Semester Kanban Board"
           titleHighlight="• Batch 82A"
@@ -356,7 +355,7 @@ export default function KanbanPage() {
             { label: "COMPLETED", value: tasks.filter((t) => t.completed).length },
           ]}
           actionButton={{
-            label: "+ Add Task",
+            label: "Add Task",
             onClick: () => handleOpenCreateModal(),
           }}
         />

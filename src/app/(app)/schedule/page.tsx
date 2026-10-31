@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { PageHeaderBanner } from "@/components/layout";
-import { Clock } from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import {
   Calendar,
   MapPin,
@@ -279,7 +279,7 @@ export default function SchedulePage() {
         <main className="flex-1 w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Top Banner matching design reference */}
           <PageHeaderBanner
-            badgeIcon={<Clock className="h-3.5 w-3.5 text-blue-600" />}
+            badgeIcon={<GIcon name="schedule" size={14} className="text-blue-600" />}
             badgeText="Class Routine & Timetable • FastTask LMS"
             title="Class Routine & Lecture Schedule"
             titleHighlight="• Batch 82A"
@@ -289,7 +289,7 @@ export default function SchedulePage() {
               { label: "TODAY", value: todayClassesCount },
             ]}
             actionButton={{
-              label: "+ Add Schedule",
+              label: "Add Schedule",
               onClick: () => handleOpenAdd(selectedDayTab !== "All" ? selectedDayTab : currentActualDay),
             }}
           />
@@ -320,7 +320,7 @@ export default function SchedulePage() {
                 </h3>
               </div>
               <div className="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 shadow-[0_0_8px_rgba(99,102,241,0.25)] flex items-center justify-center">
-                <Clock className="h-5 w-5" />
+                <GIcon name="schedule" size={20} className="text-indigo-600" />
               </div>
             </div>
 
@@ -561,7 +561,7 @@ export default function SchedulePage() {
                               <div className="mt-3.5 pt-3 border-t border-slate-200/60 space-y-1.5 text-xs text-slate-600">
                                 {/* Time slot */}
                                 <div className="flex items-center gap-2 font-medium">
-                                  <Clock className="h-3.5 w-3.5 text-[#315BFF] shrink-0" />
+                                  <GIcon name="schedule" size={14} className="text-[#315BFF] shrink-0" />
                                   <span className="font-semibold text-slate-800">
                                     {item.startTime} – {item.endTime}
                                   </span>
@@ -570,7 +570,7 @@ export default function SchedulePage() {
                                 {/* Room Number */}
                                 {item.roomNo && (
                                   <div className="flex items-center gap-2 font-medium">
-                                    <MapPin className="h-3.5 w-3.5 text-rose-500 shrink-0" />
+                                    <GIcon name="location_on" size={14} className="text-rose-500 shrink-0" />
                                     <span>{item.roomNo}</span>
                                   </div>
                                 )}
@@ -578,7 +578,7 @@ export default function SchedulePage() {
                                 {/* Instructor */}
                                 {item.instructor && (
                                   <div className="flex items-center gap-2 font-medium text-slate-500">
-                                    <User className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                    <GIcon name="person" size={14} className="text-slate-400 shrink-0" />
                                     <span>Faculty: {item.instructor}</span>
                                   </div>
                                 )}

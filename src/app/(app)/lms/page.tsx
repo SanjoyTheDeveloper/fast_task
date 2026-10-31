@@ -462,7 +462,7 @@ export default function LmsPage() {
           { label: "COURSES", value: enrolledCourses.length || 5 },
         ]}
         actionButton={{
-          label: "+ Add Material",
+          label: "Add Material",
           onClick: handleOpenUploadModal,
         }}
       />

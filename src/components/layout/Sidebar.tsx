@@ -4,25 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
-import {
-  LayoutGrid,
-  CheckCircle2,
-  Calendar,
-  Clock,
-  Kanban,
-  FileText,
-  BookOpen,
-  Settings,
-  LogOut,
-  CheckSquare,
-  MoreVertical,
-  User as UserIcon,
-  Sparkles,
-  Bell,
-  HelpCircle,
-  Inbox,
-  Layers,
-} from "lucide-react";
+import { GIcon } from "@/components/ui/GIcon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,7 +20,7 @@ export interface NavItemConfig {
   id: string;
   label: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  iconName: string;
   badge?: string | number;
   aliases?: string[];
 }
@@ -53,51 +35,51 @@ export const NAV_ITEMS: NavItemConfig[] = [
     id: "dashboard",
     label: "Dashboard",
     href: "/dashboard",
-    icon: LayoutGrid,
+    iconName: "grid_view",
   },
   {
     id: "tasks",
     label: "My Tasks",
     href: "/tasks",
-    icon: CheckCircle2,
+    iconName: "task_alt",
   },
   {
     id: "calendar",
     label: "Calendar",
     href: "/calendar",
-    icon: Calendar,
+    iconName: "calendar_month",
   },
   {
     id: "routine",
     label: "Routine",
     href: "/routine",
-    icon: Clock,
+    iconName: "schedule",
     aliases: ["/schedule"],
   },
   {
     id: "kanban",
     label: "Kanban",
     href: "/kanban",
-    icon: Kanban,
+    iconName: "view_kanban",
   },
   {
     id: "notes",
     label: "Notes",
     href: "/notes",
-    icon: FileText,
+    iconName: "description",
   },
   {
     id: "courses",
     label: "Courses",
     href: "/courses",
-    icon: BookOpen,
+    iconName: "school",
     aliases: ["/lms"],
   },
   {
     id: "settings",
     label: "Settings",
     href: "/settings",
-    icon: Settings,
+    iconName: "settings",
   },
 ];
 
@@ -188,7 +170,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             aria-label="FastTask Home"
           >
             <div className="h-9 w-9 rounded-xl bg-[#2563EB] flex items-center justify-center text-white shadow-md shadow-blue-600/25 shrink-0">
-              <CheckSquare className="h-5 w-5 stroke-[2.5]" />
+              <GIcon name="task_alt" size={20} filled className="text-white" />
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-lg font-black tracking-tight text-[#0F172A]">
@@ -201,14 +183,12 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
           </Link>
         </div>
 
-        {/* 2. Middle Section: Grouped Navigation Links with Subtle Section Headers */}
         {/* 2. Middle Section: All 8 Original Navigation Links in Exact Order */}
         <nav
           className="flex-1 overflow-y-auto pr-1 -mr-1 space-y-1.5"
           aria-label="Sidebar navigation links"
         >
           {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
             const active = isItemActive(item);
 
             const colorConfig: Record<
@@ -240,9 +220,11 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
                 )}
               >
                 <div className="flex items-center min-w-0">
-                  <Icon
+                  <GIcon
+                    name={item.iconName}
+                    size={20}
                     className={cn(
-                      "w-[19px] h-[19px] stroke-[2] shrink-0 mr-3 transition-colors duration-200",
+                      "mr-3 shrink-0 transition-colors duration-200",
                       active
                         ? cfg.iconActive
                         : `text-slate-400 ${cfg.iconHover}`
@@ -301,7 +283,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             </div>
 
             {/* Icon */}
-            <MoreVertical className="h-4 w-4 text-slate-400 group-hover:text-slate-600 shrink-0" />
+            <GIcon name="more_vert" size={18} className="text-slate-400 group-hover:text-slate-600 shrink-0" />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
@@ -325,7 +307,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
                 onClick={onNavigate}
                 className="flex items-center gap-2 px-2.5 py-2 text-xs font-semibold text-slate-700 hover:text-blue-600 rounded-xl cursor-pointer"
               >
-                <UserIcon className="h-3.5 w-3.5 text-slate-400" />
+                <GIcon name="person" size={16} className="text-slate-400" />
                 <span>Account Profile</span>
               </Link>
             </DropdownMenuItem>
@@ -336,7 +318,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
                 onClick={onNavigate}
                 className="flex items-center gap-2 px-2.5 py-2 text-xs font-semibold text-slate-700 hover:text-blue-600 rounded-xl cursor-pointer"
               >
-                <Sparkles className="h-3.5 w-3.5 text-slate-400" />
+                <GIcon name="tune" size={16} className="text-slate-400" />
                 <span>Preferences &amp; Theme</span>
               </Link>
             </DropdownMenuItem>
@@ -348,7 +330,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
               disabled={isLoggingOut}
               className="flex items-center gap-2 px-2.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl cursor-pointer"
             >
-              <LogOut className="h-3.5 w-3.5 text-red-500" />
+              <GIcon name="logout" size={16} className="text-red-500" />
               <span>{isLoggingOut ? "Signing out..." : "Sign Out"}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
