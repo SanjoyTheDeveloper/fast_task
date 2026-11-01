@@ -443,15 +443,16 @@ export default function LmsPage() {
 
 
   return (
-    <div className="min-h-screen w-full bg-[#F8FAFC] py-6 px-6 sm:px-8 max-w-7xl mx-auto space-y-6 selection:bg-blue-600 selection:text-white relative">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white relative">
       {/* Subtle ambient lighting */}
       <div className="pointer-events-none fixed -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-100/40 blur-3xl" />
       <div className="pointer-events-none fixed -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-indigo-100/30 blur-3xl" />
 
       <Toaster richColors position="top-right" />
 
-      {/* Top Banner recreated exactly from design reference */}
-      <PageHeaderBanner
+      <main className="w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
+        {/* Top Banner recreated exactly from design reference */}
+        <PageHeaderBanner
         badgeIcon={<BookOpen className="h-3.5 w-3.5 text-blue-600" />}
         badgeText="Academic Resource Vault • FastTask LMS"
         title="Course Notes & Library"
@@ -700,10 +701,11 @@ export default function LmsPage() {
         userName={loggedInName}
       />
 
-      {/* Footer copyright */}
-      <div className="text-center py-6 text-xs text-slate-400">
-        <p>© 2026 Course Materials Vault • FastTask Academic Suite</p>
-      </div>
+        {/* Footer copyright */}
+        <div className="text-center py-6 text-xs text-slate-400">
+          <p>© 2026 Course Materials Vault • FastTask Academic Suite</p>
+        </div>
+      </main>
     </div>
   );
 }

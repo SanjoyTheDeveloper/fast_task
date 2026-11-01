@@ -492,7 +492,7 @@ export default function CalendarPage() {
       {/* Main Wrapper */}
       <div className="flex flex-col min-h-screen">
         {/* Calendar Page Content */}
-        <main className="flex-1 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
           {/* Top Banner matching design reference */}
           <PageHeaderBanner
             badgeIcon={<GIcon name="calendar_month" size={15} className="text-blue-600" />}
@@ -506,11 +506,11 @@ export default function CalendarPage() {
             ]}
           >
             {/* View Mode Switcher buttons inside banner */}
-            <div className="flex items-center p-1 rounded-2xl bg-white border border-slate-200/80 shadow-2xs text-xs font-bold shrink-0">
+            <div className="flex items-center p-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs text-xs font-bold shrink-0">
               <button
                 type="button"
                 onClick={() => setViewMode("month")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   viewMode === "month"
                     ? "bg-[#2563EB] text-white shadow-xs"
                     : "text-slate-600 hover:text-slate-900"
@@ -521,7 +521,7 @@ export default function CalendarPage() {
               <button
                 type="button"
                 onClick={() => setViewMode("week")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   viewMode === "week"
                     ? "bg-[#2563EB] text-white shadow-xs"
                     : "text-slate-600 hover:text-slate-900"

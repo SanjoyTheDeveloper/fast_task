@@ -241,7 +241,7 @@ export default function NotesPage() {
       {/* Main Wrapper */}
       <div className="flex flex-col min-h-screen">
         {/* Page Main Content Body */}
-        <main className="flex-1 w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
           {/* Top Banner recreated exactly from design reference */}
           <PageHeaderBanner
             badgeIcon={<GIcon name="description" size={14} className="text-blue-600" />}

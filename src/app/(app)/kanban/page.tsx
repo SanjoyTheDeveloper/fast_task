@@ -342,7 +342,7 @@ export default function KanbanPage() {
 
       <Toaster position="top-right" richColors />
 
-      <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-6 space-y-6">
+      <main className="relative w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
         {/* Top Banner matching design reference */}
         <PageHeaderBanner
           badgeIcon={<GIcon name="view_kanban" size={14} className="text-blue-600" />}
