@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { GIcon } from "@/components/ui/GIcon";
 import type { Task } from "@/types";
 
@@ -13,7 +12,6 @@ export interface ProjectCardItem {
   deadline: string;
   tasksCount: number;
   progressPercent: number;
-  avatars?: { name: string; src: string }[];
 }
 
 export interface ProjectOverviewCardsProps {
@@ -21,13 +19,6 @@ export interface ProjectOverviewCardsProps {
   tasks?: Task[];
   onSelectProject?: (project: ProjectCardItem) => void;
 }
-
-const PEER_AVATARS = [
-  { name: "Sanjoy Bhowmick", src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&fit=crop&crop=faces" },
-  { name: "Liam Brown", src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=faces" },
-  { name: "Ethan Garcia", src: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=64&h=64&fit=crop&crop=faces" },
-  { name: "Sophia Davis", src: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=64&h=64&fit=crop&crop=faces" },
-];
 
 export function ProjectOverviewCards({
   projects,
@@ -102,7 +93,6 @@ export function ProjectOverviewCards({
         deadline,
         tasksCount: stats.total,
         progressPercent: progress,
-        avatars: PEER_AVATARS.slice(colorIdx % 2, (colorIdx % 2) + 3),
       });
       colorIdx++;
     });
@@ -160,11 +150,6 @@ export function ProjectOverviewCards({
               ? "text-blue-600 font-bold"
               : "text-slate-900 font-bold";
 
-            const cardAvatars =
-              item.avatars && item.avatars.length > 0
-                ? item.avatars
-                : PEER_AVATARS.slice(index % 2, (index % 2) + 3);
-
             return (
               <div
                 key={item.id}
@@ -184,23 +169,14 @@ export function ProjectOverviewCards({
                     {item.name}
                   </h4>
 
-                  {/* Team Avatars Overlap Stack matching screenshot */}
-                  <div className="flex items-center -space-x-2 pt-3 pb-4">
-                    {cardAvatars.map((avatar, idx) => (
-                      <div
-                        key={idx}
-                        className="relative h-6 w-6 rounded-full ring-2 ring-white overflow-hidden bg-slate-200 shrink-0"
-                        title={avatar.name}
-                      >
-                        <Image
-                          src={avatar.src}
-                          alt={avatar.name}
-                          fill
-                          className="object-cover"
-                          sizes="24px"
-                        />
-                      </div>
-                    ))}
+                  {/* Academic Tags */}
+                  <div className="flex items-center gap-1.5 pt-2.5 pb-3.5">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
+                      Coursework
+                    </span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/50">
+                      Active
+                    </span>
                   </div>
 
                   {/* Metadata Row: Deadline & Tasks Count */}

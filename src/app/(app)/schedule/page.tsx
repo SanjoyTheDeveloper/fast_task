@@ -288,7 +288,7 @@ export default function SchedulePage() {
             badgeText="Class Routine & Timetable • FastTask LMS"
             title="Class Routine & Lecture Schedule"
             titleHighlight="• Batch 82A"
-            description={`Weekly period schedule with real-time class notifications, venue details, and instructor tracking. Today is ${currentActualDay}.`}
+            description="Weekly period schedule with real-time class notifications, venue details, and instructor tracking."
             stats={[
               { label: "TOTAL CLASSES", value: totalClassesCount },
               { label: "TODAY", value: todayClassesCount },

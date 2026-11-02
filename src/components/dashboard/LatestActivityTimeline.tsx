@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Activity } from "lucide-react";
+import { Activity, User } from "lucide-react";
 import type { Task, SessionUser } from "@/types";
 
 export interface ActivityItem {
@@ -21,21 +21,13 @@ export interface LatestActivityTimelineProps {
   currentUser?: SessionUser | null;
 }
 
-const DEFAULT_COLLABORATOR_AVATARS = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&fit=crop&crop=faces",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=faces",
-  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=64&h=64&fit=crop&crop=faces",
-  "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=64&h=64&fit=crop&crop=faces",
-];
-
 export function LatestActivityTimeline({
   activities,
   tasks,
   currentUser,
 }: LatestActivityTimelineProps) {
-  const userName = currentUser?.name || "Sanjoy Bhowmick";
-  const userAvatar =
-    currentUser?.image || DEFAULT_COLLABORATOR_AVATARS[0];
+  const userName = currentUser?.name || "Student";
+  const userAvatar = currentUser?.image || "";
 
   // Derive live timeline activities directly from database tasks
   const displayActivities: ActivityItem[] = React.useMemo(() => {
@@ -64,14 +56,12 @@ export function LatestActivityTimeline({
         action = "Task marked as In Progress.";
       }
 
-      // Group into today and yesterday matching screenshot
       const isToday = idx < 3;
-      const avatarSrc = DEFAULT_COLLABORATOR_AVATARS[idx % DEFAULT_COLLABORATOR_AVATARS.length];
 
       return {
         id: `act-${t.id}`,
-        userName: idx === 0 ? userName : idx === 1 ? "Liam Brown" : idx === 2 ? "Ethan Garcia" : "Noah Wilson",
-        userAvatar: idx === 0 ? userAvatar : avatarSrc,
+        userName,
+        userAvatar,
         action,
         projectName: t.course ? `${t.course}` : "Academic Workspace",
         dateGroup: isToday ? "today" : "yesterday",
@@ -128,6 +118,27 @@ export function LatestActivityTimeline({
     };
   };
 
+  const renderAvatarNode = (item: ActivityItem) => {
+    if (item.userAvatar) {
+      return (
+        <Image
+          src={item.userAvatar}
+          alt={item.userName}
+          fill
+          className="object-cover"
+          sizes="20px"
+        />
+      );
+    }
+
+    const initial = (item.userName || "U").charAt(0).toUpperCase();
+    return (
+      <span className="text-[10px] font-bold text-blue-700 bg-blue-100 w-full h-full flex items-center justify-center">
+        {initial}
+      </span>
+    );
+  };
+
   return (
     <div className="bg-white border border-[#E5EAF2] rounded-2xl p-6 shadow-2xs hover:shadow-xs transition-all duration-200">
       {/* Title */}
@@ -164,14 +175,8 @@ export function LatestActivityTimeline({
                   return (
                     <div key={item.id} className="relative flex items-start gap-2.5 group">
                       {/* Node Avatar with status ring */}
-                      <div className={`absolute -left-6 top-0.5 h-5 w-5 rounded-full overflow-hidden bg-slate-100 shrink-0 transition-transform group-hover:scale-110 ${style.ring}`}>
-                        <Image
-                          src={item.userAvatar || userAvatar}
-                          alt={item.userName}
-                          fill
-                          className="object-cover"
-                          sizes="20px"
-                        />
+                      <div className={`absolute -left-6 top-0.5 h-5 w-5 rounded-full overflow-hidden bg-slate-100 shrink-0 transition-transform group-hover:scale-110 flex items-center justify-center ${style.ring}`}>
+                        {renderAvatarNode(item)}
                       </div>
 
                       <div className="min-w-0 flex-1">
@@ -209,14 +214,8 @@ export function LatestActivityTimeline({
                   return (
                     <div key={item.id} className="relative flex items-start gap-2.5 group">
                       {/* Node Avatar */}
-                      <div className={`absolute -left-6 top-0.5 h-5 w-5 rounded-full overflow-hidden bg-slate-100 shrink-0 transition-transform group-hover:scale-110 ${style.ring}`}>
-                        <Image
-                          src={item.userAvatar || userAvatar}
-                          alt={item.userName}
-                          fill
-                          className="object-cover"
-                          sizes="20px"
-                        />
+                      <div className={`absolute -left-6 top-0.5 h-5 w-5 rounded-full overflow-hidden bg-slate-100 shrink-0 transition-transform group-hover:scale-110 flex items-center justify-center ${style.ring}`}>
+                        {renderAvatarNode(item)}
                       </div>
 
                       <div className="min-w-0 flex-1">

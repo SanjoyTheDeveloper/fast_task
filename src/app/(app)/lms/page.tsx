@@ -454,16 +454,16 @@ export default function LmsPage() {
         {/* Top Banner recreated exactly from design reference */}
         <PageHeaderBanner
         badgeIcon={<BookOpen className="h-3.5 w-3.5 text-blue-600" />}
-        badgeText="Academic Resource Vault • FastTask LMS"
-        title="Course Notes & Library"
+        badgeText="Course Materials & Vault • FastTask LMS"
+        title="Course Materials & Resources"
         titleHighlight="• Batch 82A"
-        description="Quickly browse, preview, and download your lecture notes, handouts, and laboratory manuals with seamless offline support."
+        description="Quickly browse, preview, and download lecture slides, handouts, and laboratory manuals."
         stats={[
-          { label: "TOTAL NOTES", value: documents.length },
+          { label: "TOTAL FILES", value: documents.length },
           { label: "COURSES", value: enrolledCourses.length || 5 },
         ]}
         actionButton={{
-          label: "Add Material",
+          label: "Upload Material",
           onClick: handleOpenUploadModal,
         }}
       />

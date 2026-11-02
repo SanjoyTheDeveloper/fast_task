@@ -197,44 +197,40 @@ export function HeroOrbitHalo() {
         >
           <div className="relative w-full max-w-2xl h-[400px] flex items-center justify-center [perspective:1200px]">
             
-            {/* Back Left Orbital Panel: Mountain Landscape (Tucked behind hair - completely clear of outer card) */}
+            {/* Back Left Orbital Panel: Academic Course Note */}
             <div
-              className="hidden sm:block absolute left-[12%] lg:left-[16%] top-24 w-24 sm:w-28 h-16 sm:h-18 rounded-xl overflow-hidden border border-white/90 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
+              className="hidden sm:flex flex-col justify-center absolute left-[12%] lg:left-[16%] top-24 w-28 sm:w-32 h-16 sm:h-18 rounded-xl p-2.5 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
               style={{
                 transform: `rotateY(${32 + clampedX * 6}deg) translateZ(-45px) translateX(${
                   clampedX * 10
                 }px) translateY(${clampedY * 5}px) scale(0.88)`,
               }}
             >
-              <img
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=220&h=160&fit=crop&q=80"
-                alt="Scenic Peak"
-                loading="lazy"
-                decoding="async"
-                width={220}
-                height={160}
-                className="w-full h-full object-cover grayscale contrast-125"
-              />
+              <span className="text-[9px] font-bold uppercase tracking-wider text-blue-600">
+                CSE315 • Slides
+              </span>
+              <p className="text-[11px] font-bold text-slate-800 leading-snug truncate mt-0.5">
+                Computer Networks
+              </p>
+              <span className="text-[9px] text-slate-400 font-medium">Lecture Notes</span>
             </div>
 
-            {/* Back Right Orbital Panel: Celestial Moon (Tucked behind jaw - completely clear of outer card) */}
+            {/* Back Right Orbital Panel: Academic Quiz Card */}
             <div
-              className="hidden sm:block absolute right-[12%] lg:right-[16%] bottom-20 w-24 sm:w-28 h-16 sm:h-18 rounded-xl overflow-hidden border border-white/90 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
+              className="hidden sm:flex flex-col justify-center absolute right-[12%] lg:right-[16%] bottom-20 w-28 sm:w-32 h-16 sm:h-18 rounded-xl p-2.5 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
               style={{
                 transform: `rotateY(${-32 + clampedX * 6}deg) translateZ(-45px) translateX(${
                   clampedX * 10
                 }px) translateY(${clampedY * 5}px) scale(0.88)`,
               }}
             >
-              <img
-                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=220&h=160&fit=crop&q=80"
-                alt="Celestial Moon"
-                loading="lazy"
-                decoding="async"
-                width={220}
-                height={160}
-                className="w-full h-full object-cover grayscale contrast-125"
-              />
+              <span className="text-[9px] font-bold uppercase tracking-wider text-indigo-600">
+                MAT337 • Quiz
+              </span>
+              <p className="text-[11px] font-bold text-slate-800 leading-snug truncate mt-0.5">
+                Complex Analysis
+              </p>
+              <span className="text-[9px] text-slate-400 font-medium">Problem Set Review</span>
             </div>
 
             {/* Back Translucent Glass Ribbon (Completes the 360-degree cylinder behind the head) */}

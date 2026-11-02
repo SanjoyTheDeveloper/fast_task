@@ -244,16 +244,16 @@ export default function NotesPage() {
           {/* Top Banner recreated exactly from design reference */}
           <PageHeaderBanner
             badgeIcon={<GIcon name="description" size={14} className="text-blue-600" />}
-            badgeText="Academic Resource Vault • FastTask LMS"
-            title="Course Notes & Library"
+            badgeText="Study Notes & Scratchpad • FastTask LMS"
+            title="Academic Study Notes"
             titleHighlight="• Batch 82A"
-            description="Quickly browse, preview, and download your lecture notes, handouts, and laboratory manuals with seamless offline support."
+            description="Create, organize, and revise your personal lecture notes, revision summaries, and key formula sheets."
             stats={[
               { label: "TOTAL NOTES", value: notes.length },
               { label: "COURSES", value: notes.filter((n) => n.course).length > 0 ? new Set(notes.map((n) => n.course).filter(Boolean)).size : 4 },
             ]}
             actionButton={{
-              label: "Add Material",
+              label: "New Note",
               onClick: handleOpenCreateModal,
             }}
           />
