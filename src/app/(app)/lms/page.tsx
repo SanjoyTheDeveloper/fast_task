@@ -453,11 +453,8 @@ export default function LmsPage() {
       <main className="w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
         {/* Top Banner recreated exactly from design reference */}
         <PageHeaderBanner
-        badgeIcon={<BookOpen className="h-3.5 w-3.5 text-blue-600" />}
-        badgeText="Course Materials & Vault • FastTask LMS"
         title="Course Materials & Resources"
         titleHighlight="• Batch 82A"
-        description="Quickly browse, preview, and download lecture slides, handouts, and laboratory manuals."
         stats={[
           { label: "TOTAL FILES", value: documents.length },
           { label: "COURSES", value: enrolledCourses.length || 5 },

@@ -4,7 +4,6 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import type { SessionUser } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { GIcon } from "@/components/ui/GIcon";
 import {
   Dialog,
   DialogContent,
@@ -243,11 +242,8 @@ export default function NotesPage() {
         <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
           {/* Top Banner recreated exactly from design reference */}
           <PageHeaderBanner
-            badgeIcon={<GIcon name="description" size={14} className="text-blue-600" />}
-            badgeText="Study Notes & Scratchpad • FastTask LMS"
             title="Academic Study Notes"
             titleHighlight="• Batch 82A"
-            description="Create, organize, and revise your personal lecture notes, revision summaries, and key formula sheets."
             stats={[
               { label: "TOTAL NOTES", value: notes.length },
               { label: "COURSES", value: notes.filter((n) => n.course).length > 0 ? new Set(notes.map((n) => n.course).filter(Boolean)).size : 4 },

@@ -10,10 +10,10 @@ export interface PageStatItem {
 
 export interface PageHeaderBannerProps {
   badgeIcon?: React.ReactNode;
-  badgeText: string;
+  badgeText?: string;
   title: string;
   titleHighlight?: string;
-  description: string;
+  description?: string;
   stats?: PageStatItem[];
   actionButton?: {
     label: string;
@@ -37,7 +37,7 @@ export function PageHeaderBanner({
 }: PageHeaderBannerProps) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F8FF] to-white border border-[#DCE7FC]/90 p-5 sm:p-6 lg:py-5 lg:px-6 shadow-[0_2px_12px_rgba(37,99,235,0.05)] ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F8FF] to-white border border-[#DCE7FC]/90 p-4 sm:p-5 lg:py-4.5 lg:px-6 shadow-[0_2px_12px_rgba(37,99,235,0.05)] ${className}`}
     >
       {/* Subtle ambient background glow */}
       <div
@@ -50,13 +50,14 @@ export function PageHeaderBanner({
       />
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
-        {/* Left Side: Badge + Title + Description */}
+        {/* Left Side: Title & Optional Subtitle */}
         <div className="max-w-2xl">
-          {/* Badge Pill */}
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-blue-200/80 text-blue-700 text-[11px] sm:text-xs font-bold shadow-2xs mb-2 ring-2 ring-blue-500/5">
-            {badgeIcon}
-            <span>{badgeText}</span>
-          </div>
+          {badgeText && (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-blue-200/80 text-blue-700 text-[11px] sm:text-xs font-bold shadow-2xs mb-2 ring-2 ring-blue-500/5">
+              {badgeIcon}
+              <span>{badgeText}</span>
+            </div>
+          )}
 
           {/* Heading */}
           <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -68,10 +69,12 @@ export function PageHeaderBanner({
             )}
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-xs sm:text-[13px] text-slate-500 font-normal mt-1 leading-relaxed">
-            {description}
-          </p>
+          {/* Optional Subtitle */}
+          {description && (
+            <p className="text-xs sm:text-[13px] text-slate-500 font-normal mt-1 leading-relaxed">
+              {description}
+            </p>
+          )}
         </div>
 
         {/* Right Side: Stats Pill Card + Action Button */}

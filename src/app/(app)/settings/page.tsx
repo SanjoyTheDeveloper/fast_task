@@ -216,9 +216,7 @@ export default function SettingsPage() {
       <div className="flex flex-col min-h-screen">
         {/* Top Header */}
         <PageHeaderBanner
-          badgeText="Account Settings • FastTask"
           title="Settings & Profile"
-          description="Manage your student profile, university credentials, avatar theme, and account preferences."
         />
 
         {/* Settings Page Content */}

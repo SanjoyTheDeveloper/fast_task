@@ -14,7 +14,6 @@ const TaskDialog = dynamic(
 );
 import type { Task } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { GIcon } from "@/components/ui/GIcon";
 import { toast, Toaster } from "sonner";
 
 // Initial Semester Tasks for instant zero-latency render (Batch 82A)
@@ -342,11 +341,8 @@ export default function KanbanPage() {
       <main className="relative w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
         {/* Top Banner matching design reference */}
         <PageHeaderBanner
-          badgeIcon={<GIcon name="view_kanban" size={14} className="text-blue-600" />}
-          badgeText="Visual Task Workflow • FastTask LMS"
           title="Semester Kanban Board"
           titleHighlight="• Batch 82A"
-          description="Organize coursework visually across To Do, In Progress, Review, and Completed stages with real-time sync."
           stats={[
             { label: "TOTAL CARDS", value: tasks.length },
             { label: "COMPLETED", value: tasks.filter((t) => t.completed).length },

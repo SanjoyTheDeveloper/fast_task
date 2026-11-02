@@ -284,11 +284,8 @@ export default function SchedulePage() {
         <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
           {/* Top Banner matching design reference */}
           <PageHeaderBanner
-            badgeIcon={<GIcon name="schedule" size={14} className="text-blue-600" />}
-            badgeText="Class Routine & Timetable • FastTask LMS"
             title="Class Routine & Lecture Schedule"
             titleHighlight="• Batch 82A"
-            description="Weekly period schedule with real-time class notifications, venue details, and instructor tracking."
             stats={[
               { label: "TOTAL CLASSES", value: totalClassesCount },
               { label: "TODAY", value: todayClassesCount },

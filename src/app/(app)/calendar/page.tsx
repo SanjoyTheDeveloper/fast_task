@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { RoutineSlot } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { GIcon } from "@/components/ui/GIcon";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -489,11 +488,8 @@ export default function CalendarPage() {
         <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">
           {/* Top Banner matching design reference */}
           <PageHeaderBanner
-            badgeIcon={<GIcon name="calendar_month" size={15} className="text-blue-600" />}
-            badgeText="Academic Timetable • FastTask LMS"
             title="Academic Calendar & Schedule"
             titleHighlight="• Spring 2026"
-            description="Interactive monthly and weekly schedule tracking exams, quizzes, lab submissions, and lecture routines."
             stats={[
               { label: "STUDY STREAK", value: "5 Days" },
               { label: "VIEW MODE", value: viewMode === "month" ? "Month" : "Week" },
