@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   Eye,
   Download,
-  FileText,
   Trash2,
   Bookmark,
   Sparkles,

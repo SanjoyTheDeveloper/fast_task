@@ -64,6 +64,12 @@ export function useStudentProfile(
   initialFallback?: Partial<StudentProfile> | { name?: string | null }
 ) {
   const [profile, setProfile] = React.useState<StudentProfile>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = getStoredProfile();
+        if (stored) return stored;
+      } catch {}
+    }
     return {
       ...DEFAULT_STUDENT_PROFILE,
       ...(initialFallback?.name ? { name: initialFallback.name } : {}),
@@ -71,8 +77,6 @@ export function useStudentProfile(
   });
 
   React.useEffect(() => {
-    // Initial sync
-    setProfile(getStoredProfile());
 
     const handleUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<StudentProfile>;

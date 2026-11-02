@@ -3,14 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { SessionUser, RoutineSlot } from "@/types";
+import type { RoutineSlot } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
 import { GIcon } from "@/components/ui/GIcon";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
-  Flame,
   Clock,
   MapPin,
   Hourglass,
@@ -24,6 +23,8 @@ import { toast, Toaster } from "sonner";
 import { ScheduleItem } from "@/components/dashboard/TodaySchedule";
 
 // ==============================================================================
+const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+
 // 1. COURSE COLOR REGISTRY & DYNAMIC PALETTE
 // ==============================================================================
 
@@ -284,8 +285,7 @@ const UPCOMING_TASKS_LIST = [
 
 export default function CalendarPage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
-  const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
+    const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
 
   // Real today from system/browser
   const today = React.useMemo(() => new Date(), []);
@@ -309,10 +309,7 @@ export default function CalendarPage() {
     async function loadUser() {
       try {
         const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setCurrentUser(data.user);
-        } else if (res.status === 401) {
+        if (res.status === 401) {
           router.push("/login");
         }
       } catch (err) {
@@ -322,11 +319,11 @@ export default function CalendarPage() {
     loadUser();
   }, [router]);
 
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const daysOfWeek = DAYS_OF_WEEK;
   const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInMonth = Array.from({ length: totalDaysInMonth }, (_, i) => i + 1);
   const firstDayOffset = new Date(year, month, 1).getDay();
-  const emptyDays = Array.from({ length: firstDayOffset }, (_, i) => null);
+  const emptyDays = Array.from({ length: firstDayOffset }, () => null);
 
   const activeEvent = SEPTEMBER_EVENTS[selectedDate] || null;
 
@@ -391,8 +388,7 @@ export default function CalendarPage() {
   /**
    * Deduplicates and retrieves all distinct courses active for any given date
    */
-  const getCoursesForDay = React.useCallback(
-    (day: number): CourseColorInfo[] => {
+  const getCoursesForDay = (day: number): CourseColorInfo[] => {
       const dObj = new Date(year, month, day);
       const dayShort = daysOfWeek[dObj.getDay()];
       const event = SEPTEMBER_EVENTS[day];
@@ -443,9 +439,7 @@ export default function CalendarPage() {
       });
 
       return Array.from(courseMap.values());
-    },
-    [year, month, daysOfWeek]
-  );
+  };
 
   // Week view calculation
   const targetDay = selectedDate || todayDate;

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { TaskFilters, FilterState } from "@/components/tasks/TaskFilters";
 
@@ -15,9 +14,7 @@ const TaskDialog = dynamic(
 );
 import type { Task } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
-import { Button } from "@/components/ui/button";
 import { GIcon } from "@/components/ui/GIcon";
-import { LayoutGrid } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 
 // Initial Semester Tasks for instant zero-latency render (Batch 82A)

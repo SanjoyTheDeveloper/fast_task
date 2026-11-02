@@ -30,7 +30,6 @@ import {
   Trash2,
   Clock,
   GraduationCap,
-  FileText,
   AlertCircle,
 } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";

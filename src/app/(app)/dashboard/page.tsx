@@ -45,9 +45,7 @@ function DashboardContent() {
     hasNextPage: false,
     hasPreviousPage: false,
   });
-  const [_isLoading, setIsLoading] = React.useState(true);
-  const [_loadError, setLoadError] = React.useState<string | null>(null);
-
+    
   // 2. Load authenticated user
   React.useEffect(() => {
     async function loadUser() {
@@ -100,8 +98,7 @@ function DashboardContent() {
 
   // 3. Database-Level Query: Fetch tasks strictly matching current URL query params
   const fetchTasks = React.useCallback(async () => {
-    setIsLoading(true);
-    setLoadError(null);
+    
     try {
       const query = new URLSearchParams();
       if (search.trim()) {
@@ -140,12 +137,12 @@ function DashboardContent() {
         router.push("/login");
       } else {
         const errJson = await res.json().catch(() => ({}));
-        setLoadError(errJson?.error?.message || "Failed to load tasks");
+        console.error(errJson?.error?.message || "Failed to load tasks");
       }
     } catch {
-      setLoadError("Network error while connecting to server");
+      console.error("Network error while connecting to server");
     } finally {
-      setIsLoading(false);
+      
     }
   }, [search, status, priority, sortBy, sortOrder, page, limit, router]);
 

@@ -4,9 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
-import {
-  TopHeader,
-} from "@/components/dashboard";
+import { PageHeaderBanner } from "@/components/layout";
 import {
   Home,
   LogOut,
@@ -217,18 +215,16 @@ export default function SettingsPage() {
       {/* Main Wrapper */}
       <div className="flex flex-col min-h-screen">
         {/* Top Header */}
-        <TopHeader
-          user={currentUser ? { ...currentUser, name } : null}
+        <PageHeaderBanner
+          badgeText="Account Settings • FastTask"
+          title="Settings & Profile"
+          description="Manage your student profile, university credentials, avatar theme, and account preferences."
         />
 
         {/* Settings Page Content */}
         <main className="flex-1 w-full max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Header Title */}
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-[#172033] tracking-tight">
-              Settings &amp; Account
-            </h1>
-          </div>
+          
 
           {/* Top section - Profile Preview Card (Deep Navy) */}
           <div className="rounded-3xl bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0A1020] border border-slate-800 p-6 sm:p-8 shadow-xl text-white relative overflow-hidden transition-all">

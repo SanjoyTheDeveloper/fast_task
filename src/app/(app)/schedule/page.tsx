@@ -6,15 +6,11 @@ import { PageHeaderBanner } from "@/components/layout";
 import { GIcon } from "@/components/ui/GIcon";
 import {
   Calendar,
-  MapPin,
-  User,
   Plus,
   Pencil,
   Trash2,
   CalendarDays,
   Sparkles,
-  BookOpen,
-  Filter,
   CheckCircle2,
 } from "@/components/ui/GoogleIcon";
 import { Toaster, toast } from "sonner";
@@ -97,11 +93,26 @@ function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
 
 export default function SchedulePage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
-
+  
   // Routine schedule state
-  const [slots, setSlots] = React.useState<RoutineSlot[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [slots, setSlots] = React.useState<RoutineSlot[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = getStoredRoutineSlots();
+        if (cached && cached.length > 0) return cached;
+      } catch {}
+    }
+    return [];
+  });
+  const [isLoading, setIsLoading] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = getStoredRoutineSlots();
+        if (cached && cached.length > 0) return false;
+      } catch {}
+    }
+    return true;
+  });
   const [selectedDayTab, setSelectedDayTab] = React.useState<string>("All");
 
   // Add / Edit Modal state
@@ -121,7 +132,6 @@ export default function SchedulePage() {
         if (res.ok) {
           const data = await res.json();
           if (data?.user) {
-            setCurrentUser(data.user);
           } else {
             router.push("/login?from=/schedule");
           }
@@ -139,12 +149,7 @@ export default function SchedulePage() {
   React.useEffect(() => {
     let isMounted = true;
 
-    // 1. Instant local load
-    const cached = getStoredRoutineSlots();
-    if (cached.length > 0 && isMounted) {
-      setSlots(cached);
-      setIsLoading(false);
-    }
+    // 1. Initial cached state was loaded in useState
 
     // 2. Background sync
     async function fetchRoutine() {

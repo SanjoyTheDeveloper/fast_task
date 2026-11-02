@@ -28,10 +28,7 @@ import {
   Pencil,
   Trash2,
   ExternalLink,
-  CheckCircle2,
   AlertCircle,
-  Clock,
-  Sparkles,
   Inbox,
   Filter,
   ArrowUpDown,
@@ -97,8 +94,7 @@ export default function MyTasksPage() {
   const router = useRouter();
 
   // Core Data
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
-  const [tasks, setTasks] = React.useState<Task[]>([]);
+    const [tasks, setTasks] = React.useState<Task[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);
 
@@ -124,7 +120,6 @@ export default function MyTasksPage() {
         const res = await fetch("/api/auth/me");
         if (res.ok) {
           const data = await res.json();
-          setCurrentUser(data.user);
         } else if (res.status === 401) {
           router.push("/login");
         }
