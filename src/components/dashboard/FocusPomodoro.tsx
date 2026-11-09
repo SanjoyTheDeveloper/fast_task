@@ -8,7 +8,7 @@ import {
   RotateCcw,
   Volume2,
   VolumeX,
-  Sparkles,
+  Headphones,
 } from "lucide-react";
 
 export type PomodoroMode = "25m Focus" | "5m Break" | "15m Rest";
@@ -168,7 +168,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
           >
             <div className="flex items-center gap-2">
               <div className="h-6 w-6 rounded-lg bg-indigo-500/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition-transform">
-                <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
+                <Headphones className="h-3.5 w-3.5 text-indigo-300" />
               </div>
               <span className="text-slate-200 group-hover:text-white tracking-wide text-[11px]">
                 Zen Flow Mode

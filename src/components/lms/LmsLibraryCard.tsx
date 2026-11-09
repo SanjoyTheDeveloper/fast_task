@@ -6,7 +6,7 @@ import {
   Download,
   Trash2,
   Bookmark,
-  Sparkles,
+  CheckCircle2,
 } from "@/components/ui/GoogleIcon";
 import {
   getCourseTheme,
@@ -56,7 +56,7 @@ export function LmsLibraryCard({
               </span>
               {doc.isCustomUpload && (
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/50 flex items-center gap-1 shadow-2xs">
-                  <Sparkles className="h-2.5 w-2.5" />
+                  <CheckCircle2 className="h-2.5 w-2.5" />
                   Uploaded
                 </span>
               )}
@@ -153,7 +153,7 @@ export function LmsLibraryCard({
 
             {doc.isCustomUpload && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/50 shadow-2xs">
-                <Sparkles className="h-2.5 w-2.5" />
+                <CheckCircle2 className="h-2.5 w-2.5" />
                 Uploaded
               </span>
             )}

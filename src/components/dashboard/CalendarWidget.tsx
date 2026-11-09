@@ -409,7 +409,7 @@ export function CalendarWidget({
         <div className="p-3.5 rounded-xl bg-white border border-[#DCE7FC] shadow-sm space-y-2 animate-in fade-in-50 duration-200">
           <div className="flex items-center justify-between text-xs pb-1.5 border-b border-slate-100">
             <span className="font-bold text-[#172033] flex items-center gap-1.5">
-              <GIcon name="auto_awesome" size={14} className="text-[#315BFF]" />
+              <GIcon name="calendar_today" size={14} className="text-[#315BFF]" />
               <span>
                 {activeDayShort}, {monthName.slice(0, 3)} {activePopoverDate}
               </span>

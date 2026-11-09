@@ -11,7 +11,6 @@ import {
   Check,
   AlertCircle,
   Copy,
-  Sparkles,
 } from "@/components/ui/GoogleIcon";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -853,7 +852,7 @@ export function AddRoutineModal({
               {isCustomCourse && (
                 <div className="flex items-center justify-between text-[11px] text-blue-700 bg-blue-50/80 border border-blue-100/90 rounded-xl px-3 py-1.5 shadow-2xs">
                   <span className="flex items-center gap-1.5 font-medium">
-                    <span>✨</span> Custom course mode active. Type your title and code below.
+                    <span>✏️</span> Custom course mode active. Type your title and code below.
                   </span>
                   <button
                     type="button"
@@ -982,7 +981,7 @@ export function AddRoutineModal({
             <div className="rounded-2xl bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-50 border border-blue-100 p-3 space-y-2.5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-[#315BFF]" />
+                  <Clock className="h-3.5 w-3.5 text-[#315BFF]" />
                   <span className="text-xs font-bold text-slate-800">
                     Base Timetable Template
                   </span>

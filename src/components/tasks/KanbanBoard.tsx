@@ -12,7 +12,7 @@ import {
   ArrowRight,
   GripVertical,
   CheckCircle2,
-  Sparkles,
+  RotateCcw,
 } from "@/components/ui/GoogleIcon";
 import {
   DropdownMenu,
@@ -133,7 +133,7 @@ export function KanbanBoard({
               onClick={onLoadStarterTasks}
               className="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer"
             >
-              <Sparkles className="h-3 w-3 text-amber-500" />
+              <RotateCcw className="h-3 w-3 text-amber-500" />
               <span>Reset Sample Tasks</span>
             </button>
           )}

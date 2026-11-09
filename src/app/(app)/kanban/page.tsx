@@ -313,7 +313,7 @@ export default function KanbanPage() {
           updatedAt: new Date().toISOString(),
         }));
         setTasks((prev) => [...localTasks, ...prev]);
-        toast.success("Sample tasks added to your Kanban board! ✨");
+        toast.success("Sample tasks added to your Kanban board! 📋");
       }
     } catch {
       const localTasks: Task[] = starterTasks.map((t, i) => ({
@@ -326,7 +326,7 @@ export default function KanbanPage() {
         updatedAt: new Date().toISOString(),
       }));
       setTasks((prev) => [...localTasks, ...prev]);
-      toast.success("Sample tasks added to your Kanban board! ✨");
+      toast.success("Sample tasks added to your Kanban board! 📋");
     }
   };
 

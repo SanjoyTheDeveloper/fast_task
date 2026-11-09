@@ -10,7 +10,7 @@ import {
   Pencil,
   Trash2,
   CalendarDays,
-  Sparkles,
+  CalendarCheck,
   CheckCircle2,
 } from "@/components/ui/GoogleIcon";
 import { Toaster, toast } from "sonner";
@@ -337,7 +337,7 @@ export default function SchedulePage() {
                 </h3>
               </div>
               <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-[0_0_8px_rgba(16,185,129,0.25)] flex items-center justify-center">
-                <Sparkles className="h-5 w-5" />
+                <CalendarCheck className="h-5 w-5" />
               </div>
             </div>
           </div>

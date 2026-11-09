@@ -4,7 +4,7 @@ import * as React from "react";
 import {
   X,
   Download,
-  Sparkles,
+  FileText,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
@@ -206,7 +206,7 @@ export function LmsPdfViewerModal({
               {/* Section Content */}
               <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
                 <div className="p-4 rounded-xl bg-[#EEF0FA]/70 border border-indigo-100 text-xs text-indigo-950 font-medium flex items-start gap-2.5">
-                  <Sparkles className="h-4 w-4 text-[#4F46E5] shrink-0 mt-0.5" />
+                  <FileText className="h-4 w-4 text-[#4F46E5] shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold">Official Course Document</p>
                     <p className="text-indigo-800/80 mt-0.5">
