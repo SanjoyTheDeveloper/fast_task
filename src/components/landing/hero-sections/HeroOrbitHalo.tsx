@@ -120,13 +120,13 @@ export function HeroOrbitHalo() {
               </div>
               <div>
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">
-                  SMART SYNC
+                  ROUTINE SYNC
                 </span>
                 <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
-                  Study Smarter
+                  Structured Timetable
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
-                  Sync routines, coursework &amp; exams with one click.
+                  Sync class timings, room numbers &amp; labs automatically.
                 </p>
               </div>
             </div>
@@ -339,9 +339,9 @@ export function HeroOrbitHalo() {
                 <BookOpen className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[9px] font-extrabold uppercase text-blue-600 tracking-wider">SMART SYNC</span>
-                <h5 className="text-xs font-bold text-slate-900">Study Smarter</h5>
-                <p className="text-[10px] text-slate-500">Sync routines, coursework &amp; exams</p>
+                <span className="text-[9px] font-extrabold uppercase text-blue-600 tracking-wider">ROUTINE SYNC</span>
+                <h5 className="text-xs font-bold text-slate-900">Structured Timetable</h5>
+                <p className="text-[10px] text-slate-500">Sync class timings, room numbers &amp; labs</p>
               </div>
             </div>
           </div>

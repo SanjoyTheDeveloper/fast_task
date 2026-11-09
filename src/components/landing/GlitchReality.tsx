@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   Activity,
@@ -9,16 +10,10 @@ import {
   Terminal,
   Timer,
   BookOpen,
+  Calendar,
 } from "lucide-react";
-import { useStudentProfile } from "@/lib/studentProfile";
 
 export function GlitchReality() {
-  const { profile } = useStudentProfile();
-  const rawLinkedin = profile?.linkedin?.trim();
-  const linkedinUrl = rawLinkedin
-    ? (rawLinkedin.startsWith("http") ? rawLinkedin : `https://${rawLinkedin}`)
-    : "https://www.linkedin.com";
-
   const [isGlitching, setIsGlitching] = React.useState(false);
   const progressWidth = 72;
 
@@ -29,7 +24,7 @@ export function GlitchReality() {
 
   return (
     <section
-      id="glitch-reality"
+      id="academic-focus"
       className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] text-[#172033] overflow-hidden select-none"
     >
       {/* Soft ambient daylight glows with hardware-friendly CSS radial gradients */}
@@ -46,18 +41,16 @@ export function GlitchReality() {
         
         {/* Section Header with Professional Dashboard Styling */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-4">
-
-
           <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-black tracking-tight text-[#172033] leading-tight">
-            Transcend Routine Distraction.{" "}
+            Deep Academic Focus.{" "}
             <span className="text-[#315BFF] inline-block">
-              Redefine Your Reality.
+              Zero Mental Friction.
             </span>
           </h2>
 
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-            Step into a high-clarity academic workspace engineered for Computer Science scholars.
-            Eliminate mental drag, synchronize coursework, and dissolve complex problem barriers.
+            A dedicated academic workspace engineered for Computer Science scholars to organize
+            weekly routines, track coursework submissions, and maintain uninterrupted study momentum.
           </p>
         </div>
 
@@ -72,15 +65,13 @@ export function GlitchReality() {
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#0f172a08_1px,transparent_1px),linear-gradient(to_bottom,#0f172a08_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_80%,transparent_100%)] opacity-70"
           />
 
-
-
           {/* Main 2-Column Content Layout */}
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
-            {/* LEFT COLUMN: The AI Prompt & Neural Studio Composition */}
+            {/* LEFT COLUMN: Academic Focus Composition */}
             <div className="lg:col-span-6 flex flex-col justify-between space-y-6 sm:space-y-7">
               
-              {/* Big AI Futuristic Headline: GLITCH REALITY (Solid Colors) */}
+              {/* Bold Section Title (Solid Colors) */}
               <div className="space-y-1.5">
                 <div className="relative inline-block">
                   <h3
@@ -88,40 +79,43 @@ export function GlitchReality() {
                       isGlitching ? "translate-x-1 text-[#315BFF]" : ""
                     }`}
                   >
-                    GLITCH
+                    ACADEMIC
                   </h3>
                 </div>
 
                 <div className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-[0.22em] text-[#315BFF] uppercase">
-                  REALITY
+                  FOCUS
                 </div>
               </div>
 
-              {/* AI Prompt Synthesizer Box (Solid White / Slate Background) */}
+              {/* Current Study Sprint Card */}
               <div className="rounded-2xl border border-[#E5EAF2] bg-white p-4 sm:p-5 shadow-2xs relative overflow-hidden group hover:border-[#315BFF]/50 transition-all duration-200">
-                {/* Prompt Header */}
+                {/* Header */}
                 <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-md bg-[#315BFF] text-white flex items-center justify-center shadow-xs">
                       <Terminal className="w-3 h-3" />
                     </div>
                     <span className="text-xs font-semibold text-slate-800">
-                      Prompt Synthesizer
+                      Active Coursework Sprint
                     </span>
                   </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
+                    0612CSE315
+                  </span>
                 </div>
 
-                {/* Prompt Text with neutral typography */}
+                {/* Content */}
                 <div className="text-sm sm:text-[15px] text-slate-700 leading-relaxed">
-                  <span className="text-[#315BFF] font-semibold">&gt; /generate_focus: </span>
-                  <span className="text-slate-900 font-normal">
-                    &ldquo;Not everything you see is real &bull; dissolve academic friction, amplify deep synthesis.&rdquo;
+                  <span className="text-[#315BFF] font-semibold">&gt; Focus Target: </span>
+                  <span className="text-slate-900 font-medium">
+                    Computer Networks • Socket Programming &amp; Concurrency Lab
                   </span>
                   <span className="inline-block w-1.5 h-4 ml-1 bg-[#315BFF] animate-pulse align-middle rounded-xs" />
                 </div>
               </div>
 
-              {/* Neural Loading Stream Progress (Solid Blue Bar with neutral typography) */}
+              {/* Study Sprint Progress (Solid Blue Bar) */}
               <div className="pt-1 space-y-2">
                 <div className="flex items-center justify-between text-xs sm:text-[13px]">
                   <div className="flex items-center gap-2">
@@ -130,11 +124,11 @@ export function GlitchReality() {
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#315BFF]" />
                     </span>
                     <span className="font-semibold text-slate-700">
-                      Neural Focus Stream
+                      Sprint Progress
                     </span>
                   </div>
                   <span className="text-[#315BFF] font-semibold">
-                    {progressWidth}% Synchronized
+                    {progressWidth}% Completed
                   </span>
                 </div>
 
@@ -147,21 +141,24 @@ export function GlitchReality() {
                 </div>
               </div>
 
-              {/* Interactive CTA buttons: Visit LinkedIn Profile */}
+              {/* Interactive Navigation Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                <a
-                  href={linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  suppressHydrationWarning
-                  className="group relative inline-flex items-center justify-center gap-2.5 px-7 py-3 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white text-sm font-bold tracking-wide shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer"
+                <Link
+                  href="/schedule"
+                  className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white text-sm font-bold tracking-wide shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer"
                 >
-                  <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
-                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                  </svg>
-                  <span>Visit LinkedIn Profile</span>
+                  <Calendar className="w-4 h-4 shrink-0" />
+                  <span>View Class Routine</span>
                   <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </a>
+                </Link>
+
+                <Link
+                  href="/notes"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-sm font-semibold border border-slate-200 shadow-2xs transition-all duration-200"
+                >
+                  <BookOpen className="w-4 h-4 text-slate-500" />
+                  <span>Browse Notes</span>
+                </Link>
               </div>
 
             </div>
@@ -177,7 +174,7 @@ export function GlitchReality() {
                 {/* Artwork Image in Dashboard Color Palette */}
                 <Image
                   src="/images/glitch-reality-daylight.jpg"
-                  alt="Glitch Reality Artwork"
+                  alt="Academic Study Focus Artwork"
                   fill
                   className={`object-cover object-center transition-all duration-700 ease-out group-hover:scale-105 ${
                     isGlitching ? "filter contrast-125 brightness-105" : ""
@@ -192,13 +189,13 @@ export function GlitchReality() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#315BFF] opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#315BFF]" />
                   </span>
-                  <span>Deep Matrix &bull; Live</span>
+                  <span>Study Session &bull; Active</span>
                 </div>
 
                 {/* Bottom interactive floating label in dashboard styling */}
                 <div className="absolute bottom-3 right-3 px-3 py-1 rounded-lg bg-white/95 backdrop-blur-md border border-[#D0DFFF] text-[11px] text-[#172033] flex items-center gap-1.5 shadow-xs">
                   <Activity className="w-3.5 h-3.5 text-[#315BFF]" />
-                  <span className="font-semibold">Sync: 100% Focus</span>
+                  <span className="font-semibold">Pomodoro: 25m Focus</span>
                 </div>
               </div>
 
@@ -281,7 +278,7 @@ export function GlitchReality() {
             </div>
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
               <span>Curated Decks</span>
-              <span className="font-semibold text-slate-800">CS 102 · 201 · 202 · 301</span>
+              <span className="font-semibold text-slate-800">CSE315 · CSE321 · CSE333 · MAT337</span>
             </div>
           </div>
 

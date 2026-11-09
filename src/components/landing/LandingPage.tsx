@@ -25,7 +25,7 @@ export function LandingPage() {
         {/* 3. KPI Showcase Section Matching Reference Design */}
         <KpiShowcase />
 
-        {/* 4. Glitch Reality Showcase Section */}
+        {/* 4. Academic Focus Showcase Section */}
         <GlitchReality />
 
         {/* 5. How It Works Section */}

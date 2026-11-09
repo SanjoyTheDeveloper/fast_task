@@ -10,8 +10,8 @@ export interface CTAProps {
 }
 
 export function CTA({
-  headline = "Elevate Your Academic Performance Today",
-  subheadline = "Join thousands of university students organizing lectures, mastering assignment deadlines, and maintaining peak focus with FastTask.",
+  headline = "Organize Your Semester & Master Every Deadline",
+  subheadline = "Plan your weekly class routines, track assignments, and maintain peak focus with FastTask.",
   registerHref = "/register",
   loginHref = "/login",
 }: CTAProps) {
