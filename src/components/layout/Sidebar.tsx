@@ -259,6 +259,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             {/* Avatar Pill */}
             <div className="relative shrink-0">
               <div
+                suppressHydrationWarning
                 className={cn(
                   "h-9 w-9 rounded-xl bg-gradient-to-tr text-white flex items-center justify-center text-xs font-black tracking-wider shadow-xs ring-2 ring-white overflow-hidden",
                   palette?.gradient || "from-blue-600 to-indigo-600"
