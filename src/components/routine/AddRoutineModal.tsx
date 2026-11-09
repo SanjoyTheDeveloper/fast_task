@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ChevronDown } from "lucide-react";
 import {
   X,
   Calendar,
@@ -120,6 +121,26 @@ export function AddRoutineModal({
   const [courseCode, setCourseCode] = React.useState("");
   const [instructor, setInstructor] = React.useState("");
   const [selectedPreset, setSelectedPreset] = React.useState<string>("");
+  const [isPresetDropdownOpen, setIsPresetDropdownOpen] = React.useState(false);
+  const presetDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  // Close preset dropdown on click outside
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        presetDropdownRef.current &&
+        !presetDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsPresetDropdownOpen(false);
+      }
+    }
+    if (isPresetDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isPresetDropdownOpen]);
   const [isCustomCourse, setIsCustomCourse] = React.useState(false);
 
   // Ref to automatically focus Course Title input
@@ -211,10 +232,10 @@ export function AddRoutineModal({
 
   if (!isOpen) return null;
 
-  // Preset or Custom selection handler
-  const handleSelectPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
+  // Preset or Custom selection handler (Accepts string directly or event)
+  const handleSelectPresetValue = (val: string) => {
     setSelectedPreset(val);
+    setIsPresetDropdownOpen(false);
 
     if (val === "custom") {
       setIsCustomCourse(true);
@@ -242,6 +263,8 @@ export function AddRoutineModal({
       toast.success(`Loaded "${found.code}" template. You can customize the fields anytime.`);
     }
   };
+
+
 
   // Toggle day selection
   const handleToggleDay = (dayFull: string, short: string) => {
@@ -703,23 +726,129 @@ export function AddRoutineModal({
                 )}
               </div>
 
-              <select
-                value={selectedPreset}
-                onChange={handleSelectPreset}
-                className="w-full h-10 px-3 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 shadow-2xs cursor-pointer"
-              >
-                <option value="">-- Choose from preset courses or enter custom below --</option>
-                <option value="custom" className="font-bold text-blue-600">
-                  ✏️ Custom Course / Type Manually (Custom Title &amp; Code)
-                </option>
-                <optgroup label="Semester Presets">
-                  {PRESET_COURSES.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.code} • {c.title}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              {/* Custom Rounded Dropdown Box */}
+              <div className="relative" ref={presetDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsPresetDropdownOpen((prev) => !prev)}
+                  className={`w-full min-h-[44px] px-3.5 py-2 rounded-2xl bg-white border text-left text-xs font-semibold flex items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer ${
+                    isPresetDropdownOpen
+                      ? "border-blue-500 ring-4 ring-blue-500/15 shadow-sm"
+                      : "border-slate-200/90 hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 truncate pr-1">
+                    {selectedPreset === "custom" ? (
+                      <span className="inline-flex items-center gap-1.5 font-bold text-blue-600">
+                        <span>✏️</span>
+                        <span>Custom Course / Type Manually</span>
+                      </span>
+                    ) : selectedPreset ? (
+                      (() => {
+                        const course = PRESET_COURSES.find((c) => c.code === selectedPreset);
+                        return course ? (
+                          <span className="inline-flex items-center gap-2 text-slate-800">
+                            <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-bold text-[11px] border border-blue-200/60">
+                              {course.code}
+                            </span>
+                            <span className="font-semibold text-slate-700 truncate">{course.title}</span>
+                          </span>
+                        ) : (
+                          <span className="text-slate-700 font-semibold">{selectedPreset}</span>
+                        );
+                      })()
+                    ) : (
+                      <span className="text-slate-400 font-normal">
+                        Choose from preset courses or enter custom below...
+                      </span>
+                    )}
+                  </div>
+
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                      isPresetDropdownOpen ? "rotate-180 text-blue-600" : "text-slate-400"
+                    }`}
+                  />
+                </button>
+
+                {/* Dropdown Menu Popup (Rounded 2xl) */}
+                {isPresetDropdownOpen && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl bg-white border border-slate-200/90 shadow-[0_16px_40px_rgba(15,23,42,0.16)] p-2 space-y-1 animate-in fade-in-0 zoom-in-95 duration-150">
+                    {/* Clear / Reset Option */}
+                    <button
+                      type="button"
+                      onClick={() => handleSelectPresetValue("")}
+                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-colors flex items-center justify-between cursor-pointer"
+                    >
+                      <span>-- Choose from preset courses or enter custom below --</span>
+                      {!selectedPreset && <Check className="h-4 w-4 text-blue-600" />}
+                    </button>
+
+                    {/* Custom Mode Option */}
+                    <button
+                      type="button"
+                      onClick={() => handleSelectPresetValue("custom")}
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center justify-between cursor-pointer ${
+                        selectedPreset === "custom"
+                          ? "bg-blue-50 text-blue-700"
+                          : "text-blue-600 hover:bg-blue-50/70"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>✏️</span>
+                        <span>Custom Course / Type Manually (Custom Title &amp; Code)</span>
+                      </span>
+                      {selectedPreset === "custom" && <Check className="h-4 w-4 text-blue-600" />}
+                    </button>
+
+                    {/* Section Header */}
+                    <div className="px-3 pt-2 pb-1 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                        Semester Presets
+                      </span>
+                      <span className="text-[10px] font-semibold text-slate-400">
+                        Batch 82A
+                      </span>
+                    </div>
+
+                    {/* Preset List with Custom Scrollbar */}
+                    <div className="max-h-60 overflow-y-auto space-y-0.5 no-scrollbar sm:scrollbar-thin sm:scrollbar-thumb-slate-200 sm:scrollbar-track-transparent pr-1">
+                      {PRESET_COURSES.map((c) => {
+                        const isSelected = selectedPreset === c.code;
+                        return (
+                          <button
+                            key={c.code}
+                            type="button"
+                            onClick={() => handleSelectPresetValue(c.code)}
+                            className={`w-full text-left px-3 py-2 rounded-xl text-xs transition-colors flex items-center justify-between gap-2 cursor-pointer group ${
+                              isSelected
+                                ? "bg-blue-50/80 text-blue-900 font-bold"
+                                : "text-slate-700 hover:bg-slate-100/80 hover:text-slate-900"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 truncate">
+                              <span
+                                className={`px-2 py-0.5 rounded-lg text-[11px] font-bold shrink-0 transition-colors ${
+                                  isSelected
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-slate-100 text-slate-700 group-hover:bg-blue-100 group-hover:text-blue-700"
+                                }`}
+                              >
+                                {c.code}
+                              </span>
+                              <span className="truncate font-medium">{c.title}</span>
+                            </div>
+
+                            {isSelected && (
+                              <Check className="h-4 w-4 text-blue-600 shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {isCustomCourse && (
                 <div className="flex items-center justify-between text-[11px] text-blue-700 bg-blue-50/80 border border-blue-100/90 rounded-xl px-3 py-1.5 shadow-2xs">
