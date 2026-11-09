@@ -292,7 +292,7 @@ export function CalendarWidget({
           <div className="h-6 w-6 rounded-lg bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center">
             <GIcon name="calendar_month" size={14} />
           </div>
-          <h3 className="text-xs font-bold text-[#172033]">
+          <h3 className="text-xs font-bold text-[#172033]" suppressHydrationWarning>
             {monthName} {year}
           </h3>
         </div>
@@ -410,7 +410,7 @@ export function CalendarWidget({
           <div className="flex items-center justify-between text-xs pb-1.5 border-b border-slate-100">
             <span className="font-bold text-[#172033] flex items-center gap-1.5">
               <GIcon name="calendar_today" size={14} className="text-[#315BFF]" />
-              <span>
+              <span suppressHydrationWarning>
                 {activeDayShort}, {monthName.slice(0, 3)} {activePopoverDate}
               </span>
               {isCurrentMonth && activePopoverDate === todayDate && (

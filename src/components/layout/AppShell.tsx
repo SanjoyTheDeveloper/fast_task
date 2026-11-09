@@ -139,12 +139,13 @@ export function AppShell({ children, user }: AppShellProps) {
             title="Profile"
           >
             <div
+              suppressHydrationWarning
               className={cn(
                 "w-full h-full flex items-center justify-center bg-gradient-to-tr",
                 palette?.gradient || "from-blue-600 to-indigo-600"
               )}
             >
-              {initials}
+              <span suppressHydrationWarning>{initials}</span>
             </div>
           </Link>
         </header>

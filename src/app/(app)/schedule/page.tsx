@@ -94,25 +94,9 @@ function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
 export default function SchedulePage() {
   const router = useRouter();
   
-  // Routine schedule state
-  const [slots, setSlots] = React.useState<RoutineSlot[]>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const cached = getStoredRoutineSlots();
-        if (cached && cached.length > 0) return cached;
-      } catch {}
-    }
-    return [];
-  });
-  const [isLoading, setIsLoading] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const cached = getStoredRoutineSlots();
-        if (cached && cached.length > 0) return false;
-      } catch {}
-    }
-    return true;
-  });
+  // Routine schedule state - consistently initialized to prevent hydration mismatch
+  const [slots, setSlots] = React.useState<RoutineSlot[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [selectedDayTab, setSelectedDayTab] = React.useState<string>("All");
 
   // Add / Edit Modal state
@@ -149,7 +133,14 @@ export default function SchedulePage() {
   React.useEffect(() => {
     let isMounted = true;
 
-    // 1. Initial cached state was loaded in useState
+    // 1. Instant local load on client mount after hydration
+    try {
+      const cached = getStoredRoutineSlots();
+      if (cached && cached.length > 0 && isMounted) {
+        setSlots(cached);
+        setIsLoading(false);
+      }
+    } catch {}
 
     // 2. Background sync
     async function fetchRoutine() {

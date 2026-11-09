@@ -63,20 +63,22 @@ export function saveStoredProfile(profile: StudentProfile): void {
 export function useStudentProfile(
   initialFallback?: Partial<StudentProfile> | { name?: string | null }
 ) {
-  const [profile, setProfile] = React.useState<StudentProfile>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const stored = getStoredProfile();
-        if (stored) return stored;
-      } catch {}
-    }
-    return {
-      ...DEFAULT_STUDENT_PROFILE,
-      ...(initialFallback?.name ? { name: initialFallback.name } : {}),
-    };
-  });
+  // Consistent initial state on both SSR and Client to prevent hydration mismatch
+  const [profile, setProfile] = React.useState<StudentProfile>(() => ({
+    ...DEFAULT_STUDENT_PROFILE,
+    ...(initialFallback?.name ? { name: initialFallback.name } : {}),
+  }));
 
   React.useEffect(() => {
+    // 1. Sync client localStorage on mount safely after hydration
+    try {
+      const stored = getStoredProfile();
+      if (stored) {
+        setProfile(stored);
+      }
+    } catch (err) {
+      console.error("Failed to sync profile:", err);
+    }
 
     const handleUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<StudentProfile>;

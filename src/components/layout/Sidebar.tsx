@@ -265,7 +265,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
                   palette?.gradient || "from-blue-600 to-indigo-600"
                 )}
               >
-                {userInitials}
+                <span suppressHydrationWarning>{userInitials}</span>
               </div>
               <span
                 className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"
@@ -275,10 +275,16 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
 
             {/* User Info */}
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
+              <p
+                suppressHydrationWarning
+                className="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors"
+              >
                 {displayName}
               </p>
-              <p className="text-[11px] font-medium text-slate-400 truncate">
+              <p
+                suppressHydrationWarning
+                className="text-[11px] font-medium text-slate-400 truncate"
+              >
                 {displayEmail}
               </p>
             </div>
@@ -293,10 +299,10 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             className="w-56 rounded-2xl p-1.5 shadow-xl border border-slate-200 bg-white"
           >
             <DropdownMenuLabel className="px-2.5 py-1.5">
-              <p className="text-xs font-bold text-slate-800">
+              <p suppressHydrationWarning className="text-xs font-bold text-slate-800">
                 {displayName}
               </p>
-              <p className="text-[11px] text-slate-400 font-normal truncate">
+              <p suppressHydrationWarning className="text-[11px] text-slate-400 font-normal truncate">
                 {displayEmail}
               </p>
             </DropdownMenuLabel>
