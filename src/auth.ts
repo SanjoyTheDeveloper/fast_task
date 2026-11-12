@@ -70,42 +70,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!user || !user.password) return null;
 
-        let isPasswordValid = await bcrypt.compare(password, user.password).catch(() => false);
-
-        if (!isPasswordValid && (cleanEmail === "info.sanjoy.bh@gmail.com" || cleanEmail === "sanjoy@fasttask.app")) {
-          try {
-            const salt = await bcrypt.genSalt(10);
-            const newHash = await bcrypt.hash(password, salt);
-            await prisma.user.update({
-              where: { id: user.id },
-              data: {
-                email: "info.sanjoy.bh@gmail.com",
-                password: newHash,
-                emailVerified: new Date(),
-              },
-            });
-            isPasswordValid = true;
-          } catch (e) {
-            console.warn("Could not sync student password in auth:", e);
-          }
-        }
+        const isPasswordValid = await bcrypt.compare(password, user.password).catch(() => false);
 
         if (!isPasswordValid) return null;
 
         const isEmailServiceActive = isEmailConfigured();
 
         // If email service is active and user is unverified, require verification
-        if (isEmailServiceActive && !user.emailVerified && cleanEmail !== "info.sanjoy.bh@gmail.com") {
+        if (isEmailServiceActive && !user.emailVerified) {
           throw new EmailNotVerifiedError("Please verify your email before logging in");
-        } else if (!user.emailVerified) {
-          try {
-            await prisma.user.update({
-              where: { id: user.id },
-              data: { emailVerified: new Date() },
-            });
-          } catch (e) {
-            console.warn("Could not auto-verify user in fallback mode:", e);
-          }
         }
 
         return {

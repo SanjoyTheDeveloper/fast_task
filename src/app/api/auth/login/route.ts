@@ -67,24 +67,6 @@ export async function POST(req: NextRequest) {
       isPasswordValid = await verifyPassword(password, user.password).catch(() => false);
     }
 
-    // 3. Auto-sync student owner password in local/dev environment so developer is never locked out
-    if (!isPasswordValid && (cleanEmail === "info.sanjoy.bh@gmail.com" || cleanEmail === "sanjoy@fasttask.app")) {
-      try {
-        const newHash = await hashPassword(password);
-        user = await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            email: "info.sanjoy.bh@gmail.com",
-            password: newHash,
-            emailVerified: new Date(),
-          },
-        });
-        isPasswordValid = true;
-      } catch (err) {
-        console.warn("Could not auto-sync student password:", err);
-      }
-    }
-
     if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Invalid email or password" },
@@ -94,19 +76,12 @@ export async function POST(req: NextRequest) {
 
     const isEmailServiceActive = isEmailConfigured();
 
-    // 4. Check email verification (auto-verify student in dev)
-    if (isEmailServiceActive && !user.emailVerified && cleanEmail !== "info.sanjoy.bh@gmail.com") {
+    // 3. Check email verification
+    if (isEmailServiceActive && !user.emailVerified) {
       return NextResponse.json(
         { message: "Please verify your email before logging in", code: "email_not_verified" },
         { status: 403 }
       );
-    } else if (!user.emailVerified) {
-      try {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { emailVerified: new Date() },
-        });
-      } catch {}
     }
 
     const sessionUser = { id: user.id, email: user.email, name: user.name };

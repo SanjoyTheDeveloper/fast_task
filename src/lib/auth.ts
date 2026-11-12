@@ -40,8 +40,12 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
         name: session.user.name || "User",
       };
     }
+  } catch {
+    // Session retrieval may fail outside of an active HTTP request context (e.g., in background jobs or tests)
+  }
 
-    // In local dev fallback mode, if a student exists in PostgreSQL, use it
+  // In local development or fallback mode, if a student exists in PostgreSQL, return it
+  try {
     const defaultUser = await prisma.user.findFirst({
       select: { id: true, email: true, name: true },
     });
@@ -52,10 +56,9 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
         name: defaultUser.name,
       };
     }
-
-    return null;
-  } catch (error) {
-    console.error("Error retrieving current Auth.js user:", error);
-    return null;
+  } catch (dbErr) {
+    console.error("Database error in getCurrentUser fallback:", dbErr);
   }
+
+  return null;
 }
