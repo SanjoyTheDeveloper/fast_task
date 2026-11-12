@@ -11,7 +11,8 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:status": "prisma migrate status",
     "db:seed": "node scripts/seed.mjs",
-    "db:populate": "tsx scripts/seed-database.ts"
+    "db:populate": "tsx scripts/seed-database.ts",
+    "db:audit": "tsx scripts/verify-database-health.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
