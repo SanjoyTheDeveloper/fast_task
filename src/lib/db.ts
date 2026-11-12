@@ -112,6 +112,10 @@ export const db = {
       });
     },
 
+    async upsert(args: Prisma.UserUpsertArgs) {
+      return await prisma.user.upsert(args);
+    },
+
     async delete({ where }: { where: { id: string } }) {
       return await prisma.user.delete({
         where: { id: where.id },
@@ -460,6 +464,30 @@ export const db = {
 
   get routineSlot() {
     return this.routineSchedule;
+  },
+
+  get course() {
+    return prisma.course;
+  },
+
+  get semester() {
+    return prisma.semester;
+  },
+
+  get note() {
+    return prisma.note;
+  },
+
+  get profile() {
+    return prisma.profile;
+  },
+
+  get subtask() {
+    return prisma.subtask;
+  },
+
+  get studySession() {
+    return prisma.studySession;
   },
 };
 

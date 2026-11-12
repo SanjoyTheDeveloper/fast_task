@@ -1,3 +1,11 @@
+// ==============================================================================
+// FastTask Academic Management Platform - Prisma Schema
+// Database Engine: Neon Serverless PostgreSQL
+// Connection Architecture:
+//   - url (DATABASE_URL): Pooled connection (PgBouncer) for high concurrency & serverless functions
+//   - directUrl (DIRECT_URL): Direct connection string for DDL schema migrations & Prisma CLI operations
+// ==============================================================================
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
