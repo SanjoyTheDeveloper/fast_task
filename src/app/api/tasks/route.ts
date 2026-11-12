@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
-import { db } from "@/lib/db";
+import { db, prisma } from "@/lib/db";
 import { createTaskApiSchema, taskQuerySchema } from "@/lib/validations";
 import {
   successResponse,
@@ -220,6 +221,18 @@ export async function POST(req: NextRequest) {
       category
     );
 
+    // Ensure active user exists in Neon DB to eliminate foreign key constraint violations
+    await prisma.user.upsert({
+      where: { id: user.id },
+      update: {},
+      create: {
+        id: user.id,
+        name: user.name || "Student",
+        email: user.email || `user_${user.id}@fasttask.app`,
+        password: "session_user_placeholder",
+      },
+    });
+
     // Create task in database tied strictly to the authenticated user ID
     const task = await db.task.create({
       data: {
@@ -231,6 +244,11 @@ export async function POST(req: NextRequest) {
         userId: user.id,
       },
     });
+
+    // Revalidate paths for instant client-side update without hard refresh
+    revalidatePath("/dashboard");
+    revalidatePath("/tasks");
+    revalidatePath("/kanban");
 
     return successResponse(serializeTask(task), 201);
   } catch (error) {

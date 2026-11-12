@@ -134,7 +134,10 @@ export default function MyTasksPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const res = await fetch("/api/tasks?limit=50&sortBy=createdAt&sortOrder=desc");
+      const res = await fetch("/api/tasks?limit=50&sortBy=createdAt&sortOrder=desc", {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (res.ok) {
         const json = await res.json();
         setTasks(json.data || []);

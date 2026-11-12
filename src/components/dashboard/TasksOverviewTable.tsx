@@ -156,6 +156,17 @@ export function TasksOverviewTable({
           >
             <SlidersHorizontal className="h-4 w-4" />
           </button>
+
+          {/* Quick Create Task button */}
+          {onOpenCreateModal && (
+            <button
+              type="button"
+              onClick={onOpenCreateModal}
+              className="h-9 px-3.5 rounded-xl bg-[#315BFF] hover:bg-[#254BE3] text-white flex items-center gap-1.5 font-bold text-xs shadow-xs shadow-blue-500/20 transition-all cursor-pointer shrink-0"
+            >
+              <span>+ New Task</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -181,6 +192,15 @@ export function TasksOverviewTable({
                     <p className="text-xs text-slate-400">
                       {searchFilter ? "No tasks matching your search query." : "No tasks recorded in database."}
                     </p>
+                    {onOpenCreateModal && !searchFilter && (
+                      <button
+                        type="button"
+                        onClick={onOpenCreateModal}
+                        className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-[#315BFF] hover:underline cursor-pointer"
+                      >
+                        + Create your first task
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

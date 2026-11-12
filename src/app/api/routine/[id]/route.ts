@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -51,6 +52,10 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
     await db.routineSchedule.delete({
       where: { id },
     });
+
+    revalidatePath("/routine");
+    revalidatePath("/schedule");
+    revalidatePath("/dashboard");
 
     return NextResponse.json({
       success: true,
@@ -112,6 +117,10 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
           : {}),
       },
     });
+
+    revalidatePath("/routine");
+    revalidatePath("/schedule");
+    revalidatePath("/dashboard");
 
     return NextResponse.json({
       success: true,

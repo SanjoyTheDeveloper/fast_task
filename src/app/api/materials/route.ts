@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { db, prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,35 +27,41 @@ export async function GET(req: NextRequest) {
     const courseCode = searchParams.get("courseCode");
     const search = searchParams.get("search")?.trim();
 
-    const where: Prisma.CourseMaterialWhereInput = {
-      userId: user.id,
-    };
+    const andConditions: Prisma.CourseMaterialWhereInput[] = [
+      { userId: user.id },
+    ];
 
     if (category && category !== "All") {
-      where.OR = [
-        { category: { equals: category, mode: "insensitive" } },
-        { courseCode: { equals: category, mode: "insensitive" } },
-        { courseName: { equals: category, mode: "insensitive" } },
-      ];
+      andConditions.push({
+        OR: [
+          { category: { equals: category, mode: "insensitive" } },
+          { courseCode: { equals: category, mode: "insensitive" } },
+          { courseName: { equals: category, mode: "insensitive" } },
+        ],
+      });
     }
 
     if (courseCode && courseCode !== "All") {
-      where.courseCode = { contains: courseCode, mode: "insensitive" };
+      andConditions.push({
+        courseCode: { contains: courseCode, mode: "insensitive" },
+      });
     }
 
     if (search && search.length > 0) {
-      where.AND = [
-        {
-          OR: [
-            { title: { contains: search, mode: "insensitive" } },
-            { courseCode: { contains: search, mode: "insensitive" } },
-            { courseName: { contains: search, mode: "insensitive" } },
-            { category: { contains: search, mode: "insensitive" } },
-            { description: { contains: search, mode: "insensitive" } },
-          ],
-        },
-      ];
+      andConditions.push({
+        OR: [
+          { title: { contains: search, mode: "insensitive" } },
+          { courseCode: { contains: search, mode: "insensitive" } },
+          { courseName: { contains: search, mode: "insensitive" } },
+          { category: { contains: search, mode: "insensitive" } },
+          { description: { contains: search, mode: "insensitive" } },
+        ],
+      });
     }
+
+    const where: Prisma.CourseMaterialWhereInput = {
+      AND: andConditions,
+    };
 
     const materials = await db.courseMaterial.findMany({
       where,
@@ -89,6 +96,18 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
+
+    // Ensure active user exists in Neon DB to prevent foreign key constraint failures
+    await prisma.user.upsert({
+      where: { id: user.id },
+      update: {},
+      create: {
+        id: user.id,
+        name: user.name || "Student",
+        email: user.email || `user_${user.id}@fasttask.app`,
+        password: "session_user_placeholder",
+      },
+    });
 
     const body = await req.json();
     const {
@@ -135,6 +154,11 @@ export async function POST(req: NextRequest) {
         userId: user.id,
       },
     });
+
+    // Revalidate paths so Next.js does not serve stale cached pages
+    revalidatePath("/courses");
+    revalidatePath("/lms");
+    revalidatePath("/dashboard");
 
     return NextResponse.json(
       {

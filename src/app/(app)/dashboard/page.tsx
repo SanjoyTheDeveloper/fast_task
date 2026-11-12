@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
   StatCards,
@@ -14,6 +15,11 @@ import {
 import { FilterState } from "@/components/tasks";
 import { toast, Toaster } from "sonner";
 import type { Task, PaginationMeta, PaginatedTasksResponse, SessionUser } from "@/types";
+
+const TaskDialog = dynamic(
+  () => import("@/components/tasks/TaskDialog").then((m) => m.TaskDialog),
+  { ssr: false }
+);
 
 function DashboardContent() {
   const router = useRouter();
@@ -37,6 +43,8 @@ function DashboardContent() {
   const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [courses, setCourses] = React.useState<ProjectCardItem[]>([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+  const [editingTask, setEditingTask] = React.useState<Task | null>(null);
   const [pagination, setPagination] = React.useState<PaginationMeta>({
     page: 1,
     limit: 10,
@@ -124,7 +132,10 @@ function DashboardContent() {
       }
 
       const url = `/api/tasks${query.toString() ? `?${query.toString()}` : ""}`;
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
 
       if (res.ok) {
         const json: PaginatedTasksResponse = await res.json();
@@ -141,15 +152,16 @@ function DashboardContent() {
       }
     } catch {
       console.error("Network error while connecting to server");
-    } finally {
-      
     }
   }, [search, status, priority, sortBy, sortOrder, page, limit, router]);
 
   // Database-Level Query: Fetch user's active academic courses
   const fetchCourses = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/courses");
+      const res = await fetch("/api/courses", {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (res.ok) {
         const json = await res.json();
         setCourses(json.data || []);
@@ -167,8 +179,55 @@ function DashboardContent() {
   // Client-side course filter matching
   const displayedTasks = React.useMemo(() => {
     if (!course || course === "ALL") return tasks;
-    return tasks.filter((t) => (t.course || "").toUpperCase() === course);
+    const courseUpper = course.toUpperCase().trim();
+    return tasks.filter((t) => {
+      const taskCourse = (t.course || "").toUpperCase().trim();
+      return (
+        taskCourse === courseUpper ||
+        taskCourse.includes(courseUpper) ||
+        courseUpper.includes(taskCourse)
+      );
+    });
   }, [tasks, course]);
+
+  // Handle task created/updated from modal
+  const handleTaskSaved = (savedTask: Task) => {
+    setTasks((prev) => {
+      const idx = prev.findIndex((t) => t.id === savedTask.id);
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = savedTask;
+        return updated;
+      }
+      return [savedTask, ...prev];
+    });
+    setIsCreateModalOpen(false);
+    setEditingTask(null);
+    toast.success(editingTask ? "Task updated!" : "New task created!");
+    fetchTasks();
+  };
+
+  // Handle toggle task status directly from table
+  const handleToggleStatus = async (task: Task) => {
+    const nextCompleted = !task.completed;
+    setTasks((prev) =>
+      prev.map((t) => (t.id === task.id ? { ...t, completed: nextCompleted } : t))
+    );
+
+    try {
+      const res = await fetch(`/api/tasks/${task.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: nextCompleted }),
+      });
+      if (!res.ok) {
+        fetchTasks();
+        toast.error("Failed to update status");
+      }
+    } catch {
+      fetchTasks();
+    }
+  };
 
   // Filter change handler
   const handleFilterChange = (newFilters: FilterState) => {
@@ -218,6 +277,15 @@ function DashboardContent() {
             {/* 2. Tasks overview (Reference styled Table) */}
             <TasksOverviewTable
               tasks={displayedTasks}
+              onToggleStatus={handleToggleStatus}
+              onEditTask={(t) => {
+                setEditingTask(t);
+                setIsCreateModalOpen(true);
+              }}
+              onOpenCreateModal={() => {
+                setEditingTask(null);
+                setIsCreateModalOpen(true);
+              }}
             />
           </div>
 
@@ -237,6 +305,17 @@ function DashboardContent() {
           </div>
         </div>
       </main>
+
+      {/* Task Creation & Editing Dialog */}
+      <TaskDialog
+        open={isCreateModalOpen}
+        onOpenChange={(open) => {
+          setIsCreateModalOpen(open);
+          if (!open) setEditingTask(null);
+        }}
+        initialData={editingTask}
+        onSuccess={handleTaskSaved}
+      />
     </div>
   );
 }

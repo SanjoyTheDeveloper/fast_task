@@ -256,50 +256,54 @@ export default function LmsPage() {
 
     // Persist to database via API
     try {
-      const sendSave = async (fileUrlToSave?: string) => {
-        const res = await fetch("/api/materials", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: newDoc.title,
-            courseCode: newDoc.courseCode,
-            courseName: newDoc.courseName,
-            category: newDoc.category,
-            tag: newDoc.tag || newDoc.category,
-            schedule: newDoc.schedule,
-            fileUrl: fileUrlToSave || newDoc.fileUrl,
-            fileSize: newDoc.size,
-            pages: newDoc.pages,
-            description: newDoc.description,
-            materialType: newDoc.materialType,
-          }),
+      let fileUrlToSave = newDoc.fileUrl;
+      if (rawFile && rawFile.size <= 500 * 1024) {
+        // Only convert to base64 for small files (<500KB) to prevent huge payload rejection
+        fileUrlToSave = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = () => resolve(newDoc.fileUrl || "");
+          reader.readAsDataURL(rawFile);
         });
-
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data) {
-            setDocuments((prev) =>
-              prev.map((item) =>
-                item.id === newDoc.id
-                  ? { ...item, id: json.data.id, uploadedAt: "Just now" }
-                  : item
-              )
-            );
-          }
-        }
-      };
-
-      if (rawFile && rawFile.size <= 4 * 1024 * 1024) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          sendSave(reader.result as string);
-        };
-        reader.readAsDataURL(rawFile);
-      } else {
-        await sendSave(newDoc.fileUrl);
       }
-    } catch {
-      // Silently handled
+
+      const res = await fetch("/api/materials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newDoc.title,
+          courseCode: newDoc.courseCode,
+          courseName: newDoc.courseName,
+          category: newDoc.category,
+          tag: newDoc.tag || newDoc.category,
+          schedule: newDoc.schedule,
+          fileUrl: fileUrlToSave || newDoc.fileUrl,
+          fileSize: newDoc.size,
+          pages: newDoc.pages,
+          description: newDoc.description,
+          materialType: newDoc.materialType,
+        }),
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setDocuments((prev) =>
+            prev.map((item) =>
+              item.id === newDoc.id
+                ? { ...item, id: json.data.id, uploadedAt: "Just now" }
+                : item
+            )
+          );
+        }
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        console.error("Upload to DB error:", errJson);
+        toast.error(errJson?.error?.message || "Failed to persist uploaded document to database");
+      }
+    } catch (err) {
+      console.error("Network error while uploading material:", err);
+      toast.error("Network error while saving document to database");
     }
   };
 

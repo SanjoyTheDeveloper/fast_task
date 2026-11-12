@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -51,6 +52,10 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
     await db.courseMaterial.delete({
       where: { id },
     });
+
+    revalidatePath("/courses");
+    revalidatePath("/lms");
+    revalidatePath("/dashboard");
 
     return NextResponse.json({
       success: true,
@@ -105,6 +110,10 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
         ...(body.schedule !== undefined ? { schedule: body.schedule?.trim() || null } : {}),
       },
     });
+
+    revalidatePath("/courses");
+    revalidatePath("/lms");
+    revalidatePath("/dashboard");
 
     return NextResponse.json({
       success: true,

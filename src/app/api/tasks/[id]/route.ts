@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { taskIdSchema, updateTaskApiSchema } from "@/lib/validations";
@@ -180,6 +181,10 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
       data: updateData,
     });
 
+    revalidatePath("/dashboard");
+    revalidatePath("/tasks");
+    revalidatePath("/kanban");
+
     return successResponse(serializeTask(updatedTask), 200);
   } catch (error) {
     console.error("PATCH /api/tasks/[id] error:", error);
@@ -217,6 +222,10 @@ export async function DELETE(req: NextRequest, { params }: RouteContext) {
     }
 
     await db.task.delete({ where: { id: idResult.data } });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/tasks");
+    revalidatePath("/kanban");
 
     // Success: 204 No Content with empty body (do NOT return JSON)
     return new Response(null, { status: 204 });
