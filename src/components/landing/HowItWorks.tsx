@@ -16,6 +16,7 @@ import {
   Pause,
   Volume2,
   VolumeX,
+  Tv,
 } from "lucide-react";
 
 export function HowItWorks() {
@@ -23,14 +24,13 @@ export function HowItWorks() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
 
-  // Synchronize and autoplay all 3 live video tiers seamlessly
+  // Synchronize and autoplay all 3 live 1080p video tiers seamlessly
   useEffect(() => {
     videoRefs.current.forEach((video) => {
       if (video) {
         video.defaultMuted = true;
         video.muted = true;
         video.play().catch(() => {
-          // Autoplay policy handled gracefully
           setIsPlaying(false);
         });
       }
@@ -83,7 +83,7 @@ export function HowItWorks() {
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         
-        {/* Section Heading with Clean Balanced Typography */}
+        {/* Section Heading with Clean Balanced Typography & 1080p Quality Pill */}
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100/90 border border-purple-200 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
@@ -104,7 +104,7 @@ export function HowItWorks() {
             From chaotic semester syllabus to a calm, organized daily study flow.
           </p>
 
-          {/* Sync Video Controls Pill */}
+          {/* Controls: Play/Pause, Mute & 1080p Full HD Badge */}
           <div className="pt-1 flex items-center justify-center gap-3">
             <button
               onClick={toggleAllPlay}
@@ -113,7 +113,7 @@ export function HowItWorks() {
               {isPlaying ? (
                 <>
                   <Pause className="w-3.5 h-3.5 text-purple-600 fill-purple-600" />
-                  <span>Pause Motion Loops</span>
+                  <span>Pause Motion</span>
                 </>
               ) : (
                 <>
@@ -131,39 +131,43 @@ export function HowItWorks() {
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-purple-600" />}
               <span>{isMuted ? "Muted" : "Sound"}</span>
             </button>
+
+            {/* 1080p Ultra HD Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200/80 text-[11px] font-bold text-purple-700 shadow-2xs">
+              <Tv className="w-3.5 h-3.5 text-purple-600" />
+              <span>1080p Full HD</span>
+            </div>
           </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* 3-TIER MASTER SHOWCASE: PLACED DIRECTLY ONE ABOVE THE OTHER IN SYNC       */}
-        {/* MATCHES THE EXACT 3 HORIZONTAL TIERS OF THE REFERENCE VIDEO               */}
+        {/* 3-TIER MASTER SHOWCASE: 1080p RESOLUTION PLACED ONE ABOVE THE OTHER       */}
         {/* ========================================================================= */}
         <div className="relative mx-auto max-w-5xl rounded-[32px] sm:rounded-[40px] overflow-hidden border border-purple-500/25 shadow-[0_30px_90px_-20px_rgba(20,5,45,0.45)] divide-y divide-white/10 sm:divide-y-2">
           
           {/* ----------------------------------------------------------------------- */}
-          {/* TIER 01: ROUTINE SYNCHRONIZATION (TOP TIER • 3D PHONE MOTION LOOP)     */}
+          {/* TIER 01: ROUTINE SYNCHRONIZATION (1080p PHONE MOTION LOOP)             */}
           {/* ----------------------------------------------------------------------- */}
           <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[360px] sm:min-h-[400px] overflow-hidden bg-[#120427]">
-            {/* Live 50fps 3D Video Layer (Top 33.33% of Video) */}
+            {/* Dedicated 1080p 50fps Tier Video */}
             <video
               ref={(el) => {
                 videoRefs.current[0] = el;
               }}
-              src="/videos/alchemy_showcase.mp4"
+              src="/videos/tier_01_phone_1080p.mp4"
               autoPlay
               loop
               muted
               playsInline
               preload="auto"
-              className="absolute left-0 w-full h-[300%] max-w-none object-cover pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ top: "0%" }}
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
-            {/* Poster fallback image for instant zero-latency paint */}
+            {/* High-Res 1080p Poster Fallback Image */}
             <div className="pointer-events-none absolute inset-0 -z-10">
               <Image
-                src="/images/how-it-works/tier1_clean.png"
-                alt="Define Semester & Weekly Routine"
+                src="/images/how-it-works/tier1_clean_1080p.png"
+                alt="Define Semester & Weekly Routine (1080p)"
                 fill
                 className="object-cover object-right"
                 priority
@@ -233,29 +237,28 @@ export function HowItWorks() {
           </div>
 
           {/* ----------------------------------------------------------------------- */}
-          {/* TIER 02: DEADLINE VELOCITY RADAR (MIDDLE TIER • 3D AIRPLANE MOTION LOOP)*/}
+          {/* TIER 02: DEADLINE VELOCITY RADAR (1080p AIRPLANE MOTION LOOP)           */}
           {/* ----------------------------------------------------------------------- */}
           <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[360px] sm:min-h-[400px] overflow-hidden bg-[#380E8C]">
-            {/* Live 50fps 3D Video Layer (Middle 33.33% of Video) */}
+            {/* Dedicated 1080p 50fps Tier Video */}
             <video
               ref={(el) => {
                 videoRefs.current[1] = el;
               }}
-              src="/videos/alchemy_showcase.mp4"
+              src="/videos/tier_02_velocity_1080p.mp4"
               autoPlay
               loop
               muted
               playsInline
               preload="auto"
-              className="absolute left-0 w-full h-[300%] max-w-none object-cover pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ top: "-100%" }}
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
-            {/* Poster fallback image */}
+            {/* High-Res 1080p Poster Fallback */}
             <div className="pointer-events-none absolute inset-0 -z-10">
               <Image
-                src="/images/how-it-works/tier2_clean.png"
-                alt="Tag Coursework & Exam Deadlines"
+                src="/images/how-it-works/tier2_clean_1080p.png"
+                alt="Tag Coursework & Exam Deadlines (1080p)"
                 fill
                 className="object-cover object-center"
               />
@@ -324,29 +327,28 @@ export function HowItWorks() {
           </div>
 
           {/* ----------------------------------------------------------------------- */}
-          {/* TIER 03: STUDY TARGET & FLOW STATE (BOTTOM TIER • 3D GLOBE MOTION LOOP) */}
+          {/* TIER 03: STUDY TARGET & FLOW STATE (1080p GLOBE MOTION LOOP)            */}
           {/* ----------------------------------------------------------------------- */}
           <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[360px] sm:min-h-[400px] overflow-hidden bg-[#ECE5FA]">
-            {/* Live 50fps 3D Video Layer (Bottom 33.33% of Video) */}
+            {/* Dedicated 1080p 50fps Tier Video */}
             <video
               ref={(el) => {
                 videoRefs.current[2] = el;
               }}
-              src="/videos/alchemy_showcase.mp4"
+              src="/videos/tier_03_globe_1080p.mp4"
               autoPlay
               loop
               muted
               playsInline
               preload="auto"
-              className="absolute left-0 w-full h-[300%] max-w-none object-cover pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ top: "-200%" }}
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
-            {/* Poster fallback image */}
+            {/* High-Res 1080p Poster Fallback */}
             <div className="pointer-events-none absolute inset-0 -z-10">
               <Image
-                src="/images/how-it-works/tier3_clean.png"
-                alt="Execute with Pomodoro Focus"
+                src="/images/how-it-works/tier3_clean_1080p.png"
+                alt="Execute with Pomodoro Focus (1080p)"
                 fill
                 className="object-cover object-right"
               />
