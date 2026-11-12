@@ -1,126 +1,98 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import {
-  CheckCircle2,
-  Clock,
-  GraduationCap,
-  LayoutDashboard,
-  ArrowDownRight,
-  Sparkles,
-  Calendar,
-  AlertTriangle,
-  Timer,
-  Check,
-} from "lucide-react";
-
-export interface StepItem {
-  number: string;
-  badge: string;
-  title: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  videoPosition: string; // "0%", "-100%", "-200%"
-  posterImage: string;
-  chips: string[];
-  gradientBg: string;
-  borderGlow: string;
-  badgeStyle: string;
-  statusText: string;
-  hasYellowButton?: boolean;
-}
-
-const steps: StepItem[] = [
-  {
-    number: "01",
-    badge: "ROUTINE SYNCHRONIZATION",
-    title: "Define Semester & Weekly Routine",
-    description:
-      "Configure your term start and end dates and upload your weekly course schedule. Today's sessions automatically illuminate with zero manual friction.",
-    icon: Clock,
-    videoPosition: "0%",
-    posterImage: "/images/how-it-works/step_01_phone_3d.png",
-    chips: ["Spring 2026 Term", "4 Core CS Routine Slots", "Smart Lab 402 Highlights"],
-    gradientBg: "from-[#160733] via-[#100326] to-[#0A0218]",
-    borderGlow: "hover:border-purple-500/60 hover:shadow-[0_25px_60px_-15px_rgba(139,92,246,0.35)]",
-    badgeStyle: "bg-purple-500/20 text-purple-300 border-purple-400/30",
-    statusText: "Automated Routine Sync • Active",
-  },
-  {
-    number: "02",
-    badge: "DEADLINE VELOCITY RADAR",
-    title: "Tag Coursework & Exam Deadlines",
-    description:
-      "Log assignments, lab reports, and exam dates with color-coded course codes. Priority flags and velocity radar keep critical milestones front and center.",
-    icon: GraduationCap,
-    videoPosition: "-100%",
-    posterImage: "/images/how-it-works/step_02_plane_3d.png",
-    chips: ["Priority Radar Flags", "0611CSE321 & 0613CSE333", "Live Due Countdowns"],
-    gradientBg: "from-[#200A4A] via-[#150533] to-[#0B021D]",
-    borderGlow: "hover:border-fuchsia-500/60 hover:shadow-[0_25px_60px_-15px_rgba(168,85,247,0.35)]",
-    badgeStyle: "bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-400/30",
-    statusText: "Velocity Radar • 11 Active Tasks",
-  },
-  {
-    number: "03",
-    badge: "STUDY TARGET & FLOW STATE",
-    title: "Execute with Pomodoro Focus",
-    description:
-      "Power through deep study blocks with the built-in 25-minute timer and drag finished tasks to Completed on your Kanban board.",
-    icon: LayoutDashboard,
-    videoPosition: "-200%",
-    posterImage: "/images/how-it-works/step_03_globe_avatars.png",
-    chips: ["25m Pomodoro Cycles", "Drag & Drop Kanban", "Flow State Analytics"],
-    gradientBg: "from-[#270D56] via-[#180738] to-[#0D0221]",
-    borderGlow: "hover:border-violet-400/70 hover:shadow-[0_25px_60px_-15px_rgba(192,132,252,0.4)]",
-    badgeStyle: "bg-violet-500/20 text-violet-200 border-violet-400/30",
-    statusText: "Peak Flow State • 100% Focused",
-    hasYellowButton: true,
-  },
-];
+import { Play, Pause, Sparkles, Volume2, VolumeX, CheckCircle2, ArrowDownRight, Clock, GraduationCap, LayoutDashboard } from "lucide-react";
 
 export function HowItWorks() {
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [activeTier, setActiveTier] = useState<number | null>(null);
 
   useEffect(() => {
-    // Ensure all 3 synchronized video viewports play seamlessly
-    videoRefs.current.forEach((video) => {
-      if (video) {
-        video.play().catch(() => {
-          // Handled via muted autoplay
-        });
-      }
-    });
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        setIsPlaying(false);
+      });
+    }
   }, []);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current.play().catch(() => {});
+      setIsPlaying(true);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  };
+
+  const stepDetails = [
+    {
+      number: "01",
+      tier: "TOP TIER",
+      title: "Define Semester & Weekly Routine",
+      description: "Upload your weekly course timetable. Today's lectures illuminate automatically.",
+      badge: "Routine Sync",
+      icon: Clock,
+      color: "#8B5CF6",
+    },
+    {
+      number: "02",
+      tier: "MIDDLE TIER",
+      title: "Tag Coursework & Exam Deadlines",
+      description: "Color-coded course codes and priority velocity radar keep milestones front and center.",
+      badge: "Deadline Radar",
+      icon: GraduationCap,
+      color: "#A855F7",
+    },
+    {
+      number: "03",
+      tier: "BOTTOM TIER",
+      title: "Execute with Pomodoro Focus",
+      description: "Power through 25-minute deep work intervals and drag finished tasks to Completed.",
+      badge: "Study Target",
+      icon: LayoutDashboard,
+      color: "#C084FC",
+    },
+  ];
 
   return (
     <section
       id="how-it-works"
       className="relative py-20 sm:py-28 lg:py-36 bg-[#F8FAFC] scroll-mt-20 sm:scroll-mt-24 overflow-hidden select-none"
     >
-      {/* Ambient background volumetric violet & indigo glows matching the 3D video mood */}
+      {/* Volumetric ambient glow matching the rich 3D video lighting */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-[900px] w-full max-w-7xl rounded-full bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.12)_0%,rgba(99,102,241,0.06)_40%,transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-[950px] w-full max-w-6xl rounded-full bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.14)_0%,rgba(99,102,241,0.06)_45%,transparent_70%)] blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute top-16 right-10 -z-10 h-96 w-96 rounded-full bg-purple-500/10 blur-[120px]"
+        className="pointer-events-none absolute top-12 left-1/4 -z-10 h-80 w-80 rounded-full bg-purple-500/10 blur-[100px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-16 left-10 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-[120px]"
+        className="pointer-events-none absolute bottom-12 right-1/4 -z-10 h-80 w-80 rounded-full bg-indigo-500/10 blur-[100px]"
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         
-        {/* Section Heading with Clean Balanced Typography & Pill Badge */}
-        <div className="mx-auto max-w-3xl text-center space-y-4 mb-14 sm:mb-18">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100/80 border border-purple-200/80 shadow-2xs">
+        {/* Section Heading with Clean Balanced Typography */}
+        <div className="mx-auto max-w-2xl text-center space-y-3.5 mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100/90 border border-purple-200 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
             <span className="text-[11px] font-bold tracking-wider text-purple-700 uppercase">
-              Step-by-Step Platform Execution
+              Platform Workflow Engine
             </span>
           </div>
 
@@ -132,133 +104,181 @@ export function HowItWorks() {
             Works
           </h2>
 
-          <p className="text-sm sm:text-base leading-relaxed text-slate-600 font-normal max-w-xl mx-auto">
+          <p className="text-sm sm:text-base leading-relaxed text-slate-600 font-normal max-w-lg mx-auto">
             From chaotic semester syllabus to a calm, organized daily study flow.
           </p>
         </div>
 
         {/* ========================================================================= */}
-        {/* VERTICALLY STACKED CARDS (ONE ABOVE THE OTHER AS REQUESTED)               */}
+        {/* THE 3-TIER MASTER SHOWCASE (STACKED ONE ABOVE THE OTHER EXACTLY AS IN VIDEO) */}
         {/* ========================================================================= */}
-        <div className="relative flex flex-col gap-7 sm:gap-9 max-w-5xl mx-auto">
-          {steps.map((step, index) => {
+        <div className="relative mx-auto w-full max-w-[620px] sm:max-w-[680px] lg:max-w-[720px]">
+          
+          {/* Outer Ambient Glow Ring */}
+          <div className="absolute -inset-1.5 rounded-[36px] sm:rounded-[44px] bg-gradient-to-b from-purple-500/30 via-indigo-500/20 to-purple-600/30 blur-xl opacity-75 group-hover:opacity-100 transition-opacity" />
+
+          {/* Master 3-Tier Frame matching the 720x960 Aspect Ratio from the Video */}
+          <div
+            onClick={togglePlay}
+            className="group relative w-full aspect-[720/960] rounded-[32px] sm:rounded-[40px] bg-[#0A0218] border-2 border-purple-500/30 shadow-[0_25px_80px_-15px_rgba(109,40,217,0.5),0_0_0_1px_rgba(255,255,255,0.08)_inset] overflow-hidden cursor-pointer"
+          >
+            {/* 1. High-Resolution Fallback Poster */}
+            <Image
+              src="/images/how-it-works/showcase_full_poster.jpg"
+              alt="FastTask 3-Tier Workflow Architecture"
+              fill
+              className="object-cover object-center pointer-events-none -z-10"
+              sizes="(max-width: 768px) 100vw, 720px"
+              priority
+            />
+
+            {/* 2. Full 3-Tier 3D Motion Video Loop */}
+            <video
+              ref={videoRef}
+              src="/videos/alchemy_showcase.mp4"
+              autoPlay
+              loop
+              muted={isMuted}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
+            />
+
+            {/* Subtle Specular Top Reflection */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
+            {/* ---------------- INTERACTIVE OVERLAY LABELS ON EACH TIER ---------------- */}
+
+            {/* TIER 1: TOP (0% to 33.3%) - Phone & Extranet */}
+            <div
+              onMouseEnter={() => setActiveTier(1)}
+              onMouseLeave={() => setActiveTier(null)}
+              className="absolute top-0 inset-x-0 h-[33.33%] pointer-events-auto flex items-start justify-between p-4 sm:p-6 transition-all duration-300 hover:bg-purple-950/20"
+            >
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-[11px] sm:text-xs font-mono font-black text-white shadow-lg flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
+                  <span>01 • ROUTINE SYNC</span>
+                </span>
+              </div>
+
+              <div className="px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-sm">
+                Define Semester
+              </div>
+            </div>
+
+            {/* TIER 2: MIDDLE (33.3% to 66.6%) - Transport & Skewed Cards */}
+            <div
+              onMouseEnter={() => setActiveTier(2)}
+              onMouseLeave={() => setActiveTier(null)}
+              className="absolute top-[33.33%] inset-x-0 h-[33.33%] pointer-events-auto flex items-start justify-between p-4 sm:p-6 transition-all duration-300 hover:bg-fuchsia-950/20"
+            >
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-[11px] sm:text-xs font-mono font-black text-white shadow-lg flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-fuchsia-400 animate-ping" />
+                  <span>02 • DEADLINE RADAR</span>
+                </span>
+              </div>
+
+              <div className="px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-sm">
+                Tag Milestones
+              </div>
+            </div>
+
+            {/* TIER 3: BOTTOM (66.6% to 100%) - Globe, Avatars & Metrics */}
+            <div
+              onMouseEnter={() => setActiveTier(3)}
+              onMouseLeave={() => setActiveTier(null)}
+              className="absolute bottom-0 inset-x-0 h-[33.33%] pointer-events-auto flex items-end justify-between p-4 sm:p-6 transition-all duration-300 hover:bg-violet-950/20"
+            >
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-[11px] sm:text-xs font-mono font-black text-white shadow-lg flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-violet-400 animate-ping" />
+                  <span>03 • STUDY TARGET</span>
+                </span>
+              </div>
+
+              {/* The Signature Yellow Arrow Action Pill from the video */}
+              <div className="w-10 h-10 rounded-full bg-[#FACC15] text-slate-900 flex items-center justify-center font-black shadow-lg shadow-amber-400/35 transition-transform duration-300 group-hover:scale-110">
+                <ArrowDownRight className="w-5 h-5 stroke-[3]" />
+              </div>
+            </div>
+
+            {/* ---------------- CENTER PLAY/PAUSE OVERLAY BUTTON (MATCHING THE SCREENSHOT) ---------------- */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div
+                className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white/30 backdrop-blur-md border-2 border-white/60 shadow-2xl flex items-center justify-center text-white transition-all duration-300 transform group-hover:scale-110 ${
+                  !isPlaying ? "scale-100 opacity-100" : "opacity-0 group-hover:opacity-90"
+                }`}
+              >
+                {!isPlaying ? (
+                  <Play className="w-8 h-8 fill-white translate-x-0.5" />
+                ) : (
+                  <Pause className="w-8 h-8 fill-white" />
+                )}
+              </div>
+            </div>
+
+            {/* Audio Toggle in bottom corner */}
+            <button
+              type="button"
+              onClick={toggleMute}
+              className="absolute bottom-4 right-4 z-20 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white/80 hover:text-white flex items-center justify-center shadow-md transition-all hover:scale-110"
+              title={isMuted ? "Unmute audio" : "Mute audio"}
+            >
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-purple-400" />}
+            </button>
+          </div>
+
+        </div>
+
+        {/* ========================================================================= */}
+        {/* 3 ACADEMIC STEP CARDS BELOW SHOWCASE (CLEAR & BALANCED)                   */}
+        {/* ========================================================================= */}
+        <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 max-w-5xl mx-auto">
+          {stepDetails.map((step, idx) => {
             const Icon = step.icon;
+            const isHovered = activeTier === idx + 1;
 
             return (
               <div
                 key={step.number}
-                className={`group relative rounded-[32px] bg-gradient-to-b ${step.gradientBg} border border-white/10 shadow-[0_18px_45px_-12px_rgba(15,23,42,0.2),0_0_0_1px_rgba(255,255,255,0.06)_inset] p-5 sm:p-7 lg:p-8 text-white transition-all duration-500 hover:-translate-y-1.5 ${step.borderGlow} overflow-hidden`}
+                onMouseEnter={() => setActiveTier(idx + 1)}
+                onMouseLeave={() => setActiveTier(null)}
+                className={`group rounded-2xl p-5 sm:p-6 transition-all duration-300 border ${
+                  isHovered
+                    ? "bg-white border-purple-400 shadow-xl shadow-purple-500/10 -translate-y-1"
+                    : "bg-white/95 border-slate-200/90 shadow-2xs hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5"
+                }`}
               >
-                {/* Subtle top specular highlight reflection */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-
-                {/* Main 2-Column Layout: 3D Video on Left, Rich Details on Right */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-                  
-                  {/* --- 1. LEFT COLUMN: THE 3D VIDEO CLIP (ONE ABOVE THE OTHER IN SEQUENCE) --- */}
-                  <div className="lg:col-span-7">
-                    <div className="relative w-full aspect-[2.25/1.22] rounded-2xl overflow-hidden bg-black/70 border border-white/12 shadow-[0_12px_32px_rgba(0,0,0,0.45)]">
-                      {/* Fallback 3D Poster Image */}
-                      <Image
-                        src={step.posterImage}
-                        alt={step.title}
-                        fill
-                        className="object-cover object-center pointer-events-none -z-10"
-                        sizes="(max-width: 1024px) 100vw, 600px"
-                        priority={index === 0}
-                      />
-
-                      {/* Synchronized Looping 3D Motion Video */}
-                      <video
-                        ref={(el) => {
-                          videoRefs.current[index] = el;
-                        }}
-                        src="/videos/alchemy_showcase.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="absolute left-0 w-full h-[300%] max-w-none pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-105"
-                        style={{
-                          top: step.videoPosition,
-                        }}
-                      />
-
-                      {/* Subtle gradient vignette mask at bottom */}
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-
-                      {/* Floating Step Number Pill on Video */}
-                      <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/25 text-xs font-mono font-black tracking-wider text-white shadow-md flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
-                        <span>STEP {step.number}</span>
-                      </div>
-
-                      {/* Floating Themed Icon Pill on Video */}
-                      <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-sm transition-transform duration-300 group-hover:scale-110">
-                        <Icon className="w-4 h-4" />
-                      </div>
-                    </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-2xl font-black text-slate-900 tracking-tight">
+                      {step.number}
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      {step.tier}
+                    </span>
                   </div>
 
-                  {/* --- 2. RIGHT COLUMN: STEP COPY, CHIPS & STATUS --- */}
-                  <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
-                    
-                    {/* Badge & Step indicator */}
-                    <div className="flex items-center justify-between gap-2">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border ${step.badgeStyle}`}
-                      >
-                        {step.badge}
-                      </span>
-                      <span className="text-xs font-mono font-semibold text-purple-300/80">
-                        Phase {index + 1} of 3
-                      </span>
-                    </div>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                </div>
 
-                    {/* Bold Title */}
-                    <h3 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-snug group-hover:text-purple-200 transition-colors">
-                      {step.title}
-                    </h3>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                  {step.title}
+                </h3>
 
-                    {/* Description */}
-                    <p className="text-sm leading-relaxed text-purple-100/80 font-normal">
-                      {step.description}
-                    </p>
+                <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                  {step.description}
+                </p>
 
-                    {/* Micro-feature chips */}
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {step.chips.map((chip) => (
-                        <span
-                          key={chip}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/8 border border-white/10 text-[11px] font-medium text-purple-200/90 backdrop-blur-sm"
-                        >
-                          <Check className="w-3 h-3 text-purple-400 shrink-0" />
-                          <span>{chip}</span>
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Bottom Action / Status Bar */}
-                    <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-purple-200 font-semibold text-xs">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
-                        <span>{step.statusText}</span>
-                      </div>
-
-                      {step.hasYellowButton ? (
-                        /* The Signature Yellow Arrow Action Pill from the video */
-                        <div className="w-9 h-9 rounded-full bg-[#FACC15] text-slate-900 flex items-center justify-center font-black shadow-md shadow-amber-400/25 transition-transform duration-300 group-hover:rotate-45 group-hover:scale-110 cursor-pointer">
-                          <ArrowDownRight className="w-4 h-4 stroke-[3]" />
-                        </div>
-                      ) : (
-                        <div className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-bold text-white/90">
-                          Step {index + 1} of 3
-                        </div>
-                      )}
-                    </div>
-
+                <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                  <div className="flex items-center gap-1.5 text-purple-600">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>{step.badge}</span>
                   </div>
-
+                  <span className="text-slate-400">Step {idx + 1} of 3</span>
                 </div>
               </div>
             );
