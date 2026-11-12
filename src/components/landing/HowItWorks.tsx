@@ -1,66 +1,28 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Sparkles,
-  ArrowRight,
-  ArrowDownRight,
   Clock,
   GraduationCap,
-  Calendar,
-  AlertCircle,
-  Timer,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Tv,
+  LayoutDashboard,
+  CheckCircle2,
 } from "lucide-react";
 
 export function HowItWorks() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
 
-  // Synchronize and autoplay all 3 live 1080p video tiers seamlessly
+  // Autoplay all 3 live 1080p video loops smoothly and silently
   useEffect(() => {
     videoRefs.current.forEach((video) => {
       if (video) {
         video.defaultMuted = true;
         video.muted = true;
-        video.play().catch(() => {
-          setIsPlaying(false);
-        });
+        video.play().catch(() => {});
       }
     });
   }, []);
-
-  const toggleAllPlay = () => {
-    const nextState = !isPlaying;
-    videoRefs.current.forEach((video) => {
-      if (video) {
-        if (nextState) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      }
-    });
-    setIsPlaying(nextState);
-  };
-
-  const toggleAllMute = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const nextMute = !isMuted;
-    videoRefs.current.forEach((video) => {
-      if (video) {
-        video.muted = nextMute;
-      }
-    });
-    setIsMuted(nextMute);
-  };
 
   return (
     <section
@@ -83,7 +45,7 @@ export function HowItWorks() {
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         
-        {/* Section Heading with Clean Balanced Typography & 1080p Quality Pill */}
+        {/* Section Heading with Clean Balanced Typography */}
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100/90 border border-purple-200 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
@@ -103,52 +65,17 @@ export function HowItWorks() {
           <p className="text-sm sm:text-base leading-relaxed text-slate-600 font-normal max-w-xl mx-auto">
             From chaotic semester syllabus to a calm, organized daily study flow.
           </p>
-
-          {/* Controls: Play/Pause, Mute & 1080p Full HD Badge */}
-          <div className="pt-1 flex items-center justify-center gap-3">
-            <button
-              onClick={toggleAllPlay}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs transition-all hover:border-purple-300 hover:text-purple-700 cursor-pointer"
-            >
-              {isPlaying ? (
-                <>
-                  <Pause className="w-3.5 h-3.5 text-purple-600 fill-purple-600" />
-                  <span>Pause Motion</span>
-                </>
-              ) : (
-                <>
-                  <Play className="w-3.5 h-3.5 text-purple-600 fill-purple-600" />
-                  <span>Play 50fps Motion</span>
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={toggleAllMute}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-600 shadow-2xs transition-all hover:border-purple-300 hover:text-purple-700 cursor-pointer"
-              title={isMuted ? "Audio Muted" : "Audio Active"}
-            >
-              {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-purple-600" />}
-              <span>{isMuted ? "Muted" : "Sound"}</span>
-            </button>
-
-            {/* 1080p Ultra HD Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200/80 text-[11px] font-bold text-purple-700 shadow-2xs">
-              <Tv className="w-3.5 h-3.5 text-purple-600" />
-              <span>1080p Full HD</span>
-            </div>
-          </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* 3-TIER MASTER SHOWCASE: 1080p RESOLUTION PLACED ONE ABOVE THE OTHER       */}
+        {/* 3-TIER MASTER SHOWCASE: PLACED DIRECTLY ONE ABOVE THE OTHER               */}
         {/* ========================================================================= */}
         <div className="relative mx-auto max-w-5xl rounded-[32px] sm:rounded-[40px] overflow-hidden border border-purple-500/25 shadow-[0_30px_90px_-20px_rgba(20,5,45,0.45)] divide-y divide-white/10 sm:divide-y-2">
           
           {/* ----------------------------------------------------------------------- */}
           {/* TIER 01: ROUTINE SYNCHRONIZATION (1080p PHONE MOTION LOOP)             */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[360px] sm:min-h-[400px] overflow-hidden bg-[#120427]">
+          <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[320px] sm:min-h-[380px] overflow-hidden bg-[#120427]">
             {/* Dedicated 1080p 50fps Tier Video */}
             <video
               ref={(el) => {
@@ -174,63 +101,46 @@ export function HowItWorks() {
               />
             </div>
 
-            {/* Ambient Dark Gradient Shield on the Left (Masks foreign text & hosts FastTask copy) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#120427] via-[#120427]/95 via-45% sm:via-50% to-transparent sm:to-transparent" />
+            {/* Ambient Dark Gradient Shield on the Left (Opaque to prevent any background bleed) */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#120427] via-[#120427] via-50% sm:via-55% to-transparent" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#120427]/90 via-transparent to-transparent sm:hidden" />
 
-            {/* Specular Highlight */}
+            {/* Specular Top Highlight */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
             {/* Tier 01 Content Overlay */}
             <div className="relative z-10 h-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between max-w-2xl text-white">
               
-              {/* Header Badges */}
-              <div className="flex items-center gap-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/25 border border-purple-400/40 text-purple-200 text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
-                  <span>STEP 01 • ROUTINE SYNCHRONIZATION</span>
-                </div>
-                <span className="font-mono text-xs font-bold text-purple-400/80">
-                  Phase 01
+              {/* Header Badge */}
+              <div className="flex items-center justify-between w-full max-w-lg">
+                <span className="font-mono text-3xl sm:text-4xl font-black text-[#60A5FA]">
+                  01
                 </span>
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
+                  <Clock className="w-5 h-5 text-[#60A5FA]" />
+                </div>
               </div>
 
               {/* Title & Description */}
               <div className="space-y-3 sm:space-y-4 my-auto py-4">
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight group-hover:text-purple-200 transition-colors drop-shadow-md">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight group-hover:text-blue-100 transition-colors drop-shadow-md">
                   Define Semester &amp; Weekly Routine
                 </h3>
 
                 <p className="text-sm sm:text-base leading-relaxed text-purple-100/90 font-normal max-w-lg drop-shadow-sm">
-                  Configure your term start and end dates and upload your weekly course schedule. Today&apos;s sessions automatically illuminate with zero manual friction.
+                  Configure your term start and end dates and upload your weekly course schedule. Today&apos;s sessions automatically illuminate.
                 </p>
-
-                {/* Feature Chips */}
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/40 border border-white/15 text-xs font-medium text-purple-200 backdrop-blur-md">
-                    <Calendar className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <span>Spring 2026 Term</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/40 border border-white/15 text-xs font-medium text-purple-200 backdrop-blur-md">
-                    <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <span>Smart Timetable Sync</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/40 border border-white/15 text-xs font-medium text-purple-200 backdrop-blur-md">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <span>Lab 402 Active Highlights</span>
-                  </span>
-                </div>
               </div>
 
-              {/* Action Link */}
-              <div className="pt-2">
-                <Link
-                  href="/schedule"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs sm:text-sm font-bold text-white transition-all group-hover:border-purple-400 backdrop-blur-md cursor-pointer"
-                >
-                  <span>Explore Routine Schedule</span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+              {/* Clean Footer Status Indicator matching reference */}
+              <div className="flex items-center justify-between max-w-lg pt-3 border-t border-white/10">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
+                  <CheckCircle2 className="w-4 h-4 text-[#60A5FA]" />
+                  <span>Step 1 of 3</span>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-slate-200">
+                  Routine Sync
+                </span>
               </div>
 
             </div>
@@ -239,7 +149,7 @@ export function HowItWorks() {
           {/* ----------------------------------------------------------------------- */}
           {/* TIER 02: DEADLINE VELOCITY RADAR (1080p AIRPLANE MOTION LOOP)           */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[360px] sm:min-h-[400px] overflow-hidden bg-[#380E8C]">
+          <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[320px] sm:min-h-[380px] overflow-hidden bg-[#380E8C]">
             {/* Dedicated 1080p 50fps Tier Video */}
             <video
               ref={(el) => {
@@ -264,9 +174,9 @@ export function HowItWorks() {
               />
             </div>
 
-            {/* Ambient Electric Violet Gradient Shield on the Left */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#2F0B7A] via-[#380E8C]/95 via-45% sm:via-52% to-transparent sm:to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#2F0B7A]/90 via-transparent to-transparent sm:hidden" />
+            {/* Ambient Electric Violet Gradient Shield on the Left (Opaque to prevent any background bleed) */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#380E8C] via-[#380E8C] via-50% sm:via-55% to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#380E8C]/90 via-transparent to-transparent sm:hidden" />
 
             {/* Specular Divider */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
@@ -274,53 +184,36 @@ export function HowItWorks() {
             {/* Tier 02 Content Overlay */}
             <div className="relative z-10 h-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between max-w-2xl text-white">
               
-              {/* Header Badges */}
-              <div className="flex items-center gap-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-fuchsia-400/25 border border-fuchsia-300/40 text-fuchsia-100 text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md">
-                  <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-ping" />
-                  <span>STEP 02 • DEADLINE VELOCITY RADAR</span>
-                </div>
-                <span className="font-mono text-xs font-bold text-fuchsia-300/80">
-                  Phase 02
+              {/* Header Badge */}
+              <div className="flex items-center justify-between w-full max-w-lg">
+                <span className="font-mono text-3xl sm:text-4xl font-black text-[#FB923C]">
+                  02
                 </span>
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
+                  <GraduationCap className="w-5 h-5 text-[#FB923C]" />
+                </div>
               </div>
 
               {/* Title & Description */}
               <div className="space-y-3 sm:space-y-4 my-auto py-4">
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight group-hover:text-fuchsia-200 transition-colors drop-shadow-md">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight group-hover:text-amber-100 transition-colors drop-shadow-md">
                   Tag Coursework &amp; Exam Deadlines
                 </h3>
 
                 <p className="text-sm sm:text-base leading-relaxed text-purple-100/90 font-normal max-w-lg drop-shadow-sm">
-                  Log assignments, lab reports, and exam dates with color-coded course codes. Priority flags and velocity radar keep critical milestones front and center.
+                  Log assignments, lab reports, and exam dates with color-coded course codes. Priority flags keep critical milestones front and center.
                 </p>
-
-                {/* Feature Chips */}
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/40 border border-white/15 text-xs font-medium text-fuchsia-200 backdrop-blur-md">
-                    <AlertCircle className="w-3.5 h-3.5 text-fuchsia-400 shrink-0" />
-                    <span>Priority Radar Flags</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/40 border border-white/15 text-xs font-medium text-fuchsia-200 backdrop-blur-md">
-                    <GraduationCap className="w-3.5 h-3.5 text-fuchsia-400 shrink-0" />
-                    <span>0611CSE321 &amp; 0613CSE333</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/40 border border-white/15 text-xs font-medium text-fuchsia-200 backdrop-blur-md">
-                    <Timer className="w-3.5 h-3.5 text-fuchsia-400 shrink-0" />
-                    <span>Live Due Countdowns</span>
-                  </span>
-                </div>
               </div>
 
-              {/* Action Link */}
-              <div className="pt-2">
-                <Link
-                  href="/kanban"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs sm:text-sm font-bold text-white transition-all group-hover:border-fuchsia-300 backdrop-blur-md cursor-pointer"
-                >
-                  <span>View Kanban Deadlines</span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+              {/* Clean Footer Status Indicator matching reference */}
+              <div className="flex items-center justify-between max-w-lg pt-3 border-t border-white/10">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
+                  <CheckCircle2 className="w-4 h-4 text-[#FB923C]" />
+                  <span>Step 2 of 3</span>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-slate-200">
+                  Deadline Radar
+                </span>
               </div>
 
             </div>
@@ -329,7 +222,7 @@ export function HowItWorks() {
           {/* ----------------------------------------------------------------------- */}
           {/* TIER 03: STUDY TARGET & FLOW STATE (1080p GLOBE MOTION LOOP)            */}
           {/* ----------------------------------------------------------------------- */}
-          <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[360px] sm:min-h-[400px] overflow-hidden bg-[#ECE5FA]">
+          <div className="group relative w-full aspect-auto sm:aspect-[2.25/1] min-h-[320px] sm:min-h-[380px] overflow-hidden bg-[#ECE5FA]">
             {/* Dedicated 1080p 50fps Tier Video */}
             <video
               ref={(el) => {
@@ -354,8 +247,8 @@ export function HowItWorks() {
               />
             </div>
 
-            {/* Soft Frosted Lavender Gradient Shield on the Left */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#ECE5FA] via-[#ECE5FA]/95 via-45% sm:via-52% to-transparent sm:to-transparent" />
+            {/* Soft Frosted Lavender Gradient Shield on the Left (Opaque to prevent any background bleed) */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#ECE5FA] via-[#ECE5FA] via-50% sm:via-55% to-transparent" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#ECE5FA]/95 via-transparent to-transparent sm:hidden" />
 
             {/* Specular Divider */}
@@ -364,15 +257,14 @@ export function HowItWorks() {
             {/* Tier 03 Content Overlay */}
             <div className="relative z-10 h-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between max-w-2xl text-slate-900">
               
-              {/* Header Badges */}
-              <div className="flex items-center gap-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-200/80 border border-purple-300 text-purple-800 text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-ping" />
-                  <span>STEP 03 • STUDY TARGET &amp; FLOW STATE</span>
-                </div>
-                <span className="font-mono text-xs font-bold text-slate-600">
-                  Phase 03
+              {/* Header Badge */}
+              <div className="flex items-center justify-between w-full max-w-lg">
+                <span className="font-mono text-3xl sm:text-4xl font-black text-[#0D9488]">
+                  03
                 </span>
+                <div className="w-10 h-10 rounded-full bg-purple-100/90 backdrop-blur-md border border-purple-200 flex items-center justify-center shadow-inner">
+                  <LayoutDashboard className="w-5 h-5 text-[#0D9488]" />
+                </div>
               </div>
 
               {/* Title & Description */}
@@ -384,36 +276,17 @@ export function HowItWorks() {
                 <p className="text-sm sm:text-base leading-relaxed text-slate-700 font-normal max-w-lg">
                   Power through deep study blocks with the built-in 25-minute timer and drag finished tasks to Completed on your Kanban board.
                 </p>
-
-                {/* Feature Chips */}
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/70 border border-purple-200 text-xs font-medium text-purple-900 shadow-2xs backdrop-blur-sm">
-                    <Timer className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>25m Deep Work Cycles</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/70 border border-purple-200 text-xs font-medium text-purple-900 shadow-2xs backdrop-blur-sm">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Kanban Board Sync</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/70 border border-purple-200 text-xs font-medium text-purple-900 shadow-2xs backdrop-blur-sm">
-                    <Clock className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Daily Streak Analytics</span>
-                  </span>
-                </div>
               </div>
 
-              {/* The Signature Yellow Arrow Action Pill from the Video */}
-              <div className="pt-2 flex items-center gap-4">
-                <Link
-                  href="/dashboard"
-                  className="group/cta inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-purple-900 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
-                >
-                  <span>Launch Study Dashboard</span>
-                  {/* The signature yellow circle with arrow from the video */}
-                  <div className="w-7 h-7 rounded-full bg-[#FACC15] text-slate-900 flex items-center justify-center font-black shadow-sm transition-transform duration-300 group-hover/cta:rotate-45 group-hover/cta:scale-110">
-                    <ArrowDownRight className="w-4 h-4 stroke-[3]" />
-                  </div>
-                </Link>
+              {/* Clean Footer Status Indicator matching reference */}
+              <div className="flex items-center justify-between max-w-lg pt-3 border-t border-purple-200/80">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-[#0D9488]" />
+                  <span>Step 3 of 3</span>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-purple-100/90 border border-purple-200 text-[11px] font-semibold text-slate-700">
+                  Study Target
+                </span>
               </div>
 
             </div>
