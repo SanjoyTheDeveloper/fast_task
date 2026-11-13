@@ -167,48 +167,58 @@ export function KpiShowcase() {
     >
       {/* Outer Alignment Grid */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Stage Canvas Card - FastTask Dashboard Palette with Rich Vibrant Colors */}
-        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-gradient-to-b from-[#EDF3FF] via-[#F8FAFC] to-white border-2 border-[#D0E0FD] shadow-[0_25px_80px_-15px_rgba(49,91,255,0.18),0_10px_30px_-5px_rgba(15,23,42,0.06)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-[#172033]">
+        {/* Main Stage Canvas Card - Replicating Video Design with FastTask Royal Blue & Midnight Ocean */}
+        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-[#020B1C] border border-blue-500/30 shadow-[0_30px_90px_-20px_rgba(2,13,35,0.6),0_0_60px_rgba(49,91,255,0.25)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-white">
           
-          {/* Volumetric Multi-Color Ambient Glows (Royal Blue, Cyan, Indigo) */}
+          {/* Top Subtle Royal Blue Glow */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.22),rgba(59,130,246,0.10),transparent_70%)] blur-[90px]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 left-0 w-96 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(6,182,212,0.18),transparent_70%)] blur-[70px]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.18),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.30),rgba(59,130,246,0.12),transparent_70%)] blur-[90px]"
           />
 
-          {/* TOP HEADER: Sleek Brand Mark & Typography (FastTask Dashboard Vibrant Styling) */}
+          {/* THE SIGNATURE VIBRANT COLOR OCEAN AT BOTTOM (Exact replication of video design with FastTask Royal Blue & Electric Cyan) */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 inset-x-0 h-[60%] bg-gradient-to-t from-[#1D4ED8] via-[#315BFF]/80 to-transparent"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-24 left-1/2 -translate-x-1/2 w-[1100px] h-[420px] bg-[radial-gradient(ellipse_at_center,#00D2FF_0%,#315BFF_45%,transparent_75%)] opacity-90 blur-[75px]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-16 left-12 w-80 h-80 bg-[#00D2FF]/40 blur-[60px] rounded-full"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-16 right-12 w-80 h-80 bg-[#6366F1]/45 blur-[60px] rounded-full"
+          />
+
+          {/* TOP HEADER: Sleek Brand Mark & Typography */}
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-12">
-            {/* Top Brand Pill with Multi-Color Gradient */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-cyan-500/15 border border-blue-400/40 shadow-xs backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-[#315BFF] animate-ping" />
-              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#0284C7] bg-clip-text text-transparent">
+            {/* Top Brand Pill */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/15 border border-blue-400/35 backdrop-blur-md shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#00D2FF] animate-ping" />
+              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase text-blue-200">
                 INTERACTIVE PLATFORM TOUR • ACADEMIC WORKSPACE
               </span>
             </div>
 
-            {/* Headline with Rich Color Gradients */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#172033] leading-[1.12]">
+            {/* Headline with High-Impact Cyan & Royal Blue Accents */}
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.12]">
               Master{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D4ED8] via-[#315BFF] to-[#06B6D4]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#00D2FF] to-[#38BDF8]">
                 CS 102, 201
               </span>
               <br />
               CS 202 &amp; 301 with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] via-[#4F46E5] to-[#7C3AED]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#93C5FD] via-[#60A5FA] to-[#00D2FF]">
                 Deep Study Flow
               </span>
             </h2>
 
             {/* Subheadline */}
-            <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed font-normal">
+            <p className="text-sm sm:text-base text-blue-100/80 max-w-xl mx-auto leading-relaxed font-normal">
               Explore the 4-stage academic OS: configure routines, radar deadlines,
               power through Pomodoro focus blocks, and lock in continuous semester mastery.
             </p>
@@ -216,9 +226,9 @@ export function KpiShowcase() {
 
           {/* CENTER DISPLAY SCREEN: Large Rounded Card with Inner Stage Video */}
           <div className="relative z-10 max-w-4xl mx-auto">
-            {/* Stage Display Frame with Vibrant Royal Blue Rim & Elevation */}
+            {/* Stage Display Frame with Neon Rim & Elevation */}
             <div
-              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border-2 border-[#BFDBFE] bg-white shadow-[0_25px_60px_-15px_rgba(49,91,255,0.25),0_10px_25px_-5px_rgba(37,99,235,0.1)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
+              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-blue-400/40 bg-[#020A18] shadow-[0_25px_80px_rgba(49,91,255,0.4),0_0_40px_rgba(0,210,255,0.25)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
               onMouseEnter={() => setIsHoveringVideo(true)}
               onMouseLeave={() => setIsHoveringVideo(false)}
               onClick={togglePlayPause}
@@ -226,7 +236,7 @@ export function KpiShowcase() {
               {/* Shimmering Top Rim Light */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#315BFF] to-transparent z-20"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#00D2FF] to-transparent z-20"
               />
 
               {/* Live Video Element */}
@@ -242,95 +252,78 @@ export function KpiShowcase() {
               />
 
               {/* Video Overlay: Top Left Stage Badge */}
-              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-blue-200 text-[10px] sm:text-xs font-semibold text-[#172033] shadow-md pointer-events-none">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981] animate-pulse" />
+              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#020A18]/85 backdrop-blur-md border border-white/20 text-[10px] sm:text-xs font-semibold text-white shadow-md pointer-events-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981] animate-pulse" />
                 <span>{currentStage.badge}</span>
               </div>
 
               {/* Video Overlay: Top Right Timestamp */}
-              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EEF3FF] backdrop-blur-md border border-blue-200 text-[10px] sm:text-xs font-mono font-bold text-[#2563EB] shadow-sm pointer-events-none">
-                <Clock className="w-3.5 h-3.5 text-[#315BFF]" />
+              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#020A18]/85 backdrop-blur-md border border-white/20 text-[10px] sm:text-xs font-mono font-bold text-cyan-200 pointer-events-none shadow-md">
+                <Clock className="w-3.5 h-3.5 text-[#00D2FF]" />
                 <span>{formatTime(currentTime)} / 00:44</span>
               </div>
 
               {/* Floating Play / Pause Overlay on Hover or Pause */}
               <div
                 className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${
-                  !isPlaying ? "opacity-100 bg-slate-900/30 backdrop-blur-[2px]" : isHoveringVideo ? "opacity-100" : "opacity-0"
+                  !isPlaying ? "opacity-100 bg-black/40 backdrop-blur-[2px]" : isHoveringVideo ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white text-[#172033] flex items-center justify-center shadow-xl shadow-slate-900/20 backdrop-blur-md transition-transform duration-200 group-hover:scale-105">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white text-[#0F172A] flex items-center justify-center shadow-2xl shadow-black/60 backdrop-blur-md transition-transform duration-200 group-hover:scale-105">
                   {isPlaying ? (
-                    <Pause className="w-6 h-6 fill-[#172033]" />
+                    <Pause className="w-6 h-6 fill-[#0F172A]" />
                   ) : (
-                    <Play className="w-6 h-6 fill-[#172033] ml-1" />
+                    <Play className="w-6 h-6 fill-[#0F172A] ml-1" />
                   )}
                 </div>
               </div>
             </div>
 
-            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons with Color Accents */}
+            {/* BOTTOM INTERACTIVE TAB BAR: Matching Reference Video Design (Solid White Inactive + Jet Black Active with Neon Beam) */}
             <div className="mt-8 sm:mt-10 max-w-2xl mx-auto">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {STAGES.map((stage) => {
                   const isActive = activeTab === stage.id;
-
-                  // Custom stage pill colors
-                  const badgeColor =
-                    stage.id === "intro"
-                      ? "bg-blue-100 text-blue-700"
-                      : stage.id === "problem"
-                      ? "bg-rose-100 text-rose-700"
-                      : stage.id === "use_case"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-indigo-100 text-indigo-700";
 
                   return (
                     <button
                       key={stage.id}
                       type="button"
                       onClick={() => handleTabClick(stage.id)}
-                      className={`relative px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer overflow-hidden text-center active:scale-95 ${
+                      className={`relative px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer overflow-hidden text-center active:scale-95 ${
                         isActive
-                          ? "bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white shadow-xl ring-2 ring-[#315BFF] shadow-[0_4px_25px_rgba(49,91,255,0.35)]"
-                          : "bg-white hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-indigo-50/80 text-[#172033] hover:text-[#2563EB] shadow-xs border border-[#D5E1F8] hover:border-blue-300"
+                          ? "bg-[#000000] text-white shadow-2xl ring-1 ring-white/25"
+                          : "bg-white hover:bg-slate-50 text-[#0F172A] shadow-xl shadow-black/25 hover:scale-[1.02]"
                       }`}
                     >
-                      {/* Active State Glowing Vertical Light Beam (Royal Blue & Cyan Gradient) */}
+                      {/* Active State Glowing Vertical Light Beam (Electric Cyan & Royal Blue) */}
                       {isActive && (
                         <div
                           aria-hidden
-                          className="pointer-events-none absolute right-2.5 sm:right-4 top-0 bottom-0 w-6 flex items-center justify-center overflow-visible"
+                          className="pointer-events-none absolute right-3 sm:right-4 top-0 bottom-0 w-6 flex items-center justify-center overflow-visible"
                         >
-                          {/* Diffused Outer Royal Blue Neon Bloom */}
-                          <div className="absolute inset-y-0 w-5 bg-gradient-to-t from-blue-600/0 via-blue-500/90 to-cyan-500/0 blur-[4px] animate-pulse" />
+                          {/* Diffused Outer Neon Bloom */}
+                          <div className="absolute inset-y-0 w-6 bg-gradient-to-t from-blue-600/0 via-[#00D2FF]/95 to-cyan-400/0 blur-[5px] animate-pulse" />
                           {/* Mid Glow Column */}
-                          <div className="absolute inset-y-0 w-2.5 bg-gradient-to-t from-transparent via-blue-300 to-transparent blur-[1.5px]" />
+                          <div className="absolute inset-y-0 w-3 bg-gradient-to-t from-transparent via-cyan-200 to-transparent blur-[1.5px]" />
                           {/* Sharp Center Light Beam */}
-                          <div className="absolute inset-y-0 w-[2px] bg-gradient-to-t from-transparent via-white to-transparent shadow-[0_0_8px_#38BDF8]" />
+                          <div className="absolute inset-y-0 w-[2px] bg-gradient-to-t from-transparent via-white to-transparent shadow-[0_0_10px_#00D2FF]" />
                           {/* Top & Bottom Flare Sparks */}
-                          <div className="absolute -top-1 w-2.5 h-2.5 rounded-full bg-white blur-[0.5px] shadow-[0_0_8px_#60A5FA]" />
-                          <div className="absolute -bottom-1 w-2 h-2 rounded-full bg-blue-400 blur-[1px]" />
+                          <div className="absolute -top-1 w-2.5 h-2.5 rounded-full bg-white blur-[0.5px] shadow-[0_0_10px_#00D2FF]" />
+                          <div className="absolute -bottom-1 w-2 h-2 rounded-full bg-[#315BFF] blur-[1px]" />
                         </div>
                       )}
 
-                      {/* Tab Content with Number Badge */}
-                      <div className="relative z-10 flex items-center justify-center gap-1.5 truncate">
-                        <span
-                          className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-md ${
-                            isActive ? "bg-[#315BFF] text-white" : badgeColor
-                          }`}
-                        >
-                          {stage.stageNumber}
-                        </span>
-                        <span className="truncate">{stage.label}</span>
-                      </div>
+                      {/* Tab Title */}
+                      <span className="relative z-10 block truncate">
+                        {stage.label}
+                      </span>
                     </button>
                   );
                 })}
               </div>
 
-              {/* TIMELINE RULER TRACK BELOW TABS (Vibrant Gradient Progress & Scrubber) */}
+              {/* TIMELINE RULER TRACK BELOW TABS (Clean High-Contrast Luminous Ruler) */}
               <div
                 ref={rulerRef}
                 onClick={handleRulerClick}
@@ -354,11 +347,11 @@ export function KpiShowcase() {
                       className={`transition-colors duration-150 rounded-full ${
                         isStageBreak
                           ? isPassed
-                            ? "w-[2px] h-3.5 sm:h-4 bg-[#315BFF] shadow-[0_0_8px_#315BFF]"
-                            : "w-[2px] h-3.5 sm:h-4 bg-slate-400"
+                            ? "w-[2px] h-3.5 sm:h-4.5 bg-white shadow-[0_0_10px_#00D2FF]"
+                            : "w-[2px] h-3.5 sm:h-4.5 bg-white/60"
                           : isPassed
-                          ? "w-[1px] h-2 sm:h-2.5 bg-gradient-to-t from-blue-600 to-cyan-400 shadow-[0_0_4px_rgba(56,189,248,0.7)]"
-                          : "w-[1px] h-2 sm:h-2.5 bg-slate-300 group-hover:bg-slate-400"
+                          ? "w-[1.5px] h-2 sm:h-2.5 bg-white shadow-[0_0_6px_#00D2FF]"
+                          : "w-[1px] h-2 sm:h-2.5 bg-white/40 group-hover:bg-white/60"
                       }`}
                     />
                   );
@@ -369,43 +362,40 @@ export function KpiShowcase() {
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-[left] duration-75 ease-linear flex flex-col items-center"
                   style={{ left: `${Math.min(100, Math.max(0, progress))}%` }}
                 >
-                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-gradient-to-b from-cyan-300 to-[#315BFF] shadow-[0_0_12px_#38BDF8]" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#315BFF] mt-0.5 blur-[0.5px]" />
+                  <div className="w-[3px] h-6 sm:h-7 rounded-full bg-white shadow-[0_0_12px_#00D2FF,0_0_6px_#38BDF8]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#00D2FF] mt-0.5 blur-[0.5px]" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR (Colorful Dashboard Stat Cards) */}
-          <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-[#D5E1F8] flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
-            {/* 3 Metric Stat Cards with Distinct Accent Colors */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center sm:text-left w-full sm:w-auto">
-              {/* Metric 1: Royal Blue */}
-              <div className="p-3 sm:p-4 rounded-2xl bg-white border border-blue-200/80 shadow-xs hover:shadow-md transition-all">
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-[#1D4ED8] to-[#315BFF] bg-clip-text text-transparent tracking-tight">
+          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR */}
+          <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
+            {/* 3 Metric Counters in Luminous White & Cyan */}
+            <div className="grid grid-cols-3 gap-6 sm:gap-10 text-center sm:text-left w-full sm:w-auto">
+              <div>
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight drop-shadow-sm">
                   10K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-700/80 mt-1">
-                  CS Problems
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-cyan-200/90 mt-1">
+                  CS Problems Solved
                 </span>
               </div>
 
-              {/* Metric 2: Indigo / Violet */}
-              <div className="p-3 sm:p-4 rounded-2xl bg-white border border-indigo-200/80 shadow-xs hover:shadow-md transition-all">
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] bg-clip-text text-transparent tracking-tight">
+              <div>
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight drop-shadow-sm">
                   70K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-indigo-700/80 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-cyan-200/90 mt-1">
                   Study Hours
                 </span>
               </div>
 
-              {/* Metric 3: Emerald */}
-              <div className="p-3 sm:p-4 rounded-2xl bg-white border border-emerald-200/80 shadow-xs hover:shadow-md transition-all">
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-[#059669] to-[#10B981] bg-clip-text text-transparent tracking-tight">
+              <div>
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight drop-shadow-sm">
                   05K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-700/80 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-cyan-200/90 mt-1">
                   CS Scholars
                 </span>
               </div>
@@ -415,7 +405,7 @@ export function KpiShowcase() {
             <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
               <Link
                 href={courseTargetUrl}
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#315BFF] hover:from-[#1E40AF] hover:to-[#2563EB] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-blue-500/35 hover:shadow-xl hover:shadow-blue-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white border-2 border-white/20 text-xs sm:text-sm font-bold tracking-wide shadow-xl shadow-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <span>Explore Course Notes</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />

@@ -34,168 +34,156 @@ if os.path.exists(desk_path):
         d_raw = d_raw.crop((0, (dh - nh)//2, dw, (dh + nh)//2))
     desk_img = d_raw.resize((520, H), Image.Resampling.LANCZOS)
 
-# Base Daylight Background (#F2F6FF to #F8FAFC with rich subtle blue & cyan ambient tints)
-def create_daylight_base():
-    bg = Image.new("RGB", (W, H), (242, 246, 255))
-    d = ImageDraw.Draw(bg)
+# STAGE 1: Real Bold Color Routine Schedule
+def render_stage1(frame_idx):
+    im = Image.new("RGB", (W, H), (4, 15, 38))
+    d = ImageDraw.Draw(im)
     for y in range(H):
         ratio = y / H
-        col = (
-            int(238 + 10 * ratio),
-            int(244 + 6 * ratio),
-            int(255 - 3 * ratio)
-        )
-        d.line([(0, y), (W, y)], fill=col)
+        r = int(4 + 18 * ratio)
+        g = int(15 + 40 * ratio)
+        b = int(38 + 110 * ratio)
+        d.line([(0, y), (W, y)], fill=(r, g, b))
     
-    # Soft ambient radial glow at top-center
-    for r in range(350, 0, -10):
-        alpha = int(18 * (1.0 - r / 350.0))
+    for r in range(250, 0, -10):
         d.ellipse([(W//2 - r*2, -r), (W//2 + r*2, r)], outline=(49, 91, 255), width=2)
-    return bg
+        d.ellipse([(W//2 - r*2, H - r), (W//2 + r*2, H + r)], outline=(0, 210, 255), width=2)
 
-bg_daylight = create_daylight_base()
-
-# STAGE 1: Colorful Daylight Routine Schedule
-def render_stage1(frame_idx):
-    im = bg_daylight.copy()
-    d = ImageDraw.Draw(im)
     t = frame_idx / FPS
     float_y = int(math.sin(t * 3.0) * 6)
 
-    # Top pill with vibrant Royal Blue border
-    d.rounded_rectangle([(W//2 - 215, 40), (W//2 + 215, 82)], radius=21, fill=(238, 243, 255), outline=(49, 91, 255), width=2)
-    d.text((W//2, 61), "FASTTASK ACADEMIC OS • SEMESTER 2026", font=font_sm_bold, fill=(37, 99, 235), anchor="mm")
+    # Top pill
+    d.rounded_rectangle([(W//2 - 215, 35), (W//2 + 215, 75)], radius=20, fill=(10, 30, 75), outline=(0, 210, 255), width=2)
+    d.text((W//2, 55), "FASTTASK ACADEMIC OS • SEMESTER 2026", font=font_sm_bold, fill=(147, 197, 253), anchor="mm")
 
-    # Center white dashboard card with colorful drop shadow
-    cw, ch = 830, 535
-    cx1, cy1 = W//2 - cw//2, 112 + float_y
+    # Center Card
+    cw, ch = 840, 540
+    cx1, cy1 = W//2 - cw//2, 105 + float_y
 
-    # Colorful drop shadow
-    d.rounded_rectangle([(cx1 - 3, cy1 + 6), (cx1 + cw + 3, cy1 + ch + 12)], radius=28, fill=(214, 226, 250))
-    d.rounded_rectangle([(cx1, cy1), (cx1 + cw, cy1 + ch)], radius=26, fill=(255, 255, 255), outline=(199, 217, 252), width=2)
+    d.rounded_rectangle([(cx1 - 4, cy1 + 8), (cx1 + cw + 4, cy1 + ch + 16)], radius=28, fill=(2, 8, 20))
+    d.rounded_rectangle([(cx1, cy1), (cx1 + cw, cy1 + ch)], radius=26, fill=(255, 255, 255), outline=(49, 91, 255), width=2)
 
-    # Header top accent bar
-    d.rounded_rectangle([(cx1 + 2, cy1 + 2), (cx1 + cw - 2, cy1 + 8)], radius=3, fill=(49, 91, 255))
+    # Header banner
+    d.rounded_rectangle([(cx1, cy1), (cx1 + cw, cy1 + 72)], radius=26, fill=(240, 246, 255))
+    d.rectangle([(cx1, cy1 + 45), (cx1 + cw, cy1 + 72)], fill=(240, 246, 255))
+    d.line([(cx1, cy1 + 72), (cx1 + cw, cy1 + 72)], fill=(208, 223, 255), width=1)
 
-    # Header inside card
-    d.text((cx1 + 45, cy1 + 40), "Spring 2026 Routine Schedule", font=font_h2, fill=(23, 32, 51))
-    d.text((cx1 + 45, cy1 + 70), "Synchronized with university semester timetable & faculty labs.", font=font_sm, fill=(100, 116, 139))
+    d.text((cx1 + 35, cy1 + 25), "Spring 2026 Routine Schedule", font=font_h2, fill=(15, 23, 42))
+    d.text((cx1 + 35, cy1 + 50), "Weekly timetable synchronized with faculty labs and lecture halls.", font=font_sm, fill=(100, 116, 139))
 
     # Active Routine badge
-    d.rounded_rectangle([(cx1 + cw - 180, cy1 + 36), (cx1 + cw - 40, cy1 + 74)], radius=16, fill=(240, 253, 244), outline=(34, 197, 94), width=1)
-    d.text((cx1 + cw - 110, cy1 + 55), "● Active Routine", font=font_sm_bold, fill=(22, 163, 74), anchor="mm")
+    d.rounded_rectangle([(cx1 + cw - 180, cy1 + 22), (cx1 + cw - 35, cy1 + 54)], radius=16, fill=(16, 185, 129), outline=(52, 211, 153), width=1)
+    d.text((cx1 + cw - 108, cy1 + 38), "● Active Routine", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
 
-    # Course Rows with Distinct Vibrant Color Bars
     courses = [
-        ("09:30 AM", "CS 201: Data Structures & Algorithms", "Lab 402 • Binary Search Trees", (49, 91, 255), (238, 243, 255), (191, 219, 254)),
-        ("11:45 AM", "CS 102: Discrete Mathematics", "Lecture Hall B • Graph Induction", (99, 102, 241), (238, 242, 255), (199, 210, 254)),
-        ("02:15 PM", "CS 301: Operating Systems & Arch", "Lab 108 • CPU Scheduling Sim", (16, 185, 129), (240, 253, 244), (187, 247, 208)),
-        ("04:00 PM", "CSE 211: Digital Logic Systems", "Systems Lab 3 • K-Map Design", (14, 165, 233), (240, 249, 255), (186, 230, 253))
+        ("09:30 AM", "CS 201: Data Structures & Algorithms", "Lab 402 • Binary Search Trees", (49, 91, 255), (238, 243, 255), "CORE CS"),
+        ("11:45 AM", "CS 102: Discrete Mathematics", "Lecture Hall B • Mathematical Induction", (124, 58, 237), (245, 243, 255), "THEORY"),
+        ("02:15 PM", "CS 301: Operating Systems & Arch", "Systems Lab 108 • CPU Scheduling Sim", (16, 185, 129), (240, 253, 244), "SYSTEMS"),
+        ("04:00 PM", "CSE 211: Digital Logic Systems", "Hardware Lab 3 • K-Map Design", (234, 88, 12), (255, 247, 237), "HARDWARE")
     ]
 
-    for idx, (tm, c_name, room, col, bg_col, border_col) in enumerate(courses):
-        ry = cy1 + 115 + idx * 95
-        # Row card
-        d.rounded_rectangle([(cx1 + 40, ry), (cx1 + cw - 40, ry + 78)], radius=16, fill=(255, 255, 255), outline=border_col, width=1)
-        # Left colored accent line
-        d.rounded_rectangle([(cx1 + 40, ry), (cx1 + 47, ry + 78)], radius=4, fill=col)
-        # Time badge
-        d.rounded_rectangle([(cx1 + 65, ry + 16), (cx1 + 185, ry + 62)], radius=12, fill=bg_col, outline=col, width=1)
-        d.text((cx1 + 125, ry + 39), tm, font=font_bold, fill=col, anchor="mm")
-        # Course name & room
-        d.text((cx1 + 205, ry + 22), c_name, font=font_bold, fill=(23, 32, 51))
-        d.text((cx1 + 205, ry + 48), room, font=font_sm, fill=(100, 116, 139))
+    for idx, (tm, c_name, room, col, bg_col, cat) in enumerate(courses):
+        ry = cy1 + 92 + idx * 105
+        d.rounded_rectangle([(cx1 + 30, ry), (cx1 + cw - 30, ry + 88)], radius=18, fill=(255, 255, 255), outline=col, width=2)
+        d.rounded_rectangle([(cx1 + 30, ry), (cx1 + 40, ry + 88)], radius=4, fill=col)
+        d.rounded_rectangle([(cx1 + 55, ry + 18), (cx1 + 185, ry + 70)], radius=14, fill=col)
+        d.text((cx1 + 120, ry + 44), tm, font=font_bold, fill=(255, 255, 255), anchor="mm")
+        d.text((cx1 + 205, ry + 22), c_name, font=font_bold, fill=(15, 23, 42))
+        d.text((cx1 + 205, ry + 52), room, font=font_sm, fill=(71, 85, 105))
+        d.rounded_rectangle([(cx1 + cw - 150, ry + 28), (cx1 + cw - 50, ry + 60)], radius=10, fill=bg_col, outline=col, width=1)
+        d.text((cx1 + cw - 100, ry + 44), cat, font=font_sm_bold, fill=col, anchor="mm")
 
-    # Floating side pills with rich colors
     tags = [
-        (130, 250 + int(math.sin(t*2.5)*10), "CS 102", (99, 102, 241), (238, 242, 255)),
-        (1270, 230 + int(math.cos(t*2.8)*10), "CS 201", (49, 91, 255), (238, 243, 255)),
-        (140, 520 + int(math.cos(t*2.2)*10), "CS 301", (16, 185, 129), (240, 253, 244)),
-        (1260, 500 + int(math.sin(t*3.0)*10), "CSE 211", (14, 165, 233), (240, 249, 255))
+        (130, 260 + int(math.sin(t*2.5)*12), "CS 102", (124, 58, 237), (245, 243, 255)),
+        (1270, 240 + int(math.cos(t*2.8)*12), "CS 201", (49, 91, 255), (238, 243, 255)),
+        (140, 520 + int(math.cos(t*2.2)*12), "CS 301", (16, 185, 129), (240, 253, 244)),
+        (1260, 500 + int(math.sin(t*3.0)*12), "CSE 211", (234, 88, 12), (255, 247, 237))
     ]
     for x, y, tag, col, fill_col in tags:
-        d.rounded_rectangle([(x-65, y-24), (x+65, y+24)], radius=18, fill=fill_col, outline=col, width=2)
-        d.text((x, y), tag, font=font_bold, fill=col, anchor="mm")
+        d.rounded_rectangle([(x-70, y-26), (x+70, y+26)], radius=20, fill=col)
+        d.text((x, y), tag, font=font_bold, fill=(255, 255, 255), anchor="mm")
     return im
 
-# STAGE 2: Colorful Daylight Deadline Velocity Radar
+# STAGE 2: Real Bold Tactical Radar Screen
 def render_stage2(frame_idx):
-    im = bg_daylight.copy()
+    im = Image.new("RGB", (W, H), (3, 12, 32))
     d = ImageDraw.Draw(im)
+    for y in range(H):
+        ratio = y / H
+        d.line([(0, y), (W, y)], fill=(int(3 + 8*ratio), int(12 + 25*ratio), int(32 + 65*ratio)))
+
     t = (frame_idx - 90) / FPS
 
-    d.rounded_rectangle([(W//2 - 215, 40), (W//2 + 215, 82)], radius=21, fill=(238, 243, 255), outline=(49, 91, 255), width=2)
-    d.text((W//2, 61), "STAGE 02 • DEADLINE VELOCITY RADAR", font=font_sm_bold, fill=(37, 99, 235), anchor="mm")
+    d.rounded_rectangle([(W//2 - 215, 35), (W//2 + 215, 75)], radius=20, fill=(12, 35, 80), outline=(239, 68, 68), width=2)
+    d.text((W//2, 55), "STAGE 02 • DEADLINE VELOCITY RADAR", font=font_sm_bold, fill=(254, 202, 202), anchor="mm")
 
-    d.text((W//2, 125), "Eliminate Coursework Panic & Lost Submissions", font=font_title, fill=(23, 32, 51), anchor="mm")
-    d.text((W//2, 168), "Automated priority tracking for assignments, lab reports, and midterm countdowns.", font=font_sm, fill=(100, 116, 139), anchor="mm")
+    d.text((W//2, 115), "Eliminate Coursework Panic & Lost Submissions", font=font_title, fill=(255, 255, 255), anchor="mm")
+    d.text((W//2, 155), "Automated priority tracking for assignments, lab reports, and midterm countdowns.", font=font_sm, fill=(147, 197, 253), anchor="mm")
 
-    rx, ry = 400, 465
+    rx, ry = 400, 460
     for r in [60, 120, 180, 240]:
-        d.ellipse([(rx - r, ry - r), (rx + r, ry + r)], outline=(191, 219, 254), width=2)
-    d.line([(rx - 250, ry), (rx + 250, ry)], fill=(208, 223, 255), width=1)
-    d.line([(rx, ry - 250), (rx, ry + 250)], fill=(208, 223, 255), width=1)
+        d.ellipse([(rx - r, ry - r), (rx + r, ry + r)], outline=(30, 64, 130), width=2)
+    d.line([(rx - 250, ry), (rx + 250, ry)], fill=(30, 64, 130), width=1)
+    d.line([(rx, ry - 250), (rx, ry + 250)], fill=(30, 64, 130), width=1)
 
     sweep_angle = int((t * 120.0) % 360)
-    d.pieslice([(rx - 238, ry - 238), (rx + 238, ry + 238)], start=sweep_angle - 45, end=sweep_angle, fill=(219, 234, 254))
-    d.ellipse([(rx - 12, ry - 12), (rx + 12, ry + 12)], fill=(49, 91, 255))
+    d.pieslice([(rx - 238, ry - 238), (rx + 238, ry + 238)], start=sweep_angle - 45, end=sweep_angle, fill=(20, 70, 160))
+    d.ellipse([(rx - 12, ry - 12), (rx + 12, ry + 12)], fill=(0, 210, 255))
 
     pings = [
-        (rx + 90, ry - 110, "CS 201", (239, 68, 68), (254, 226, 226)),
-        (rx - 120, ry - 70, "CS 301", (49, 91, 255), (219, 234, 254)),
-        (rx + 110, ry + 80, "CS 102", (16, 185, 129), (209, 250, 229))
+        (rx + 90, ry - 110, "CS 201", (239, 68, 68)),
+        (rx - 120, ry - 70, "CS 301", (49, 91, 255)),
+        (rx + 110, ry + 80, "CS 102", (16, 185, 129))
     ]
-    for px, py, label, col, glow_col in pings:
-        ping_pulse = int(abs(math.sin(t * 4.0 + px)) * 5)
-        d.ellipse([(px - 14 - ping_pulse, py - 14 - ping_pulse), (px + 14 + ping_pulse, py + 14 + ping_pulse)], outline=col, width=2)
-        d.ellipse([(px - 8, py - 8), (px + 8, py + 8)], fill=col)
-        d.rounded_rectangle([(px + 14, py - 15), (px + 90, py + 15)], radius=12, fill=col)
-        d.text((px + 52, py), label, font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
+    for px, py, label, col in pings:
+        ping_pulse = int(abs(math.sin(t * 4.0 + px)) * 6)
+        d.ellipse([(px - 16 - ping_pulse, py - 16 - ping_pulse), (px + 16 + ping_pulse, py + 16 + ping_pulse)], outline=col, width=2)
+        d.ellipse([(px - 9, py - 9), (px + 9, py + 9)], fill=col)
+        d.rounded_rectangle([(px + 15, py - 16), (px + 95, py + 16)], radius=12, fill=col)
+        d.text((px + 55, py), label, font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
 
-    cx = 740
+    cx = 730
     cards = [
-        ("CRITICAL DUE DATE • 14 HOURS LEFT", "CS 201: Binary Search Tree Lab Report", "Due: Tonight 11:59 PM • 40% Grade Weight", (239, 68, 68), (254, 242, 242), (254, 202, 202)),
-        ("UPCOMING MIDTERM EXAM • 3 DAYS", "CS 301: CPU Scheduling & Memory Mgmt", "Exam: Thursday 09:00 AM • Main Hall", (49, 91, 255), (238, 243, 255), (191, 219, 254)),
-        ("AUTO-SCHEDULED TO POMODORO", "CS 102: Mathematical Induction Proof Set", "2 Focus Blocks Reserved Today • FastTask Flow", (16, 185, 129), (240, 253, 244), (187, 247, 208))
+        ("CRITICAL DUE DATE • 14 HOURS LEFT", "CS 201: Binary Search Tree Lab Report", "Due: Tonight 11:59 PM • 40% Grade Weight", (239, 68, 68), (254, 242, 242)),
+        ("UPCOMING MIDTERM EXAM • 3 DAYS", "CS 301: CPU Scheduling & Memory Mgmt", "Exam: Thursday 09:00 AM • Main Hall", (49, 91, 255), (238, 243, 255)),
+        ("AUTO-SCHEDULED TO POMODORO", "CS 102: Mathematical Induction Proof Set", "2 Focus Blocks Reserved Today • FastTask Flow", (16, 185, 129), (240, 253, 244))
     ]
-    for idx, (badge, title, subtitle, col, bg, b_col) in enumerate(cards):
-        cy = 240 + idx * 145
-        d.rounded_rectangle([(cx, cy), (cx + 590, cy + 125)], radius=20, fill=(255, 255, 255), outline=b_col, width=1)
-        # Vibrant colored left stripe
-        d.rounded_rectangle([(cx, cy), (cx + 8, cy + 125)], radius=4, fill=col)
-        # Colorful badge
-        d.rounded_rectangle([(cx + 25, cy + 16), (cx + 360, cy + 44)], radius=12, fill=bg, outline=col, width=1)
-        d.text((cx + 38, cy + 30), badge, font=font_sm_bold, fill=col, anchor="lm")
-        d.text((cx + 25, cy + 62), title, font=font_bold, fill=(23, 32, 51))
-        d.text((cx + 25, cy + 92), subtitle, font=font_sm, fill=(100, 116, 139))
+    for idx, (badge, title, subtitle, col, bg) in enumerate(cards):
+        cy = 225 + idx * 155
+        d.rounded_rectangle([(cx, cy), (cx + 610, cy + 135)], radius=22, fill=(255, 255, 255), outline=col, width=2)
+        d.rounded_rectangle([(cx, cy), (cx + 12, cy + 135)], radius=6, fill=col)
+        d.rounded_rectangle([(cx + 30, cy + 18), (cx + 380, cy + 48)], radius=12, fill=col)
+        d.text((cx + 205, cy + 33), badge, font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
+        d.text((cx + 30, cy + 68), title, font=font_bold, fill=(15, 23, 42))
+        d.text((cx + 30, cy + 100), subtitle, font=font_sm, fill=(71, 85, 105))
     return im
 
-# STAGE 3: Colorful Daylight Pomodoro Focus & Kanban
+# STAGE 3: Real Bold Color Pomodoro & Kanban Flow
 def render_stage3(frame_idx):
-    im = bg_daylight.copy()
+    im = Image.new("RGB", (W, H), (6, 16, 40))
     if desk_img:
         im.paste(desk_img, (0, 0))
         d = ImageDraw.Draw(im)
-        d.line([(520, 0), (520, H)], fill=(208, 223, 255), width=2)
-        d.rounded_rectangle([(25, 25), (290, 65)], radius=18, fill=(255, 255, 255), outline=(49, 91, 255), width=1)
-        d.text((40, 36), "CS Workspace • Daylight Flow", font=font_sm_bold, fill=(37, 99, 235))
+        d.line([(520, 0), (520, H)], fill=(49, 91, 255), width=3)
+        d.rounded_rectangle([(25, 25), (290, 68)], radius=18, fill=(15, 23, 42), outline=(0, 210, 255), width=2)
+        d.text((45, 38), "CS Workspace • Focus Sprint", font=font_sm_bold, fill=(255, 255, 255))
     else:
         d = ImageDraw.Draw(im)
 
     t = (frame_idx - 420) / FPS
     rx = 560
 
-    d.rounded_rectangle([(rx, 35), (rx + 330, 77)], radius=20, fill=(238, 243, 255), outline=(49, 91, 255), width=2)
-    d.text((rx + 20, 48), "STAGE 03 • POMODORO FOCUS & KANBAN", font=font_sm_bold, fill=(37, 99, 235))
+    d.rounded_rectangle([(rx, 30), (rx + 340, 72)], radius=20, fill=(10, 30, 75), outline=(0, 210, 255), width=2)
+    d.text((rx + 25, 43), "STAGE 03 • POMODORO FOCUS & KANBAN", font=font_sm_bold, fill=(147, 197, 253))
 
-    # Pomodoro Focus Card with Blue Border
-    py1 = 95
-    d.rounded_rectangle([(rx, py1), (W - 40, py1 + 270)], radius=24, fill=(255, 255, 255), outline=(199, 217, 252), width=2)
-    d.rounded_rectangle([(rx + 2, py1 + 2), (W - 42, py1 + 7)], radius=3, fill=(49, 91, 255))
+    # Pomodoro Focus Card (White with Royal Blue border)
+    py1 = 90
+    d.rounded_rectangle([(rx, py1), (W - 35, py1 + 275)], radius=24, fill=(255, 255, 255), outline=(49, 91, 255), width=2)
+    d.rounded_rectangle([(rx, py1), (W - 35, py1 + 8)], radius=4, fill=(49, 91, 255))
 
-    cx, cy = rx + 140, py1 + 135
-    pr = 85
-    d.ellipse([(cx - pr, cy - pr), (cx + pr, cy + pr)], outline=(226, 232, 240), width=8)
+    cx, cy = rx + 140, py1 + 138
+    pr = 88
+    d.ellipse([(cx - pr, cy - pr), (cx + pr, cy + pr)], outline=(226, 232, 240), width=10)
 
     elapsed_secs = int(t * 1.5)
     cur_secs = max(0, 1500 - elapsed_secs)
@@ -205,102 +193,107 @@ def render_stage3(frame_idx):
 
     timer_ratio = cur_secs / 1500.0
     end_deg = -90 + int((1.0 - timer_ratio) * 360)
-    d.arc([(cx - pr, cy - pr), (cx + pr, cy + pr)], start=-90, end=max(-85, end_deg), fill=(49, 91, 255), width=8)
-    d.text((cx, cy - 10), timer_str, font=font_timer, fill=(23, 32, 51), anchor="mm")
-    d.text((cx, cy + 35), "FOCUS INTERVAL", font=font_sm_bold, fill=(100, 116, 139), anchor="mm")
+    d.arc([(cx - pr, cy - pr), (cx + pr, cy + pr)], start=-90, end=max(-85, end_deg), fill=(49, 91, 255), width=10)
+    d.text((cx, cy - 10), timer_str, font=font_timer, fill=(15, 23, 42), anchor="mm")
+    d.text((cx, cy + 35), "FOCUS INTERVAL", font=font_sm_bold, fill=(49, 91, 255), anchor="mm")
 
     tx = cx + 130
-    d.rounded_rectangle([(tx, py1 + 35), (tx + 190, py1 + 68)], radius=15, fill=(240, 253, 244), outline=(34, 197, 94), width=1)
-    d.text((tx + 95, py1 + 51), "● 25m Focus Block Active", font=font_sm_bold, fill=(22, 163, 74), anchor="mm")
+    d.rounded_rectangle([(tx, py1 + 35), (tx + 210, py1 + 70)], radius=15, fill=(16, 185, 129), outline=(52, 211, 153), width=1)
+    d.text((tx + 105, py1 + 52), "● 25m Focus Block Active", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
 
-    d.text((tx, py1 + 95), "CS 201: Binary Trees & AVL", font=font_h2, fill=(23, 32, 51))
-    d.text((tx, py1 + 138), "Task: Implement recursive balance factor and tree rotations.", font=font_sm, fill=(100, 116, 139))
-    d.text((tx, py1 + 172), "Cycle: Block 2 of 4  |  Streak: 7 Days  |  Daily Score: 94%", font=font_sm_bold, fill=(49, 91, 255))
+    d.text((tx, py1 + 95), "CS 201: Binary Trees & AVL", font=font_h2, fill=(15, 23, 42))
+    d.text((tx, py1 + 138), "Task: Implement recursive balance factor and rotations.", font=font_sm, fill=(71, 85, 105))
+    d.text((tx, py1 + 172), "Cycle: Block 2 of 4  |  Streak: 7 Days  |  Score: 94%", font=font_sm_bold, fill=(49, 91, 255))
 
-    # Kanban Columns with Colored Headers
-    ky = 390
-    kw = (W - 40 - rx - 20) // 2
+    # Kanban Columns with Solid Color Headers
+    ky = 385
+    kw = (W - 35 - rx - 20) // 2
 
-    # Column 1: In Progress (Royal Blue Header)
-    d.rounded_rectangle([(rx, ky), (rx + kw, H - 40)], radius=20, fill=(255, 255, 255), outline=(199, 217, 252), width=1)
-    d.rounded_rectangle([(rx, ky), (rx + kw, ky + 45)], radius=20, fill=(238, 243, 255))
-    d.text((rx + 20, ky + 14), "In Progress (2 Tasks)", font=font_bold, fill=(37, 99, 235))
+    # Column 1: In Progress (Solid Royal Blue Header)
+    d.rounded_rectangle([(rx, ky), (rx + kw, H - 35)], radius=20, fill=(255, 255, 255), outline=(49, 91, 255), width=2)
+    d.rounded_rectangle([(rx, ky), (rx + kw, ky + 48)], radius=20, fill=(49, 91, 255))
+    d.rectangle([(rx, ky + 25), (rx + kw, ky + 48)], fill=(49, 91, 255))
+    d.text((rx + 25, ky + 14), "In Progress (2 Tasks)", font=font_bold, fill=(255, 255, 255))
 
-    t1y = ky + 58
-    d.rounded_rectangle([(rx + 15, t1y), (rx + kw - 15, t1y + 115)], radius=14, fill=(248, 250, 252), outline=(219, 234, 254), width=1)
-    d.rounded_rectangle([(rx + 25, t1y + 14), (rx + 110, t1y + 38)], radius=8, fill=(238, 243, 255), outline=(49, 91, 255), width=1)
-    d.text((rx + 67, t1y + 26), "CS 201", font=font_sm_bold, fill=(49, 91, 255), anchor="mm")
-    d.text((rx + 25, t1y + 52), "Implement AVL Tree in C++", font=font_bold, fill=(23, 32, 51))
+    t1y = ky + 62
+    d.rounded_rectangle([(rx + 15, t1y), (rx + kw - 15, t1y + 115)], radius=14, fill=(240, 246, 255), outline=(49, 91, 255), width=1)
+    d.rounded_rectangle([(rx + 25, t1y + 14), (rx + 110, t1y + 38)], radius=8, fill=(49, 91, 255))
+    d.text((rx + 67, t1y + 26), "CS 201", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
+    d.text((rx + 25, t1y + 54), "Implement AVL Tree in C++", font=font_bold, fill=(15, 23, 42))
 
     prog_pct = min(0.95, 0.40 + t * 0.02)
-    d.rounded_rectangle([(rx + 25, t1y + 86), (rx + kw - 25, t1y + 96)], radius=5, fill=(226, 232, 240))
-    d.rounded_rectangle([(rx + 25, t1y + 86), (rx + int((kw - 50) * prog_pct), t1y + 96)], radius=5, fill=(49, 91, 255))
+    d.rounded_rectangle([(rx + 25, t1y + 88), (rx + kw - 25, t1y + 100)], radius=6, fill=(219, 234, 254))
+    d.rounded_rectangle([(rx + 25, t1y + 88), (rx + int((kw - 50) * prog_pct), t1y + 100)], radius=6, fill=(49, 91, 255))
 
-    # Column 2: Completed Today (Emerald Green Header)
+    # Column 2: Completed Today (Solid Emerald Header)
     k2x = rx + kw + 20
-    d.rounded_rectangle([(k2x, ky), (k2x + kw, H - 40)], radius=20, fill=(255, 255, 255), outline=(187, 247, 208), width=1)
-    d.rounded_rectangle([(k2x, ky), (k2x + kw, ky + 45)], radius=20, fill=(240, 253, 244))
-    d.text((k2x + 20, ky + 14), "Completed Today (5 Tasks)", font=font_bold, fill=(22, 163, 74))
+    d.rounded_rectangle([(k2x, ky), (k2x + kw, H - 35)], radius=20, fill=(255, 255, 255), outline=(16, 185, 129), width=2)
+    d.rounded_rectangle([(k2x, ky), (k2x + kw, ky + 48)], radius=20, fill=(16, 185, 129))
+    d.rectangle([(k2x, ky + 25), (k2x + kw, ky + 48)], fill=(16, 185, 129))
+    d.text((k2x + 25, ky + 14), "Completed Today (5 Tasks)", font=font_bold, fill=(255, 255, 255))
 
-    c1y = ky + 58
-    d.rounded_rectangle([(k2x + 15, c1y), (k2x + kw - 15, c1y + 60)], radius=12, fill=(248, 250, 252), outline=(220, 252, 231), width=1)
-    d.rounded_rectangle([(k2x + 25, c1y + 14), (k2x + 80, c1y + 36)], radius=6, fill=(34, 197, 94))
-    d.text((k2x + 52, c1y + 25), "DONE", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
-    d.text((k2x + 92, c1y + 15), "CS 102 Induction Proofs Set", font=font_bold, fill=(23, 32, 51))
-    d.text((k2x + 92, c1y + 36), "Finished in 2 Focus Blocks (50m)", font=font_sm, fill=(100, 116, 139))
+    c1y = ky + 62
+    d.rounded_rectangle([(k2x + 15, c1y), (k2x + kw - 15, c1y + 62)], radius=12, fill=(240, 253, 244), outline=(16, 185, 129), width=1)
+    d.rounded_rectangle([(k2x + 25, c1y + 14), (k2x + 85, c1y + 38)], radius=8, fill=(16, 185, 129))
+    d.text((k2x + 55, c1y + 26), "DONE", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
+    d.text((k2x + 100, c1y + 14), "CS 102 Induction Proofs Set", font=font_bold, fill=(15, 23, 42))
+    d.text((k2x + 100, c1y + 36), "Finished in 2 Focus Blocks (50m)", font=font_sm, fill=(71, 85, 105))
 
-    c2y = ky + 130
-    d.rounded_rectangle([(k2x + 15, c2y), (k2x + kw - 15, c2y + 60)], radius=12, fill=(248, 250, 252), outline=(220, 252, 231), width=1)
-    d.rounded_rectangle([(k2x + 25, c2y + 14), (k2x + 80, c2y + 36)], radius=6, fill=(34, 197, 94))
-    d.text((k2x + 52, c2y + 25), "DONE", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
-    d.text((k2x + 92, c2y + 15), "CS 301 CPU Scheduling Sim", font=font_bold, fill=(23, 32, 51))
-    d.text((k2x + 92, c2y + 36), "Finished in 3 Focus Blocks (75m)", font=font_sm, fill=(100, 116, 139))
+    c2y = ky + 138
+    d.rounded_rectangle([(k2x + 15, c2y), (k2x + kw - 15, c2y + 62)], radius=12, fill=(240, 253, 244), outline=(16, 185, 129), width=1)
+    d.rounded_rectangle([(k2x + 25, c2y + 14), (k2x + 85, c2y + 38)], radius=8, fill=(16, 185, 129))
+    d.text((k2x + 55, c2y + 26), "DONE", font=font_sm_bold, fill=(255, 255, 255), anchor="mm")
+    d.text((k2x + 100, c2y + 14), "CS 301 CPU Scheduling Sim", font=font_bold, fill=(15, 23, 42))
+    d.text((k2x + 100, c2y + 36), "Finished in 3 Focus Blocks (75m)", font=font_sm, fill=(71, 85, 105))
     return im
 
-# STAGE 4: Colorful Daylight CTA & Semester Mastery
+# STAGE 4: Real Bold Semester Mastery Call to Action
 def render_stage4(frame_idx):
-    im = bg_daylight.copy()
+    im = Image.new("RGB", (W, H), (4, 14, 36))
     d = ImageDraw.Draw(im)
+    for y in range(H):
+        ratio = y / H
+        d.line([(0, y), (W, y)], fill=(int(4 + 20*ratio), int(14 + 45*ratio), int(36 + 120*ratio)))
+
     t = (frame_idx - 1155) / FPS
 
     # Top pill
-    d.rounded_rectangle([(W//2 - 215, 40), (W//2 + 215, 82)], radius=21, fill=(238, 243, 255), outline=(49, 91, 255), width=2)
-    d.text((W//2, 61), "STAGE 04 • CONTINUOUS ACADEMIC MASTERY", font=font_sm_bold, fill=(37, 99, 235), anchor="mm")
+    d.rounded_rectangle([(W//2 - 215, 35), (W//2 + 215, 75)], radius=20, fill=(10, 30, 75), outline=(0, 210, 255), width=2)
+    d.text((W//2, 55), "STAGE 04 • CONTINUOUS ACADEMIC MASTERY", font=font_sm_bold, fill=(147, 197, 253), anchor="mm")
 
     cx, cy = W//2, 220
     rot = t * 60.0
-    for r, w, col in [(140, 3, (49, 91, 255)), (180, 2, (14, 165, 233)), (220, 2, (99, 102, 241))]:
+    for r, w, col in [(140, 3, (49, 91, 255)), (180, 3, (0, 210, 255)), (220, 3, (124, 58, 237))]:
         squish = 0.40 + 0.08 * math.sin(math.radians(rot))
         d.ellipse([(cx - r, cy - int(r*squish)), (cx + r, cy + int(r*squish))], outline=col, width=w)
 
-    d.ellipse([(cx - 45, cy - 45), (cx + 45, cy + 45)], fill=(49, 91, 255), outline=(255, 255, 255), width=3)
+    d.ellipse([(cx - 50, cy - 50), (cx + 50, cy + 50)], fill=(49, 91, 255), outline=(255, 255, 255), width=3)
     d.text((cx, cy), "FT", font=font_title, fill=(255, 255, 255), anchor="mm")
 
-    d.text((W//2, 410), "Organize Your Semester & Master Every Deadline", font=font_title, fill=(23, 32, 51), anchor="mm")
-    d.text((W//2, 465), "Dedicated academic study workspace for Computer Science & Engineering coursework.", font=font_bold, fill=(100, 116, 139), anchor="mm")
+    d.text((W//2, 405), "Organize Your Semester & Master Every Deadline", font=font_title, fill=(255, 255, 255), anchor="mm")
+    d.text((W//2, 455), "Dedicated academic study workspace for Computer Science & Engineering coursework.", font=font_bold, fill=(191, 219, 254), anchor="mm")
 
-    bw, bh = 340, 64
+    bw, bh = 360, 68
     bx = W//2 - bw//2
-    by = 515
-    pulse = int(math.sin(t * 6.0) * 2)
-    d.rounded_rectangle([(bx - pulse, by - pulse), (bx + bw + pulse, by + bh + pulse)], radius=32, fill=(49, 91, 255), outline=(147, 197, 253), width=2)
+    by = 505
+    pulse = int(math.sin(t * 6.0) * 3)
+    d.rounded_rectangle([(bx - pulse, by - pulse), (bx + bw + pulse, by + bh + pulse)], radius=34, fill=(49, 91, 255), outline=(255, 255, 255), width=2)
     d.text((W//2, by + bh//2), "Launch FastTask Free  ->", font=font_btn, fill=(255, 255, 255), anchor="mm")
 
-    # Bottom colorful course pills
     courses = [
-        ("CS 102", (99, 102, 241), (238, 242, 255)),
-        ("CS 201", (49, 91, 255), (238, 243, 255)),
-        ("CS 202", (168, 85, 247), (250, 245, 255)),
-        ("CS 301", (16, 185, 129), (240, 253, 244))
+        ("CS 102", (124, 58, 237)),
+        ("CS 201", (49, 91, 255)),
+        ("CS 202", (234, 88, 12)),
+        ("CS 301", (16, 185, 129))
     ]
-    pw = 110
-    start_x = W//2 - (len(courses) * (pw + 16)) // 2 + pw//2
-    for idx, (c, col, bg_col) in enumerate(courses):
-        px = start_x + idx * (pw + 16)
-        d.rounded_rectangle([(px - pw//2, 620), (px + pw//2, 660)], radius=14, fill=bg_col, outline=col, width=1)
-        d.text((px, 640), c, font=font_bold, fill=col, anchor="mm")
+    pw = 120
+    start_x = W//2 - (len(courses) * (pw + 18)) // 2 + pw//2
+    for idx, (c, col) in enumerate(courses):
+        px = start_x + idx * (pw + 18)
+        d.rounded_rectangle([(px - pw//2, 610), (px + pw//2, 656)], radius=16, fill=col)
+        d.text((px, 633), c, font=font_bold, fill=(255, 255, 255), anchor="mm")
 
-    d.text((W//2, 700), "Join 5,000+ CS Scholars in Deep Study Flow • FastTask.app", font=font_sm, fill=(100, 116, 139), anchor="mm")
+    d.text((W//2, 700), "Join 5,000+ CS Scholars in Deep Study Flow • FastTask.app", font=font_sm, fill=(147, 197, 253), anchor="mm")
     return im
 
 def get_frame(f):
