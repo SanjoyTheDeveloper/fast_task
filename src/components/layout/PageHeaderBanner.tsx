@@ -37,7 +37,7 @@ export function PageHeaderBanner({
 }: PageHeaderBannerProps) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl bg-white border-2 border-[#DCE7FC] p-4 sm:p-5 lg:py-4.5 lg:px-6 shadow-[0_2px_12px_rgba(49,91,255,0.05)] ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-5 lg:py-4.5 lg:px-6 shadow-2xs ${className}`}
     >
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
         {/* Left Side: Title & Optional Subtitle */}

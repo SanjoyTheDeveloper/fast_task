@@ -62,12 +62,40 @@ function parseTimeToMinutes(timeStr: string): number {
   return hours * 60 + minutes;
 }
 
-const COURSE_COLOR_MAP: Record<string, { bg: string; text: string; border: string; badge: string; topBar: string }> = {
-  AIES: { bg: "bg-[#EEF3FF]", text: "text-[#1D4ED8]", border: "border-[#315BFF]", badge: "bg-[#315BFF] text-white shadow-xs shadow-blue-500/25", topBar: "bg-[#315BFF]" },
-  AP: { bg: "bg-[#EDE9FE]", text: "text-[#5B21B6]", border: "border-[#7C3AED]", badge: "bg-[#7C3AED] text-white shadow-xs shadow-purple-500/25", topBar: "bg-[#7C3AED]" },
-  CN: { bg: "bg-[#D1FAE5]", text: "text-[#065F46]", border: "border-[#10B981]", badge: "bg-[#10B981] text-white shadow-xs shadow-emerald-500/25", topBar: "bg-[#10B981]" },
-  MACS: { bg: "bg-[#FEF3C7]", text: "text-[#92400E]", border: "border-[#F59E0B]", badge: "bg-[#F59E0B] text-white shadow-xs shadow-amber-500/25", topBar: "bg-[#F59E0B]" },
-  TWRM: { bg: "bg-[#FFEDD5]", text: "text-[#C2410C]", border: "border-[#F97316]", badge: "bg-[#F97316] text-white shadow-xs shadow-orange-500/25", topBar: "bg-[#F97316]" },
+const COURSE_COLOR_MAP: Record<
+  string,
+  { accentBar: string; badge: string; text: string; lightBg: string }
+> = {
+  AIES: {
+    accentBar: "bg-[#315BFF]",
+    badge: "bg-[#315BFF] text-white shadow-2xs",
+    text: "text-[#1D4ED8]",
+    lightBg: "bg-blue-50/70",
+  },
+  AP: {
+    accentBar: "bg-[#7C3AED]",
+    badge: "bg-[#7C3AED] text-white shadow-2xs",
+    text: "text-[#5B21B6]",
+    lightBg: "bg-purple-50/70",
+  },
+  CN: {
+    accentBar: "bg-[#10B981]",
+    badge: "bg-[#10B981] text-white shadow-2xs",
+    text: "text-[#065F46]",
+    lightBg: "bg-emerald-50/70",
+  },
+  MACS: {
+    accentBar: "bg-[#F59E0B]",
+    badge: "bg-[#F59E0B] text-white shadow-2xs",
+    text: "text-[#92400E]",
+    lightBg: "bg-amber-50/70",
+  },
+  TWRM: {
+    accentBar: "bg-[#F97316]",
+    badge: "bg-[#F97316] text-white shadow-2xs",
+    text: "text-[#C2410C]",
+    lightBg: "bg-orange-50/70",
+  },
 };
 
 function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
@@ -80,16 +108,13 @@ function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
     }
   }
 
-  // Fallback dynamic palette based on hash
-  const palettes = [
-    { bg: "bg-[#E0F2FE]", text: "text-[#0369A1]", border: "border-[#0284C7]", badge: "bg-[#0284C7] text-white shadow-xs", topBar: "bg-[#0284C7]" },
-    { bg: "bg-[#CCFBF1]", text: "text-[#0F766E]", border: "border-[#0D9488]", badge: "bg-[#0D9488] text-white shadow-xs", topBar: "bg-[#0D9488]" },
-    { bg: "bg-[#FEE2E2]", text: "text-[#B91C1C]", border: "border-[#EF4444]", badge: "bg-[#EF4444] text-white shadow-xs", topBar: "bg-[#EF4444]" },
-    { bg: "bg-[#EDE9FE]", text: "text-[#5B21B6]", border: "border-[#7C3AED]", badge: "bg-[#7C3AED] text-white shadow-xs", topBar: "bg-[#7C3AED]" },
-  ];
-  let hash = 0;
-  for (let i = 0; i < code.length; i++) hash += code.charCodeAt(i);
-  return palettes[hash % palettes.length];
+  // Fallback palette
+  return {
+    accentBar: "bg-slate-700",
+    badge: "bg-slate-800 text-white shadow-2xs",
+    text: "text-slate-800",
+    lightBg: "bg-slate-50",
+  };
 }
 
 export default function SchedulePage() {
@@ -552,23 +577,28 @@ export default function SchedulePage() {
                           return (
                             <div
                               key={item.id}
-                              className={`group relative rounded-2xl border ${style.border} ${style.bg} p-4 sm:p-4.5 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200`}
+                              className="group relative rounded-2xl bg-white border border-slate-200/90 hover:border-slate-300 p-4.5 sm:p-5 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200 overflow-hidden"
                             >
-                              <div className="space-y-2.5">
+                              {/* 4px Vertical accent bar on left */}
+                              <div
+                                className={`absolute left-0 top-3 bottom-3 w-1.5 rounded-r-full ${style.accentBar}`}
+                              />
+
+                              <div className="pl-1.5 space-y-2.5">
                                 {/* Top: Course Code Badge + Action Controls (Edit & Delete) */}
                                 <div className="flex items-center justify-between gap-2">
                                   <span
-                                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-2xs ${style.badge}`}
+                                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${style.badge}`}
                                   >
                                     {item.courseCode}
                                   </span>
 
                                   {/* Edit & Delete Actions */}
-                                  <div className="flex items-center gap-1">
+                                  <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                     <button
                                       type="button"
                                       onClick={() => handleOpenEdit(item)}
-                                      className="p-1 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white/80 transition-colors cursor-pointer"
+                                      className="p-1 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition-colors cursor-pointer"
                                       title="Edit class"
                                     >
                                       <Pencil className="h-3.5 w-3.5" />
@@ -587,7 +617,7 @@ export default function SchedulePage() {
                                 {/* Course Title */}
                                 <div>
                                   <h3
-                                    className="text-sm font-bold text-slate-900 leading-snug line-clamp-2"
+                                    className="text-sm font-bold text-slate-900 group-hover:text-[#315BFF] transition-colors leading-snug line-clamp-2"
                                     title={item.courseTitle}
                                   >
                                     {item.courseTitle}
@@ -596,7 +626,7 @@ export default function SchedulePage() {
                               </div>
 
                               {/* Card Meta: Time slot, Room No & Instructor */}
-                              <div className="mt-3.5 pt-3 border-t border-slate-200/60 space-y-1.5 text-xs text-slate-600">
+                              <div className="pl-1.5 mt-3.5 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600">
                                 {/* Time slot */}
                                 <div className="flex items-center gap-2 font-medium">
                                   <GIcon name="schedule" size={14} className="text-[#315BFF] shrink-0" />
@@ -607,7 +637,7 @@ export default function SchedulePage() {
 
                                 {/* Room Number */}
                                 {item.roomNo && (
-                                  <div className="flex items-center gap-2 font-medium">
+                                  <div className="flex items-center gap-2 font-medium text-slate-600">
                                     <GIcon name="location_on" size={14} className="text-rose-500 shrink-0" />
                                     <span>{item.roomNo}</span>
                                   </div>
@@ -617,7 +647,7 @@ export default function SchedulePage() {
                                 {item.instructor && (
                                   <div className="flex items-center gap-2 font-medium text-slate-500">
                                     <GIcon name="person" size={14} className="text-slate-400 shrink-0" />
-                                    <span>Faculty: {item.instructor}</span>
+                                    <span className="truncate">Faculty: {item.instructor}</span>
                                   </div>
                                 )}
                               </div>

@@ -93,43 +93,49 @@ function getCourseCardTheme(courseCode: string) {
   const code = (courseCode || "").toUpperCase();
   if (code.includes("AIES") || code.includes("321")) {
     return {
-      courseColor: "bg-[#5B63E6] text-white",
-      typeColor: "text-[#5B63E6]",
-      borderColor: "border-[#D8E3FD] hover:border-[#5B63E6]/60",
+      courseColor: "bg-[#315BFF] text-white",
+      typeColor: "text-[#315BFF]",
+      accentBar: "bg-[#315BFF]",
+      borderColor: "border-slate-200/90 hover:border-slate-300",
     };
   }
   if (code.includes("AP") || code.includes("333")) {
     return {
-      courseColor: "bg-[#315BFF] text-white",
-      typeColor: "text-[#315BFF]",
-      borderColor: "border-[#D0DFFF] hover:border-[#315BFF]/60",
+      courseColor: "bg-[#7C3AED] text-white",
+      typeColor: "text-[#7C3AED]",
+      accentBar: "bg-[#7C3AED]",
+      borderColor: "border-slate-200/90 hover:border-slate-300",
     };
   }
   if (code.includes("MACS") || code.includes("337")) {
     return {
       courseColor: "bg-[#F59E0B] text-white",
-      typeColor: "text-[#D97706]",
-      borderColor: "border-[#FED7AA]/80 hover:border-[#F59E0B]/60",
+      typeColor: "text-[#F59E0B]",
+      accentBar: "bg-[#F59E0B]",
+      borderColor: "border-slate-200/90 hover:border-slate-300",
     };
   }
   if (code.includes("CN") || code.includes("315")) {
     return {
-      courseColor: "bg-[#0284C7] text-white",
-      typeColor: "text-[#0284C7]",
-      borderColor: "border-sky-200 hover:border-sky-400",
+      courseColor: "bg-[#10B981] text-white",
+      typeColor: "text-[#10B981]",
+      accentBar: "bg-[#10B981]",
+      borderColor: "border-slate-200/90 hover:border-slate-300",
     };
   }
   if (code.includes("TWRM") || code.includes("320")) {
     return {
-      courseColor: "bg-[#8B5CF6] text-white",
-      typeColor: "text-[#8B5CF6]",
-      borderColor: "border-purple-200 hover:border-purple-400",
+      courseColor: "bg-[#F97316] text-white",
+      typeColor: "text-[#F97316]",
+      accentBar: "bg-[#F97316]",
+      borderColor: "border-slate-200/90 hover:border-slate-300",
     };
   }
   return {
-    courseColor: "bg-emerald-600 text-white",
-    typeColor: "text-emerald-700",
-    borderColor: "border-emerald-200 hover:border-emerald-400",
+    courseColor: "bg-slate-800 text-white",
+    typeColor: "text-slate-700",
+    accentBar: "bg-slate-700",
+    borderColor: "border-slate-200/90 hover:border-slate-300",
   };
 }
 
@@ -524,18 +530,23 @@ export function TodaySchedule({
                     borderColor: theme.borderColor,
                   })
                 }
-                className={`group relative flex flex-col justify-between rounded-2xl bg-white border ${theme.borderColor} p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer`}
+                className="group relative flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 hover:border-slate-300 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden"
               >
-                <div className="space-y-2">
+                {/* Vertical Accent Stripe */}
+                <div
+                  className={`absolute left-0 top-3 bottom-3 w-1.5 rounded-r-full ${theme.accentBar}`}
+                />
+
+                <div className="pl-1.5 space-y-2">
                   {/* Top of Card: Course code in a colored badge + Edit/Delete actions */}
                   <div className="flex items-center justify-between gap-2">
                     <span
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-2xs ${theme.courseColor}`}
+                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${theme.courseColor}`}
                     >
                       {item.courseCode}
                     </span>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                       <button
                         type="button"
                         onClick={(e) => handleEditSlot(e, item)}
@@ -562,7 +573,7 @@ export function TodaySchedule({
                 </div>
 
                 {/* Bottom of Card: Time, Room, Faculty */}
-                <div className="pt-3.5 mt-3 border-t border-slate-100 flex items-end justify-between gap-2">
+                <div className="pl-1.5 pt-3.5 mt-3 border-t border-slate-100 flex items-end justify-between gap-2">
                   <div className="space-y-1.5 text-[11px] text-slate-500">
                     {/* Time with clock icon */}
                     <div className="flex items-center gap-1.5">
