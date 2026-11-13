@@ -167,42 +167,42 @@ export function KpiShowcase() {
     >
       {/* Outer Alignment Grid */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Stage Canvas Card - FastTask Dashboard Daylight Palette (#FFFFFF, #E5EAF2, #172033 & #315BFF) */}
-        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-white border border-[#E5EAF2] shadow-[0_20px_60px_-15px_rgba(49,91,255,0.07),0_10px_25px_-5px_rgba(15,23,42,0.04)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-[#172033]">
+        {/* Main Stage Canvas Card - FastTask Dashboard Palette with Rich Vibrant Colors */}
+        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-gradient-to-b from-[#EDF3FF] via-[#F8FAFC] to-white border-2 border-[#D0E0FD] shadow-[0_25px_80px_-15px_rgba(49,91,255,0.18),0_10px_30px_-5px_rgba(15,23,42,0.06)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-[#172033]">
           
-          {/* Subtle Ambient Daylight Blue Lighting */}
+          {/* Volumetric Multi-Color Ambient Glows (Royal Blue, Cyan, Indigo) */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.06),rgba(59,130,246,0.03),transparent_70%)] blur-[90px]"
+            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.22),rgba(59,130,246,0.10),transparent_70%)] blur-[90px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 left-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.04),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute bottom-0 left-0 w-96 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(6,182,212,0.18),transparent_70%)] blur-[70px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.04),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.18),transparent_70%)] blur-[70px]"
           />
 
-          {/* TOP HEADER: Sleek Brand Mark & Typography (FastTask Dashboard Daylight Styling) */}
+          {/* TOP HEADER: Sleek Brand Mark & Typography (FastTask Dashboard Vibrant Styling) */}
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-12">
-            {/* Top Brand Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EEF3FF] border border-[#D0DFFF] shadow-xs">
+            {/* Top Brand Pill with Multi-Color Gradient */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-cyan-500/15 border border-blue-400/40 shadow-xs backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-[#315BFF] animate-ping" />
-              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase text-[#315BFF]">
+              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#0284C7] bg-clip-text text-transparent">
                 INTERACTIVE PLATFORM TOUR • ACADEMIC WORKSPACE
               </span>
             </div>
 
-            {/* Headline */}
+            {/* Headline with Rich Color Gradients */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#172033] leading-[1.12]">
               Master{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#315BFF]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D4ED8] via-[#315BFF] to-[#06B6D4]">
                 CS 102, 201
               </span>
               <br />
               CS 202 &amp; 301 with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] via-[#315BFF] to-[#0284C7]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] via-[#4F46E5] to-[#7C3AED]">
                 Deep Study Flow
               </span>
             </h2>
@@ -216,9 +216,9 @@ export function KpiShowcase() {
 
           {/* CENTER DISPLAY SCREEN: Large Rounded Card with Inner Stage Video */}
           <div className="relative z-10 max-w-4xl mx-auto">
-            {/* Stage Display Frame with Dashboard Daylight Border & Shadow */}
+            {/* Stage Display Frame with Vibrant Royal Blue Rim & Elevation */}
             <div
-              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-[#E5EAF2] bg-[#F8FAFC] shadow-[0_20px_50px_-15px_rgba(49,91,255,0.12),0_10px_30px_-5px_rgba(15,23,42,0.06)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
+              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border-2 border-[#BFDBFE] bg-white shadow-[0_25px_60px_-15px_rgba(49,91,255,0.25),0_10px_25px_-5px_rgba(37,99,235,0.1)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
               onMouseEnter={() => setIsHoveringVideo(true)}
               onMouseLeave={() => setIsHoveringVideo(false)}
               onClick={togglePlayPause}
@@ -226,7 +226,7 @@ export function KpiShowcase() {
               {/* Shimmering Top Rim Light */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent z-20"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#315BFF] to-transparent z-20"
               />
 
               {/* Live Video Element */}
@@ -242,14 +242,14 @@ export function KpiShowcase() {
               />
 
               {/* Video Overlay: Top Left Stage Badge */}
-              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5EAF2] text-[10px] sm:text-xs font-semibold text-[#172033] shadow-sm pointer-events-none">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-blue-200 text-[10px] sm:text-xs font-semibold text-[#172033] shadow-md pointer-events-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981] animate-pulse" />
                 <span>{currentStage.badge}</span>
               </div>
 
               {/* Video Overlay: Top Right Timestamp */}
-              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5EAF2] text-[10px] sm:text-xs font-mono font-medium text-slate-700 shadow-sm pointer-events-none">
-                <Clock className="w-3 h-3 text-[#315BFF]" />
+              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EEF3FF] backdrop-blur-md border border-blue-200 text-[10px] sm:text-xs font-mono font-bold text-[#2563EB] shadow-sm pointer-events-none">
+                <Clock className="w-3.5 h-3.5 text-[#315BFF]" />
                 <span>{formatTime(currentTime)} / 00:44</span>
               </div>
 
@@ -269,11 +269,21 @@ export function KpiShowcase() {
               </div>
             </div>
 
-            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons (FastTask Dashboard Styling) */}
+            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons with Color Accents */}
             <div className="mt-8 sm:mt-10 max-w-2xl mx-auto">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {STAGES.map((stage) => {
                   const isActive = activeTab === stage.id;
+
+                  // Custom stage pill colors
+                  const badgeColor =
+                    stage.id === "intro"
+                      ? "bg-blue-100 text-blue-700"
+                      : stage.id === "problem"
+                      ? "bg-rose-100 text-rose-700"
+                      : stage.id === "use_case"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-indigo-100 text-indigo-700";
 
                   return (
                     <button
@@ -282,8 +292,8 @@ export function KpiShowcase() {
                       onClick={() => handleTabClick(stage.id)}
                       className={`relative px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer overflow-hidden text-center active:scale-95 ${
                         isActive
-                          ? "bg-[#172033] text-white shadow-xl ring-2 ring-[#315BFF]/30"
-                          : "bg-[#F8FAFC] hover:bg-slate-100/90 text-[#172033] shadow-xs border border-[#E5EAF2]"
+                          ? "bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white shadow-xl ring-2 ring-[#315BFF] shadow-[0_4px_25px_rgba(49,91,255,0.35)]"
+                          : "bg-white hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-indigo-50/80 text-[#172033] hover:text-[#2563EB] shadow-xs border border-[#D5E1F8] hover:border-blue-300"
                       }`}
                     >
                       {/* Active State Glowing Vertical Light Beam (Royal Blue & Cyan Gradient) */}
@@ -304,16 +314,23 @@ export function KpiShowcase() {
                         </div>
                       )}
 
-                      {/* Tab Title */}
-                      <span className="relative z-10 block truncate">
-                        {stage.label}
-                      </span>
+                      {/* Tab Content with Number Badge */}
+                      <div className="relative z-10 flex items-center justify-center gap-1.5 truncate">
+                        <span
+                          className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-md ${
+                            isActive ? "bg-[#315BFF] text-white" : badgeColor
+                          }`}
+                        >
+                          {stage.stageNumber}
+                        </span>
+                        <span className="truncate">{stage.label}</span>
+                      </div>
                     </button>
                   );
                 })}
               </div>
 
-              {/* TIMELINE RULER TRACK BELOW TABS (Dashboard Slate & Blue Accents) */}
+              {/* TIMELINE RULER TRACK BELOW TABS (Vibrant Gradient Progress & Scrubber) */}
               <div
                 ref={rulerRef}
                 onClick={handleRulerClick}
@@ -337,10 +354,10 @@ export function KpiShowcase() {
                       className={`transition-colors duration-150 rounded-full ${
                         isStageBreak
                           ? isPassed
-                            ? "w-[1.5px] h-3.5 sm:h-4 bg-[#315BFF] shadow-[0_0_6px_#315BFF]"
-                            : "w-[1.5px] h-3.5 sm:h-4 bg-slate-400"
+                            ? "w-[2px] h-3.5 sm:h-4 bg-[#315BFF] shadow-[0_0_8px_#315BFF]"
+                            : "w-[2px] h-3.5 sm:h-4 bg-slate-400"
                           : isPassed
-                          ? "w-[1px] h-2 sm:h-2.5 bg-blue-500"
+                          ? "w-[1px] h-2 sm:h-2.5 bg-gradient-to-t from-blue-600 to-cyan-400 shadow-[0_0_4px_rgba(56,189,248,0.7)]"
                           : "w-[1px] h-2 sm:h-2.5 bg-slate-300 group-hover:bg-slate-400"
                       }`}
                     />
@@ -352,40 +369,43 @@ export function KpiShowcase() {
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-[left] duration-75 ease-linear flex flex-col items-center"
                   style={{ left: `${Math.min(100, Math.max(0, progress))}%` }}
                 >
-                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-[#315BFF] shadow-[0_0_8px_rgba(49,91,255,0.7)]" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-0.5 blur-[0.5px]" />
+                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-gradient-to-b from-cyan-300 to-[#315BFF] shadow-[0_0_12px_#38BDF8]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#315BFF] mt-0.5 blur-[0.5px]" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR (FastTask Dashboard Daylight Palette) */}
-          <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-[#E5EAF2] flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
-            {/* 3 Metric Counters */}
-            <div className="grid grid-cols-3 gap-6 sm:gap-10 text-center sm:text-left w-full sm:w-auto">
-              <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-[#172033] tracking-tight">
+          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR (Colorful Dashboard Stat Cards) */}
+          <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-[#D5E1F8] flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
+            {/* 3 Metric Stat Cards with Distinct Accent Colors */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center sm:text-left w-full sm:w-auto">
+              {/* Metric 1: Royal Blue */}
+              <div className="p-3 sm:p-4 rounded-2xl bg-white border border-blue-200/80 shadow-xs hover:shadow-md transition-all">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-[#1D4ED8] to-[#315BFF] bg-clip-text text-transparent tracking-tight">
                   10K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mt-1">
-                  CS Problems Solved
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-700/80 mt-1">
+                  CS Problems
                 </span>
               </div>
 
-              <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-[#172033] tracking-tight">
+              {/* Metric 2: Indigo / Violet */}
+              <div className="p-3 sm:p-4 rounded-2xl bg-white border border-indigo-200/80 shadow-xs hover:shadow-md transition-all">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] bg-clip-text text-transparent tracking-tight">
                   70K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-indigo-700/80 mt-1">
                   Study Hours
                 </span>
               </div>
 
-              <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-[#172033] tracking-tight">
+              {/* Metric 3: Emerald */}
+              <div className="p-3 sm:p-4 rounded-2xl bg-white border border-emerald-200/80 shadow-xs hover:shadow-md transition-all">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-[#059669] to-[#10B981] bg-clip-text text-transparent tracking-tight">
                   05K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-700/80 mt-1">
                   CS Scholars
                 </span>
               </div>
@@ -395,7 +415,7 @@ export function KpiShowcase() {
             <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
               <Link
                 href={courseTargetUrl}
-                className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#315BFF] hover:from-[#1E40AF] hover:to-[#2563EB] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-blue-500/35 hover:shadow-xl hover:shadow-blue-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <span>Explore Course Notes</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
