@@ -19,6 +19,7 @@ import {
   getStoredRoutineSlots,
   saveStoredRoutineSlots,
   removeStoredRoutineSlot,
+  DEFAULT_SAMPLE_SLOTS,
 } from "@/lib/routineStorage";
 import type { SessionUser } from "@/types";
 
@@ -139,8 +140,16 @@ export default function SchedulePage() {
       if (cached && cached.length > 0 && isMounted) {
         setSlots(cached);
         setIsLoading(false);
+      } else if (isMounted) {
+        setSlots(DEFAULT_SAMPLE_SLOTS);
+        setIsLoading(false);
       }
-    } catch {}
+    } catch {
+      if (isMounted) {
+        setSlots(DEFAULT_SAMPLE_SLOTS);
+        setIsLoading(false);
+      }
+    }
 
     // 2. Background sync
     async function fetchRoutine() {
@@ -149,8 +158,18 @@ export default function SchedulePage() {
         if (res.ok) {
           const json = await res.json();
           if (json.success && Array.isArray(json.data) && isMounted) {
-            setSlots(json.data);
-            saveStoredRoutineSlots(json.data);
+            if (json.data.length > 0) {
+              setSlots(json.data);
+              saveStoredRoutineSlots(json.data);
+            } else {
+              const currentLocal = getStoredRoutineSlots();
+              if (currentLocal && currentLocal.length > 0) {
+                setSlots(currentLocal);
+              } else {
+                setSlots(DEFAULT_SAMPLE_SLOTS);
+                saveStoredRoutineSlots(DEFAULT_SAMPLE_SLOTS);
+              }
+            }
           }
         }
       } catch {
@@ -209,6 +228,23 @@ export default function SchedulePage() {
       });
     } catch {
       // Handled silently
+    }
+  };
+
+  // Restore default sample routine schedules
+  const handleRestoreDefaults = async () => {
+    saveStoredRoutineSlots(DEFAULT_SAMPLE_SLOTS);
+    setSlots(DEFAULT_SAMPLE_SLOTS);
+    toast.success("Standard academic routine restored successfully");
+
+    try {
+      await fetch("/api/routine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slots: DEFAULT_SAMPLE_SLOTS }),
+      });
+    } catch (e) {
+      console.warn("Failed to sync restored slots to server:", e);
     }
   };
 
@@ -415,14 +451,23 @@ export default function SchedulePage() {
                   Easily build and organize your weekly routine with class times, course codes, and room numbers.
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => handleOpenAdd(currentActualDay)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-500/25 transition-all cursor-pointer active:scale-95"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Add Class</span>
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenAdd(currentActualDay)}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer active:scale-95"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add Class</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRestoreDefaults}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-semibold border border-slate-300 transition-all cursor-pointer active:scale-95"
+                >
+                  <span>Restore Standard Routine</span>
+                </button>
+              </div>
             </div>
           ) : (
             /* Timetable Day Groups */

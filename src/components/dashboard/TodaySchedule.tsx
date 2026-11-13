@@ -17,6 +17,7 @@ import {
   getStoredRoutineSlots,
   saveStoredRoutineSlots,
   removeStoredRoutineSlot,
+  DEFAULT_SAMPLE_SLOTS,
 } from "@/lib/routineStorage";
 
 export interface ScheduleItem {
@@ -191,6 +192,9 @@ export function TodaySchedule({
     if (cached.length > 0 && isMounted) {
       setRoutineSlots(cached);
       setIsLoading(false);
+    } else if (isMounted) {
+      setRoutineSlots(DEFAULT_SAMPLE_SLOTS);
+      setIsLoading(false);
     }
 
     // 2. Background sync
@@ -200,8 +204,13 @@ export function TodaySchedule({
         if (res.ok) {
           const json = await res.json();
           if (json.success && Array.isArray(json.data) && isMounted) {
-            setRoutineSlots(json.data);
-            saveStoredRoutineSlots(json.data);
+            if (json.data.length > 0) {
+              setRoutineSlots(json.data);
+              saveStoredRoutineSlots(json.data);
+            } else {
+              const local = getStoredRoutineSlots();
+              setRoutineSlots(local.length > 0 ? local : DEFAULT_SAMPLE_SLOTS);
+            }
           }
         }
       } catch (err) {

@@ -61,10 +61,144 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    const slots = await db.routineSchedule.findMany({
+    let slots = await db.routineSchedule.findMany({
       where,
       orderBy: { startTime: "asc" },
     });
+
+    // Auto-seed default schedule if user currently has no routine schedules in the database
+    if (slots.length === 0) {
+      const totalUserSlots = await db.routineSchedule.count({
+        where: { userId: user.id },
+      });
+
+      if (totalUserSlots === 0) {
+        const defaultSlots = [
+          {
+            userId: user.id,
+            courseCode: "0611CSE321",
+            courseTitle: "Artificial Intelligence & Expert Systems",
+            dayOfWeek: "Sunday",
+            startTime: "09:00 AM",
+            endTime: "10:30 AM",
+            roomNo: "Lab 402",
+            instructor: "Dr. A. Rahman",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0613CSE333",
+            courseTitle: "Advanced Programming & Architecture",
+            dayOfWeek: "Sunday",
+            startTime: "11:00 AM",
+            endTime: "12:30 PM",
+            roomNo: "Room 305",
+            instructor: "Prof. K. Hasan",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0541MAT337",
+            courseTitle: "Discrete Mathematics & Graph Theory",
+            dayOfWeek: "Monday",
+            startTime: "10:00 AM",
+            endTime: "11:30 AM",
+            roomNo: "Room 201",
+            instructor: "Dr. S. Sultana",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0612CSE315",
+            courseTitle: "Computer Networks & Protocols",
+            dayOfWeek: "Monday",
+            startTime: "01:00 PM",
+            endTime: "02:30 PM",
+            roomNo: "Lab 501",
+            instructor: "Engr. M. Islam",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0031CSE320",
+            courseTitle: "Tech Writing & Research (TWRM)",
+            dayOfWeek: "Tuesday",
+            startTime: "10:00 AM",
+            endTime: "11:30 AM",
+            roomNo: "Room 504",
+            instructor: "Ms. S. Akter",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0611CSE321",
+            courseTitle: "Artificial Intelligence Lab",
+            dayOfWeek: "Tuesday",
+            startTime: "01:00 PM",
+            endTime: "03:00 PM",
+            roomNo: "Lab 402",
+            instructor: "Dr. A. Rahman",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0612CSE315",
+            courseTitle: "Computer Networks & Protocols",
+            dayOfWeek: "Wednesday",
+            startTime: "09:30 AM",
+            endTime: "11:00 AM",
+            roomNo: "Lab 501",
+            instructor: "Engr. M. Islam",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0613CSE333",
+            courseTitle: "Advanced Programming Lab",
+            dayOfWeek: "Wednesday",
+            startTime: "11:30 AM",
+            endTime: "01:30 PM",
+            roomNo: "Lab 3",
+            instructor: "Prof. K. Hasan",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0541MAT337",
+            courseTitle: "Discrete Mathematics Tutorial",
+            dayOfWeek: "Thursday",
+            startTime: "10:00 AM",
+            endTime: "11:30 AM",
+            roomNo: "Room 301",
+            instructor: "Dr. S. Sultana",
+            semester: "Fall 2026",
+          },
+          {
+            userId: user.id,
+            courseCode: "0031CSE320",
+            courseTitle: "Tech Writing Seminar",
+            dayOfWeek: "Thursday",
+            startTime: "12:00 PM",
+            endTime: "01:30 PM",
+            roomNo: "Room 504",
+            instructor: "Ms. S. Akter",
+            semester: "Fall 2026",
+          },
+        ];
+
+        try {
+          await db.routineSchedule.createMany({
+            data: defaultSlots,
+          });
+          slots = await db.routineSchedule.findMany({
+            where,
+            orderBy: { startTime: "asc" },
+          });
+        } catch (e) {
+          console.warn("Auto-seeding default routine schedules failed:", e);
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,

@@ -118,6 +118,7 @@ export const defaultUpcomingTasks: UpcomingTaskItem[] = [
 ];
 
 import { ScheduleItem } from "./TodaySchedule";
+import { DEFAULT_SAMPLE_SLOTS, getStoredRoutineSlots } from "@/lib/routineStorage";
 
 export interface CalendarWidgetProps {
   onSelectTask?: (id: string) => void;
@@ -181,32 +182,45 @@ export function CalendarWidget({
     let isMounted = true;
     async function loadRoutine() {
       try {
+        let slotsToUse = getStoredRoutineSlots();
+        if (!slotsToUse || slotsToUse.length === 0) {
+          slotsToUse = DEFAULT_SAMPLE_SLOTS;
+        }
+
+        const populateMap = (sourceSlots: RoutineSlot[]) => {
+          const map: Record<string, ScheduleItem[]> = {
+            Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
+          };
+          sourceSlots.forEach((slot: RoutineSlot) => {
+            const dayShort = slot.dayOfWeek?.slice(0, 3);
+            if (map[dayShort]) {
+              map[dayShort].push({
+                id: slot.id,
+                courseCode: slot.courseCode,
+                courseColor: "bg-[#315BFF] text-white",
+                type: "Class Session",
+                typeColor: "text-[#315BFF]",
+                title: slot.courseTitle,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                location: slot.roomNo || "Campus",
+                faculty: slot.instructor || "Faculty",
+                borderColor: "border-[#D0DFFF]",
+              });
+            }
+          });
+          return map;
+        };
+
+        if (isMounted && slotsToUse.length > 0) {
+          setUserRoutines(populateMap(slotsToUse));
+        }
+
         const res = await fetch("/api/routine", { cache: "no-store" });
         if (res.ok) {
           const json = await res.json();
-          if (json.success && Array.isArray(json.data) && isMounted) {
-            const map: Record<string, ScheduleItem[]> = {
-              Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
-            };
-            json.data.forEach((slot: RoutineSlot) => {
-              const dayShort = slot.dayOfWeek?.slice(0, 3);
-              if (map[dayShort]) {
-                map[dayShort].push({
-                  id: slot.id,
-                  courseCode: slot.courseCode,
-                  courseColor: "bg-[#315BFF] text-white",
-                  type: "Class Session",
-                  typeColor: "text-[#315BFF]",
-                  title: slot.courseTitle,
-                  startTime: slot.startTime,
-                  endTime: slot.endTime,
-                  location: slot.roomNo || "Campus",
-                  faculty: slot.instructor || "Faculty",
-                  borderColor: "border-[#D0DFFF]",
-                });
-              }
-            });
-            setUserRoutines(map);
+          if (json.success && Array.isArray(json.data) && json.data.length > 0 && isMounted) {
+            setUserRoutines(populateMap(json.data));
           }
         }
       } catch (err) {
