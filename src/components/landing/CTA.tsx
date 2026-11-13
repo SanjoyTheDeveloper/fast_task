@@ -49,7 +49,7 @@ export function CTA({
         {/* Soft Mobile Readability Shield (Only active on ultra-narrow mobile viewports) */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-0 bg-[radial-gradient(ellipse_at_center,rgba(242,245,254,0.92)_0%,rgba(242,245,254,0.70)_55%,transparent_85%)] sm:hidden"
+          className="pointer-events-none absolute inset-0 -z-0 bg-[#F2F5FE]/80 sm:hidden"
         />
 
         {/* Foreground Content: Title, Subtitle, and Pill Buttons */}

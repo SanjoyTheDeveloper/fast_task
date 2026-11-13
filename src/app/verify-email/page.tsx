@@ -333,7 +333,7 @@ function LoadingFallback() {
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-blue-50/40 p-3.5 sm:p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-3.5 sm:p-6">
       <React.Suspense fallback={<LoadingFallback />}>
         <VerifyEmailContent />
       </React.Suspense>

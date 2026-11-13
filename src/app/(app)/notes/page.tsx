@@ -272,11 +272,8 @@ export default function NotesPage() {
               ))}
             </div>
           ) : notes.length === 0 ? (
-            /* Clean Empty State with Dashboard Upper Box Styling */
-            <div className="relative w-full flex flex-col items-center justify-center py-16 px-6 text-center rounded-3xl bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] border border-[#DCE7FC] shadow-[0_4px_20px_rgba(49,91,255,0.04)] overflow-hidden animate-fade-in-up">
-              {/* Decorative ambient subtle background glows */}
-              <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-blue-400/10 blur-2xl" />
-              <div className="pointer-events-none absolute -bottom-16 -right-12 h-52 w-52 rounded-full bg-indigo-300/10 blur-3xl" />
+            /* Clean Empty State in Solid Surface */
+            <div className="relative w-full flex flex-col items-center justify-center py-16 px-6 text-center rounded-3xl bg-white border-2 border-[#DCE7FC] shadow-[0_4px_20px_rgba(49,91,255,0.04)] overflow-hidden animate-fade-in-up">
 
               {/* Soft Illustration of a Notebook */}
               <div className="relative z-10 w-28 h-28 mx-auto mb-5 flex items-center justify-center">

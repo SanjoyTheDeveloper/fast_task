@@ -29,7 +29,7 @@ function Interactive3DLetter({ char, isBlue, isItalic }: LetterProps) {
       onMouseLeave={() => setIsHovered(false)}
       className={`inline-block select-none cursor-pointer will-change-transform transition-all ${
         isItalic ? "font-serif italic font-normal" : "font-bold"
-      } ${isBlue ? "text-blue-600" : "text-slate-900"}`}
+      } ${isBlue ? "text-[#315BFF]" : "text-slate-900"}`}
       style={{
         transform: isHovered
           ? `translate3d(0, -10px, 36px) scale(1.22) rotateX(10deg) rotateY(${tiltDeg * 3}deg)`
@@ -37,13 +37,13 @@ function Interactive3DLetter({ char, isBlue, isItalic }: LetterProps) {
         transition:
           "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, text-shadow 0.2s ease, filter 0.2s ease",
         transformStyle: "preserve-3d",
-        color: isHovered ? (isBlue ? "#1D4ED8" : "#2563EB") : undefined,
+        color: isHovered ? (isBlue ? "#254BE3" : "#315BFF") : undefined,
         textShadow: isHovered
           ? isBlue
-            ? "0 12px 28px rgba(37,99,235,0.45)"
-            : "0 10px 22px rgba(37,99,235,0.35)"
+            ? "0 12px 28px rgba(49,91,255,0.4)"
+            : "0 10px 22px rgba(49,91,255,0.3)"
           : undefined,
-        filter: isHovered ? "drop-shadow(0 8px 16px rgba(37,99,235,0.25))" : undefined,
+        filter: isHovered ? "drop-shadow(0 8px 16px rgba(49,91,255,0.25))" : undefined,
       }}
     >
       {char}
@@ -136,7 +136,7 @@ export function HeroHeadline({ registerHref, onOpenVideo }: HeroHeadlineProps) {
       <div className="flex items-center justify-center gap-3.5 pt-2">
         <Button
           asChild
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-7 py-3.5 h-auto rounded-full shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all group cursor-pointer"
+          className="bg-[#315BFF] hover:bg-[#254BE3] text-white text-sm font-semibold px-7 py-3.5 h-auto rounded-full shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all group cursor-pointer"
         >
           <Link href={registerHref} className="flex items-center gap-2">
             <span>Get Started Free</span>
@@ -149,7 +149,7 @@ export function HeroHeadline({ registerHref, onOpenVideo }: HeroHeadlineProps) {
           onClick={onOpenVideo}
           className="flex items-center gap-2.5 bg-white/90 hover:bg-white text-slate-800 border border-slate-200/90 hover:border-blue-200 text-sm font-medium px-6 py-3.5 rounded-full shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer group"
         >
-          <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-xs shadow-blue-500/30 group-hover:scale-105 transition-transform">
+          <div className="w-5 h-5 rounded-full bg-[#315BFF] flex items-center justify-center text-white shadow-xs shadow-blue-500/30 group-hover:scale-105 transition-transform">
             <Play className="w-2.5 h-2.5 fill-white translate-x-0.5" />
           </div>
           <span>Watch Demo</span>

@@ -176,7 +176,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
               <span className="text-lg font-black tracking-tight text-[#0F172A]">
                 FastTask
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs uppercase tracking-wider">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#315BFF] text-white shadow-xs uppercase tracking-wider">
                 PRO
               </span>
             </div>
@@ -260,10 +260,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             <div className="relative shrink-0">
               <div
                 suppressHydrationWarning
-                className={cn(
-                  "h-9 w-9 rounded-xl bg-gradient-to-tr text-white flex items-center justify-center text-xs font-black tracking-wider shadow-xs ring-2 ring-white overflow-hidden",
-                  palette?.gradient || "from-blue-600 to-indigo-600"
-                )}
+                className="h-9 w-9 rounded-xl bg-[#315BFF] text-white flex items-center justify-center text-xs font-black tracking-wider shadow-xs ring-2 ring-white overflow-hidden"
               >
                 <span suppressHydrationWarning>{userInitials}</span>
               </div>

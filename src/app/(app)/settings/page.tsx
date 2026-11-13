@@ -225,16 +225,12 @@ export default function SettingsPage() {
           
 
           {/* Top section - Profile Preview Card (Deep Navy) */}
-          <div className="rounded-3xl bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0A1020] border border-slate-800 p-6 sm:p-8 shadow-xl text-white relative overflow-hidden transition-all">
-            {/* Decorative ambient subtle background glows */}
-            <div className="pointer-events-none absolute -top-12 -left-12 h-44 w-44 rounded-full bg-blue-500/15 blur-2xl" />
-            <div className="pointer-events-none absolute -bottom-16 right-1/4 h-52 w-52 rounded-full bg-indigo-500/15 blur-3xl" />
-
+          <div className="rounded-3xl bg-[#0F172A] border border-slate-800 p-6 sm:p-8 shadow-xl text-white relative overflow-hidden transition-all">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 relative z-10">
               <div className="flex items-center gap-4 sm:gap-5">
-                {/* Large circular avatar with reactive gradient */}
+                {/* Large circular avatar in Solid Royal Blue */}
                 <div
-                  className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-tr ${activePalette.gradient} text-white font-black text-2xl sm:text-3xl flex items-center justify-center shrink-0 ring-4 ring-white/10 shadow-lg shadow-purple-500/20 transition-all`}
+                  className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-[#315BFF] text-white font-black text-2xl sm:text-3xl flex items-center justify-center shrink-0 ring-4 ring-white/10 shadow-lg shadow-blue-500/20 transition-all"
                 >
                   <span>{userInitial}</span>
                 </div>
@@ -331,7 +327,7 @@ export default function SettingsPage() {
                         key={palette.id}
                         type="button"
                         onClick={() => setAvatarColor(palette.id)}
-                        className={`group relative h-9 w-9 rounded-full bg-gradient-to-tr ${palette.gradient} flex items-center justify-center text-white transition-all cursor-pointer shadow-xs ${
+                        className={`group relative h-9 w-9 rounded-full ${palette.gradient} flex items-center justify-center text-white transition-all cursor-pointer shadow-xs ${
                           isSelected
                             ? "ring-3 ring-offset-2 ring-[#315BFF] scale-110 shadow-md"
                             : "opacity-80 hover:opacity-100 hover:scale-105"

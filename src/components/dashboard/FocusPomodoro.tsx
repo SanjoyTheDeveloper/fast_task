@@ -66,10 +66,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
   const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
   return (
-    <div className="relative rounded-2xl bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0A1020] text-white p-5 border border-slate-800 shadow-xl overflow-hidden space-y-4">
-      {/* Decorative ambient dark cyan/blue glow */}
-      <div className="pointer-events-none absolute -top-8 -right-8 h-28 w-28 rounded-full bg-blue-500/15 blur-xl" />
-
+    <div className="relative rounded-2xl bg-[#0F172A] text-white p-5 border border-slate-800 shadow-xl overflow-hidden space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -164,17 +161,17 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
           <button
             type="button"
             onClick={onOpenZenMode}
-            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 hover:from-indigo-500/30 hover:via-purple-500/30 hover:to-pink-500/30 border border-indigo-400/30 hover:border-indigo-400/60 text-white flex items-center justify-between text-xs font-bold transition-all shadow-md group cursor-pointer"
+            className="w-full py-2.5 px-3 rounded-xl bg-[#0D9488]/20 hover:bg-[#0D9488]/30 border border-[#0D9488]/40 hover:border-[#0D9488] text-white flex items-center justify-between text-xs font-bold transition-all shadow-md group cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-lg bg-indigo-500/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition-transform">
-                <Headphones className="h-3.5 w-3.5 text-indigo-300" />
+              <div className="h-6 w-6 rounded-lg bg-[#0D9488]/30 flex items-center justify-center text-[#2DD4BF] group-hover:scale-110 transition-transform">
+                <Headphones className="h-3.5 w-3.5 text-[#2DD4BF]" />
               </div>
               <span className="text-slate-200 group-hover:text-white tracking-wide text-[11px]">
                 Zen Flow Mode
               </span>
             </div>
-            <span className="text-[10px] font-semibold text-indigo-300/90 bg-indigo-900/50 px-2 py-0.5 rounded-full border border-indigo-400/20">
+            <span className="text-[10px] font-semibold text-[#2DD4BF] bg-[#042F2E] px-2 py-0.5 rounded-full border border-[#0D9488]/40">
               Lo-Fi & Timer 🎧
             </span>
           </button>

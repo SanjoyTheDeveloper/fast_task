@@ -27,16 +27,6 @@ export function GlitchReality() {
       id="academic-focus"
       className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] text-[#172033] overflow-hidden select-none"
     >
-      {/* Soft ambient daylight glows with hardware-friendly CSS radial gradients */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-12 left-1/4 -z-10 h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(96,165,250,0.12)_0%,transparent_70%)]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-8 right-1/4 -z-10 h-[450px] w-[450px] rounded-full bg-[radial-gradient(circle_at_center,rgba(165,180,252,0.1)_0%,transparent_70%)]"
-      />
-
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Section Header with Professional Dashboard Styling */}
@@ -59,12 +49,6 @@ export function GlitchReality() {
         {/* ============================================================ */}
         <div className="relative mx-auto w-full rounded-3xl bg-white border border-[#E5EAF2] shadow-[-10px_20px_50px_-10px_rgba(15,23,42,0.1),0_25px_60px_-15px_rgba(49,91,255,0.08)] p-6 sm:p-10 lg:p-12 overflow-hidden transition-all duration-300 hover:shadow-[-12px_24px_60px_-10px_rgba(15,23,42,0.14),0_30px_70px_-15px_rgba(49,91,255,0.12)]">
           
-          {/* Subtle architectural grid pattern */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#0f172a08_1px,transparent_1px),linear-gradient(to_bottom,#0f172a08_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_80%,transparent_100%)] opacity-70"
-          />
-
           {/* Main 2-Column Content Layout */}
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             

@@ -211,7 +211,7 @@ export function LmsUploadModal({
         aria-modal="true"
       >
         {/* Header Bar */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-gradient-to-r from-slate-50 via-white to-blue-50/30">
+        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-white">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
               <Upload className="h-5 w-5" />
@@ -267,21 +267,14 @@ export function LmsUploadModal({
                 ? "bg-blue-50/80 scale-[0.99] shadow-md shadow-blue-500/10"
                 : selectedFile
                 ? "bg-emerald-50/40"
-                : "bg-gradient-to-br from-[#EEF4FF]/60 via-white to-[#F4F7FF]/80 hover:from-[#EEF4FF] hover:to-[#F4F7FF] cursor-pointer shadow-xs"
+                : "bg-white hover:bg-slate-50 cursor-pointer shadow-xs"
             }`}
           >
-            {/* SVG Dashed Gradient Border matching Dashboard Theme */}
+            {/* SVG Dashed Border in Solid Royal Blue */}
             <svg
               className="pointer-events-none absolute inset-0 h-full w-full rounded-3xl"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <defs>
-                <linearGradient id="dashboardBorderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#315BFF" />
-                  <stop offset="50%" stopColor="#6366F1" />
-                  <stop offset="100%" stopColor="#8B5CF6" />
-                </linearGradient>
-              </defs>
               <rect
                 x="1.5"
                 y="1.5"
@@ -290,7 +283,7 @@ export function LmsUploadModal({
                 rx="22"
                 ry="22"
                 fill="none"
-                stroke={selectedFile ? "#10B981" : "url(#dashboardBorderGradient)"}
+                stroke={selectedFile ? "#10B981" : "#315BFF"}
                 strokeWidth={isDragging ? "2.5" : "2"}
                 strokeDasharray="8 6"
               />
@@ -354,7 +347,7 @@ export function LmsUploadModal({
               </div>
             ) : (
               <div className="relative z-10 space-y-2 py-1">
-                <div className="mx-auto h-13 w-13 rounded-2xl bg-gradient-to-tr from-[#315BFF]/10 via-[#6366F1]/10 to-[#8B5CF6]/15 border border-[#315BFF]/25 text-[#315BFF] flex items-center justify-center shadow-xs transition-transform duration-200 hover:scale-105">
+                <div className="mx-auto h-13 w-13 rounded-2xl bg-[#EEF3FF] border border-[#BFDBFE] text-[#315BFF] flex items-center justify-center shadow-xs transition-transform duration-200 hover:scale-105">
                   <span
                     className="material-symbols-outlined select-none text-[#315BFF]"
                     style={{ fontSize: "30px" }}
@@ -365,7 +358,7 @@ export function LmsUploadModal({
                 <div>
                   <p className="text-sm font-bold text-slate-800">
                     Drop course{" "}
-                    <span className="bg-gradient-to-r from-[#315BFF] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent underline underline-offset-2 font-black">
+                    <span className="text-[#315BFF] underline underline-offset-2 font-black">
                       browse files
                     </span>
                   </p>

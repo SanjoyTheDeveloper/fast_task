@@ -169,7 +169,7 @@ export function LatestActivityTimeline({
                 {todayLabel}
               </div>
 
-              <div className="relative pl-6 space-y-3.5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-blue-400 before:via-indigo-300 before:to-slate-200">
+              <div className="relative pl-6 space-y-3.5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-[#315BFF]/30">
                 {todayItems.map((item) => {
                   const style = getActionBadge(item.action);
                   return (
@@ -208,7 +208,7 @@ export function LatestActivityTimeline({
                 {yesterdayLabel}
               </div>
 
-              <div className="relative pl-6 space-y-3.5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-slate-300 before:to-slate-200">
+              <div className="relative pl-6 space-y-3.5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
                 {yesterdayItems.map((item) => {
                   const style = getActionBadge(item.action);
                   return (

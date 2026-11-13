@@ -13,12 +13,8 @@ export function Footer({
   return (
     <footer className="bg-transparent text-[#172033] py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Enclosing Card / Box Container using Signature Dashboard Colors */}
-        <div className="relative rounded-2xl sm:rounded-[32px] border border-[#DCE7FC] bg-gradient-to-r from-[#EEF4FF] via-[#F4F7FF] to-[#E9F0FE] shadow-[0_12px_45px_rgba(49,91,255,0.06)] overflow-hidden p-5 sm:p-10 lg:p-14">
-          {/* Decorative ambient subtle background glows matching dashboard */}
-          <div className="pointer-events-none absolute -top-12 -left-12 h-48 w-48 rounded-full bg-blue-400/10 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-16 right-1/4 h-56 w-56 rounded-full bg-indigo-300/10 blur-3xl" />
-
+        {/* Enclosing Card / Box Container in Crisp Solid Surface */}
+        <div className="relative rounded-2xl sm:rounded-[32px] border-2 border-[#DCE7FC] bg-white shadow-[0_12px_45px_rgba(49,91,255,0.06)] overflow-hidden p-5 sm:p-10 lg:p-14">
           {/* Even 4-Column Grid */}
           <div className="relative z-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
             {/* Column 1: Brand Info */}

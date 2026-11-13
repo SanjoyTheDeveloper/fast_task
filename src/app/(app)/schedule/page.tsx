@@ -62,11 +62,11 @@ function parseTimeToMinutes(timeStr: string): number {
 }
 
 const COURSE_COLOR_MAP: Record<string, { bg: string; text: string; border: string; badge: string; topBar: string }> = {
-  AIES: { bg: "bg-gradient-to-b from-blue-50/70 to-white", text: "text-blue-700", border: "border-blue-200/90", badge: "bg-blue-600 text-white shadow-xs shadow-blue-500/25", topBar: "bg-gradient-to-r from-blue-500 to-indigo-500" },
-  AP: { bg: "bg-gradient-to-b from-indigo-50/70 to-white", text: "text-indigo-700", border: "border-indigo-200/90", badge: "bg-indigo-600 text-white shadow-xs shadow-indigo-500/25", topBar: "bg-gradient-to-r from-indigo-500 to-purple-500" },
-  CN: { bg: "bg-gradient-to-b from-emerald-50/70 to-white", text: "text-emerald-700", border: "border-emerald-200/90", badge: "bg-emerald-600 text-white shadow-xs shadow-emerald-500/25", topBar: "bg-gradient-to-r from-emerald-500 to-teal-500" },
-  MACS: { bg: "bg-gradient-to-b from-amber-50/70 to-white", text: "text-amber-800", border: "border-amber-200/90", badge: "bg-amber-600 text-white shadow-xs shadow-amber-500/25", topBar: "bg-gradient-to-r from-amber-400 to-orange-500" },
-  TWRM: { bg: "bg-gradient-to-b from-purple-50/70 to-white", text: "text-purple-700", border: "border-purple-200/90", badge: "bg-purple-600 text-white shadow-xs shadow-purple-500/25", topBar: "bg-gradient-to-r from-purple-500 to-pink-500" },
+  AIES: { bg: "bg-[#EEF3FF]", text: "text-[#1D4ED8]", border: "border-[#315BFF]", badge: "bg-[#315BFF] text-white shadow-xs shadow-blue-500/25", topBar: "bg-[#315BFF]" },
+  AP: { bg: "bg-[#EDE9FE]", text: "text-[#5B21B6]", border: "border-[#7C3AED]", badge: "bg-[#7C3AED] text-white shadow-xs shadow-purple-500/25", topBar: "bg-[#7C3AED]" },
+  CN: { bg: "bg-[#D1FAE5]", text: "text-[#065F46]", border: "border-[#10B981]", badge: "bg-[#10B981] text-white shadow-xs shadow-emerald-500/25", topBar: "bg-[#10B981]" },
+  MACS: { bg: "bg-[#FEF3C7]", text: "text-[#92400E]", border: "border-[#F59E0B]", badge: "bg-[#F59E0B] text-white shadow-xs shadow-amber-500/25", topBar: "bg-[#F59E0B]" },
+  TWRM: { bg: "bg-[#FFEDD5]", text: "text-[#C2410C]", border: "border-[#F97316]", badge: "bg-[#F97316] text-white shadow-xs shadow-orange-500/25", topBar: "bg-[#F97316]" },
 };
 
 function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
@@ -81,10 +81,10 @@ function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
 
   // Fallback dynamic palette based on hash
   const palettes = [
-    { bg: "bg-gradient-to-b from-sky-50/70 to-white", text: "text-sky-700", border: "border-sky-200/90", badge: "bg-sky-600 text-white shadow-xs", topBar: "bg-gradient-to-r from-sky-500 to-blue-500" },
-    { bg: "bg-gradient-to-b from-teal-50/70 to-white", text: "text-teal-700", border: "border-teal-200/90", badge: "bg-teal-600 text-white shadow-xs", topBar: "bg-gradient-to-r from-teal-500 to-emerald-500" },
-    { bg: "bg-gradient-to-b from-rose-50/70 to-white", text: "text-rose-700", border: "border-rose-200/90", badge: "bg-rose-600 text-white shadow-xs", topBar: "bg-gradient-to-r from-rose-500 to-pink-500" },
-    { bg: "bg-gradient-to-b from-violet-50/70 to-white", text: "text-violet-700", border: "border-violet-200/90", badge: "bg-violet-600 text-white shadow-xs", topBar: "bg-gradient-to-r from-violet-500 to-indigo-500" },
+    { bg: "bg-[#E0F2FE]", text: "text-[#0369A1]", border: "border-[#0284C7]", badge: "bg-[#0284C7] text-white shadow-xs", topBar: "bg-[#0284C7]" },
+    { bg: "bg-[#CCFBF1]", text: "text-[#0F766E]", border: "border-[#0D9488]", badge: "bg-[#0D9488] text-white shadow-xs", topBar: "bg-[#0D9488]" },
+    { bg: "bg-[#FEE2E2]", text: "text-[#B91C1C]", border: "border-[#EF4444]", badge: "bg-[#EF4444] text-white shadow-xs", topBar: "bg-[#EF4444]" },
+    { bg: "bg-[#EDE9FE]", text: "text-[#5B21B6]", border: "border-[#7C3AED]", badge: "bg-[#7C3AED] text-white shadow-xs", topBar: "bg-[#7C3AED]" },
   ];
   let hash = 0;
   for (let i = 0; i < code.length; i++) hash += code.charCodeAt(i);
@@ -289,7 +289,7 @@ export default function SchedulePage() {
 
           {/* Quick Stats Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-            <div className="rounded-2xl bg-gradient-to-b from-white to-blue-50/40 border border-slate-200/90 p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between">
+            <div className="rounded-2xl bg-white border border-[#DCE7FC] p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                   Total Weekly Classes
@@ -303,7 +303,7 @@ export default function SchedulePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-gradient-to-b from-white to-indigo-50/40 border border-slate-200/90 p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between">
+            <div className="rounded-2xl bg-white border border-[#DDD6FE] p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                   Today&apos;s Sessions ({currentActualDay.slice(0, 3)})
@@ -312,22 +312,22 @@ export default function SchedulePage() {
                   {todayClassesCount}
                 </h3>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 shadow-[0_0_8px_rgba(99,102,241,0.25)] flex items-center justify-center">
-                <GIcon name="schedule" size={20} className="text-indigo-600" />
+              <div className="h-10 w-10 rounded-xl bg-[#EDE9FE] text-[#7C3AED] border border-[#DDD6FE] flex items-center justify-center">
+                <GIcon name="schedule" size={20} className="text-[#7C3AED]" />
               </div>
             </div>
 
-            <div className="rounded-2xl bg-gradient-to-b from-white to-emerald-50/40 border border-slate-200/90 p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between">
+            <div className="rounded-2xl bg-white border border-[#A7F3D0] p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                   Routine Status
                 </p>
-                <h3 className="text-sm font-bold text-emerald-600 mt-1 flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#10B981] mt-1 flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4" />
                   <span>Active &amp; Synced</span>
                 </h3>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-[0_0_8px_rgba(16,185,129,0.25)] flex items-center justify-center">
+              <div className="h-10 w-10 rounded-xl bg-[#D1FAE5] text-[#10B981] border border-[#A7F3D0] flex items-center justify-center">
                 <CalendarCheck className="h-5 w-5" />
               </div>
             </div>

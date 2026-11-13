@@ -50,9 +50,8 @@ export function HeroVideoModal({ isOpen, onClose }: HeroVideoModalProps) {
           </button>
         </div>
         <div className="aspect-video bg-slate-950 flex items-center justify-center p-8 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.18),transparent_70%)]" />
           <div className="space-y-3 relative z-10">
-            <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center mx-auto text-white shadow-lg shadow-blue-500/30">
+            <div className="w-16 h-16 rounded-full bg-[#315BFF] flex items-center justify-center mx-auto text-white shadow-lg shadow-blue-500/30">
               <Play className="w-7 h-7 fill-white translate-x-0.5" />
             </div>
             <h3 className="text-lg font-bold text-white">

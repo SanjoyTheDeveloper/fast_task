@@ -687,7 +687,7 @@ export default function CalendarPage() {
             </div>
 
             {/* Below the Calendar Grid: Comprehensive Day Schedule */}
-            <div className="rounded-2xl bg-gradient-to-r from-blue-50/40 via-indigo-50/20 to-slate-50/60 border border-[#DCE7FC] p-5 space-y-4 shadow-2xs">
+            <div className="rounded-2xl bg-white border border-[#DCE7FC] p-5 space-y-4 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
@@ -853,46 +853,46 @@ export default function CalendarPage() {
 
           {/* Next Section: Two Milestone Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Light blue rounded card: Active Quiz */}
-            <div className="rounded-2xl bg-gradient-to-r from-sky-50/90 to-blue-50/70 border border-sky-100/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
+            {/* Teal rounded card: Active Quiz */}
+            <div className="rounded-2xl bg-[#CCFBF1] border border-[#99F6E4] p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
-                <div className="h-10 w-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="h-10 w-10 rounded-xl bg-[#0D9488] text-white flex items-center justify-center shrink-0 shadow-2xs">
                   <Hourglass className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-[#172033]">
+                  <h3 className="text-xs sm:text-sm font-bold text-[#115E59]">
                     Active Quiz: CN (Computer Networks)
                   </h3>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-[11px] text-[#0F766E] mt-0.5">
                     Tuesday, Sep 29 • Room A/MCL C
                   </p>
                 </div>
               </div>
 
               {/* Emerald badge “Today” */}
-              <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase shrink-0">
+              <span className="px-2.5 py-1 rounded-full bg-[#10B981] text-white text-[10px] font-extrabold uppercase shrink-0">
                 Today
               </span>
             </div>
 
-            {/* Soft orange/pink card: TWRM Report Draft */}
-            <div className="rounded-2xl bg-gradient-to-r from-rose-50/80 to-amber-50/70 border border-rose-100/80 p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
+            {/* Coral orange card: TWRM Report Draft */}
+            <div className="rounded-2xl bg-[#FFEDD5] border border-[#FED7AA] p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
-                <div className="h-10 w-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="h-10 w-10 rounded-xl bg-[#F97316] text-white flex items-center justify-center shrink-0 shadow-2xs">
                   <Pin className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-[#172033]">
+                  <h3 className="text-xs sm:text-sm font-bold text-[#9A3412]">
                     TWRM Report Draft
                   </h3>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-[11px] text-[#C2410C] mt-0.5">
                     Batch 82A • Tomorrow, Sep 30
                   </p>
                 </div>
               </div>
 
-              {/* Red badge “Tomorrow” */}
-              <span className="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase shrink-0">
+              {/* Orange badge “Tomorrow” */}
+              <span className="px-2.5 py-1 rounded-full bg-[#F97316] text-white text-[10px] font-extrabold uppercase shrink-0">
                 Tomorrow
               </span>
             </div>

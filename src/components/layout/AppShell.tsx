@@ -135,15 +135,12 @@ export function AppShell({ children, user }: AppShellProps) {
           {/* Avatar shortcut */}
           <Link
             href="/settings"
-            className="h-8 w-8 rounded-full bg-gradient-to-tr text-white flex items-center justify-center text-xs font-bold ring-2 ring-blue-100 shadow-2xs overflow-hidden"
+            className="h-8 w-8 rounded-full bg-[#315BFF] text-white flex items-center justify-center text-xs font-bold ring-2 ring-blue-100 shadow-2xs overflow-hidden"
             title="Profile"
           >
             <div
               suppressHydrationWarning
-              className={cn(
-                "w-full h-full flex items-center justify-center bg-gradient-to-tr",
-                palette?.gradient || "from-blue-600 to-indigo-600"
-              )}
+              className="w-full h-full flex items-center justify-center bg-[#315BFF]"
             >
               <span suppressHydrationWarning>{initials}</span>
             </div>

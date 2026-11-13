@@ -128,22 +128,22 @@ export function ProjectOverviewCards({
             const isPurple = item.color === "purple";
 
             const folderFillColor = isGreen
-              ? "text-emerald-500"
+              ? "text-[#10B981]"
               : isPurple
-              ? "text-purple-500"
-              : "text-blue-500";
+              ? "text-[#7C3AED]"
+              : "text-[#315BFF]";
 
             const barColor = isGreen
-              ? "bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.35)]"
+              ? "bg-[#10B981]"
               : isPurple
-              ? "bg-gradient-to-r from-purple-400 to-indigo-600 shadow-[0_0_6px_rgba(139,92,246,0.35)]"
-              : "bg-gradient-to-r from-blue-400 to-cyan-600 shadow-[0_0_6px_rgba(59,130,246,0.35)]";
+              ? "bg-[#7C3AED]"
+              : "bg-[#315BFF]";
 
             const cardTheme = isGreen
-              ? "bg-gradient-to-br from-white via-white to-emerald-50/50 border-emerald-100/80 hover:border-emerald-300"
+              ? "bg-white border-2 border-[#10B981]/30 hover:border-[#10B981]"
               : isPurple
-              ? "bg-gradient-to-br from-white via-white to-purple-50/50 border-purple-100/80 hover:border-purple-300"
-              : "bg-gradient-to-br from-white via-white to-blue-50/50 border-blue-100/80 hover:border-blue-300";
+              ? "bg-white border-2 border-[#7C3AED]/30 hover:border-[#7C3AED]"
+              : "bg-white border-2 border-[#315BFF]/30 hover:border-[#315BFF]";
 
             // The first card title in the screenshot has a distinctive blue styling
             const titleColor = index === 0

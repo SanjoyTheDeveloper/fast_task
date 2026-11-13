@@ -505,33 +505,33 @@ export function CalendarWidget({
       {/* 6. Sleek "Next Milestone" Chips */}
       <div className="space-y-1.5 pt-1">
         {/* Next Quiz Milestone */}
-        <div className="p-2.5 rounded-xl bg-gradient-to-r from-indigo-50/90 via-purple-50/60 to-blue-50/80 border border-indigo-100/80 flex items-center justify-between text-xs shadow-2xs">
+        <div className="p-2.5 rounded-xl bg-[#CCFBF1] border border-[#99F6E4] flex items-center justify-between text-xs shadow-2xs">
           <div className="flex items-center gap-2">
             <span className="text-sm">⏳</span>
             <div>
-              <p className="font-bold text-[#172033] leading-none text-[11px]">
+              <p className="font-bold text-[#115E59] leading-none text-[11px]">
                 Active Quiz: CN (Computer Networks)
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Tuesday, Sep 29 • Room A/MCL C</p>
+              <p className="text-[10px] text-[#0F766E] mt-0.5">Tuesday, Sep 29 • Room A/MCL C</p>
             </div>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-extrabold shrink-0">
+          <span className="px-2 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-extrabold shrink-0">
             Today
           </span>
         </div>
 
         {/* Assignment Milestone */}
-        <div className="p-2.5 rounded-xl bg-gradient-to-r from-rose-50/70 to-amber-50/70 border border-rose-100/70 flex items-center justify-between text-xs shadow-2xs">
+        <div className="p-2.5 rounded-xl bg-[#FFEDD5] border border-[#FED7AA] flex items-center justify-between text-xs shadow-2xs">
           <div className="flex items-center gap-2">
             <span className="text-sm">📌</span>
             <div>
-              <p className="font-bold text-[#172033] leading-none text-[11px]">
+              <p className="font-bold text-[#9A3412] leading-none text-[11px]">
                 TWRM Report Draft
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Batch 82A • Tomorrow, Sep 30</p>
+              <p className="text-[10px] text-[#C2410C] mt-0.5">Batch 82A • Tomorrow, Sep 30</p>
             </div>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold shrink-0">
+          <span className="px-2 py-0.5 rounded-full bg-[#F97316] text-white text-[10px] font-extrabold shrink-0">
             Tomorrow
           </span>
         </div>

@@ -99,7 +99,7 @@ export function LmsHeader({
 
         {/* Profile Avatar with dynamic initials */}
         <div className="flex items-center gap-2 pl-1 cursor-pointer group" title={userName}>
-          <div className="relative h-9 w-9 rounded-full ring-2 ring-purple-200/80 p-0.5 overflow-hidden shadow-xs bg-gradient-to-tr from-amber-400 via-rose-400 to-indigo-500">
+          <div className="relative h-9 w-9 rounded-full ring-2 ring-blue-200/80 p-0.5 overflow-hidden shadow-xs bg-[#315BFF]">
             <div className="h-full w-full rounded-full bg-[#FED7AA] flex items-center justify-center text-xs font-bold text-amber-900 overflow-hidden">
               <span>{initials}</span>
             </div>

@@ -39,21 +39,8 @@ export function Hero() {
     >
       {/* Outer Container with Ambient Royal Blue Glow aligned to global 7xl grid */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Large Rounded Canvas Without Outer Stroke Lines */}
-        <div className="relative rounded-[28px] sm:rounded-[36px] lg:rounded-[42px] bg-white shadow-xl shadow-blue-500/5 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50/60 via-white to-white pb-8 sm:pb-12">
-          {/* Hardware-Accelerated Ambient Background Gradients (Zero blur lag) */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-80 w-full max-w-4xl bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.12),transparent_70%)]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-16 top-1/3 h-64 w-64 bg-[radial-gradient(circle,rgba(99,102,241,0.08),transparent_70%)]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-16 top-1/4 h-64 w-64 bg-[radial-gradient(circle,rgba(59,130,246,0.08),transparent_70%)]"
-          />
+        {/* Large Rounded Canvas in Crisp Solid White */}
+        <div className="relative rounded-[28px] sm:rounded-[36px] lg:rounded-[42px] bg-white border border-[#E5EAF2] shadow-xl shadow-blue-500/5 overflow-hidden pb-8 sm:pb-12">
 
           {/* 1. Top Navigation Bar (Inside Canvas) */}
           <HeroTopNav

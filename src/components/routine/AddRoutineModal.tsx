@@ -657,7 +657,7 @@ export function AddRoutineModal({
         aria-modal="true"
       >
         {/* Header Bar */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-gradient-to-r from-blue-50/60 via-indigo-50/30 to-white shrink-0">
+        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-white shrink-0">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
               <Calendar className="h-5 w-5" />
@@ -978,7 +978,7 @@ export function AddRoutineModal({
 
           {/* 3. Base Time Template Tool (When multiple days selected) */}
           {!isEditing && selectedDays.length > 1 && (
-            <div className="rounded-2xl bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-50 border border-blue-100 p-3 space-y-2.5">
+            <div className="rounded-2xl bg-[#EEF3FF] border border-[#BFDBFE] p-3 space-y-2.5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                 <div className="flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-[#315BFF]" />

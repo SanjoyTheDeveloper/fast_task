@@ -64,7 +64,7 @@ export function LmsLibraryHeader({
         >
           <div className="relative shrink-0">
             <div
-              className={`h-8 w-8 rounded-full bg-gradient-to-tr ${palette.gradient} text-white flex items-center justify-center font-black text-xs tracking-wider shadow-2xs ring-2 ring-white`}
+              className="h-8 w-8 rounded-full bg-[#315BFF] text-white flex items-center justify-center font-black text-xs tracking-wider shadow-2xs ring-2 ring-white"
             >
               {userInitial}
             </div>

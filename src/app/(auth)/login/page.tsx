@@ -285,11 +285,6 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#F8FAFC] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
-      {/* Ambient background glows */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-[radial-gradient(ellipse_at_top,rgba(49,91,255,0.08),rgba(99,102,241,0.04),transparent_65%)]" />
-      <div className="pointer-events-none absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-blue-400/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-1/4 h-80 w-80 rounded-full bg-indigo-300/10 blur-[100px]" />
-
       <Toaster richColors position="top-right" />
 
       <div className="relative w-full max-w-md space-y-6">

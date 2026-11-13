@@ -32,9 +32,9 @@ export function CourseCard({ course, onSelectCourse }: CourseCardProps) {
       className="group relative flex flex-col justify-between rounded-3xl bg-white border border-purple-100/70 p-3 sm:p-3.5 shadow-[0_10px_25px_-5px_rgba(110,80,180,0.06)] hover:shadow-[0_16px_35px_-8px_rgba(110,80,180,0.14)] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
     >
       <div>
-        {/* Pastel 3D Clay Thumbnail Container */}
+        {/* 3D Clay Thumbnail Container */}
         <div
-          className={`relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br ${course.bgGradient} p-2 flex items-center justify-center`}
+          className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#F8FAFC] border border-slate-200/80 p-2 flex items-center justify-center"
         >
           {/* Subtle inner clay highlight */}
           <div className="absolute inset-0 bg-white/20 pointer-events-none" />
@@ -109,7 +109,7 @@ export function CourseCard({ course, onSelectCourse }: CourseCardProps) {
             {/* Smooth rounded mint/purple progress track */}
             <div className="w-full h-1.5 rounded-full bg-purple-100/60 overflow-hidden">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#10B981] to-[#34D399] transition-all duration-500"
+                className="h-full rounded-full bg-[#10B981] transition-all duration-500"
                 style={{ width: `${course.progress}%` }}
               />
             </div>

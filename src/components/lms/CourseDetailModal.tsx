@@ -35,7 +35,7 @@ export function CourseDetailModal({
       <DialogContent className="sm:max-w-lg p-0 overflow-hidden rounded-3xl bg-white border border-purple-100/80 shadow-2xl">
         {/* Top Header Thumbnail Banner */}
         <div
-          className={`relative w-full h-44 bg-gradient-to-br ${course.bgGradient} p-6 flex items-center justify-center overflow-hidden`}
+          className="relative w-full h-44 bg-[#EDE9FE] border-b border-[#DDD6FE] p-6 flex items-center justify-center overflow-hidden"
         >
           <div className="relative w-32 h-32 drop-shadow-[0_15px_25px_rgba(0,0,0,0.15)]">
             <Image
@@ -106,7 +106,7 @@ export function CourseDetailModal({
             <button
               type="button"
               onClick={handleEnroll}
-              className="flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#8B5CF6] hover:from-[#4F46E5] hover:to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-indigo-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 py-3 px-5 rounded-2xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Play className="h-4 w-4 fill-white" />
               <span>Enroll Now — Free</span>

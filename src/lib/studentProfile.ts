@@ -6,12 +6,12 @@ import type { StudentProfile, AvatarPalette } from "@/types";
 export type { StudentProfile, AvatarPalette };
 
 export const AVATAR_PALETTES: AvatarPalette[] = [
-  { id: "purple", name: "Purple Indigo", gradient: "from-purple-600 via-indigo-600 to-purple-500", ring: "ring-purple-400" },
-  { id: "blue", name: "Ocean Blue", gradient: "from-blue-600 via-sky-600 to-cyan-500", ring: "ring-blue-400" },
-  { id: "emerald", name: "Emerald Mint", gradient: "from-emerald-600 via-teal-600 to-green-500", ring: "ring-emerald-400" },
-  { id: "amber", name: "Sunset Amber", gradient: "from-amber-500 via-orange-600 to-rose-500", ring: "ring-amber-400" },
-  { id: "rose", name: "Rose Crimson", gradient: "from-rose-600 via-pink-600 to-purple-500", ring: "ring-rose-400" },
-  { id: "slate", name: "Midnight Slate", gradient: "from-slate-700 via-zinc-800 to-slate-900", ring: "ring-slate-400" },
+  { id: "purple", name: "Violet", gradient: "bg-[#7C3AED]", ring: "ring-purple-400" },
+  { id: "blue", name: "Royal Blue", gradient: "bg-[#315BFF]", ring: "ring-blue-400" },
+  { id: "emerald", name: "Emerald", gradient: "bg-[#10B981]", ring: "ring-emerald-400" },
+  { id: "amber", name: "Amber", gradient: "bg-[#F59E0B]", ring: "ring-amber-400" },
+  { id: "coral", name: "Coral Orange", gradient: "bg-[#F97316]", ring: "ring-orange-400" },
+  { id: "teal", name: "Teal", gradient: "bg-[#0D9488]", ring: "ring-teal-400" },
 ];
 
 export const DEPARTMENTS = [

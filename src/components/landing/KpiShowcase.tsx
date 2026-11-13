@@ -167,33 +167,9 @@ export function KpiShowcase() {
     >
       {/* Outer Alignment Grid */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Stage Canvas Card - Replicating Video Design with FastTask Royal Blue & Midnight Ocean */}
-        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-[#020B1C] border border-blue-500/30 shadow-[0_30px_90px_-20px_rgba(2,13,35,0.6),0_0_60px_rgba(49,91,255,0.25)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-white">
+        {/* Main Stage Canvas Card - Solid FastTask Royal Blue & Midnight Ocean */}
+        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-[#020B1C] border-2 border-[#315BFF] shadow-[0_30px_90px_-20px_rgba(2,13,35,0.6)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-white">
           
-          {/* Top Subtle Royal Blue Glow */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.30),rgba(59,130,246,0.12),transparent_70%)] blur-[90px]"
-          />
-
-          {/* THE SIGNATURE VIBRANT COLOR OCEAN AT BOTTOM (Exact replication of video design with FastTask Royal Blue & Electric Cyan) */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 inset-x-0 h-[60%] bg-gradient-to-t from-[#1D4ED8] via-[#315BFF]/80 to-transparent"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-24 left-1/2 -translate-x-1/2 w-[1100px] h-[420px] bg-[radial-gradient(ellipse_at_center,#00D2FF_0%,#315BFF_45%,transparent_75%)] opacity-90 blur-[75px]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-16 left-12 w-80 h-80 bg-[#00D2FF]/40 blur-[60px] rounded-full"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-16 right-12 w-80 h-80 bg-[#6366F1]/45 blur-[60px] rounded-full"
-          />
-
           {/* TOP HEADER: Sleek Brand Mark & Typography */}
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-12">
             {/* Top Brand Pill */}
@@ -207,12 +183,12 @@ export function KpiShowcase() {
             {/* Headline with High-Impact Cyan & Royal Blue Accents */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.12]">
               Master{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#00D2FF] to-[#38BDF8]">
+              <span className="text-[#00D2FF] font-black">
                 CS 102, 201
               </span>
               <br />
               CS 202 &amp; 301 with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#93C5FD] via-[#60A5FA] to-[#00D2FF]">
+              <span className="text-[#38BDF8] font-black">
                 Deep Study Flow
               </span>
             </h2>
@@ -228,15 +204,15 @@ export function KpiShowcase() {
           <div className="relative z-10 max-w-4xl mx-auto">
             {/* Stage Display Frame with Neon Rim & Elevation */}
             <div
-              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-blue-400/40 bg-[#020A18] shadow-[0_25px_80px_rgba(49,91,255,0.4),0_0_40px_rgba(0,210,255,0.25)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
+              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-blue-400/40 bg-[#020A18] shadow-[0_25px_80px_rgba(49,91,255,0.4)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
               onMouseEnter={() => setIsHoveringVideo(true)}
               onMouseLeave={() => setIsHoveringVideo(false)}
               onClick={togglePlayPause}
             >
-              {/* Shimmering Top Rim Light */}
+              {/* Top Rim Light */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#00D2FF] to-transparent z-20"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-[#00D2FF] z-20"
               />
 
               {/* Live Video Element */}
@@ -302,15 +278,8 @@ export function KpiShowcase() {
                           aria-hidden
                           className="pointer-events-none absolute right-3 sm:right-4 top-0 bottom-0 w-6 flex items-center justify-center overflow-visible"
                         >
-                          {/* Diffused Outer Neon Bloom */}
-                          <div className="absolute inset-y-0 w-6 bg-gradient-to-t from-blue-600/0 via-[#00D2FF]/95 to-cyan-400/0 blur-[5px] animate-pulse" />
-                          {/* Mid Glow Column */}
-                          <div className="absolute inset-y-0 w-3 bg-gradient-to-t from-transparent via-cyan-200 to-transparent blur-[1.5px]" />
-                          {/* Sharp Center Light Beam */}
-                          <div className="absolute inset-y-0 w-[2px] bg-gradient-to-t from-transparent via-white to-transparent shadow-[0_0_10px_#00D2FF]" />
-                          {/* Top & Bottom Flare Sparks */}
-                          <div className="absolute -top-1 w-2.5 h-2.5 rounded-full bg-white blur-[0.5px] shadow-[0_0_10px_#00D2FF]" />
-                          <div className="absolute -bottom-1 w-2 h-2 rounded-full bg-[#315BFF] blur-[1px]" />
+                          {/* Solid Center Light Needle */}
+                          <div className="absolute inset-y-1 w-1 bg-[#00D2FF] rounded-full shadow-[0_0_8px_#00D2FF]" />
                         </div>
                       )}
 

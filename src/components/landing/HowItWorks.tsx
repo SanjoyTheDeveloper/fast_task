@@ -28,27 +28,13 @@ export function HowItWorks() {
       id="how-it-works"
       className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] scroll-mt-20 sm:scroll-mt-24 overflow-hidden select-none"
     >
-      {/* Volumetric ambient background lighting matching FastTask Royal Blue website palette */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-[1000px] w-full max-w-7xl rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.14)_0%,rgba(99,102,241,0.07)_45%,transparent_70%)] blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-16 right-12 -z-10 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-16 left-12 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-[120px]"
-      />
-
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading with Clean Balanced Typography */}
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-black tracking-tight text-[#172033] leading-tight">
             How{" "}
-            <span className="bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#315BFF] bg-clip-text text-transparent inline-block">
+            <span className="text-[#315BFF] inline-block">
               FastTask
             </span>{" "}
             Works
@@ -93,12 +79,11 @@ export function HowItWorks() {
               />
             </div>
 
-            {/* Ambient Dark Navy Gradient Shield on the Left (Opaque to prevent any background bleed) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#020d23] via-[#020d23] via-50% sm:via-55% to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#020d23]/90 via-transparent to-transparent sm:hidden" />
+            {/* Solid Dark Navy Shield on the Left */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-full sm:w-[58%] bg-[#020d23]/95" />
 
-            {/* Specular Top Highlight */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+            {/* Top Divider */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
 
             {/* Tier 01 Content Overlay */}
             <div className="relative z-10 h-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between max-w-2xl text-white">
@@ -166,12 +151,11 @@ export function HowItWorks() {
               />
             </div>
 
-            {/* Ambient Cobalt Blue Gradient Shield on the Left (Opaque to prevent any background bleed) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#002d7e] via-[#002d7e] via-50% sm:via-55% to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#002d7e]/90 via-transparent to-transparent sm:hidden" />
+            {/* Solid Cobalt Blue Shield on the Left */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-full sm:w-[58%] bg-[#002d7e]/95" />
 
-            {/* Specular Divider */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            {/* Divider */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
 
             {/* Tier 02 Content Overlay */}
             <div className="relative z-10 h-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between max-w-2xl text-white">
@@ -239,12 +223,11 @@ export function HowItWorks() {
               />
             </div>
 
-            {/* Soft Frosted Ice Blue Gradient Shield on the Left (Opaque to prevent any background bleed) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#e2eaf5] via-[#e2eaf5] via-50% sm:via-55% to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#e2eaf5]/95 via-transparent to-transparent sm:hidden" />
+            {/* Solid Frosted Ice Blue Shield on the Left */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-full sm:w-[58%] bg-[#e2eaf5]/95" />
 
-            {/* Specular Divider */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300/40 to-transparent" />
+            {/* Divider */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-blue-300/40" />
 
             {/* Tier 03 Content Overlay */}
             <div className="relative z-10 h-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between max-w-2xl text-slate-900">

@@ -331,11 +331,7 @@ export default function KanbanPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 via-zinc-50/50 to-slate-100/60 pb-24 overflow-x-hidden">
-      {/* Decorative Ambient Background Glow Elements */}
-      <div className="pointer-events-none absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-3xl animate-pulse-glow" />
-      <div className="pointer-events-none absolute top-32 right-10 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
-
+    <div className="relative min-h-screen bg-[#F8FAFC] pb-24 overflow-x-hidden">
       <Toaster position="top-right" richColors />
 
       <main className="relative w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">

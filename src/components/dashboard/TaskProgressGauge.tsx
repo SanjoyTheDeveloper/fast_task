@@ -113,25 +113,6 @@ export function TaskProgressGauge({ tasks = [], totalCount }: TaskProgressGaugeP
           viewBox="0 0 220 125"
           className="w-full max-w-[210px] h-auto overflow-visible"
         >
-          <defs>
-            <linearGradient id="notStartedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#38BDF8" />
-              <stop offset="100%" stopColor="#0EA5E9" />
-            </linearGradient>
-            <linearGradient id="onProgressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#A855F7" />
-              <stop offset="100%" stopColor="#6366F1" />
-            </linearGradient>
-            <linearGradient id="onReviewGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#FBBF24" />
-              <stop offset="100%" stopColor="#F59E0B" />
-            </linearGradient>
-            <linearGradient id="completedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#34D399" />
-              <stop offset="100%" stopColor="#10B981" />
-            </linearGradient>
-          </defs>
-
           {/* Background Track */}
           <path
             d="M 20 110 A 80 80 0 0 1 200 110"
@@ -141,22 +122,22 @@ export function TaskProgressGauge({ tasks = [], totalCount }: TaskProgressGaugeP
             strokeLinecap="round"
           />
 
-          {/* Segment 1: Cyan (Not started) */}
+          {/* Segment 1: Sky Blue (Not started) */}
           <path
             d="M 20 110 A 80 80 0 0 1 200 110"
             fill="none"
-            stroke="url(#notStartedGrad)"
+            stroke="#38BDF8"
             strokeWidth={strokeWidth}
             strokeDasharray={`${notStartedLength} ${arcLength}`}
             strokeDashoffset={-offset0}
             strokeLinecap="butt"
           />
 
-          {/* Segment 2: Purple (On progress) */}
+          {/* Segment 2: Violet (On progress) */}
           <path
             d="M 20 110 A 80 80 0 0 1 200 110"
             fill="none"
-            stroke="url(#onProgressGrad)"
+            stroke="#7C3AED"
             strokeWidth={strokeWidth}
             strokeDasharray={`${onProgressLength} ${arcLength}`}
             strokeDashoffset={-offset1}
@@ -167,7 +148,7 @@ export function TaskProgressGauge({ tasks = [], totalCount }: TaskProgressGaugeP
           <path
             d="M 20 110 A 80 80 0 0 1 200 110"
             fill="none"
-            stroke="url(#onReviewGrad)"
+            stroke="#F59E0B"
             strokeWidth={strokeWidth}
             strokeDasharray={`${onReviewLength} ${arcLength}`}
             strokeDashoffset={-offset2}
@@ -178,7 +159,7 @@ export function TaskProgressGauge({ tasks = [], totalCount }: TaskProgressGaugeP
           <path
             d="M 20 110 A 80 80 0 0 1 200 110"
             fill="none"
-            stroke="url(#completedGrad)"
+            stroke="#10B981"
             strokeWidth={strokeWidth}
             strokeDasharray={`${completedLength} ${arcLength}`}
             strokeDashoffset={-offset3}
@@ -191,7 +172,7 @@ export function TaskProgressGauge({ tasks = [], totalCount }: TaskProgressGaugeP
           <span className="text-[11px] font-medium text-slate-400">
             Total task
           </span>
-          <span className="text-3xl font-extrabold bg-gradient-to-r from-slate-900 to-slate-800 bg-clip-text text-transparent leading-tight">
+          <span className="text-3xl font-extrabold text-slate-900 leading-tight">
             {metrics.total}
           </span>
         </div>

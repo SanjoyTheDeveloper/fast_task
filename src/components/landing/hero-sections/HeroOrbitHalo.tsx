@@ -58,15 +58,6 @@ export function HeroOrbitHalo() {
           perspective: "1200px",
         }}
       >
-        {/* Soft Ambient Radial Royal Blue Glows */}
-        <div
-          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-96 lg:w-[480px] h-80 sm:h-96 lg:h-[480px] bg-blue-500/10 blur-3xl rounded-full transition-opacity duration-500 -z-10"
-          style={{
-            opacity: isHovered ? 0.95 : 0.7,
-            transform: `translate(-50%, -50%) translate3d(${clampedX * 14}px, ${clampedY * 14}px, 0)`,
-          }}
-        />
-
         {/* Delicate Connecting SVG Bezier Lines (Curves from outer cards into orbital halo) */}
         <svg
           className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-10"
@@ -115,11 +106,11 @@ export function HeroOrbitHalo() {
             }}
           >
             <div className="flex flex-col gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#FFEDD5] border border-[#FED7AA] flex items-center justify-center text-[#F97316] shrink-0">
                 <BookOpen className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#F97316]">
                   ROUTINE SYNC
                 </span>
                 <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
@@ -150,11 +141,11 @@ export function HeroOrbitHalo() {
             }}
           >
             <div className="flex flex-col gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#EDE9FE] border border-[#DDD6FE] flex items-center justify-center text-[#7C3AED] shrink-0">
                 <Volume2 className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7C3AED]">
                   LECTURE NOTES
                 </span>
                 <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
@@ -175,7 +166,7 @@ export function HeroOrbitHalo() {
             transform: `translateX(${-clampedX * 10}px) translateY(${-clampedY * 5}px) scale(1.03)`,
           }}
         >
-          <div className="relative w-full aspect-[4/5] [mask-image:linear-gradient(to_bottom,black_82%,transparent_98%)]">
+          <div className="relative w-full aspect-[4/5] overflow-hidden">
             <Image
               src="/images/mindly-hero-student-transparent.png"
               alt="Student in Academic Focus"
@@ -206,7 +197,7 @@ export function HeroOrbitHalo() {
                 }px) translateY(${clampedY * 5}px) scale(0.88)`,
               }}
             >
-              <span className="text-[9px] font-bold uppercase tracking-wider text-blue-600">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-[#10B981]">
                 CSE315 • Slides
               </span>
               <p className="text-[11px] font-bold text-slate-800 leading-snug truncate mt-0.5">
@@ -224,7 +215,7 @@ export function HeroOrbitHalo() {
                 }px) translateY(${clampedY * 5}px) scale(0.88)`,
               }}
             >
-              <span className="text-[9px] font-bold uppercase tracking-wider text-indigo-600">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-[#F97316]">
                 MAT337 • Quiz
               </span>
               <p className="text-[11px] font-bold text-slate-800 leading-snug truncate mt-0.5">
@@ -252,7 +243,7 @@ export function HeroOrbitHalo() {
               }}
             >
               <div className="flex items-center gap-2.5 rounded-2xl p-3 bg-white/95 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.06),0_2px_8px_rgba(15,23,42,0.03)] hover:scale-105 transition-transform duration-200">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shadow-blue-500/25 shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shadow-xs shadow-blue-500/25 shrink-0">
                   <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div className="min-w-0 pr-0.5">
@@ -276,8 +267,8 @@ export function HeroOrbitHalo() {
                 transition: "transform 200ms ease-out",
               }}
             >
-              <div className="flex items-center gap-2.5 rounded-2xl p-3 sm:p-3.5 bg-white/95 border border-slate-200/80 shadow-[0_20px_45px_rgba(79,70,229,0.12),0_4px_12px_rgba(15,23,42,0.04)] hover:scale-105 transition-transform duration-200">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shadow-indigo-500/25 shrink-0">
+              <div className="flex items-center gap-2.5 rounded-2xl p-3 sm:p-3.5 bg-white/95 border border-slate-200/80 shadow-[0_20px_45px_rgba(124,58,237,0.12),0_4px_12px_rgba(15,23,42,0.04)] hover:scale-105 transition-transform duration-200">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#7C3AED] text-white flex items-center justify-center shadow-xs shadow-purple-500/25 shrink-0">
                   <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div className="min-w-0 pr-0.5">
@@ -302,7 +293,7 @@ export function HeroOrbitHalo() {
               }}
             >
               <div className="flex items-center gap-2.5 rounded-2xl p-3 bg-white/95 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.06),0_2px_8px_rgba(15,23,42,0.03)] hover:scale-105 transition-transform duration-200">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shadow-emerald-500/25 shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#0D9488] text-white flex items-center justify-center shadow-xs shadow-teal-500/25 shrink-0">
                   <Timer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div className="min-w-0 pr-0.5">
@@ -323,7 +314,7 @@ export function HeroOrbitHalo() {
         <div className="md:hidden w-full max-w-sm mt-6 flex flex-col gap-2.5 z-40">
           <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shrink-0">
                 <Calendar className="w-4 h-4 text-white" />
               </div>
               <div className="min-w-0">
@@ -335,11 +326,11 @@ export function HeroOrbitHalo() {
 
           <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#FFEDD5] text-[#F97316] flex items-center justify-center shrink-0">
                 <BookOpen className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[9px] font-extrabold uppercase text-blue-600 tracking-wider">ROUTINE SYNC</span>
+                <span className="text-[9px] font-extrabold uppercase text-[#F97316] tracking-wider">ROUTINE SYNC</span>
                 <h5 className="text-xs font-bold text-slate-900">Structured Timetable</h5>
                 <p className="text-[10px] text-slate-500">Sync class timings, room numbers &amp; labs</p>
               </div>
@@ -348,11 +339,11 @@ export function HeroOrbitHalo() {
 
           <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#EDE9FE] text-[#7C3AED] flex items-center justify-center shrink-0">
                 <Volume2 className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[9px] font-extrabold uppercase text-indigo-600 tracking-wider">LECTURE NOTES</span>
+                <span className="text-[9px] font-extrabold uppercase text-[#7C3AED] tracking-wider">LECTURE NOTES</span>
                 <h5 className="text-xs font-bold text-slate-900">All Notes in One Place</h5>
                 <p className="text-[10px] text-slate-500">Instant access to department PDFs &amp; slides</p>
               </div>
