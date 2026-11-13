@@ -3,7 +3,6 @@
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import {
-  Sparkles,
   Clock,
   GraduationCap,
   LayoutDashboard,
@@ -47,13 +46,6 @@ export function HowItWorks() {
         
         {/* Section Heading with Clean Balanced Typography */}
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/90 border border-blue-200 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-            <span className="text-[11px] font-bold tracking-wider text-blue-700 uppercase">
-              3-Step Academic Workflow
-            </span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-black tracking-tight text-[#172033] leading-tight">
             How{" "}
             <span className="bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#315BFF] bg-clip-text text-transparent inline-block">
