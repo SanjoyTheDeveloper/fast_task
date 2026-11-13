@@ -167,48 +167,48 @@ export function KpiShowcase() {
     >
       {/* Outer Alignment Grid */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Stage Canvas Card - FastTask Royal Blue & Midnight Navy Palette (#020D23 & #315BFF) */}
-        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-gradient-to-b from-[#020B1C] via-[#051330] to-[#0A1B44] border border-blue-500/25 shadow-[0_30px_90px_-20px_rgba(2,13,35,0.45),0_0_50px_rgba(49,91,255,0.18)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-white">
+        {/* Main Stage Canvas Card - FastTask Dashboard Daylight Palette (#FFFFFF, #E5EAF2, #172033 & #315BFF) */}
+        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-white border border-[#E5EAF2] shadow-[0_20px_60px_-15px_rgba(49,91,255,0.07),0_10px_25px_-5px_rgba(15,23,42,0.04)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-[#172033]">
           
-          {/* Volumetric Royal Blue Ambient Background Lighting (Matching Website Palette) */}
+          {/* Subtle Ambient Daylight Blue Lighting */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.32),rgba(59,130,246,0.15),transparent_70%)] blur-[90px]"
+            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.06),rgba(59,130,246,0.03),transparent_70%)] blur-[90px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 left-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.22),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute bottom-0 left-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.04),transparent_70%)] blur-[70px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.2),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute bottom-0 right-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.04),transparent_70%)] blur-[70px]"
           />
 
-          {/* TOP HEADER: Sleek Brand Mark & Typography (FastTask Royal Blue Styling) */}
+          {/* TOP HEADER: Sleek Brand Mark & Typography (FastTask Dashboard Daylight Styling) */}
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-12">
             {/* Top Brand Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/25 backdrop-blur-md shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EEF3FF] border border-[#D0DFFF] shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[#315BFF] animate-ping" />
-              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase text-blue-200">
+              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase text-[#315BFF]">
                 INTERACTIVE PLATFORM TOUR • ACADEMIC WORKSPACE
               </span>
             </div>
 
             {/* Headline */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#172033] leading-[1.12]">
               Master{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#315BFF] to-[#38BDF8]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#315BFF]">
                 CS 102, 201
               </span>
               <br />
               CS 202 &amp; 301 with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#93C5FD] via-[#60A5FA] to-[#315BFF]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] via-[#315BFF] to-[#0284C7]">
                 Deep Study Flow
               </span>
             </h2>
 
             {/* Subheadline */}
-            <p className="text-sm sm:text-base text-blue-100/80 max-w-xl mx-auto leading-relaxed font-normal">
+            <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed font-normal">
               Explore the 4-stage academic OS: configure routines, radar deadlines,
               power through Pomodoro focus blocks, and lock in continuous semester mastery.
             </p>
@@ -216,9 +216,9 @@ export function KpiShowcase() {
 
           {/* CENTER DISPLAY SCREEN: Large Rounded Card with Inner Stage Video */}
           <div className="relative z-10 max-w-4xl mx-auto">
-            {/* Stage Display Frame with Royal Blue Edge Rim */}
+            {/* Stage Display Frame with Dashboard Daylight Border & Shadow */}
             <div
-              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-blue-400/25 bg-[#020A18] shadow-[0_20px_70px_rgba(49,91,255,0.3),0_0_35px_rgba(56,189,248,0.15)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
+              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-[#E5EAF2] bg-[#F8FAFC] shadow-[0_20px_50px_-15px_rgba(49,91,255,0.12),0_10px_30px_-5px_rgba(15,23,42,0.06)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
               onMouseEnter={() => setIsHoveringVideo(true)}
               onMouseLeave={() => setIsHoveringVideo(false)}
               onClick={togglePlayPause}
@@ -226,7 +226,7 @@ export function KpiShowcase() {
               {/* Shimmering Top Rim Light */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-400/80 to-transparent z-20"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent z-20"
               />
 
               {/* Live Video Element */}
@@ -242,13 +242,13 @@ export function KpiShowcase() {
               />
 
               {/* Video Overlay: Top Left Stage Badge */}
-              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#020A18]/80 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-semibold text-white shadow-md pointer-events-none">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5EAF2] text-[10px] sm:text-xs font-semibold text-[#172033] shadow-sm pointer-events-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>{currentStage.badge}</span>
               </div>
 
               {/* Video Overlay: Top Right Timestamp */}
-              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#020A18]/80 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono font-medium text-blue-200 pointer-events-none">
+              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5EAF2] text-[10px] sm:text-xs font-mono font-medium text-slate-700 shadow-sm pointer-events-none">
                 <Clock className="w-3 h-3 text-[#315BFF]" />
                 <span>{formatTime(currentTime)} / 00:44</span>
               </div>
@@ -256,20 +256,20 @@ export function KpiShowcase() {
               {/* Floating Play / Pause Overlay on Hover or Pause */}
               <div
                 className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${
-                  !isPlaying ? "opacity-100 bg-black/35" : isHoveringVideo ? "opacity-100" : "opacity-0"
+                  !isPlaying ? "opacity-100 bg-slate-900/30 backdrop-blur-[2px]" : isHoveringVideo ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white text-slate-950 flex items-center justify-center shadow-xl shadow-blue-950/50 backdrop-blur-md transition-transform duration-200 group-hover:scale-105">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white text-[#172033] flex items-center justify-center shadow-xl shadow-slate-900/20 backdrop-blur-md transition-transform duration-200 group-hover:scale-105">
                   {isPlaying ? (
-                    <Pause className="w-6 h-6 fill-slate-950" />
+                    <Pause className="w-6 h-6 fill-[#172033]" />
                   ) : (
-                    <Play className="w-6 h-6 fill-slate-950 ml-1" />
+                    <Play className="w-6 h-6 fill-[#172033] ml-1" />
                   )}
                 </div>
               </div>
             </div>
 
-            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons (FastTask Royal Blue Styling) */}
+            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons (FastTask Dashboard Styling) */}
             <div className="mt-8 sm:mt-10 max-w-2xl mx-auto">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {STAGES.map((stage) => {
@@ -282,8 +282,8 @@ export function KpiShowcase() {
                       onClick={() => handleTabClick(stage.id)}
                       className={`relative px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer overflow-hidden text-center active:scale-95 ${
                         isActive
-                          ? "bg-[#020B1C] text-white shadow-xl ring-1 ring-blue-400/40"
-                          : "bg-white hover:bg-blue-50/50 text-[#0f172a] shadow-md border border-slate-200/60"
+                          ? "bg-[#172033] text-white shadow-xl ring-2 ring-[#315BFF]/30"
+                          : "bg-[#F8FAFC] hover:bg-slate-100/90 text-[#172033] shadow-xs border border-[#E5EAF2]"
                       }`}
                     >
                       {/* Active State Glowing Vertical Light Beam (Royal Blue & Cyan Gradient) */}
@@ -313,7 +313,7 @@ export function KpiShowcase() {
                 })}
               </div>
 
-              {/* TIMELINE RULER TRACK BELOW TABS (Royal Blue Accents) */}
+              {/* TIMELINE RULER TRACK BELOW TABS (Dashboard Slate & Blue Accents) */}
               <div
                 ref={rulerRef}
                 onClick={handleRulerClick}
@@ -338,10 +338,10 @@ export function KpiShowcase() {
                         isStageBreak
                           ? isPassed
                             ? "w-[1.5px] h-3.5 sm:h-4 bg-[#315BFF] shadow-[0_0_6px_#315BFF]"
-                            : "w-[1.5px] h-3.5 sm:h-4 bg-white/50"
+                            : "w-[1.5px] h-3.5 sm:h-4 bg-slate-400"
                           : isPassed
-                          ? "w-[1px] h-2 sm:h-2.5 bg-blue-300/80"
-                          : "w-[1px] h-2 sm:h-2.5 bg-white/20 group-hover:bg-white/30"
+                          ? "w-[1px] h-2 sm:h-2.5 bg-blue-500"
+                          : "w-[1px] h-2 sm:h-2.5 bg-slate-300 group-hover:bg-slate-400"
                       }`}
                     />
                   );
@@ -352,40 +352,40 @@ export function KpiShowcase() {
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-[left] duration-75 ease-linear flex flex-col items-center"
                   style={{ left: `${Math.min(100, Math.max(0, progress))}%` }}
                 >
-                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-white shadow-[0_0_10px_#60A5FA,0_0_4px_#315BFF]" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-0.5 blur-[0.5px]" />
+                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-[#315BFF] shadow-[0_0_8px_rgba(49,91,255,0.7)]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-0.5 blur-[0.5px]" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR (FastTask Royal Blue Palette) */}
-          <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
+          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR (FastTask Dashboard Daylight Palette) */}
+          <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-[#E5EAF2] flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
             {/* 3 Metric Counters */}
             <div className="grid grid-cols-3 gap-6 sm:gap-10 text-center sm:text-left w-full sm:w-auto">
               <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-300 tracking-tight">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-[#172033] tracking-tight">
                   10K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-200/70 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mt-1">
                   CS Problems Solved
                 </span>
               </div>
 
               <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-300 tracking-tight">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-[#172033] tracking-tight">
                   70K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-200/70 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mt-1">
                   Study Hours
                 </span>
               </div>
 
               <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-300 tracking-tight">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-[#172033] tracking-tight">
                   05K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-200/70 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mt-1">
                   CS Scholars
                 </span>
               </div>
@@ -395,7 +395,7 @@ export function KpiShowcase() {
             <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
               <Link
                 href={courseTargetUrl}
-                className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <span>Explore Course Notes</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
