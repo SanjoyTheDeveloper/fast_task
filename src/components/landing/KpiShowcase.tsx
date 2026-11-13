@@ -163,33 +163,33 @@ export function KpiShowcase() {
   return (
     <section
       id="kpi-showcase"
-      className="relative py-12 sm:py-20 lg:py-24 select-none overflow-hidden"
+      className="relative py-12 sm:py-20 lg:py-24 select-none overflow-hidden bg-[#F8FAFC]"
     >
       {/* Outer Alignment Grid */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Stage Canvas Card - Replicating Video Obsidian Frame with Neon Purple Glow */}
-        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-[#05020C] border border-purple-900/30 shadow-[0_30px_90px_-20px_rgba(168,85,247,0.35),0_0_50px_rgba(147,51,234,0.15)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-white">
+        {/* Main Stage Canvas Card - FastTask Royal Blue & Midnight Navy Palette (#020D23 & #315BFF) */}
+        <div className="relative rounded-[28px] sm:rounded-[40px] lg:rounded-[48px] bg-gradient-to-b from-[#020B1C] via-[#051330] to-[#0A1B44] border border-blue-500/25 shadow-[0_30px_90px_-20px_rgba(2,13,35,0.45),0_0_50px_rgba(49,91,255,0.18)] overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-8 lg:px-12 text-white">
           
-          {/* Ambient Violet & Electric Magenta Aurora Gradients */}
+          {/* Volumetric Royal Blue Ambient Background Lighting (Matching Website Palette) */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.35),rgba(217,70,239,0.18),transparent_70%)] blur-[80px]"
+            className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] sm:w-[900px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(49,91,255,0.32),rgba(59,130,246,0.15),transparent_70%)] blur-[90px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 left-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(192,38,211,0.25),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute bottom-0 left-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.22),transparent_70%)] blur-[70px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 right-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.25),transparent_70%)] blur-[70px]"
+            className="pointer-events-none absolute bottom-0 right-0 w-80 h-96 bg-[radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.2),transparent_70%)] blur-[70px]"
           />
 
-          {/* TOP HEADER: Sleek Brand Mark & Typography (Video Design Header) */}
+          {/* TOP HEADER: Sleek Brand Mark & Typography (FastTask Royal Blue Styling) */}
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4 mb-8 sm:mb-12">
             {/* Top Brand Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-fuchsia-400 animate-ping" />
-              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase text-purple-200">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/25 backdrop-blur-md shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#315BFF] animate-ping" />
+              <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase text-blue-200">
                 INTERACTIVE PLATFORM TOUR • ACADEMIC WORKSPACE
               </span>
             </div>
@@ -197,28 +197,28 @@ export function KpiShowcase() {
             {/* Headline */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.12]">
               Master{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A855F7] via-[#D946EF] to-[#60A5FA]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#315BFF] to-[#38BDF8]">
                 CS 102, 201
               </span>
               <br />
               CS 202 &amp; 301 with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E879F9] via-[#C084FC] to-[#818CF8]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#93C5FD] via-[#60A5FA] to-[#315BFF]">
                 Deep Study Flow
               </span>
             </h2>
 
             {/* Subheadline */}
-            <p className="text-sm sm:text-base text-purple-200/80 max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-blue-100/80 max-w-xl mx-auto leading-relaxed font-normal">
               Explore the 4-stage academic OS: configure routines, radar deadlines,
-              power through Pomodoro focus cycles, and lock in continuous semester mastery.
+              power through Pomodoro focus blocks, and lock in continuous semester mastery.
             </p>
           </div>
 
           {/* CENTER DISPLAY SCREEN: Large Rounded Card with Inner Stage Video */}
           <div className="relative z-10 max-w-4xl mx-auto">
-            {/* Stage Display Frame with Neon Edge Rim */}
+            {/* Stage Display Frame with Royal Blue Edge Rim */}
             <div
-              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-white/20 bg-slate-950 shadow-[0_20px_70px_rgba(168,85,247,0.35),0_0_35px_rgba(192,38,211,0.2)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
+              className="group relative rounded-[22px] sm:rounded-[32px] lg:rounded-[36px] overflow-hidden border border-blue-400/25 bg-[#020A18] shadow-[0_20px_70px_rgba(49,91,255,0.3),0_0_35px_rgba(56,189,248,0.15)] aspect-[16/9] sm:aspect-[470/266] flex items-center justify-center cursor-pointer"
               onMouseEnter={() => setIsHoveringVideo(true)}
               onMouseLeave={() => setIsHoveringVideo(false)}
               onClick={togglePlayPause}
@@ -226,7 +226,7 @@ export function KpiShowcase() {
               {/* Shimmering Top Rim Light */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-fuchsia-400/80 to-transparent z-20"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-400/80 to-transparent z-20"
               />
 
               {/* Live Video Element */}
@@ -242,24 +242,24 @@ export function KpiShowcase() {
               />
 
               {/* Video Overlay: Top Left Stage Badge */}
-              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-semibold text-white shadow-md pointer-events-none">
+              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#020A18]/80 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-semibold text-white shadow-md pointer-events-none">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>{currentStage.badge}</span>
               </div>
 
               {/* Video Overlay: Top Right Timestamp */}
-              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono font-medium text-purple-200 pointer-events-none">
-                <Clock className="w-3 h-3 text-fuchsia-400" />
+              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#020A18]/80 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono font-medium text-blue-200 pointer-events-none">
+                <Clock className="w-3 h-3 text-[#315BFF]" />
                 <span>{formatTime(currentTime)} / 00:44</span>
               </div>
 
               {/* Floating Play / Pause Overlay on Hover or Pause */}
               <div
                 className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${
-                  !isPlaying ? "opacity-100 bg-black/30" : isHoveringVideo ? "opacity-100" : "opacity-0"
+                  !isPlaying ? "opacity-100 bg-black/35" : isHoveringVideo ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/90 text-slate-950 flex items-center justify-center shadow-xl shadow-purple-950/50 backdrop-blur-md transition-transform duration-200 group-hover:scale-105">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white text-slate-950 flex items-center justify-center shadow-xl shadow-blue-950/50 backdrop-blur-md transition-transform duration-200 group-hover:scale-105">
                   {isPlaying ? (
                     <Pause className="w-6 h-6 fill-slate-950" />
                   ) : (
@@ -269,7 +269,7 @@ export function KpiShowcase() {
               </div>
             </div>
 
-            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons (Replicating Video Design) */}
+            {/* BOTTOM INTERACTIVE TAB BAR: 4 Capsule Buttons (FastTask Royal Blue Styling) */}
             <div className="mt-8 sm:mt-10 max-w-2xl mx-auto">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {STAGES.map((stage) => {
@@ -282,25 +282,25 @@ export function KpiShowcase() {
                       onClick={() => handleTabClick(stage.id)}
                       className={`relative px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer overflow-hidden text-center active:scale-95 ${
                         isActive
-                          ? "bg-[#090615] text-white shadow-xl ring-1 ring-white/25"
-                          : "bg-white hover:bg-slate-100 text-[#0f172a] shadow-md"
+                          ? "bg-[#020B1C] text-white shadow-xl ring-1 ring-blue-400/40"
+                          : "bg-white hover:bg-blue-50/50 text-[#0f172a] shadow-md border border-slate-200/60"
                       }`}
                     >
-                      {/* Active State Glowing Vertical Light Beam (Video Signature Design) */}
+                      {/* Active State Glowing Vertical Light Beam (Royal Blue & Cyan Gradient) */}
                       {isActive && (
                         <div
                           aria-hidden
                           className="pointer-events-none absolute right-2.5 sm:right-4 top-0 bottom-0 w-6 flex items-center justify-center overflow-visible"
                         >
-                          {/* Diffused Outer Neon Bloom */}
-                          <div className="absolute inset-y-0 w-5 bg-gradient-to-t from-fuchsia-600/0 via-fuchsia-400/90 to-purple-600/0 blur-[4px] animate-pulse" />
+                          {/* Diffused Outer Royal Blue Neon Bloom */}
+                          <div className="absolute inset-y-0 w-5 bg-gradient-to-t from-blue-600/0 via-blue-500/90 to-cyan-500/0 blur-[4px] animate-pulse" />
                           {/* Mid Glow Column */}
-                          <div className="absolute inset-y-0 w-2.5 bg-gradient-to-t from-transparent via-purple-300 to-transparent blur-[1.5px]" />
+                          <div className="absolute inset-y-0 w-2.5 bg-gradient-to-t from-transparent via-blue-300 to-transparent blur-[1.5px]" />
                           {/* Sharp Center Light Beam */}
-                          <div className="absolute inset-y-0 w-[2px] bg-gradient-to-t from-transparent via-white to-transparent shadow-[0_0_8px_#ffffff]" />
+                          <div className="absolute inset-y-0 w-[2px] bg-gradient-to-t from-transparent via-white to-transparent shadow-[0_0_8px_#38BDF8]" />
                           {/* Top & Bottom Flare Sparks */}
-                          <div className="absolute -top-1 w-2.5 h-2.5 rounded-full bg-white blur-[0.5px] shadow-[0_0_8px_#f472b6]" />
-                          <div className="absolute -bottom-1 w-2 h-2 rounded-full bg-fuchsia-400 blur-[1px]" />
+                          <div className="absolute -top-1 w-2.5 h-2.5 rounded-full bg-white blur-[0.5px] shadow-[0_0_8px_#60A5FA]" />
+                          <div className="absolute -bottom-1 w-2 h-2 rounded-full bg-blue-400 blur-[1px]" />
                         </div>
                       )}
 
@@ -313,7 +313,7 @@ export function KpiShowcase() {
                 })}
               </div>
 
-              {/* TIMELINE RULER TRACK BELOW TABS (Replicating Video Ruler with Ticks) */}
+              {/* TIMELINE RULER TRACK BELOW TABS (Royal Blue Accents) */}
               <div
                 ref={rulerRef}
                 onClick={handleRulerClick}
@@ -325,7 +325,6 @@ export function KpiShowcase() {
                   const tickProgress = (idx / (TOTAL_TICKS - 1)) * 100;
                   const isPassed = progress >= tickProgress;
 
-                  // Highlight stage thresholds (0%, ~7%, ~31.5%, ~86.7%)
                   const isStageBreak =
                     idx === 0 ||
                     idx === Math.round(TOTAL_TICKS * 0.068) ||
@@ -338,10 +337,10 @@ export function KpiShowcase() {
                       className={`transition-colors duration-150 rounded-full ${
                         isStageBreak
                           ? isPassed
-                            ? "w-[1.5px] h-3.5 sm:h-4 bg-fuchsia-400 shadow-[0_0_6px_#d946ef]"
+                            ? "w-[1.5px] h-3.5 sm:h-4 bg-[#315BFF] shadow-[0_0_6px_#315BFF]"
                             : "w-[1.5px] h-3.5 sm:h-4 bg-white/50"
                           : isPassed
-                          ? "w-[1px] h-2 sm:h-2.5 bg-fuchsia-300/80"
+                          ? "w-[1px] h-2 sm:h-2.5 bg-blue-300/80"
                           : "w-[1px] h-2 sm:h-2.5 bg-white/20 group-hover:bg-white/30"
                       }`}
                     />
@@ -353,40 +352,40 @@ export function KpiShowcase() {
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-[left] duration-75 ease-linear flex flex-col items-center"
                   style={{ left: `${Math.min(100, Math.max(0, progress))}%` }}
                 >
-                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-white shadow-[0_0_10px_#e879f9,0_0_4px_#ffffff]" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 mt-0.5 blur-[0.5px]" />
+                  <div className="w-[3px] h-5 sm:h-6 rounded-full bg-white shadow-[0_0_10px_#60A5FA,0_0_4px_#315BFF]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-0.5 blur-[0.5px]" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR */}
+          {/* BOTTOM KPI STATS & ACTION CONVERSION BAR (FastTask Royal Blue Palette) */}
           <div className="relative z-10 max-w-4xl mx-auto mt-12 sm:mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
             {/* 3 Metric Counters */}
             <div className="grid grid-cols-3 gap-6 sm:gap-10 text-center sm:text-left w-full sm:w-auto">
               <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-300 tracking-tight">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-300 tracking-tight">
                   10K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-purple-200/70 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-200/70 mt-1">
                   CS Problems Solved
                 </span>
               </div>
 
               <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-300 tracking-tight">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-300 tracking-tight">
                   70K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-purple-200/70 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-200/70 mt-1">
                   Study Hours
                 </span>
               </div>
 
               <div>
-                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-300 tracking-tight">
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-300 tracking-tight">
                   05K+
                 </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-purple-200/70 mt-1">
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-blue-200/70 mt-1">
                   CS Scholars
                 </span>
               </div>
@@ -396,7 +395,7 @@ export function KpiShowcase() {
             <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
               <Link
                 href={courseTargetUrl}
-                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#D946EF] hover:from-[#4F46E5] hover:via-[#7C3AED] hover:to-[#C026D3] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#315BFF] hover:bg-[#254BE3] text-white text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <span>Explore Course Notes</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
