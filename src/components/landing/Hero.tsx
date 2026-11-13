@@ -37,8 +37,8 @@ export function Hero() {
       id="hero"
       className="relative w-full pt-2 sm:pt-4 pb-12 sm:pb-16 select-none overflow-hidden"
     >
-      {/* Outer Container with Ambient Royal Blue Glow */}
-      <div className="relative mx-auto max-w-[1360px] px-2.5 sm:px-4 lg:px-6">
+      {/* Outer Container with Ambient Royal Blue Glow aligned to global 7xl grid */}
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Large Rounded Canvas Without Outer Stroke Lines */}
         <div className="relative rounded-[28px] sm:rounded-[36px] lg:rounded-[42px] bg-white shadow-xl shadow-blue-500/5 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50/60 via-white to-white pb-8 sm:pb-12">
           {/* Hardware-Accelerated Ambient Background Gradients (Zero blur lag) */}

@@ -29,9 +29,10 @@ export function CTA({
   loginHref = "/login",
 }: CTAProps) {
   return (
-    <section id="contact" className="relative px-4 pb-20 sm:px-6 sm:pb-28 lg:pb-36 lg:px-8 select-none">
-      {/* Outer Card Container matching reference dimensions */}
-      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[32px] sm:rounded-[40px] bg-[#F2F5FE] border border-[#DCE6F8] shadow-[0_20px_50px_-15px_rgba(37,99,235,0.06),0_10px_25px_-5px_rgba(15,23,42,0.03)] min-h-[380px] sm:min-h-[447px] flex items-center justify-center">
+    <section id="contact" className="relative py-14 sm:py-20 lg:py-24 select-none">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Outer Card Container aligned to global 7xl grid */}
+        <div className="relative mx-auto w-full overflow-hidden rounded-[32px] sm:rounded-[40px] bg-[#F2F5FE] border border-[#DCE6F8] shadow-[0_20px_50px_-15px_rgba(37,99,235,0.06),0_10px_25px_-5px_rgba(15,23,42,0.03)] min-h-[380px] sm:min-h-[447px] flex items-center justify-center">
         
         {/* Full High-Resolution Illustrated Academic Artwork Background */}
         <div className="pointer-events-none absolute inset-0 -z-0">
@@ -41,7 +42,7 @@ export function CTA({
             fill
             priority
             className="object-cover object-center select-none"
-            sizes="(max-width: 1024px) 100vw, 1024px"
+            sizes="(max-width: 1280px) 100vw, 1280px"
           />
         </div>
 
@@ -84,6 +85,7 @@ export function CTA({
 
         </div>
 
+      </div>
       </div>
     </section>
   );

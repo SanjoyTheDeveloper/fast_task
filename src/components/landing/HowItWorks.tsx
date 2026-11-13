@@ -26,7 +26,7 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative py-20 sm:py-28 lg:py-36 bg-[#F8FAFC] scroll-mt-20 sm:scroll-mt-24 overflow-hidden select-none"
+      className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] scroll-mt-20 sm:scroll-mt-24 overflow-hidden select-none"
     >
       {/* Volumetric ambient background lighting matching FastTask Royal Blue website palette */}
       <div
@@ -42,7 +42,7 @@ export function HowItWorks() {
         className="pointer-events-none absolute bottom-16 left-12 -z-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-[120px]"
       />
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading with Clean Balanced Typography */}
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-12 sm:mb-16">
@@ -60,9 +60,9 @@ export function HowItWorks() {
         </div>
 
         {/* ========================================================================= */}
-        {/* 3-TIER MASTER SHOWCASE: PLACED DIRECTLY ONE ABOVE THE OTHER               */}
+        {/* 3-TIER MASTER SHOWCASE: PLACED DIRECTLY ONE ABOVE THE OTHER (7XL ALIGNED) */}
         {/* ========================================================================= */}
-        <div className="relative mx-auto max-w-5xl rounded-[32px] sm:rounded-[40px] overflow-hidden border border-blue-500/25 shadow-[0_30px_90px_-20px_rgba(2,13,35,0.45)] divide-y divide-white/10 sm:divide-y-2">
+        <div className="relative mx-auto w-full rounded-[32px] sm:rounded-[40px] overflow-hidden border border-blue-500/25 shadow-[0_30px_90px_-20px_rgba(2,13,35,0.45)] divide-y divide-white/10 sm:divide-y-2">
           
           {/* ----------------------------------------------------------------------- */}
           {/* TIER 01: ROUTINE SYNCHRONIZATION (1080p PHONE MOTION LOOP - MIDNIGHT NAVY) */}
