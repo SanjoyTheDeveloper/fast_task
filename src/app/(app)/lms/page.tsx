@@ -447,7 +447,7 @@ export default function LmsPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white relative">
+    <div className="min-h-screen bg-[#EEF2F6] text-[#172033] selection:bg-[#315BFF] selection:text-white relative">
       {/* Subtle ambient lighting */}
       <div className="pointer-events-none fixed -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-100/40 blur-3xl" />
       <div className="pointer-events-none fixed -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-indigo-100/30 blur-3xl" />

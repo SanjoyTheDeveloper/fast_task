@@ -233,7 +233,7 @@ export default function NotesPage() {
   }, [notes, searchQuery, selectedCourseFilter]);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
+    <div className="min-h-screen bg-[#EEF2F6] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
 
       {/* Main Wrapper */}

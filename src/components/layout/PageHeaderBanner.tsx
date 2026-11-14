@@ -71,7 +71,7 @@ export function PageHeaderBanner({
         <div className="flex flex-wrap items-center gap-3 shrink-0">
           {/* Stats Pill Box */}
           {stats.length > 0 && (
-            <div className="bg-[#F8FAFC] rounded-xl border border-slate-200/80 px-4 py-2 sm:py-2.5 shadow-2xs flex items-center divide-x divide-slate-200 gap-4 sm:gap-5">
+            <div className="bg-[#EEF2F6] rounded-xl border border-slate-200/80 px-4 py-2 sm:py-2.5 shadow-2xs flex items-center divide-x divide-slate-200 gap-4 sm:gap-5">
               {stats.map((stat, idx) => (
                 <div
                   key={idx}

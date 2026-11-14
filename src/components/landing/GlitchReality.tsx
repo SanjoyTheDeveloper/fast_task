@@ -25,7 +25,7 @@ export function GlitchReality() {
   return (
     <section
       id="academic-focus"
-      className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] text-[#172033] overflow-hidden select-none"
+      className="relative py-16 sm:py-24 lg:py-28 bg-[#EEF2F6] text-[#172033] overflow-hidden select-none"
     >
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
@@ -153,7 +153,7 @@ export function GlitchReality() {
               {/* Frame Container for Artwork (Dashboard Daylight Palette) */}
               <div
                 onClick={triggerGlitchEffect}
-                className="group relative w-full max-w-[500px] aspect-[16/11] rounded-2xl bg-[#F8FAFC] border-2 border-[#E5EAF2] shadow-[-8px_16px_36px_-6px_rgba(15,23,42,0.08),0_20px_45px_-8px_rgba(49,91,255,0.06)] overflow-hidden cursor-pointer transition-all duration-500 hover:border-[#315BFF]/40 hover:scale-[1.015]"
+                className="group relative w-full max-w-[500px] aspect-[16/11] rounded-2xl bg-[#EEF2F6] border-2 border-[#E5EAF2] shadow-[-8px_16px_36px_-6px_rgba(15,23,42,0.08),0_20px_45px_-8px_rgba(49,91,255,0.06)] overflow-hidden cursor-pointer transition-all duration-500 hover:border-[#315BFF]/40 hover:scale-[1.015]"
               >
                 {/* Artwork Image in Dashboard Color Palette */}
                 <Image

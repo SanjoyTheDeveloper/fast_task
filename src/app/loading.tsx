@@ -1,6 +1,6 @@
 export default function RootLoading() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#EEF2F6] flex flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center space-y-4">
         {/* Animated FastTask Brand Loader */}
         <div className="relative w-12 h-12 flex items-center justify-center">

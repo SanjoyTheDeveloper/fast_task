@@ -331,7 +331,7 @@ export default function KanbanPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] pb-24 overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#EEF2F6] pb-24 overflow-x-hidden">
       <Toaster position="top-right" richColors />
 
       <main className="relative w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-7 space-y-6">

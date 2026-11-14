@@ -167,7 +167,7 @@ export async function sendVerificationEmail(
       line-height: 1.6;
     }
     .otp-box {
-      background: #f8fafc;
+      background: #eef2f6;
       border: 2px dashed #93c5fd;
       border-radius: 16px;
       padding: 20px 24px;
@@ -233,7 +233,7 @@ export async function sendVerificationEmail(
     }
     .footer {
       padding: 24px 32px;
-      background-color: #f8fafc;
+      background-color: #eef2f6;
       border-top: 1px solid #f1f5f9;
       font-size: 12px;
       color: #94a3b8;

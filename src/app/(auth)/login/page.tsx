@@ -218,7 +218,7 @@ function LoginForm() {
               id="email"
               type="email"
               placeholder="alex@example.com"
-              className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+              className={`flex h-11 w-full rounded-xl border bg-[#EEF2F6] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
                 errors.email ? "border-rose-500" : "border-[#E5EAF2]"
               }`}
               {...register("email")}
@@ -240,7 +240,7 @@ function LoginForm() {
               id="password"
               type="password"
               placeholder="••••••••"
-              className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+              className={`flex h-11 w-full rounded-xl border bg-[#EEF2F6] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
                 errors.password ? "border-rose-500" : "border-[#E5EAF2]"
               }`}
               {...register("password")}
@@ -284,7 +284,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#F8FAFC] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#EEF2F6] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster richColors position="top-right" />
 
       <div className="relative w-full max-w-md space-y-6">

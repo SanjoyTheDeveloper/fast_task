@@ -245,7 +245,7 @@ function DashboardContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
+    <div className="min-h-screen bg-[#EEF2F6] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
 
       {/* Main Executive Dashboard Viewport matching reference screenshot */}
@@ -324,7 +324,7 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <div className="min-h-screen flex items-center justify-center bg-[#EEF2F6]">
           <div className="h-8 w-8 rounded-full border-2 border-[#315BFF] border-t-transparent animate-spin" />
         </div>
       }

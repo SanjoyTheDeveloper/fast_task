@@ -462,7 +462,7 @@ export function CalendarWidget({
               {activeDaySessions.map((session) => (
                 <div
                   key={session.id}
-                  className="flex items-center justify-between p-2 rounded-lg bg-[#F8FAFC] border border-[#E5EAF2] hover:border-blue-300 hover:bg-blue-50/30 transition-colors text-xs"
+                  className="flex items-center justify-between p-2 rounded-lg bg-[#EEF2F6] border border-[#E5EAF2] hover:border-blue-300 hover:bg-blue-50/30 transition-colors text-xs"
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <span
@@ -487,7 +487,7 @@ export function CalendarWidget({
               ))}
             </div>
           ) : (
-            <div className="p-2.5 rounded-lg bg-[#F8FAFC] border border-[#E5EAF2] text-center text-xs text-slate-500">
+            <div className="p-2.5 rounded-lg bg-[#EEF2F6] border border-[#E5EAF2] text-center text-xs text-slate-500">
               ☕ No lectures on {activeDayShort} (Off Day / Self Study)
             </div>
           )}

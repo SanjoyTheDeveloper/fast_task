@@ -34,7 +34,7 @@ export function CourseCard({ course, onSelectCourse }: CourseCardProps) {
       <div>
         {/* 3D Clay Thumbnail Container */}
         <div
-          className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#F8FAFC] border border-slate-200/80 p-2 flex items-center justify-center"
+          className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#EEF2F6] border border-slate-200/80 p-2 flex items-center justify-center"
         >
           {/* Subtle inner clay highlight */}
           <div className="absolute inset-0 bg-white/20 pointer-events-none" />

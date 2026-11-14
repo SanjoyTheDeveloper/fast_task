@@ -71,7 +71,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#F8FAFC] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-[#EEF2F6] p-4 text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster richColors position="top-right" />
 
       <div className="relative w-full max-w-md space-y-6">
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                 </p>
               </div>
 
-              <div className="p-3.5 bg-[#F8FAFC] border border-[#E5EAF2] rounded-2xl text-center">
+              <div className="p-3.5 bg-[#EEF2F6] border border-[#E5EAF2] rounded-2xl text-center">
                 <span className="text-xs text-slate-400 block mb-1 font-medium">
                   {isAutoVerified ? "Account registered with email:" : "Verification email sent to:"}
                 </span>
@@ -211,7 +211,7 @@ export default function RegisterPage() {
                     <input
                       id="name"
                       placeholder="Alex Morgan"
-                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                      className={`flex h-11 w-full rounded-xl border bg-[#EEF2F6] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
                         errors.name ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("name")}
@@ -233,7 +233,7 @@ export default function RegisterPage() {
                       id="reg-email"
                       type="email"
                       placeholder="alex@university.edu"
-                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                      className={`flex h-11 w-full rounded-xl border bg-[#EEF2F6] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
                         errors.email ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("email")}
@@ -255,7 +255,7 @@ export default function RegisterPage() {
                       id="reg-password"
                       type="password"
                       placeholder="At least 6 characters"
-                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                      className={`flex h-11 w-full rounded-xl border bg-[#EEF2F6] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
                         errors.password ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("password")}
@@ -277,7 +277,7 @@ export default function RegisterPage() {
                       id="confirmPassword"
                       type="password"
                       placeholder="Re-enter password"
-                      className={`flex h-11 w-full rounded-xl border bg-[#F8FAFC] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
+                      className={`flex h-11 w-full rounded-xl border bg-[#EEF2F6] pl-10 pr-3 text-sm text-[#172033] placeholder:text-slate-400 transition-all focus:outline-none focus:bg-white focus:border-[#315BFF] focus:ring-2 focus:ring-[#315BFF]/15 ${
                         errors.confirmPassword ? "border-rose-500" : "border-[#E5EAF2]"
                       }`}
                       {...register("confirmPassword")}

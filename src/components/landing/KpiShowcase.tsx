@@ -162,7 +162,7 @@ export function KpiShowcase() {
   return (
     <section
       id="kpi-showcase"
-      className="relative py-12 sm:py-18 lg:py-20 select-none overflow-hidden bg-[#F8FAFC]"
+      className="relative py-12 sm:py-18 lg:py-20 select-none overflow-hidden bg-[#EEF2F6]"
     >
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         

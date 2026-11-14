@@ -136,7 +136,7 @@ export function getCourseColor(courseIdOrName?: string, explicitColor?: string):
       shortName: "General",
       fullName: "General Academic Schedule",
       color: "#64748B",
-      bgLight: "#F8FAFC",
+      bgLight: "#EEF2F6",
       borderColor: "#E2E8F0",
       textColor: "#475569",
     };
@@ -479,7 +479,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] selection:bg-[#315BFF] selection:text-white">
+    <div className="min-h-screen bg-[#EEF2F6] text-[#172033] selection:bg-[#315BFF] selection:text-white">
       <Toaster position="top-right" richColors />
 
       {/* Main Wrapper */}

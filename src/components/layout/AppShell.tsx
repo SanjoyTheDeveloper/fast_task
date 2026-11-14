@@ -51,7 +51,7 @@ export function AppShell({ children, user }: AppShellProps) {
     .toUpperCase() || "SB";
 
   return (
-    <div className="flex min-h-screen bg-slate-50/50 text-slate-900 selection:bg-blue-600 selection:text-white">
+    <div className="flex min-h-screen bg-[#EEF2F6] text-slate-900 selection:bg-blue-600 selection:text-white">
       {/* ============================================================ */}
       {/* 1. Desktop Persistent Sidebar (md/lg+)                       */}
       {/* ============================================================ */}

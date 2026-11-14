@@ -123,7 +123,7 @@ export default function TaskDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-50/60">
+      <div className="min-h-screen bg-[#EEF2F6]">
                 <main className="max-w-4xl mx-auto px-4 py-12 flex flex-col items-center justify-center space-y-4">
           <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
           <p className="text-sm text-zinc-500">Loading task details...</p>
@@ -134,7 +134,7 @@ export default function TaskDetailPage() {
 
   if (error || !task) {
     return (
-      <div className="min-h-screen bg-zinc-50/60">
+      <div className="min-h-screen bg-[#EEF2F6]">
                 <main className="max-w-4xl mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
           <div className="h-14 w-14 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-4">
             <AlertCircle className="h-7 w-7" />
@@ -156,7 +156,7 @@ export default function TaskDetailPage() {
   const statusLabel = isCompleted ? "Completed" : "Pending";
 
   return (
-    <div className="min-h-screen bg-zinc-50/60 pb-16">
+    <div className="min-h-screen bg-[#EEF2F6] pb-16">
       
       <main className="max-w-4xl mx-auto px-3.5 sm:px-6 pt-6 sm:pt-8 space-y-5 sm:space-y-6">
         {/* Navigation bar */}

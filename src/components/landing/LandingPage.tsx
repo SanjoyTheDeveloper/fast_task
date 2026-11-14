@@ -7,7 +7,7 @@ import { Footer } from "@/components/landing/Footer";
 
 export function LandingPage() {
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] text-[#172033] antialiased selection:bg-[#315BFF] selection:text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#EEF2F6] text-[#172033] antialiased selection:bg-[#315BFF] selection:text-white overflow-x-hidden">
       <main>
         {/* Hero Canvas Showcase Section (Contains integrated top navigation inside canvas) */}
         <Hero />

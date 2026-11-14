@@ -26,7 +26,7 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative py-16 sm:py-24 lg:py-28 bg-[#F8FAFC] scroll-mt-20 sm:scroll-mt-24 overflow-hidden select-none"
+      className="relative py-16 sm:py-24 lg:py-28 bg-[#EEF2F6] scroll-mt-20 sm:scroll-mt-24 overflow-hidden select-none"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
