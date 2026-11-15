@@ -4,6 +4,7 @@ import * as React from "react";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   StatCards,
   ProjectOverviewCards,
@@ -15,6 +16,12 @@ import {
 import { FilterState } from "@/components/tasks";
 import { toast, Toaster } from "sonner";
 import type { Task, PaginationMeta, PaginatedTasksResponse, SessionUser } from "@/types";
+import {
+  getStoredTasks,
+  saveStoredTasks,
+  getStoredCourses,
+  saveStoredCourses,
+} from "@/lib/taskStorage";
 
 const TaskDialog = dynamic(
   () => import("@/components/tasks/TaskDialog").then((m) => m.TaskDialog),
@@ -39,38 +46,33 @@ function DashboardContent() {
     Math.max(1, parseInt(searchParams.get("limit") || "10", 10) || 10)
   );
 
-  // User & Task State
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
-  const [tasks, setTasks] = React.useState<Task[]>([]);
-  const [courses, setCourses] = React.useState<ProjectCardItem[]>([]);
+  // User & Task State (Immediate 0ms local hydration + background sync)
+  const { data: session } = useSession();
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
+    (session?.user as SessionUser) || null
+  );
+  const [tasks, setTasks] = React.useState<Task[]>(() => getStoredTasks());
+  const [courses, setCourses] = React.useState<ProjectCardItem[]>(() => getStoredCourses());
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [editingTask, setEditingTask] = React.useState<Task | null>(null);
-  const [pagination, setPagination] = React.useState<PaginationMeta>({
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 0,
-    hasNextPage: false,
-    hasPreviousPage: false,
+  const [pagination, setPagination] = React.useState<PaginationMeta>(() => {
+    const cached = getStoredTasks();
+    return {
+      page: 1,
+      limit: 10,
+      total: cached.length,
+      totalPages: Math.ceil(cached.length / 10) || 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    };
   });
     
-  // 2. Load authenticated user
+  // Sync session user
   React.useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setCurrentUser(data.user);
-        } else if (res.status === 401) {
-          router.push("/login");
-        }
-      } catch (err) {
-        console.error("User check failed:", err);
-      }
+    if (session?.user) {
+      setCurrentUser(session.user as SessionUser);
     }
-    loadUser();
-  }, [router]);
+  }, [session]);
 
   // Helper to update URL search parameters
   const updateQueryParams = React.useCallback(
@@ -141,6 +143,7 @@ function DashboardContent() {
         const json: PaginatedTasksResponse = await res.json();
         const taskCollection: Task[] = json.data || [];
         setTasks(taskCollection);
+        saveStoredTasks(taskCollection);
         if (json.pagination) {
           setPagination(json.pagination);
         }
@@ -164,7 +167,9 @@ function DashboardContent() {
       });
       if (res.ok) {
         const json = await res.json();
-        setCourses(json.data || []);
+        const courseList = json.data || [];
+        setCourses(courseList);
+        saveStoredCourses(courseList);
       }
     } catch (err) {
       console.error("Failed to fetch courses:", err);
@@ -324,8 +329,12 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#EEF2F6]">
-          <div className="h-8 w-8 rounded-full border-2 border-[#315BFF] border-t-transparent animate-spin" />
+        <div className="min-h-screen bg-[#EEF2F6] text-[#172033] p-4 sm:p-6 lg:p-7 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-28 rounded-2xl bg-white/80 border border-slate-200/60" />
+            ))}
+          </div>
         </div>
       }
     >

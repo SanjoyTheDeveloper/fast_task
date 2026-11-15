@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { PageHeaderBanner } from "@/components/layout";
 import {
   Home,
@@ -45,7 +45,10 @@ import type { SessionUser } from "@/types";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
+  const { data: session } = useSession();
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
+    (session?.user as SessionUser) || null
+  );
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [isSavedRecently, setIsSavedRecently] = React.useState(false);
@@ -73,46 +76,13 @@ export default function SettingsPage() {
     setLinkedin(stored.linkedin || "");
     setInitialProfile(stored);
 
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setCurrentUser(data.user);
-
-          const currentStored = getStoredProfile();
-          const resolvedName =
-            currentStored.name || data.user?.name || (data.user?.email ? data.user.email.split("@")[0] : "Student");
-          const resolvedStudentId = currentStored.studentId || "2026-CSE-082";
-          const resolvedDepartment = currentStored.department || "Department of Computer Science & Engineering";
-          const resolvedBatch = currentStored.batch || "Batch 82A";
-          const resolvedAvatar = currentStored.avatarColor || "purple";
-          const resolvedLinkedin = currentStored.linkedin || "";
-
-          setName(resolvedName);
-          setStudentId(resolvedStudentId);
-          setDepartment(resolvedDepartment);
-          setBatch(resolvedBatch);
-          setAvatarColor(resolvedAvatar);
-          setLinkedin(resolvedLinkedin);
-
-          setInitialProfile({
-            name: resolvedName,
-            studentId: resolvedStudentId,
-            department: resolvedDepartment,
-            batch: resolvedBatch,
-            avatarColor: resolvedAvatar,
-            linkedin: resolvedLinkedin,
-          });
-        } else if (res.status === 401) {
-          router.push("/login");
-        }
-      } catch (err) {
-        console.error("User fetch error:", err);
+    if (session?.user) {
+      setCurrentUser(session.user as SessionUser);
+      if (!stored.name && session.user.name) {
+        setName(session.user.name);
       }
     }
-    loadUser();
-  }, [router]);
+  }, [session]);
 
   // Handle saving profile changes
   const handleSaveProfile = async (e: React.FormEvent) => {

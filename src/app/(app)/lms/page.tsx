@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   BookOpen,
   Folder,
@@ -31,7 +32,10 @@ import type { SessionUser } from "@/types";
 
 export default function LmsPage() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
+  const { data: session } = useSession();
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
+    (session?.user as SessionUser) || null
+  );
   const [documents, setDocuments] = React.useState<LmsPdfDocument[]>([]);
   const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
@@ -155,27 +159,12 @@ export default function LmsPage() {
     };
   }, []);
 
-  // Load authenticated user strictly from auth session
+  // Sync authenticated user from session
   React.useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.user) {
-            setCurrentUser(data.user);
-          } else {
-            router.push("/login?from=/lms");
-          }
-        } else if (res.status === 401) {
-          router.push("/login?from=/lms");
-        }
-      } catch (err) {
-        console.error("Failed to load authenticated user:", err);
-      }
+    if (session?.user) {
+      setCurrentUser(session.user as SessionUser);
     }
-    loadUser();
-  }, []);
+  }, [session]);
 
   const loggedInName =
     currentUser?.name ||

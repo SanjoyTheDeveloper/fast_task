@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
 import { ScheduleItem } from "@/types";
+import { getStoredRoutineSlots, saveStoredRoutineSlots } from "@/lib/routineStorage";
 
 // ==============================================================================
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
@@ -326,8 +327,60 @@ export default function CalendarPage() {
 
   const activeEvent = SEPTEMBER_EVENTS[selectedDate] || null;
 
-  // User routine sessions from API
-  const [userRoutines, setUserRoutines] = React.useState<Record<string, ScheduleItem[]>>({});
+  const buildRoutineMap = React.useCallback((slots: RoutineSlot[]): Record<string, ScheduleItem[]> => {
+    const map: Record<string, ScheduleItem[]> = {
+      Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
+    };
+    slots.forEach((slot: RoutineSlot) => {
+      const dayShort = slot.dayOfWeek?.slice(0, 3);
+      if (map[dayShort]) {
+        map[dayShort].push({
+          id: slot.id,
+          courseCode: slot.courseCode,
+          courseColor: "bg-[#315BFF] text-white",
+          type: "Class Session",
+          typeColor: "text-[#315BFF]",
+          title: slot.courseTitle,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          location: slot.roomNo || "Campus",
+          faculty: slot.instructor || "Faculty",
+          borderColor: "border-[#D0DFFF]",
+        });
+      }
+    });
+    return map;
+  }, []);
+
+  // User routine sessions from cache (0ms instant render) and API revalidation
+  const [userRoutines, setUserRoutines] = React.useState<Record<string, ScheduleItem[]>>(() => {
+    const cached = getStoredRoutineSlots();
+    if (cached && cached.length > 0) {
+      const map: Record<string, ScheduleItem[]> = {
+        Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
+      };
+      cached.forEach((slot: RoutineSlot) => {
+        const dayShort = slot.dayOfWeek?.slice(0, 3);
+        if (map[dayShort]) {
+          map[dayShort].push({
+            id: slot.id,
+            courseCode: slot.courseCode,
+            courseColor: "bg-[#315BFF] text-white",
+            type: "Class Session",
+            typeColor: "text-[#315BFF]",
+            title: slot.courseTitle,
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            location: slot.roomNo || "Campus",
+            faculty: slot.instructor || "Faculty",
+            borderColor: "border-[#D0DFFF]",
+          });
+        }
+      });
+      return map;
+    }
+    return {};
+  });
 
   React.useEffect(() => {
     let isMounted = true;
@@ -337,28 +390,10 @@ export default function CalendarPage() {
         if (res.ok) {
           const json = await res.json();
           if (json.success && Array.isArray(json.data) && isMounted) {
-            const map: Record<string, ScheduleItem[]> = {
-              Sun: [], Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: []
-            };
-            json.data.forEach((slot: RoutineSlot) => {
-              const dayShort = slot.dayOfWeek?.slice(0, 3);
-              if (map[dayShort]) {
-                map[dayShort].push({
-                  id: slot.id,
-                  courseCode: slot.courseCode,
-                  courseColor: "bg-[#315BFF] text-white",
-                  type: "Class Session",
-                  typeColor: "text-[#315BFF]",
-                  title: slot.courseTitle,
-                  startTime: slot.startTime,
-                  endTime: slot.endTime,
-                  location: slot.roomNo || "Campus",
-                  faculty: slot.instructor || "Faculty",
-                  borderColor: "border-[#D0DFFF]",
-                });
-              }
-            });
-            setUserRoutines(map);
+            if (json.data.length > 0) {
+              setUserRoutines(buildRoutineMap(json.data));
+              saveStoredRoutineSlots(json.data);
+            }
           }
         }
       } catch (err) {

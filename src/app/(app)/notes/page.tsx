@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import type { SessionUser } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
 import {
@@ -71,12 +72,33 @@ const COURSE_BADGES: Record<string, { bg: string; text: string; border: string }
 
 export default function NotesPage() {
   const router = useRouter();
+  const { data: session } = useSession();
 
-  // Core State
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
-  const [notes, setNotes] = React.useState<Note[]>([]);
-  const [isLoaded, setIsLoaded] = React.useState(false);
+  // Core State (0ms instant sync)
+  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
+    (session?.user as SessionUser) || null
+  );
 
+  // Storage key
+  const storageKey = React.useMemo(() => {
+    return currentUser?.id ? `fasttask_notes_${currentUser.id}` : "fasttask_notes_guest";
+  }, [currentUser?.id]);
+
+  const [notes, setNotes] = React.useState<Note[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const key = session?.user?.id ? `fasttask_notes_${session.user.id}` : "fasttask_notes_guest";
+      const stored = localStorage.getItem(key) || localStorage.getItem("fasttask_notes_guest");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {
+      // offline fallback
+    }
+    return [];
+  });
+  const [isLoaded, setIsLoaded] = React.useState(true);
 
   // Dialog States
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -93,28 +115,12 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCourseFilter, setSelectedCourseFilter] = React.useState("ALL");
 
-  // 1. Load User
+  // Sync session user
   React.useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setCurrentUser(data.user);
-        } else if (res.status === 401) {
-          router.push("/login");
-        }
-      } catch (err) {
-        console.error("User check failed:", err);
-      }
+    if (session?.user) {
+      setCurrentUser(session.user as SessionUser);
     }
-    loadUser();
-  }, [router]);
-
-  // Storage key
-  const storageKey = React.useMemo(() => {
-    return currentUser?.id ? `fasttask_notes_${currentUser.id}` : "fasttask_notes_guest";
-  }, [currentUser?.id]);
+  }, [session]);
 
   // 2. Load Notes from Storage
   React.useEffect(() => {

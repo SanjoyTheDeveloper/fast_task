@@ -37,6 +37,7 @@ export const viewport: Viewport = {
 
 import { auth } from "@/auth";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { NavigationProgressBar } from "@/components/layout/NavigationProgressBar";
 
 export default async function RootLayout({
   children,
@@ -71,6 +72,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-[#EEF2F6] text-slate-900">
+        <NavigationProgressBar />
         <SessionProvider session={session}>{children}</SessionProvider>
       </body>
     </html>

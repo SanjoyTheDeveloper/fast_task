@@ -169,28 +169,7 @@ export default function SchedulePage() {
     return new Date().toLocaleDateString("en-US", { weekday: "long" });
   }, []);
 
-  // 1. Load authenticated user
-  React.useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.user) {
-          } else {
-            router.push("/login?from=/schedule");
-          }
-        } else if (res.status === 401) {
-          router.push("/login?from=/schedule");
-        }
-      } catch (err) {
-        console.error("Failed to load user:", err);
-      }
-    }
-    loadUser();
-  }, [router]);
-
-  // 2. Fetch routine slots (Instant local load + background sync)
+  // 1. Fetch routine slots (Instant local load + background sync)
   React.useEffect(() => {
     let isMounted = true;
 

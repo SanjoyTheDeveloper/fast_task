@@ -15,6 +15,7 @@ const TaskDialog = dynamic(
 import type { Task } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
 import { toast, Toaster } from "sonner";
+import { getStoredTasks, saveStoredTasks } from "@/lib/taskStorage";
 
 // Initial Semester Tasks for instant zero-latency render (Batch 82A)
 const DEFAULT_SEMESTER_TASKS: Task[] = [
@@ -73,8 +74,11 @@ const DEFAULT_SEMESTER_TASKS: Task[] = [
 ];
 
 export default function KanbanPage() {
-  // Initialize with DEFAULT_SEMESTER_TASKS for immediate instant display without empty flash
-  const [tasks, setTasks] = React.useState<Task[]>(DEFAULT_SEMESTER_TASKS);
+  // Initialize with cached or default semester tasks for 0ms instant display
+  const [tasks, setTasks] = React.useState<Task[]>(() => {
+    const cached = getStoredTasks();
+    return cached.length > 0 ? cached : DEFAULT_SEMESTER_TASKS;
+  });
   const [isLoading, setIsLoading] = React.useState(false);
 
   // Filters State for live instant filtering on Kanban Board without reload
@@ -91,10 +95,8 @@ export default function KanbanPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 
-
   // Fetch tasks strictly from response.data: Task[]
   const fetchTasks = React.useCallback(async () => {
-    setIsLoading(true);
     try {
       const res = await fetch("/api/tasks?limit=50", {
         cache: "no-store",
@@ -105,6 +107,7 @@ export default function KanbanPage() {
         const list: Task[] = json.data || [];
         if (list.length > 0) {
           setTasks(list);
+          saveStoredTasks(list);
         } else {
           // If DB has no tasks, keep or set initial semester tasks
           setTasks((prev) => (prev.length > 0 ? prev : DEFAULT_SEMESTER_TASKS));

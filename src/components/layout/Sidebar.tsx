@@ -211,6 +211,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
               <Link
                 key={item.id}
                 href={item.href}
+                prefetch={true}
                 onClick={onNavigate}
                 className={cn(
                   "group flex items-center justify-between px-3.5 py-2.5 text-sm rounded-2xl transition-all duration-200 relative select-none",

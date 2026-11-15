@@ -39,6 +39,7 @@ import {
 import { toast, Toaster } from "sonner";
 import type { Task, SessionUser } from "@/types";
 import { COURSES } from "@/lib/academic";
+import { getStoredTasks, saveStoredTasks } from "@/lib/taskStorage";
 
 const COURSE_LABELS: Record<string, string> = {
   "0611CSE321": "0611CSE321 • AIES",
@@ -92,11 +93,10 @@ function formatDueDate(dueDateStr?: string | null) {
 export default function MyTasksPage() {
   const router = useRouter();
 
-  // Core Data
-    const [tasks, setTasks] = React.useState<Task[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  // Core Data (0ms instant cache hydration + background revalidation)
+  const [tasks, setTasks] = React.useState<Task[]>(() => getStoredTasks());
+  const [isLoading, setIsLoading] = React.useState(() => getStoredTasks().length === 0);
   const [loadError, setLoadError] = React.useState<string | null>(null);
-
 
   // Dialog States
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -112,26 +112,8 @@ export default function MyTasksPage() {
   const [selectedPriority, setSelectedPriority] = React.useState<string>("ALL");
   const [sortBy, setSortBy] = React.useState<"newest" | "due-date" | "priority">("newest");
 
-  // 1. Load User
-  React.useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-        } else if (res.status === 401) {
-          router.push("/login");
-        }
-      } catch (err) {
-        console.error("User check failed:", err);
-      }
-    }
-    loadUser();
-  }, [router]);
-
-  // 2. Fetch Tasks
+  // Fetch Tasks with silent background sync
   const fetchTasks = React.useCallback(async () => {
-    setIsLoading(true);
     setLoadError(null);
     try {
       const res = await fetch("/api/tasks?limit=50&sortBy=createdAt&sortOrder=desc", {
@@ -140,7 +122,9 @@ export default function MyTasksPage() {
       });
       if (res.ok) {
         const json = await res.json();
-        setTasks(json.data || []);
+        const serverTasks = json.data || [];
+        setTasks(serverTasks);
+        saveStoredTasks(serverTasks);
       } else if (res.status === 401) {
         router.push("/login");
       } else {

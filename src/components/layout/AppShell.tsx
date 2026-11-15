@@ -118,6 +118,7 @@ export function AppShell({ children, user }: AppShellProps) {
           {/* Logo */}
           <Link
             href="/dashboard"
+            prefetch={true}
             className="flex items-center gap-2"
             aria-label="FastTask"
           >
@@ -135,6 +136,7 @@ export function AppShell({ children, user }: AppShellProps) {
           {/* Avatar shortcut */}
           <Link
             href="/settings"
+            prefetch={true}
             className="h-8 w-8 rounded-full bg-[#315BFF] text-white flex items-center justify-center text-xs font-bold ring-2 ring-blue-100 shadow-2xs overflow-hidden"
             title="Profile"
           >
