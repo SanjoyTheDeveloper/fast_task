@@ -46,11 +46,57 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // 1. Verify that the user record actually exists in the database
+    let dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { id: true, email: true },
+    });
+
+    // 2. If not found by session ID, attempt lookup by email to recover stale JWTs
+    if (!dbUser && user.email) {
+      dbUser = await prisma.user.findUnique({
+        where: { email: user.email.toLowerCase().trim() },
+        select: { id: true, email: true },
+      });
+    }
+
+    // 3. If still not found, attempt an upsert to ensure the user record exists first
+    if (!dbUser && user.email) {
+      try {
+        dbUser = await prisma.user.upsert({
+          where: { email: user.email.toLowerCase().trim() },
+          update: {},
+          create: {
+            id: user.id,
+            name: user.name || "Student",
+            email: user.email.toLowerCase().trim(),
+            password: "oauth_or_session_user",
+          },
+          select: { id: true, email: true },
+        });
+      } catch (upsertErr) {
+        console.warn("User record upsert in GET /api/routine failed:", upsertErr);
+      }
+    }
+
+    // 4. If the session userId does NOT exist in the database, return an empty routine array cleanly
+    // instead of attempting createMany and triggering a P2003 Prisma foreign key error
+    if (!dbUser) {
+      return NextResponse.json({
+        success: true,
+        data: [],
+        slots: [],
+        count: 0,
+      });
+    }
+
+    const verifiedUserId = dbUser.id;
+
     const { searchParams } = new URL(req.url);
     const dayParam = searchParams.get("dayOfWeek")?.trim().toLowerCase();
 
     const where: Prisma.RoutineScheduleWhereInput = {
-      userId: user.id,
+      userId: verifiedUserId,
     };
 
     if (dayParam && dayParam !== "all") {
@@ -70,13 +116,13 @@ export async function GET(req: NextRequest) {
     if (slots.length === 0) {
       try {
         const totalUserSlots = await db.routineSchedule.count({
-          where: { userId: user.id },
+          where: { userId: verifiedUserId },
         });
 
         if (totalUserSlots === 0) {
           const defaultSlots = [
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0611CSE321",
             courseTitle: "Artificial Intelligence & Expert Systems",
             dayOfWeek: "Sunday",
@@ -87,7 +133,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0613CSE333",
             courseTitle: "Advanced Programming & Architecture",
             dayOfWeek: "Sunday",
@@ -98,7 +144,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0541MAT337",
             courseTitle: "Discrete Mathematics & Graph Theory",
             dayOfWeek: "Monday",
@@ -109,7 +155,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0612CSE315",
             courseTitle: "Computer Networks & Protocols",
             dayOfWeek: "Monday",
@@ -120,7 +166,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0031CSE320",
             courseTitle: "Tech Writing & Research (TWRM)",
             dayOfWeek: "Tuesday",
@@ -131,7 +177,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0611CSE321",
             courseTitle: "Artificial Intelligence Lab",
             dayOfWeek: "Tuesday",
@@ -142,7 +188,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0612CSE315",
             courseTitle: "Computer Networks & Protocols",
             dayOfWeek: "Wednesday",
@@ -153,7 +199,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0613CSE333",
             courseTitle: "Advanced Programming Lab",
             dayOfWeek: "Wednesday",
@@ -164,7 +210,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0541MAT337",
             courseTitle: "Discrete Mathematics Tutorial",
             dayOfWeek: "Thursday",
@@ -175,7 +221,7 @@ export async function GET(req: NextRequest) {
             semester: "Fall 2026",
           },
           {
-            userId: user.id,
+            userId: verifiedUserId,
             courseCode: "0031CSE320",
             courseTitle: "Tech Writing Seminar",
             dayOfWeek: "Thursday",
@@ -229,23 +275,46 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const activeUserId = user.id;
+    let activeUserId = user.id;
 
-    // Ensure user exists in database to eliminate foreign key constraints
+    // 1. Verify user exists in database to eliminate foreign key constraints
     try {
-      const dbUser = await prisma.user.findUnique({ where: { id: activeUserId } });
+      let dbUser = await prisma.user.findUnique({
+        where: { id: activeUserId },
+        select: { id: true },
+      });
+
       if (!dbUser && user.email) {
-        await prisma.user.create({
-          data: {
+        dbUser = await prisma.user.findUnique({
+          where: { email: user.email.toLowerCase().trim() },
+          select: { id: true },
+        });
+      }
+
+      if (!dbUser && user.email) {
+        dbUser = await prisma.user.upsert({
+          where: { email: user.email.toLowerCase().trim() },
+          update: {},
+          create: {
             id: activeUserId,
             name: user.name || "Student",
             email: user.email.toLowerCase().trim(),
             password: "oauth_or_session_user",
           },
+          select: { id: true },
         });
       }
-    } catch {
-      // Ignored if table/DB is offline
+
+      if (dbUser) {
+        activeUserId = dbUser.id;
+      } else {
+        return NextResponse.json(
+          { success: false, error: { code: "UNAUTHORIZED", message: "User account does not exist in the database" } },
+          { status: 401 }
+        );
+      }
+    } catch (userErr) {
+      console.warn("POST /api/routine user verification warning:", userErr);
     }
 
     const body = await req.json();
