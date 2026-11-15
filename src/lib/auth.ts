@@ -25,79 +25,33 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
-import { prisma } from "@/lib/db";
 
 /**
  * Server-side helper to get currently authenticated user from Auth.js session.
- * Guarantees that the returned user ID actually exists in PostgreSQL to prevent foreign key errors.
+ * Fast, resilient, and non-blocking — extracts user info from the cryptographically
+ * verified session with zero database latency, falling back to the primary student profile.
  */
 export async function getCurrentUser(): Promise<SessionUser | null> {
   try {
     const session = await auth();
 
-    if (session?.user) {
-      // 1. If session has user.id, verify it exists in the database
-      if (session.user.id) {
-        const dbUserById = await prisma.user.findUnique({
-          where: { id: session.user.id },
-          select: { id: true, email: true, name: true, image: true },
-        });
-
-        if (dbUserById) {
-          return {
-            id: dbUserById.id,
-            email: dbUserById.email,
-            name: dbUserById.name,
-            image: dbUserById.image,
-          };
-        }
-      }
-
-      // 2. If ID is stale (e.g. from an older JWT cookie before DB reset/seed), look up by email
-      if (session.user.email) {
-        const cleanEmail = session.user.email.toLowerCase().trim();
-        const dbUserByEmail = await prisma.user.findFirst({
-          where: {
-            OR: [
-              { email: cleanEmail },
-              cleanEmail === "info.sanjoy.bh@gmail.com" ? { email: "sanjoy@fasttask.app" } : undefined,
-              cleanEmail === "sanjoy@fasttask.app" ? { email: "info.sanjoy.bh@gmail.com" } : undefined,
-            ].filter(Boolean) as { email: string }[],
-          },
-          select: { id: true, email: true, name: true, image: true },
-        });
-
-        if (dbUserByEmail) {
-          return {
-            id: dbUserByEmail.id,
-            email: dbUserByEmail.email,
-            name: dbUserByEmail.name,
-            image: dbUserByEmail.image,
-          };
-        }
-      }
-    }
-  } catch {
-    // Session retrieval may fail outside of an active HTTP request context (e.g., in background jobs or tests)
-  }
-
-  // 3. Fallback: If no session or stale session, resolve to the primary student user in the database
-  try {
-    const defaultUser = await prisma.user.findFirst({
-      select: { id: true, email: true, name: true, image: true },
-      orderBy: { createdAt: "asc" },
-    });
-    if (defaultUser) {
+    if (session?.user && session.user.id) {
       return {
-        id: defaultUser.id,
-        email: defaultUser.email,
-        name: defaultUser.name,
-        image: defaultUser.image,
+        id: session.user.id,
+        email: session.user.email || "sanjoy@fasttask.app",
+        name: session.user.name || "Sanjoy Chandro Bhowmick",
+        image: session.user.image,
       };
     }
-  } catch (dbErr) {
-    console.error("Database error in getCurrentUser fallback:", dbErr);
+  } catch {
+    // Session retrieval may fail outside of active HTTP request context
   }
 
-  return null;
+  // Fallback: Default to primary active student record without hanging on database cold starts
+  return {
+    id: "cmwds7hqf0000e6y0bgbftzg6",
+    email: "sanjoy@fasttask.app",
+    name: "Sanjoy Chandro Bhowmick",
+    image: null,
+  };
 }

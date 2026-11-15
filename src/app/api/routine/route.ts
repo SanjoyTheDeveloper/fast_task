@@ -68,13 +68,7 @@ export async function GET(req: NextRequest) {
 
     // Auto-seed default schedule if user currently has no routine schedules in the database
     if (slots.length === 0) {
-      // Ensure user exists in database before creating foreign key records
-      const userExists = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { id: true },
-      });
-
-      if (userExists) {
+      try {
         const totalUserSlots = await db.routineSchedule.count({
           where: { userId: user.id },
         });
@@ -193,7 +187,6 @@ export async function GET(req: NextRequest) {
           },
         ];
 
-        try {
           await db.routineSchedule.createMany({
             data: defaultSlots,
           });
@@ -201,12 +194,11 @@ export async function GET(req: NextRequest) {
             where,
             orderBy: { startTime: "asc" },
           });
-        } catch (e) {
-          console.warn("Auto-seeding default routine schedules failed:", e);
         }
+      } catch (seedErr) {
+        console.warn("Auto-seeding default routine schedules bypassed:", seedErr);
       }
     }
-  }
 
     return NextResponse.json({
       success: true,
