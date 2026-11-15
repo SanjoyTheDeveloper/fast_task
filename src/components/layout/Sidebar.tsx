@@ -201,17 +201,17 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
 
             const colorConfig: Record<
               string,
-              { activeText: string; activeBg: string; activeBorder: string; dot: string; iconActive: string; iconHover: string }
+              { activeText: string; activeBg: string; activeBorder: string; iconActive: string; iconHover: string }
             > = {
-              dashboard: { activeText: "text-blue-600", activeBg: "bg-blue-50/90", activeBorder: "border-blue-200/80", dot: "bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.6)]", iconActive: "text-blue-600", iconHover: "group-hover:text-blue-600" },
-              tasks: { activeText: "text-emerald-700", activeBg: "bg-emerald-50/90", activeBorder: "border-emerald-200/80", dot: "bg-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.6)]", iconActive: "text-emerald-600", iconHover: "group-hover:text-emerald-600" },
-              calendar: { activeText: "text-amber-800", activeBg: "bg-amber-50/90", activeBorder: "border-amber-200/80", dot: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]", iconActive: "text-amber-500", iconHover: "group-hover:text-amber-500" },
-              routine: { activeText: "text-indigo-700", activeBg: "bg-indigo-50/90", activeBorder: "border-indigo-200/80", dot: "bg-indigo-600 shadow-[0_0_8px_rgba(99,102,241,0.6)]", iconActive: "text-indigo-600", iconHover: "group-hover:text-indigo-600" },
-              kanban: { activeText: "text-purple-700", activeBg: "bg-purple-50/90", activeBorder: "border-purple-200/80", dot: "bg-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]", iconActive: "text-purple-600", iconHover: "group-hover:text-purple-600" },
-              notes: { activeText: "text-rose-700", activeBg: "bg-rose-50/90", activeBorder: "border-rose-200/80", dot: "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]", iconActive: "text-rose-500", iconHover: "group-hover:text-rose-500" },
-              courses: { activeText: "text-cyan-700", activeBg: "bg-cyan-50/90", activeBorder: "border-cyan-200/80", dot: "bg-cyan-600 shadow-[0_0_8px_rgba(6,182,212,0.6)]", iconActive: "text-cyan-600", iconHover: "group-hover:text-cyan-600" },
-              "ai-chat": { activeText: "text-violet-700", activeBg: "bg-violet-50/90", activeBorder: "border-violet-200/80", dot: "bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.6)]", iconActive: "text-violet-600", iconHover: "group-hover:text-violet-600" },
-              settings: { activeText: "text-slate-800", activeBg: "bg-slate-100", activeBorder: "border-slate-300/80", dot: "bg-slate-700", iconActive: "text-slate-700", iconHover: "group-hover:text-slate-800" },
+              dashboard: { activeText: "text-blue-600", activeBg: "bg-blue-50/90", activeBorder: "border-blue-200/80", iconActive: "text-blue-600", iconHover: "group-hover:text-blue-600" },
+              tasks: { activeText: "text-emerald-700", activeBg: "bg-emerald-50/90", activeBorder: "border-emerald-200/80", iconActive: "text-emerald-600", iconHover: "group-hover:text-emerald-600" },
+              calendar: { activeText: "text-amber-800", activeBg: "bg-amber-50/90", activeBorder: "border-amber-200/80", iconActive: "text-amber-500", iconHover: "group-hover:text-amber-500" },
+              routine: { activeText: "text-indigo-700", activeBg: "bg-indigo-50/90", activeBorder: "border-indigo-200/80", iconActive: "text-indigo-600", iconHover: "group-hover:text-indigo-600" },
+              kanban: { activeText: "text-purple-700", activeBg: "bg-purple-50/90", activeBorder: "border-purple-200/80", iconActive: "text-purple-600", iconHover: "group-hover:text-purple-600" },
+              notes: { activeText: "text-rose-700", activeBg: "bg-rose-50/90", activeBorder: "border-rose-200/80", iconActive: "text-rose-500", iconHover: "group-hover:text-rose-500" },
+              courses: { activeText: "text-cyan-700", activeBg: "bg-cyan-50/90", activeBorder: "border-cyan-200/80", iconActive: "text-cyan-600", iconHover: "group-hover:text-cyan-600" },
+              "ai-chat": { activeText: "text-violet-700", activeBg: "bg-violet-50/90", activeBorder: "border-violet-200/80", iconActive: "text-violet-600", iconHover: "group-hover:text-violet-600" },
+              settings: { activeText: "text-slate-800", activeBg: "bg-slate-100", activeBorder: "border-slate-300/80", iconActive: "text-slate-700", iconHover: "group-hover:text-slate-800" },
             };
 
             const cfg = colorConfig[item.id] || colorConfig.dashboard;
@@ -243,22 +243,18 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
                   <span className="truncate">{item.label}</span>
                 </div>
 
-                {/* Badge if inactive */}
-                {item.badge && !active && (
-                  <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-violet-100 text-violet-700 border border-violet-200/80 mr-1.5 shrink-0">
-                    {item.badge}
-                  </span>
-                )}
-
-                {/* Glowing active indicator dot */}
-                {active && (
+                {/* Badge if present */}
+                {item.badge && (
                   <span
                     className={cn(
-                      "w-2 h-2 rounded-full shrink-0 mr-1 animate-in fade-in zoom-in-75 duration-200",
-                      cfg.dot
+                      "px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider shrink-0 transition-colors",
+                      active
+                        ? "bg-violet-200/70 text-violet-800 border border-violet-300/80"
+                        : "bg-violet-100 text-violet-700 border border-violet-200/80"
                     )}
-                    aria-hidden="true"
-                  />
+                  >
+                    {item.badge}
+                  </span>
                 )}
               </Link>
             );
