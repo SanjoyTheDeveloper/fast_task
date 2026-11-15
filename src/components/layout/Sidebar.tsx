@@ -76,6 +76,14 @@ export const NAV_ITEMS: NavItemConfig[] = [
     aliases: ["/lms"],
   },
   {
+    id: "ai-chat",
+    label: "AI Chat Board",
+    href: "/ai-chat",
+    iconName: "auto_awesome",
+    badge: "AI",
+    aliases: ["/chat", "/ai"],
+  },
+  {
     id: "settings",
     label: "Settings",
     href: "/settings",
@@ -202,6 +210,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
               kanban: { activeText: "text-purple-700", activeBg: "bg-purple-50/90", activeBorder: "border-purple-200/80", dot: "bg-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]", iconActive: "text-purple-600", iconHover: "group-hover:text-purple-600" },
               notes: { activeText: "text-rose-700", activeBg: "bg-rose-50/90", activeBorder: "border-rose-200/80", dot: "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]", iconActive: "text-rose-500", iconHover: "group-hover:text-rose-500" },
               courses: { activeText: "text-cyan-700", activeBg: "bg-cyan-50/90", activeBorder: "border-cyan-200/80", dot: "bg-cyan-600 shadow-[0_0_8px_rgba(6,182,212,0.6)]", iconActive: "text-cyan-600", iconHover: "group-hover:text-cyan-600" },
+              "ai-chat": { activeText: "text-violet-700", activeBg: "bg-violet-50/90", activeBorder: "border-violet-200/80", dot: "bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.6)]", iconActive: "text-violet-600", iconHover: "group-hover:text-violet-600" },
               settings: { activeText: "text-slate-800", activeBg: "bg-slate-100", activeBorder: "border-slate-300/80", dot: "bg-slate-700", iconActive: "text-slate-700", iconHover: "group-hover:text-slate-800" },
             };
 
@@ -233,6 +242,13 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
                   />
                   <span className="truncate">{item.label}</span>
                 </div>
+
+                {/* Badge if inactive */}
+                {item.badge && !active && (
+                  <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-violet-100 text-violet-700 border border-violet-200/80 mr-1.5 shrink-0">
+                    {item.badge}
+                  </span>
+                )}
 
                 {/* Glowing active indicator dot */}
                 {active && (
