@@ -202,7 +202,7 @@ export function AiChatMessageList({
           </div>
           <div className="space-y-1.5 pt-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-900">Thinka 2.0 Flash</span>
+              <span className="text-xs font-bold text-slate-900">Gemini Live AI</span>
               <span className="text-[10px] text-blue-600 font-semibold animate-pulse">
                 Reasoning...
               </span>

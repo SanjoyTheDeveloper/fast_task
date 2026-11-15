@@ -13,7 +13,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
   if (!isOpen) return null;
 
   const features = [
-    { title: "Unlimited Thinka 2.0 Flash & Gemini 2.5 Pro", desc: "No daily rate limits or token caps on problem-solving." },
+    { title: "Unlimited Google Gemini & Thinka AI Models", desc: "No daily rate limits or token caps on problem-solving." },
     { title: "Deep Research Mode", desc: "Multi-phase reasoning engine synthesized with academic literature." },
     { title: "Full Routine & Syllabus Synchronization", desc: "Direct grounding with your enrolled semester courses & timetable." },
     { title: "Zero-Latency Priority Processing", desc: "Instant response streaming with high-throughput cloud endpoints." },

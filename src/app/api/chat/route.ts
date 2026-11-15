@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { prompt, options } = body;
 
-    if (!prompt || typeof prompt !== "string") {
+    if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
       return NextResponse.json(
         { error: "Prompt is required" },
         { status: 400 }
@@ -16,15 +16,22 @@ export async function POST(req: Request) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured" },
+        { error: "GEMINI_API_KEY is not configured on the server." },
         { status: 503 }
       );
     }
 
-    // Determine model candidate
-    let modelName = "gemini-2.5-flash";
-    if (options?.modelName?.toLowerCase().includes("pro")) {
-      modelName = "gemini-2.5-pro";
+    // Build context-enriched prompt if attachments or deep research are enabled
+    let fullPrompt = prompt.trim();
+    if (options?.attachments && Array.isArray(options.attachments) && options.attachments.length > 0) {
+      const attachmentList = options.attachments
+        .map((a: { name: string; type?: string }) => `- [${a.type || "file"}] ${a.name}`)
+        .join("\n");
+      fullPrompt += `\n\n[Attached Context/Documents]:\n${attachmentList}`;
+    }
+
+    if (options?.isDeepResearch) {
+      fullPrompt += `\n\n[Instruction: Provide a comprehensive, in-depth deep research analysis with structured deduction steps, verified academic logic, and clear conclusions.]`;
     }
 
     const systemPrompt = `You are Thinka, an intelligent, empathetic AI study assistant integrated inside FastTask — an academic workspace for university students.
@@ -39,15 +46,11 @@ Formatting guidelines:
 - Strictly adhere to solid daylight visual contrast — no visual gradients.
 - Be concise, actionable, and encouraging.`;
 
-    const requestPayload: {
-      contents: { role: string; parts: { text: string }[] }[];
-      systemInstruction?: { parts: { text: string }[] };
-      generationConfig?: { temperature: number; maxOutputTokens: number };
-    } = {
+    const requestPayload = {
       contents: [
         {
           role: "user",
-          parts: [{ text: prompt }],
+          parts: [{ text: fullPrompt }],
         },
       ],
       systemInstruction: {
@@ -59,16 +62,29 @@ Formatting guidelines:
       },
     };
 
-    // Attempt Gemini call with timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000);
+    // Candidates in order of proven speed, quota, and reliability for this API key:
+    // 1. gemini-3.5-flash (primary, ~2s)
+    // 2. gemini-3.5-flash-lite (ultra-fast, ~1s)
+    // 3. gemini-3.1-flash-lite (ultra-fast, ~1s)
+    // 4. gemini-3-flash-preview (fast, ~1.3s)
+    // 5. gemini-3.8-flash (next-gen)
+    const candidateModels = [
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+      "gemini-3-flash-preview",
+      "gemini-3.8-flash",
+    ];
 
-    const candidateModels = [modelName, "gemini-3.8-flash", "gemini-flash-latest"];
     let responseText = "";
+    let activeModelUsed = "";
     let lastError: unknown = null;
 
     for (const candidate of candidateModels) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 9000);
+
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${candidate}:generateContent?key=${apiKey}`;
         const res = await fetch(url, {
           method: "POST",
@@ -77,29 +93,32 @@ Formatting guidelines:
           signal: controller.signal,
         });
 
+        clearTimeout(timeoutId);
+
         if (res.ok) {
           const data = await res.json();
           const text =
             data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
           if (text) {
             responseText = text;
+            activeModelUsed = candidate;
             break;
           }
         } else {
           const errData = await res.json().catch(() => ({}));
           lastError = errData;
+          console.warn(`[Gemini API] Candidate ${candidate} returned ${res.status}:`, errData);
         }
       } catch (e) {
         lastError = e;
+        console.warn(`[Gemini API] Candidate ${candidate} threw:`, e);
       }
     }
-
-    clearTimeout(timeoutId);
 
     if (responseText) {
       return NextResponse.json({
         content: responseText,
-        model: "Gemini / Thinka Live AI",
+        model: `Gemini (${activeModelUsed})`,
         sources: options?.isWebSearch
           ? [
               {
@@ -114,26 +133,30 @@ Formatting guidelines:
               {
                 step: "Deep Reasoning Phase",
                 status: "done",
-                detail: "Synthesized multi-domain literature and verified logic proofs.",
+                detail: "Synthesized multi-domain academic literature and verified logic proofs.",
               },
             ]
           : undefined,
       });
     }
 
-    // If Gemini service is unavailable or rate-limited, return 503 so client falls back gracefully
+    const errorDetails =
+      (lastError as { error?: { message?: string } })?.error?.message ||
+      "Gemini API was unable to generate a response. Please check network connectivity.";
+
     return NextResponse.json(
       {
-        error: "Gemini API temporarily unavailable",
+        error: errorDetails,
         details: lastError,
       },
-      { status: 503 }
+      { status: 502 }
     );
   } catch (error) {
     console.error("API /api/chat error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }
 }
+

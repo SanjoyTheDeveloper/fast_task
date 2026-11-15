@@ -3,12 +3,12 @@ import { ChatSession, AiModelConfig, ExploreAssistant } from "@/types/chat";
 export const AI_MODELS: AiModelConfig[] = [
   {
     id: "thinka-2.0-flash",
-    name: "Thinka 2.0 Flash",
+    name: "Gemini 3.5 Flash",
     shortLabel: "2.0 Flashs",
-    version: "v2.0.4",
+    version: "v3.5",
     badge: "Fastest",
-    description: "Ultra-low latency reasoning model optimized for real-time student tasks and dynamic code generation.",
-    provider: "DeepMind",
+    description: "Ultra-low latency reasoning model powered by Google Gemini API for real-time student tasks and dynamic code generation.",
+    provider: "Google Gemini",
     speed: "Ultra-Fast",
     intelligence: "High",
     contextWindow: "1M tokens",
@@ -339,207 +339,32 @@ export async function generateAiReply(
   }
 ): Promise<{
   content: string;
+  model?: string;
   sources?: { title: string; url: string; domain: string }[];
   deepResearchSteps?: { step: string; status: "done" | "in-progress" | "pending"; detail: string }[];
 }> {
-  // 1. First attempt to call the live backend /api/chat route (powered by GEMINI_API_KEY)
-  if (typeof window !== "undefined") {
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, options }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.content) {
-          return {
-            content: data.content,
-            sources: data.sources,
-            deepResearchSteps: data.deepResearchSteps,
-          };
-        }
-      }
-    } catch {
-      // Graceful fallback to local academic intelligence engine
-    }
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, options }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    const errorMsg =
+      data?.error || data?.message || `Gemini API request failed (HTTP ${res.status})`;
+    throw new Error(errorMsg);
   }
 
-  // 2. Local fallback engine with simulated natural latency (600ms - 1100ms)
-  await new Promise((resolve) => setTimeout(resolve, 850));
-
-  const lower = prompt.toLowerCase();
-  const model = options?.modelName || "Thinka 2.0 Flash";
-
-  // Deep research mode mock steps
-  let deepResearchSteps = undefined;
-  if (options?.isDeepResearch) {
-    deepResearchSteps = [
-      { step: "Query Formulation", status: "done" as const, detail: "Extracted core intent, semantic entities, and domain boundaries." },
-      { step: "Source Aggregation", status: "done" as const, detail: "Queried academic databases, syllabus archives, and technical specifications." },
-      { step: "Synthesis & Reasoning", status: "done" as const, detail: "Cross-referenced deduction trees, validated formulas, and structured output." },
-    ];
+  if (!data?.content) {
+    throw new Error("No content received from Gemini API.");
   }
 
-  // Web search mock sources
-  let sources = undefined;
-  if (options?.isWebSearch) {
-    sources = [
-      { title: "FastTask Academic Routine & Syllabus Specification (2026)", url: "https://fasttask.app/docs/academic", domain: "fasttask.app" },
-      { title: "CSE321 Artificial Intelligence & Expert Systems Reference", url: "https://cse.university.edu/courses/cse321", domain: "university.edu" },
-      { title: "TypeScript & Next.js Production Architecture Best Practices", url: "https://nextjs.org/docs/app", domain: "nextjs.org" },
-    ];
-  }
-
-  // 1. Write Copy prompt
-  if (lower.includes("write copy") || lower.includes("draft copy") || lower.includes("pitch")) {
-    return {
-      content: `### ✍️ Executive Product & Project Copy
-
-**Headline**: *Master Your Academic Velocity with Clarity and Purpose.*
-
-**Core Value Proposition**:
-FastTask unifies your university lecture schedule, daily routine blocks, and task sprint milestones into a single, high-contrast daylight workspace. Designed specifically for ambitious students, it turns chaotic semester workloads into calm, structured execution.
-
-**Key Highlights**:
-- **Smart Routine Synchronization**: Never miss a classroom transition or lab session.
-- **Zero-Latency Navigation**: Instant page switches with proactive prefetching and background state cache.
-- **Context-Aware AI Guidance**: Deep assistance tuned directly to your syllabus and deadlines.
-
-*Ready to accelerate your academic performance? FastTask Pro gives you unlimited clarity.*`,
-      sources,
-      deepResearchSteps,
-    };
-  }
-
-  // 2. Create Avatar prompt
-  if (lower.includes("avatar") || lower.includes("profile picture") || lower.includes("create avatar")) {
-    return {
-      content: `### 🎨 3D Daylight Avatar Specification
-
-Here is the design recipe and styling parameters for a modern, daylight-inspired student avatar:
-
-#### Aesthetic Blueprint
-- **Primary Palette**: Crisp Royal Blue (\`#315BFF\`), Violet (\`#7C3AED\`), and warm terracotta skin tones.
-- **Lighting Model**: Ambient studio daylight from the top-left (45° angle) with soft fill lighting to eliminate harsh drop shadows.
-- **Framing**: Clean circular or squircle container with a solid 2px white outline ring and subtle \`#EEF2F6\` backdrop.
-
-\`\`\`tsx
-// Modern Tailwind Avatar Component
-export function StudentAvatarBadge({ initials, name }: { initials: string; name: string }) {
-  return (
-    <div className="relative inline-flex items-center justify-center">
-      <div className="h-14 w-14 rounded-2xl bg-[#315BFF] text-white font-black text-lg flex items-center justify-center ring-4 ring-white shadow-md">
-        <span>{initials}</span>
-      </div>
-      <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 ring-2 ring-white" title="Active on Campus" />
-    </div>
-  );
-}
-\`\`\`
-This matches the daylight contrast standard of the FastTask design system.`,
-      sources,
-      deepResearchSteps,
-    };
-  }
-
-  // 3. Image Generation prompt
-  if (lower.includes("image") || lower.includes("generate image") || lower.includes("visual")) {
-    return {
-      content: `### 🪄 Visual Composition & Generative Prompt
-
-**Prompt Blueprint**:
-> *"Isometric 3D rendering of an ultra-clean, minimalist student study workspace. A sleek glass desk featuring a glowing laptop showing code and calendar schedules, ceramic coffee mug, and organized physical notes. Palette dominated by vibrant royal blue (#315BFF), electric violet, and daylight whites (#EEF2F6). Soft volumetric morning sunlight, 8k resolution, crisp architectural aesthetic, octane render."*
-
-#### Recommended Aspect Ratios
-- **Banner / LMS Header**: \`16:9\` (1920 × 1080)
-- **Profile / Avatar**: \`1:1\` (1024 × 1024)
-- **Social / Presentation Slide**: \`4:3\` (1600 × 1200)`,
-      sources,
-      deepResearchSteps,
-    };
-  }
-
-  // 4. Write Code prompt
-  if (lower.includes("write code") || lower.includes("code") || lower.includes("typescript") || lower.includes("component")) {
-    return {
-      content: `### 💻 Production TypeScript Component
-
-Here is a clean, accessible Next.js 16 component adhering strictly to solid colors and type safety:
-
-\`\`\`tsx
-import * as React from "react";
-
-export interface StatChipProps {
-  label: string;
-  count: number;
-  variant?: "blue" | "emerald" | "amber" | "violet";
-}
-
-const COLOR_VARIANTS = {
-  blue: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", dot: "bg-blue-600" },
-  emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", dot: "bg-emerald-600" },
-  amber: { bg: "bg-amber-50", text: "text-amber-800", border: "border-amber-200", dot: "bg-amber-500" },
-  violet: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-200", dot: "bg-violet-600" },
-};
-
-export function StatChip({ label, count, variant = "blue" }: StatChipProps) {
-  const styles = COLOR_VARIANTS[variant];
-
-  return (
-    <div className={\`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border \${styles.bg} \${styles.text} \${styles.border} text-xs font-semibold\`}>
-      <span className={\`h-2 w-2 rounded-full \${styles.dot}\`} aria-hidden="true" />
-      <span>{label}</span>
-      <span className="font-mono font-bold bg-white/80 px-1.5 py-0.5 rounded text-[11px] border border-slate-200/50">
-        {count}
-      </span>
-    </div>
-  );
-}
-\`\`\`
-
-#### Key Highlights
-1. **Zero Gradients**: Strictly leverages solid color tokens.
-2. **Type Safety**: Full TypeScript interfaces with variant keys.
-3. **High Contrast**: Compliant with WCAG AAA daylight legibility standards.`,
-      sources,
-      deepResearchSteps,
-    };
-  }
-
-  // 5. Academic Routine / FastTask query
-  if (lower.includes("routine") || lower.includes("schedule") || lower.includes("class") || lower.includes("cse")) {
-    return {
-      content: `### 📅 Routine Schedule & Coursework Synthesis
-
-Reviewing your active semester profile in **FastTask**:
-
-- **Current Semester**: Summer 2026 • 6th Semester CSE
-- **Primary Coursework**:
-  - \`0611CSE321\`: **Artificial Intelligence & Expert Systems (Theory)** • Room A/507
-  - \`0611CSE322\`: **Artificial Intelligence & Expert Systems (Lab)** • Room A/502
-  - \`0611CSE323\`: **Software Engineering & Project Management** • Room B/301
-
-**Upcoming Milestone**:
-AIES Assignment Problem Set 1 is due in **3 days**. Would you like me to generate a step-by-step breakdown of the forward-chaining deduction trace for Dr. Sahedul's problem set?`,
-      sources,
-      deepResearchSteps,
-    };
-  }
-
-  // Default contextual response
   return {
-    content: `### 💡 ${model} Assistance
-
-I've analyzed your request: **"${prompt.trim()}"**.
-
-Here is what you need to know:
-1. **Execution Roadmap**: I can assist in generating code, breaking down semester assignments, drafting project documentation, or synthesizing research.
-2. **Context Synchronization**: FastTask's task board, calendar schedules, and routine data are readily accessible.
-3. **Next Steps**: You can attach documents using the **+** tool below, enable **Search** for web citations, or toggle **Deep Research** for comprehensive multi-phase analysis.
-
-Let me know how you'd like to proceed!`,
-    sources,
-    deepResearchSteps,
+    content: data.content,
+    model: data.model,
+    sources: data.sources,
+    deepResearchSteps: data.deepResearchSteps,
   };
 }

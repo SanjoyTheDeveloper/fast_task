@@ -187,7 +187,7 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
         role: "assistant",
         content: aiReply.content,
         createdAt: new Date().toISOString(),
-        model: selectedModel,
+        model: aiReply.model || selectedModel,
         sources: aiReply.sources,
         deepResearchSteps: aiReply.deepResearchSteps,
       };
@@ -206,7 +206,7 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
       updateSessions(finalSessions);
     } catch (err) {
       console.error("AI Generation error:", err);
-      toast.error("Failed to generate AI reply. Please retry.");
+      toast.error(err instanceof Error ? err.message : "Failed to generate AI reply. Please retry.");
     } finally {
       setIsLoading(false);
     }
