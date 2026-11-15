@@ -12,7 +12,6 @@ import {
   Clock,
   Heart,
   BookOpen,
-  Sparkles,
 } from "lucide-react";
 
 interface Stage {

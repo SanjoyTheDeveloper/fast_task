@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { GIcon } from "@/components/ui/GIcon";
+import { ThinkaLogo } from "./ThinkaLogo";
 import { ChatMessage } from "@/types/chat";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -82,9 +83,9 @@ export function AiChatMessageList({
         // Assistant Message
         return (
           <div key={message.id} className="flex items-start gap-3 select-text group">
-            {/* Thinka Radiant Avatar */}
+            {/* Thinka Sunburst Avatar */}
             <div className="h-8 w-8 rounded-xl bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-              <GIcon name="flare" size={18} className="text-[#315BFF]" />
+              <ThinkaLogo className="h-4 w-4 text-[#315BFF]" />
             </div>
 
             <div className="flex-1 min-w-0 space-y-3">
@@ -197,7 +198,7 @@ export function AiChatMessageList({
       {isLoading && (
         <div className="flex items-start gap-3 select-none animate-in fade-in duration-200">
           <div className="h-8 w-8 rounded-xl bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-            <GIcon name="flare" size={18} className="text-[#315BFF] animate-spin" />
+            <ThinkaLogo className="h-4 w-4 text-[#315BFF] animate-spin" />
           </div>
           <div className="space-y-1.5 pt-1">
             <div className="flex items-center gap-2">

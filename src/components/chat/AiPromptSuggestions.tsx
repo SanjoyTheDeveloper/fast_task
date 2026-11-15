@@ -30,7 +30,7 @@ export function AiPromptSuggestions({
     {
       id: "image-gen",
       label: "Image generation",
-      iconName: "auto_awesome",
+      iconName: "image",
       iconColor: "text-amber-500",
       prompt: "Generate an isometric 3D composition prompt for an organized student workstation in high-contrast daylight colors.",
     },

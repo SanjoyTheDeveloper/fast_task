@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { GIcon } from "@/components/ui/GIcon";
+import { ThinkaLogo } from "./ThinkaLogo";
 import { ChatSession } from "@/types/chat";
 import {
   DropdownMenu,
@@ -127,7 +128,7 @@ export function AiChatSidebar({
             title="Get Premium Now"
             aria-label="Get Premium Now"
           >
-            <GIcon name="auto_awesome" size={18} />
+            <GIcon name="workspace_premium" size={18} />
           </button>
         </div>
       </aside>
@@ -146,9 +147,9 @@ export function AiChatSidebar({
         {/* 1. Header: Logo, Thinka Title, Collapse & Search Icons */}
         <div className="flex items-center justify-between pb-3.5">
           <div className="flex items-center gap-2">
-            {/* Radiant Starburst Icon matching screenshot */}
+            {/* Radiant Sunburst Icon matching screenshot */}
             <div className="h-8 w-8 rounded-lg bg-blue-50 text-[#315BFF] flex items-center justify-center shrink-0 border border-blue-100">
-              <GIcon name="flare" size={20} className="text-[#315BFF]" />
+              <ThinkaLogo className="h-5 w-5 text-[#315BFF]" />
             </div>
             <span className="text-lg font-bold tracking-tight text-slate-900">
               Thinka

@@ -37,7 +37,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-10 w-10 rounded-2xl bg-blue-50 text-[#315BFF] flex items-center justify-center border border-blue-100">
-              <GIcon name="auto_awesome" size={22} className="text-[#315BFF]" />
+              <GIcon name="workspace_premium" size={22} className="text-[#315BFF]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">

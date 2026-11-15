@@ -305,7 +305,7 @@ export function AiChatInput({
                   onClick={() => setIsDeepResearchActive(true)}
                   className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 rounded-xl cursor-pointer"
                 >
-                  <GIcon name="auto_awesome" size={15} className="text-amber-500" />
+                  <GIcon name="account_tree" size={15} className="text-amber-500" />
                   <span>Multi-Step Synthesis</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

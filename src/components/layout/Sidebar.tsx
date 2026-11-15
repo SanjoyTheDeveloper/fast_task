@@ -79,7 +79,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
     id: "ai-chat",
     label: "AI Chat Board",
     href: "/ai-chat",
-    iconName: "auto_awesome",
+    iconName: "chat",
     badge: "AI",
     aliases: ["/chat", "/ai"],
   },
