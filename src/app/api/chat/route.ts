@@ -1,40 +1,64 @@
 import { NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { prompt, options } = body;
-
-    if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
-      return NextResponse.json(
-        { error: "Prompt is required" },
-        { status: 400 }
-      );
-    }
+    const { messages, prompt, options } = body;
 
     const apiKey = (process.env.GEMINI_API_KEY || "").trim();
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured on the server." },
+        {
+          error:
+            "GEMINI_API_KEY is not detected in .env. Please configure GEMINI_API_KEY in your .env file.",
+        },
         { status: 503 }
       );
     }
 
-    // Build context-enriched prompt if attachments or deep research are enabled
-    let fullPrompt = prompt.trim();
-    if (options?.attachments && Array.isArray(options.attachments) && options.attachments.length > 0) {
-      const attachmentList = options.attachments
-        .map((a: { name: string; type?: string }) => `- [${a.type || "file"}] ${a.name}`)
-        .join("\n");
-      fullPrompt += `\n\n[Attached Context/Documents]:\n${attachmentList}`;
+    // Format conversation history for GoogleGenAI SDK
+    let contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+
+    if (Array.isArray(messages) && messages.length > 0) {
+      contents = messages.map((m: { role: string; content: string }) => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: m.content || "" }],
+      }));
+    } else if (prompt && typeof prompt === "string" && prompt.trim()) {
+      contents = [{ role: "user", parts: [{ text: prompt.trim() }] }];
+    } else {
+      return NextResponse.json(
+        { error: "No messages or prompt provided in request body." },
+        { status: 400 }
+      );
     }
 
-    if (options?.isDeepResearch) {
-      fullPrompt += `\n\n[Instruction: Provide a comprehensive, in-depth deep research analysis with structured deduction steps, verified academic logic, and clear conclusions.]`;
+    // Attach contextual information (file attachments / deep research instruction)
+    if (contents.length > 0) {
+      const lastItem = contents[contents.length - 1];
+      let enrichedText = lastItem.parts[0]?.text || "";
+
+      if (
+        options?.attachments &&
+        Array.isArray(options.attachments) &&
+        options.attachments.length > 0
+      ) {
+        const attachmentList = options.attachments
+          .map((a: { name: string; type?: string }) => `- [${a.type || "file"}] ${a.name}`)
+          .join("\n");
+        enrichedText += `\n\n[Attached Academic Materials/Context]:\n${attachmentList}`;
+      }
+
+      if (options?.isDeepResearch) {
+        enrichedText += `\n\n[Mode: Deep Research — provide a thorough, structured breakdown with deduction steps, syllabus alignment, and clear actionable takeaways.]`;
+      }
+
+      lastItem.parts = [{ text: enrichedText }];
     }
 
-    const systemPrompt = `You are Thinka, an intelligent, empathetic AI study assistant integrated inside FastTask — an academic workspace for university students.
+    const systemInstruction = `You are Thinka, an intelligent, empathetic AI study assistant integrated inside FastTask — an academic workspace for university students.
 You assist students with:
 1. Explaining complex computer science and engineering coursework (e.g. 0611CSE321 Artificial Intelligence & Expert Systems, logic proofs, database normalization).
 2. Semester routine management, sprint planning, and task deadline prioritization.
@@ -46,79 +70,50 @@ Formatting guidelines:
 - Strictly adhere to solid daylight visual contrast — no visual gradients.
 - Be concise, actionable, and encouraging.`;
 
-    const requestPayload = {
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: fullPrompt }],
-        },
-      ],
-      systemInstruction: {
-        parts: [{ text: systemPrompt }],
-      },
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 2048,
-      },
-    };
+    // Initialize official GoogleGenAI SDK
+    const ai = new GoogleGenAI({ apiKey });
 
-    // Candidates in order of proven speed, quota, and reliability for this API key:
-    // 1. gemini-3.5-flash (primary, ~2s)
-    // 2. gemini-3.5-flash-lite (ultra-fast, ~1s)
-    // 3. gemini-3.1-flash-lite (ultra-fast, ~1s)
-    // 4. gemini-3-flash-preview (fast, ~1.3s)
-    // 5. gemini-3.8-flash (next-gen)
+    // Cascade models: try gemini-2.5-flash first as configured,
+    // and automatically cascade to live models (gemini-3.5-flash, gemini-3.5-flash-lite) if 404 is returned by Google
     const candidateModels = [
+      "gemini-2.5-flash",
       "gemini-3.5-flash",
       "gemini-3.5-flash-lite",
       "gemini-3.1-flash-lite",
-      "gemini-3-flash-preview",
-      "gemini-3.8-flash",
     ];
 
     let responseText = "";
-    let activeModelUsed = "";
+    let modelUsed = "";
     let lastError: unknown = null;
 
-    for (const candidate of candidateModels) {
+    for (const model of candidateModels) {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 9000);
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${candidate}:generateContent?key=${apiKey}`;
-        const res = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestPayload),
-          signal: controller.signal,
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction,
+            temperature: 0.7,
+            maxOutputTokens: 2048,
+          },
         });
 
-        clearTimeout(timeoutId);
-
-        if (res.ok) {
-          const data = await res.json();
-          const text =
-            data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-          if (text) {
-            responseText = text;
-            activeModelUsed = candidate;
-            break;
-          }
-        } else {
-          const errData = await res.json().catch(() => ({}));
-          lastError = errData;
-          console.warn(`[Gemini API] Candidate ${candidate} returned ${res.status}:`, errData);
+        const text = response.text || "";
+        if (text) {
+          responseText = text;
+          modelUsed = model;
+          break;
         }
-      } catch (e) {
-        lastError = e;
-        console.warn(`[Gemini API] Candidate ${candidate} threw:`, e);
+      } catch (err: unknown) {
+        lastError = err;
+        console.warn(`[GoogleGenAI] Model ${model} returned error:`, err);
       }
     }
 
     if (responseText) {
       return NextResponse.json({
         content: responseText,
-        model: `Gemini (${activeModelUsed})`,
+        model: `Gemini (${modelUsed})`,
         sources: options?.isWebSearch
           ? [
               {
@@ -133,30 +128,34 @@ Formatting guidelines:
               {
                 step: "Deep Reasoning Phase",
                 status: "done",
-                detail: "Synthesized multi-domain academic literature and verified logic proofs.",
+                detail: "Synthesized academic coursework literature and verified logic proofs.",
               },
             ]
           : undefined,
       });
     }
 
-    const errorDetails =
-      (lastError as { error?: { message?: string } })?.error?.message ||
-      "Gemini API was unable to generate a response. Please check network connectivity.";
+    // Format error message clearly for UI display
+    const errString = String(lastError || "");
+    let userFacingError = "Gemini API failed to generate a response. Please check your GEMINI_API_KEY in .env.";
+    if (errString.includes("API key not valid") || errString.includes("API_KEY_INVALID")) {
+      userFacingError = "Invalid GEMINI_API_KEY in .env. Please verify your Google AI Studio API key.";
+    } else if (errString.includes("quota") || errString.includes("RESOURCE_EXHAUSTED")) {
+      userFacingError = "Gemini API rate limit or quota exceeded. Please try again in a few moments.";
+    }
 
     return NextResponse.json(
       {
-        error: errorDetails,
+        error: userFacingError,
         details: lastError,
       },
       { status: 502 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("API /api/chat error:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
-      { status: 500 }
-    );
+    const msg = error instanceof Error ? error.message : "Internal server error";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
 

@@ -92,7 +92,7 @@ export function AiChatMessageList({
               {/* Header: Model badge */}
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-900">
-                  {message.model || "Thinka 2.0 Flash"}
+                  {message.model || "Gemini 2.5 Flash"}
                 </span>
                 <span className="text-[10px] text-slate-400">
                   {new Date(message.createdAt).toLocaleTimeString([], {

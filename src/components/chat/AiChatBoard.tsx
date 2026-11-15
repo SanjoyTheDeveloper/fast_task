@@ -173,9 +173,16 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
 
     try {
       const selectedModel =
-        AI_MODELS.find((m) => m.id === currentModelId)?.name || "Thinka 2.0 Flash";
+        AI_MODELS.find((m) => m.id === currentModelId)?.name || "Gemini 2.5 Flash";
 
-      const aiReply = await generateAiReply(content, {
+      const conversationHistory = (
+        targetSession ? [...targetSession.messages, userMessage] : [userMessage]
+      ).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      const aiReply = await generateAiReply(conversationHistory, {
         modelName: selectedModel,
         isDeepResearch: options?.isDeepResearch,
         isWebSearch: options?.isWebSearch,

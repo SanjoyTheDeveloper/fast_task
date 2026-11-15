@@ -165,7 +165,7 @@ Based on your current semester schedule (Summer 2026) and active tasks in **Fast
 1. **Front-load Sunday Evening**: Complete the AIES theoretical deduction trees early before Tuesday lab sessions.
 2. **Buffer Wednesday Afternoon**: Dedicate 2 uninterrupted Pomodoro blocks to the database schema normalization.`,
         createdAt: "2026-11-15T18:31:15.000Z",
-        model: "Thinka 2.0 Flash",
+        model: "Gemini 2.5 Flash",
       },
     ],
   },
@@ -192,7 +192,7 @@ Based on your current semester schedule (Summer 2026) and active tasks in **Fast
 - **Top Focus Tool**: Users utilizing the **Kanban Board** with drag-and-drop state transitions maintain a 38% higher completion rate.
 - **Cognitive Peak**: Peak productivity occurs between **09:30 AM and 12:45 PM**, corresponding to morning lecture blocks in Room A/507.`,
         createdAt: "2026-11-15T14:16:00.000Z",
-        model: "Thinka 2.0 Flash",
+        model: "Gemini 2.5 Flash",
       },
     ],
   },
@@ -218,7 +218,7 @@ Based on your current semester schedule (Summer 2026) and active tasks in **Fast
 2. **Routine Attendance Ratio**: Tracking lecture attendance across scheduled classroom days.
 3. **Active Study Streak**: Daily habit tracker with solid coral and emerald status chips.`,
         createdAt: "2026-11-15T10:01:20.000Z",
-        model: "Thinka 2.0 Flash",
+        model: "Gemini 2.5 Flash",
       },
     ],
   },
@@ -244,7 +244,7 @@ Based on your current semester schedule (Summer 2026) and active tasks in **Fast
 - **Goal 2 (In Progress)**: Setup automated daily routine reminders for 10:00 AM class blocks.
 - **Goal 3 (Next Sprint)**: Deep review of Expert Systems inference engines before the week 8 assessment.`,
         createdAt: "2026-11-14T16:01:40.000Z",
-        model: "Thinka 2.0 Flash",
+        model: "Gemini 2.5 Flash",
       },
     ],
   },
@@ -270,14 +270,14 @@ Based on your current semester schedule (Summer 2026) and active tasks in **Fast
 2. **Instant Link Prefetching**: Eliminating navigation delay keeps students in flow when switching between routine schedules, tasks, and notes.
 3. **Integrated Context-Aware AI**: Allowing students to summon assistant guidance directly alongside their syllabus delivers immediate clarity.`,
         createdAt: "2026-11-14T11:21:30.000Z",
-        model: "Thinka 2.0 Flash",
+        model: "Gemini 2.5 Flash",
       },
     ],
   },
 ];
 
-const STORAGE_KEY = "fasttask_ai_chat_sessions_v2";
-const ACTIVE_CHAT_KEY = "fasttask_ai_active_chat_id_v2";
+const STORAGE_KEY = "fasttask_ai_chat_sessions_v3";
+const ACTIVE_CHAT_KEY = "fasttask_ai_active_chat_id_v3";
 
 export function loadChatSessions(): ChatSession[] {
   if (typeof window === "undefined") return INITIAL_CHAT_SESSIONS;
@@ -330,7 +330,7 @@ export function saveActiveChatId(id: string | null): void {
 }
 
 export async function generateAiReply(
-  prompt: string,
+  messagesInput: Array<{ role: string; content: string }> | string,
   options?: {
     modelName?: string;
     isDeepResearch?: boolean;
@@ -343,10 +343,19 @@ export async function generateAiReply(
   sources?: { title: string; url: string; domain: string }[];
   deepResearchSteps?: { step: string; status: "done" | "in-progress" | "pending"; detail: string }[];
 }> {
+  const messages =
+    typeof messagesInput === "string"
+      ? [{ role: "user", content: messagesInput }]
+      : messagesInput;
+
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, options }),
+    body: JSON.stringify({
+      messages,
+      prompt: typeof messagesInput === "string" ? messagesInput : messages[messages.length - 1]?.content || "",
+      options,
+    }),
   });
 
   const data = await res.json().catch(() => ({}));
