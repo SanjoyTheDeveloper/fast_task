@@ -416,21 +416,26 @@ export const db = {
     },
 
     async createMany({ data }: { data: (RawRoutineSlotInput & { userId: string })[] }) {
-      return await prisma.routineSchedule.createMany({
-        data: data.map((d) => ({
-          ...(d.id ? { id: d.id } : {}),
-          userId: d.userId,
-          courseCode: (d.courseCode || d.code || "").trim(),
-          courseTitle: (d.courseTitle || d.title || "").trim(),
-          dayOfWeek: (d.dayOfWeek || d.day || "").trim(),
-          startTime: (d.startTime || "").trim(),
-          endTime: (d.endTime || "").trim(),
-          roomNo: (d.roomNo || d.roomNumber || d.room || "")?.trim() || null,
-          instructor: (d.instructor || d.teacherName || d.faculty || "")?.trim() || null,
-          semester: (d.semester || d.batch || "")?.trim() || null,
-        })),
-        skipDuplicates: true,
-      });
+      try {
+        return await prisma.routineSchedule.createMany({
+          data: data.map((d) => ({
+            ...(d.id ? { id: d.id } : {}),
+            userId: d.userId,
+            courseCode: (d.courseCode || d.code || "").trim(),
+            courseTitle: (d.courseTitle || d.title || "").trim(),
+            dayOfWeek: (d.dayOfWeek || d.day || "").trim(),
+            startTime: (d.startTime || "").trim(),
+            endTime: (d.endTime || "").trim(),
+            roomNo: (d.roomNo || d.roomNumber || d.room || "")?.trim() || null,
+            instructor: (d.instructor || d.teacherName || d.faculty || "")?.trim() || null,
+            semester: (d.semester || d.batch || "")?.trim() || null,
+          })),
+          skipDuplicates: true,
+        });
+      } catch (err) {
+        console.warn("db.routineSchedule.createMany failed safely:", err);
+        return { count: 0 };
+      }
     },
 
     async update({

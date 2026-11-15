@@ -68,12 +68,19 @@ export async function GET(req: NextRequest) {
 
     // Auto-seed default schedule if user currently has no routine schedules in the database
     if (slots.length === 0) {
-      const totalUserSlots = await db.routineSchedule.count({
-        where: { userId: user.id },
+      // Ensure user exists in database before creating foreign key records
+      const userExists = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { id: true },
       });
 
-      if (totalUserSlots === 0) {
-        const defaultSlots = [
+      if (userExists) {
+        const totalUserSlots = await db.routineSchedule.count({
+          where: { userId: user.id },
+        });
+
+        if (totalUserSlots === 0) {
+          const defaultSlots = [
           {
             userId: user.id,
             courseCode: "0611CSE321",
@@ -199,6 +206,7 @@ export async function GET(req: NextRequest) {
         }
       }
     }
+  }
 
     return NextResponse.json({
       success: true,
