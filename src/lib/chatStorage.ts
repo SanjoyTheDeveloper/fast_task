@@ -342,7 +342,30 @@ export async function generateAiReply(
   sources?: { title: string; url: string; domain: string }[];
   deepResearchSteps?: { step: string; status: "done" | "in-progress" | "pending"; detail: string }[];
 }> {
-  // Simulate natural latency (600ms - 1100ms)
+  // 1. First attempt to call the live backend /api/chat route (powered by GEMINI_API_KEY)
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, options }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.content) {
+          return {
+            content: data.content,
+            sources: data.sources,
+            deepResearchSteps: data.deepResearchSteps,
+          };
+        }
+      }
+    } catch {
+      // Graceful fallback to local academic intelligence engine
+    }
+  }
+
+  // 2. Local fallback engine with simulated natural latency (600ms - 1100ms)
   await new Promise((resolve) => setTimeout(resolve, 850));
 
   const lower = prompt.toLowerCase();
