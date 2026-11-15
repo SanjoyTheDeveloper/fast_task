@@ -19,7 +19,7 @@ import {
   Coffee,
 } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
-import { ScheduleItem } from "@/components/dashboard/TodaySchedule";
+import { ScheduleItem } from "@/types";
 
 // ==============================================================================
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;

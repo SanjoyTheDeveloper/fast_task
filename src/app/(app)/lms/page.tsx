@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import {
   BookOpen,
   Folder,
@@ -29,6 +30,7 @@ import {
 import type { SessionUser } from "@/types";
 
 export default function LmsPage() {
+  const router = useRouter();
   const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [documents, setDocuments] = React.useState<LmsPdfDocument[]>([]);
   const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
@@ -163,10 +165,10 @@ export default function LmsPage() {
           if (data?.user) {
             setCurrentUser(data.user);
           } else {
-            window.location.href = "/login?from=/lms";
+            router.push("/login?from=/lms");
           }
         } else if (res.status === 401) {
-          window.location.href = "/login?from=/lms";
+          router.push("/login?from=/lms");
         }
       } catch (err) {
         console.error("Failed to load authenticated user:", err);

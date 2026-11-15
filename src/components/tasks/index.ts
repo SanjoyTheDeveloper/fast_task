@@ -6,7 +6,6 @@ export * from "./TaskList";
 export * from "./KanbanBoard";
 export * from "./TaskDialog";
 export * from "./TaskStatusBadge";
-export * from "./TaskPriorityBadge";
 export * from "./TaskEmptyState";
 export * from "./TaskSearch";
 export * from "./TaskPagination";

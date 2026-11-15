@@ -56,3 +56,17 @@ export interface SemesterConfig {
   endDate: string;
   totalWeeks: number;
 }
+
+export interface ScheduleItem {
+  id: string;
+  courseCode: string;
+  courseColor: string;
+  type: string;
+  typeColor: string;
+  title: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  faculty: string;
+  borderColor: string;
+}

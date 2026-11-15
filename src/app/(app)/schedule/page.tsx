@@ -11,14 +11,12 @@ import {
   Trash2,
   CalendarDays,
   CalendarCheck,
-  CheckCircle2,
   Search,
   X,
   LayoutGrid,
   Columns,
   Printer,
   RotateCcw,
-  Sparkles,
   Clock,
   MapPin,
   User,
@@ -33,7 +31,6 @@ import {
   removeStoredRoutineSlot,
   DEFAULT_SAMPLE_SLOTS,
 } from "@/lib/routineStorage";
-import type { SessionUser } from "@/types";
 
 const DAYS_ORDER = [
   "Sunday",
@@ -396,31 +393,33 @@ export default function SchedulePage() {
 
   const totalClassesCount = slots.length;
   const filteredClassesCount = filteredSlots.length;
-  const todayClasses = groupedSlots.get(currentActualDay) || [];
+  const todayClasses = React.useMemo(
+    () => groupedSlots.get(currentActualDay) || [],
+    [groupedSlots, currentActualDay]
+  );
   const todayClassesCount = todayClasses.length;
 
   // Real-time "Today at a glance" helper
-  const smartStatus = React.useMemo(() => {
-    const now = new Date();
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    if (todayClasses.length === 0) {
-      return {
-        type: "off_day",
-        title: `${currentActualDay} • Off-Day & Self-Study`,
-        subtitle: "No classes scheduled for today. Great time for coursework revisions & labs.",
-        icon: "weekend",
-        color: "text-slate-600",
-        badgeBg: "bg-slate-100 text-slate-700",
-      };
-    }
+  let smartStatus = {
+    type: "off_day",
+    title: `${currentActualDay} • Off-Day & Self-Study`,
+    subtitle: "No classes scheduled for today. Great time for coursework revisions & labs.",
+    icon: "weekend",
+    color: "text-slate-600",
+    badgeBg: "bg-slate-100 text-slate-700",
+  };
 
+  if (todayClasses.length > 0) {
+    let found = false;
     // Check active class now
     for (const item of todayClasses) {
       const start = parseTimeToMinutes(item.startTime);
       const end = parseTimeToMinutes(item.endTime);
       if (currentMinutes >= start && currentMinutes <= end) {
-        return {
+        smartStatus = {
           type: "live",
           title: `Active Class Now • ${item.courseCode}`,
           subtitle: `${item.courseTitle} in ${item.roomNo || "Campus"} (ends at ${item.endTime})`,
@@ -428,36 +427,44 @@ export default function SchedulePage() {
           color: "text-emerald-700",
           badgeBg: "bg-emerald-100 text-emerald-800",
         };
+        found = true;
+        break;
       }
     }
 
-    // Check next upcoming class today
-    for (const item of todayClasses) {
-      const start = parseTimeToMinutes(item.startTime);
-      if (currentMinutes < start) {
-        const diff = start - currentMinutes;
-        const diffText = diff < 60 ? `in ${diff}m` : `in ${Math.floor(diff / 60)}h ${diff % 60}m`;
-        return {
-          type: "upcoming",
-          title: `Next Class Today • ${item.courseCode} (${diffText})`,
-          subtitle: `${item.courseTitle} at ${item.startTime} • ${item.roomNo || "Campus"} • ${item.instructor || "Faculty"}`,
-          icon: "schedule",
-          color: "text-[#315BFF]",
-          badgeBg: "bg-blue-100 text-blue-800",
-        };
+    if (!found) {
+      // Check next upcoming class today
+      for (const item of todayClasses) {
+        const start = parseTimeToMinutes(item.startTime);
+        if (currentMinutes < start) {
+          const diff = start - currentMinutes;
+          const diffText = diff < 60 ? `in ${diff}m` : `in ${Math.floor(diff / 60)}h ${diff % 60}m`;
+          smartStatus = {
+            type: "upcoming",
+            title: `Next Class Today • ${item.courseCode} (${diffText})`,
+            subtitle: `${item.courseTitle} at ${item.startTime} • ${item.roomNo || "Campus"} • ${item.instructor || "Faculty"}`,
+            icon: "schedule",
+            color: "text-[#315BFF]",
+            badgeBg: "bg-blue-100 text-blue-800",
+          };
+          found = true;
+          break;
+        }
       }
     }
 
-    // All today's classes ended
-    return {
-      type: "done",
-      title: `All Sessions Completed for ${currentActualDay}`,
-      subtitle: `Completed ${todayClasses.length} lecture blocks today. See upcoming sessions for the week below.`,
-      icon: "check_circle",
-      color: "text-emerald-700",
-      badgeBg: "bg-emerald-100 text-emerald-800",
-    };
-  }, [todayClasses, currentActualDay]);
+    if (!found) {
+      // All today's classes ended
+      smartStatus = {
+        type: "done",
+        title: `All Sessions Completed for ${currentActualDay}`,
+        subtitle: `Completed ${todayClasses.length} lecture blocks today. See upcoming sessions for the week below.`,
+        icon: "check_circle",
+        color: "text-emerald-700",
+        badgeBg: "bg-emerald-100 text-emerald-800",
+      };
+    }
+  }
 
   const handlePrint = () => {
     window.print();

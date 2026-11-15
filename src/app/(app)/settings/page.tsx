@@ -10,7 +10,6 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
-  GraduationCap,
   User,
   Hash,
   Building2,
