@@ -21,7 +21,6 @@ export interface AiChatSidebarProps {
   onDeleteSession: (id: string) => void;
   onRenameSession: (id: string, newTitle: string) => void;
   onOpenExplore: () => void;
-  onOpenUpgrade: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   className?: string;
@@ -35,7 +34,6 @@ export function AiChatSidebar({
   onDeleteSession,
   onRenameSession,
   onOpenExplore,
-  onOpenUpgrade,
   isCollapsed,
   onToggleCollapse,
   className,
@@ -119,18 +117,6 @@ export function AiChatSidebar({
           <GIcon name="grid_view" size={20} />
         </button>
 
-        {/* Upgrade badge icon at bottom */}
-        <div className="mt-auto pt-2">
-          <button
-            type="button"
-            onClick={onOpenUpgrade}
-            className="h-9 w-9 rounded-xl bg-violet-50 border border-violet-200/80 hover:bg-violet-100 flex items-center justify-center text-violet-700 transition-colors cursor-pointer"
-            title="Get Premium Now"
-            aria-label="Get Premium Now"
-          >
-            <GIcon name="workspace_premium" size={18} />
-          </button>
-        </div>
       </aside>
     );
   }
@@ -344,26 +330,6 @@ export function AiChatSidebar({
         </div>
       </div>
 
-      {/* 5. Bottom Section: Get Premium Now Card */}
-      <div className="pt-3 mt-2 border-t border-slate-100 shrink-0">
-        <div className="rounded-2xl bg-slate-50 border border-slate-200/80 p-3.5 space-y-2.5">
-          <div>
-            <h4 className="text-xs font-bold text-slate-900 tracking-tight">
-              Get Premium Now!
-            </h4>
-            <p className="text-[11px] font-medium text-slate-500 mt-0.5">
-              More acces to the best mode
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onOpenUpgrade}
-            className="w-full py-2 px-3 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all active:scale-[0.98] cursor-pointer"
-          >
-            Upgrade Now
-          </button>
-        </div>
-      </div>
     </aside>
   );
 }

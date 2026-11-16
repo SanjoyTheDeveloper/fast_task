@@ -320,7 +320,6 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
           onDeleteSession={handleDeleteSession}
           onRenameSession={handleRenameSession}
           onOpenExplore={() => setIsExploreOpen(true)}
-          onOpenUpgrade={() => setIsUpgradeOpen(true)}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
         />
@@ -352,10 +351,6 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
           onOpenExplore={() => {
             setIsMobileSidebarOpen(false);
             setIsExploreOpen(true);
-          }}
-          onOpenUpgrade={() => {
-            setIsMobileSidebarOpen(false);
-            setIsUpgradeOpen(true);
           }}
           isCollapsed={false}
           onToggleCollapse={() => setIsMobileSidebarOpen(false)}
