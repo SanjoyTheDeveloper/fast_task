@@ -38,7 +38,7 @@ export function ExploreThinkasModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-blue-50 text-[#315BFF] flex items-center justify-center border border-blue-100">
+            <div className="h-9 w-9 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center border border-blue-100">
               <GIcon name="grid_view" size={20} />
             </div>
             <div>
@@ -51,7 +51,7 @@ export function ExploreThinkasModal({
           <button
             type="button"
             onClick={onClose}
-            className="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer"
+            className="h-8 w-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer"
           >
             <GIcon name="close" size={18} />
           </button>
@@ -89,7 +89,7 @@ export function ExploreThinkasModal({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div
-                    className={`h-9 w-9 rounded-xl flex items-center justify-center border ${item.accentColor}`}
+                    className={`h-9 w-9 rounded-full flex items-center justify-center border ${item.accentColor}`}
                   >
                     <GIcon name={item.iconName} size={20} />
                   </div>

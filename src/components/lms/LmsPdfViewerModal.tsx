@@ -64,7 +64,7 @@ export function LmsPdfViewerModal({
         {/* Modal Top Bar */}
         <div className="px-5 sm:px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3 bg-[#FAF9FD]">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-[#EEF0FA] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#EEF0FA] flex items-center justify-center shrink-0">
               <PdfDocumentIcon className="w-6 h-7 text-[#181829]" />
             </div>
             <div className="min-w-0">

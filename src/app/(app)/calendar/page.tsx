@@ -562,7 +562,7 @@ export default function CalendarPage() {
             {/* Header: Month and Year with calendar icon + left/right navigation arrows */}
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 rounded-xl bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center shadow-2xs">
+                <div className="h-8 w-8 rounded-full bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center shadow-2xs">
                   <CalendarIcon className="h-4 w-4" />
                 </div>
                 <div>
@@ -579,7 +579,7 @@ export default function CalendarPage() {
                 <button
                   type="button"
                   onClick={handlePrevMonth}
-                  className="h-8 w-8 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+                  className="h-8 w-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
                   aria-label="Previous month"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -587,7 +587,7 @@ export default function CalendarPage() {
                 <button
                   type="button"
                   onClick={handleNextMonth}
-                  className="h-8 w-8 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+                  className="h-8 w-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
                   aria-label="Next month"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -725,7 +725,7 @@ export default function CalendarPage() {
             <div className="rounded-2xl bg-white border border-[#DCE7FC] p-5 space-y-4 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
+                  <div className="h-10 w-10 rounded-full bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
                     <Clock className="h-5 w-5" />
                   </div>
                   <div>
@@ -891,7 +891,7 @@ export default function CalendarPage() {
             {/* Teal rounded card: Active Quiz */}
             <div className="rounded-2xl bg-[#CCFBF1] border border-[#99F6E4] p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
-                <div className="h-10 w-10 rounded-xl bg-[#0D9488] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="h-10 w-10 rounded-full bg-[#0D9488] text-white flex items-center justify-center shrink-0 shadow-2xs">
                   <Hourglass className="h-5 w-5" />
                 </div>
                 <div>
@@ -913,7 +913,7 @@ export default function CalendarPage() {
             {/* Coral orange card: TWRM Report Draft */}
             <div className="rounded-2xl bg-[#FFEDD5] border border-[#FED7AA] p-4 sm:p-5 shadow-2xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
-                <div className="h-10 w-10 rounded-xl bg-[#F97316] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="h-10 w-10 rounded-full bg-[#F97316] text-white flex items-center justify-center shrink-0 shadow-2xs">
                   <Pin className="h-5 w-5" />
                 </div>
                 <div>

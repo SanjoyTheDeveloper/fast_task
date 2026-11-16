@@ -671,7 +671,7 @@ export function AddRoutineModal({
         {/* Header Bar */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-white shrink-0">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
+            <div className="h-10 w-10 rounded-full bg-[#315BFF] text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
               <Calendar className="h-5 w-5" />
             </div>
             <div>

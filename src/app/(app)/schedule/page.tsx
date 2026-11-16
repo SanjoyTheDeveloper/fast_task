@@ -461,7 +461,7 @@ export default function SchedulePage() {
           {/* 1. SMART STATUS CALLOUT: Today at a Glance */}
           <div className="rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-4.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 print:hidden">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-blue-50 text-[#315BFF] flex items-center justify-center shrink-0 border border-blue-200/60 shadow-2xs">
+              <div className="h-10 w-10 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center shrink-0 border border-blue-200/60 shadow-2xs">
                 <GIcon name={smartStatus.icon} size={20} />
               </div>
               <div>
@@ -916,7 +916,7 @@ export default function SchedulePage() {
                     <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-slate-100">
                       <div className="flex items-center gap-2.5">
                         <div
-                          className={`h-8 w-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                          className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
                             isToday
                               ? "bg-[#315BFF] text-white shadow-xs"
                               : "bg-slate-100 text-slate-700"

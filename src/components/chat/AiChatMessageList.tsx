@@ -84,7 +84,7 @@ export function AiChatMessageList({
         return (
           <div key={message.id} className="flex items-start gap-3 select-text group">
             {/* Thinka Sunburst Avatar */}
-            <div className="h-8 w-8 rounded-xl bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+            <div className="h-8 w-8 rounded-full bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
               <ThinkaLogo className="h-4 w-4 text-[#315BFF]" />
             </div>
 
@@ -162,7 +162,7 @@ export function AiChatMessageList({
                 <button
                   type="button"
                   onClick={() => toast.success("Feedback submitted! Thanks for helping Thinka learn.")}
-                  className="h-7 w-7 rounded-lg text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 flex items-center justify-center transition-colors cursor-pointer"
+                  className="h-7 w-7 rounded-full text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 flex items-center justify-center transition-colors cursor-pointer"
                   title="Good response"
                 >
                   <GIcon name="thumb_up" size={14} />
@@ -171,7 +171,7 @@ export function AiChatMessageList({
                 <button
                   type="button"
                   onClick={() => toast.info("Feedback noted. We will adjust the response model.")}
-                  className="h-7 w-7 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer"
+                  className="h-7 w-7 rounded-full text-slate-500 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer"
                   title="Poor response"
                 >
                   <GIcon name="thumb_down" size={14} />
@@ -197,7 +197,7 @@ export function AiChatMessageList({
       {/* Loading state indicator */}
       {isLoading && (
         <div className="flex items-start gap-3 select-none animate-in fade-in duration-200">
-          <div className="h-8 w-8 rounded-xl bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="h-8 w-8 rounded-full bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 mt-0.5">
             <ThinkaLogo className="h-4 w-4 text-[#315BFF] animate-spin" />
           </div>
           <div className="space-y-1.5 pt-1">

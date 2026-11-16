@@ -103,7 +103,7 @@ export function HeroOrbitHalo() {
             }}
           >
             <div className="flex flex-col gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#FFEDD5] border border-[#FED7AA] flex items-center justify-center text-[#F97316] shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFEDD5] border border-[#FED7AA] flex items-center justify-center text-[#F97316] shrink-0">
                 <BookOpen className="w-4 h-4" />
               </div>
               <div>
@@ -138,7 +138,7 @@ export function HeroOrbitHalo() {
             }}
           >
             <div className="flex flex-col gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#EDE9FE] border border-[#DDD6FE] flex items-center justify-center text-[#7C3AED] shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#EDE9FE] border border-[#DDD6FE] flex items-center justify-center text-[#7C3AED] shrink-0">
                 <Volume2 className="w-4 h-4" />
               </div>
               <div>
@@ -187,7 +187,7 @@ export function HeroOrbitHalo() {
             
             {/* Back Left Orbital Panel: Academic Course Note */}
             <div
-              className="hidden sm:flex flex-col justify-center absolute left-[12%] lg:left-[16%] top-24 w-28 sm:w-32 h-16 sm:h-18 rounded-xl p-2.5 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
+              className="hidden sm:flex flex-col justify-center absolute left-[12%] lg:left-[16%] top-24 w-28 sm:w-32 h-16 sm:h-18 rounded-2xl p-2.5 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
               style={{
                 transform: `rotateY(${32 + clampedX * 6}deg) translateZ(-45px) translateX(${
                   clampedX * 10
@@ -205,7 +205,7 @@ export function HeroOrbitHalo() {
 
             {/* Back Right Orbital Panel: Academic Quiz Card */}
             <div
-              className="hidden sm:flex flex-col justify-center absolute right-[12%] lg:right-[16%] bottom-20 w-28 sm:w-32 h-16 sm:h-18 rounded-xl p-2.5 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
+              className="hidden sm:flex flex-col justify-center absolute right-[12%] lg:right-[16%] bottom-20 w-28 sm:w-32 h-16 sm:h-18 rounded-2xl p-2.5 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md pointer-events-auto transition-transform hover:scale-105 duration-300 -z-0 will-change-transform"
               style={{
                 transform: `rotateY(${-32 + clampedX * 6}deg) translateZ(-45px) translateX(${
                   clampedX * 10
@@ -240,7 +240,7 @@ export function HeroOrbitHalo() {
               }}
             >
               <div className="flex items-center gap-2.5 rounded-2xl p-3 bg-white/95 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.06),0_2px_8px_rgba(15,23,42,0.03)] hover:scale-105 transition-transform duration-200">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shadow-xs shadow-blue-500/25 shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#315BFF] text-white flex items-center justify-center shadow-xs shadow-blue-500/25 shrink-0">
                   <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div className="min-w-0 pr-0.5">
@@ -265,7 +265,7 @@ export function HeroOrbitHalo() {
               }}
             >
               <div className="flex items-center gap-2.5 rounded-2xl p-3 sm:p-3.5 bg-white/95 border border-slate-200/80 shadow-[0_20px_45px_rgba(124,58,237,0.12),0_4px_12px_rgba(15,23,42,0.04)] hover:scale-105 transition-transform duration-200">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#7C3AED] text-white flex items-center justify-center shadow-xs shadow-purple-500/25 shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#7C3AED] text-white flex items-center justify-center shadow-xs shadow-purple-500/25 shrink-0">
                   <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div className="min-w-0 pr-0.5">
@@ -290,7 +290,7 @@ export function HeroOrbitHalo() {
               }}
             >
               <div className="flex items-center gap-2.5 rounded-2xl p-3 bg-white/95 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.06),0_2px_8px_rgba(15,23,42,0.03)] hover:scale-105 transition-transform duration-200">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#0D9488] text-white flex items-center justify-center shadow-xs shadow-teal-500/25 shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#0D9488] text-white flex items-center justify-center shadow-xs shadow-teal-500/25 shrink-0">
                   <Timer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div className="min-w-0 pr-0.5">
@@ -311,7 +311,7 @@ export function HeroOrbitHalo() {
         <div className="md:hidden w-full max-w-sm mt-6 flex flex-col gap-2.5 z-40">
           <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#315BFF] text-white flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#315BFF] text-white flex items-center justify-center shrink-0">
                 <Calendar className="w-4 h-4 text-white" />
               </div>
               <div className="min-w-0">
@@ -323,7 +323,7 @@ export function HeroOrbitHalo() {
 
           <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#FFEDD5] text-[#F97316] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFEDD5] text-[#F97316] flex items-center justify-center shrink-0">
                 <BookOpen className="w-4 h-4" />
               </div>
               <div className="min-w-0">
@@ -336,7 +336,7 @@ export function HeroOrbitHalo() {
 
           <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#EDE9FE] text-[#7C3AED] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#EDE9FE] text-[#7C3AED] flex items-center justify-center shrink-0">
                 <Volume2 className="w-4 h-4" />
               </div>
               <div className="min-w-0">

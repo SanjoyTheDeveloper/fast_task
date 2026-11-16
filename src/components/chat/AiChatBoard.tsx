@@ -293,7 +293,7 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
     return (
       <div className="w-full h-full min-h-[600px] flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-blue-50 text-[#315BFF] flex items-center justify-center">
+          <div className="h-9 w-9 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center">
             <ThinkaLogo className="h-5 w-5 text-[#315BFF] animate-spin" />
           </div>
           <span className="text-xs font-semibold text-slate-500">Loading Thinka AI Board...</span>

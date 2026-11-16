@@ -130,7 +130,7 @@ function VerifyEmailContent() {
       {/* Brand header */}
       <div className="flex flex-col items-center text-center space-y-2">
         <Link href="/" className="inline-flex items-center gap-2 group">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform">
             <CheckSquare className="h-7 w-7 stroke-[2.5]" />
           </div>
         </Link>

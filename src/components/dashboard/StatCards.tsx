@@ -86,7 +86,7 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
                 {card.label}
               </span>
               <div
-                className={`h-9 w-9 rounded-xl border flex items-center justify-center transition-all duration-300 shrink-0 ${card.iconBox}`}
+                className={`h-9 w-9 rounded-full border flex items-center justify-center transition-all duration-300 shrink-0 ${card.iconBox}`}
               >
                 <GIcon name={card.iconName} size={18} />
               </div>

@@ -278,7 +278,7 @@ export default function SettingsPage() {
           <div className="rounded-3xl bg-white border border-[#E5EAF2] p-6 sm:p-7 shadow-2xs space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl bg-blue-50 text-[#315BFF] flex items-center justify-center shadow-2xs">
+                <div className="h-9 w-9 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center shadow-2xs">
                   <User className="h-4.5 w-4.5" />
                 </div>
                 <div>
@@ -509,7 +509,7 @@ export default function SettingsPage() {
               className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50/80 transition-all group cursor-pointer text-left"
             >
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
+                <div className="h-9 w-9 rounded-full bg-blue-50 text-[#315BFF] border border-blue-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
                   <Home className="h-4.5 w-4.5" />
                 </div>
                 <div>
@@ -532,7 +532,7 @@ export default function SettingsPage() {
               className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-rose-50/60 transition-all group cursor-pointer text-left"
             >
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
+                <div className="h-9 w-9 rounded-full bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
                   <LogOut className="h-4.5 w-4.5" />
                 </div>
                 <h3 className="text-sm font-bold text-rose-600 group-hover:text-rose-700 transition-colors">

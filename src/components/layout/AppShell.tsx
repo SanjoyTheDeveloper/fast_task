@@ -91,7 +91,7 @@ export function AppShell({ children, user }: AppShellProps) {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+            className="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
             aria-label="Close menu"
           >
             <GIcon name="close" size={18} />
@@ -115,7 +115,7 @@ export function AppShell({ children, user }: AppShellProps) {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="h-9 w-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-2xs transition-colors cursor-pointer"
+            className="h-9 w-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-2xs transition-colors cursor-pointer"
             aria-label="Open navigation menu"
           >
             <GIcon name="menu" size={20} />
@@ -128,7 +128,7 @@ export function AppShell({ children, user }: AppShellProps) {
             className="flex items-center gap-2"
             aria-label="FastTask"
           >
-            <div className="h-7 w-7 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shadow-xs">
+            <div className="h-7 w-7 rounded-full bg-[#2563EB] flex items-center justify-center text-white shadow-xs">
               <GIcon name="task_alt" size={16} filled className="text-white" />
             </div>
             <span className="text-base font-black tracking-tight text-[#0F172A]">

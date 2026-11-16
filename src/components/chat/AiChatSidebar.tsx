@@ -88,7 +88,7 @@ export function AiChatSidebar({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="h-9 w-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer mb-6"
+          className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer mb-6"
           title="Expand sidebar"
           aria-label="Expand sidebar"
         >
@@ -99,7 +99,7 @@ export function AiChatSidebar({
         <button
           type="button"
           onClick={onNewChat}
-          className="h-10 w-10 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white flex items-center justify-center shadow-xs transition-transform active:scale-95 cursor-pointer mb-4"
+          className="h-10 w-10 rounded-full bg-[#315BFF] hover:bg-blue-700 text-white flex items-center justify-center shadow-xs transition-transform active:scale-95 cursor-pointer mb-4"
           title="New Chat"
           aria-label="New Chat"
         >
@@ -110,7 +110,7 @@ export function AiChatSidebar({
         <button
           type="button"
           onClick={onOpenExplore}
-          className="h-9 w-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer mb-2"
+          className="h-9 w-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer mb-2"
           title="Explore Thinkas"
           aria-label="Explore Thinkas"
         >
@@ -134,7 +134,7 @@ export function AiChatSidebar({
         <div className="flex items-center justify-between pt-1 pb-5">
           <div className="flex items-center gap-2">
             {/* Radiant Sunburst Icon matching screenshot */}
-            <div className="h-8 w-8 rounded-lg bg-blue-50 text-[#315BFF] flex items-center justify-center shrink-0 border border-blue-100">
+            <div className="h-8 w-8 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center shrink-0 border border-blue-100">
               <ThinkaLogo className="h-5 w-5 text-[#315BFF]" />
             </div>
             <span className="text-lg font-bold tracking-tight text-slate-900">
@@ -147,7 +147,7 @@ export function AiChatSidebar({
             <button
               type="button"
               onClick={onToggleCollapse}
-              className="h-8 w-8 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
+              className="h-8 w-8 rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
               title="Collapse sidebar"
               aria-label="Collapse sidebar"
             >
@@ -159,7 +159,7 @@ export function AiChatSidebar({
               type="button"
               onClick={() => setIsSearching((prev) => !prev)}
               className={cn(
-                "h-8 w-8 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer",
+                "h-8 w-8 rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer",
                 isSearching && "bg-slate-100 text-[#315BFF]"
               )}
               title="Search chats"
@@ -415,7 +415,7 @@ function ChatHistoryItem({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="h-6 w-6 rounded-md hover:bg-slate-200/60 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer"
+              className="h-6 w-6 rounded-full hover:bg-slate-200/60 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer"
               aria-label="Chat options"
             >
               <GIcon name="more_horiz" size={16} />

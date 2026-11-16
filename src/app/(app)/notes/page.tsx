@@ -295,7 +295,7 @@ export default function NotesPage() {
                     <div className="w-2/3 h-1.5 rounded-full bg-slate-100" />
                   </div>
                   <div className="pt-1 flex justify-end">
-                    <div className="w-5 h-5 rounded-md bg-blue-50 text-[#315BFF] flex items-center justify-center">
+                    <div className="w-5 h-5 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center">
                       <Pencil className="w-3 h-3" />
                     </div>
                   </div>
@@ -535,7 +535,7 @@ export default function NotesPage() {
       <Dialog open={!!deletingNote} onOpenChange={(open) => !open && setDeletingNote(null)}>
         <DialogContent className="sm:max-w-[420px] p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xl">
           <DialogHeader className="space-y-2 text-left">
-            <div className="h-11 w-11 rounded-xl bg-red-50 text-red-600 border border-red-200/70 flex items-center justify-center">
+            <div className="h-11 w-11 rounded-full bg-red-50 text-red-600 border border-red-200/70 flex items-center justify-center">
               <Trash2 className="h-5 w-5" />
             </div>
             <DialogTitle className="text-lg font-bold text-slate-900">

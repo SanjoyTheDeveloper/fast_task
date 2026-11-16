@@ -113,7 +113,7 @@ export function TaskSearch({
           <button
             type="button"
             onClick={handleClear}
-            className="h-7 w-7 flex items-center justify-center text-zinc-400 hover:text-zinc-700 active:text-zinc-900 rounded-lg hover:bg-zinc-200/60 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="h-7 w-7 flex items-center justify-center text-zinc-400 hover:text-zinc-700 active:text-zinc-900 rounded-full hover:bg-zinc-200/60 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             aria-label="Clear search"
           >
             <X className="h-4 w-4" />

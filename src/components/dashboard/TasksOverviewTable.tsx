@@ -136,7 +136,7 @@ export function TasksOverviewTable({
                 prev === "ALL" ? "HIGH" : prev === "HIGH" ? "MEDIUM" : prev === "MEDIUM" ? "LOW" : "ALL"
               );
             }}
-            className={`h-9 w-9 rounded-xl border flex items-center justify-center transition-colors cursor-pointer ${
+            className={`h-9 w-9 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
               priorityFilter !== "ALL"
                 ? "bg-blue-50 border-blue-200 text-blue-600"
                 : "border-slate-200/90 bg-slate-50/50 text-slate-500 hover:text-slate-800"

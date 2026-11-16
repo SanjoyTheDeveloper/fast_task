@@ -71,7 +71,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 shadow-xs">
+          <div className="h-8 w-8 rounded-full bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 shadow-xs">
             <Target className="h-4 w-4" />
           </div>
           <div>
@@ -88,7 +88,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
           <button
             type="button"
             onClick={() => setIsMuted(!isMuted)}
-            className="h-7 w-7 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
+            className="h-7 w-7 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors"
             title={isMuted ? "Unmute timer" : "Mute timer"}
             aria-label="Toggle mute"
           >
@@ -100,7 +100,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
               setIsRunning(false);
               handleModeChange(mode);
             }}
-            className="h-7 w-7 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
+            className="h-7 w-7 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors"
             title="Reset timer"
             aria-label="Reset timer"
           >
@@ -165,7 +165,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
             className="w-full py-2.5 px-3 rounded-xl bg-[#0D9488]/20 hover:bg-[#0D9488]/30 border border-[#0D9488]/40 hover:border-[#0D9488] text-white flex items-center justify-between text-xs font-bold transition-all shadow-md group cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-lg bg-[#0D9488]/30 flex items-center justify-center text-[#2DD4BF] group-hover:scale-110 transition-transform">
+              <div className="h-6 w-6 rounded-full bg-[#0D9488]/30 flex items-center justify-center text-[#2DD4BF] group-hover:scale-110 transition-transform">
                 <Headphones className="h-3.5 w-3.5 text-[#2DD4BF]" />
               </div>
               <span className="text-slate-200 group-hover:text-white tracking-wide text-[11px]">

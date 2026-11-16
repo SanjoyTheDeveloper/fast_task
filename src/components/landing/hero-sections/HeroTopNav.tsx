@@ -34,7 +34,7 @@ export function HeroTopNav({
           href="/"
           className="flex items-center gap-2.5 transition-transform hover:scale-102 duration-200 group"
         >
-          <div className="h-9 w-9 rounded-xl bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white shadow-sm shadow-blue-500/30 transition-colors">
+          <div className="h-9 w-9 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white shadow-sm shadow-blue-500/30 transition-colors">
             <CheckSquare className="h-4.5 w-4.5 stroke-[2.5]" />
           </div>
           <div className="flex items-center gap-1.5">

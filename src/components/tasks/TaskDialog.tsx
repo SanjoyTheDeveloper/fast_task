@@ -43,7 +43,7 @@ export function TaskDialog({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[460px] p-5 sm:p-6">
           <DialogHeader className="space-y-2">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 border border-red-200/70">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600 border border-red-200/70">
               <AlertCircle className="h-6 w-6" />
             </div>
             <DialogTitle className="text-lg font-bold text-zinc-900">

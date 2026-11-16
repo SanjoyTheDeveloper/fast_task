@@ -307,7 +307,7 @@ export function LmsUploadModal({
             {selectedFile ? (
               <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200">
+                  <div className="h-12 w-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200">
                     <FileCheck className="h-6 w-6" />
                   </div>
                   <div className="min-w-0">

@@ -177,7 +177,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             className="flex items-center gap-2.5 transition-transform hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
             aria-label="FastTask Home"
           >
-            <div className="h-9 w-9 rounded-xl bg-[#2563EB] flex items-center justify-center text-white shadow-md shadow-blue-600/25 shrink-0">
+            <div className="h-9 w-9 rounded-full bg-[#2563EB] flex items-center justify-center text-white shadow-md shadow-blue-600/25 shrink-0">
               <GIcon name="task_alt" size={20} filled className="text-white" />
             </div>
             <div className="flex items-center gap-1.5">
@@ -273,7 +273,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
             <div className="relative shrink-0">
               <div
                 suppressHydrationWarning
-                className="h-9 w-9 rounded-xl bg-[#315BFF] text-white flex items-center justify-center text-xs font-black tracking-wider shadow-xs ring-2 ring-white overflow-hidden"
+                className="h-9 w-9 rounded-full bg-[#315BFF] text-white flex items-center justify-center text-xs font-black tracking-wider shadow-xs ring-2 ring-white overflow-hidden"
               >
                 <span suppressHydrationWarning>{userInitials}</span>
               </div>

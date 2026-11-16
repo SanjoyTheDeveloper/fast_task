@@ -77,7 +77,7 @@ export function GlitchReality() {
                 {/* Header */}
                 <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-slate-100">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-md bg-[#315BFF] text-white flex items-center justify-center shadow-xs">
+                    <div className="w-5 h-5 rounded-full bg-[#315BFF] text-white flex items-center justify-center shadow-xs">
                       <Terminal className="w-3 h-3" />
                     </div>
                     <span className="text-xs font-semibold text-slate-800">
@@ -185,7 +185,7 @@ export function GlitchReality() {
 
               {/* Floating Dashboard Quick Badge: Study Streak */}
               <div className="absolute -bottom-4 -left-2 sm:left-4 z-20 px-3.5 py-2 rounded-xl bg-white/95 backdrop-blur-md border border-[#D0DFFF] shadow-md shadow-blue-500/10 flex items-center gap-2.5 text-xs">
-                <div className="w-7 h-7 rounded-lg bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center font-bold">
+                <div className="w-7 h-7 rounded-full bg-[#EEF3FF] text-[#315BFF] flex items-center justify-center font-bold">
                   ⚡
                 </div>
                 <div>
@@ -212,7 +212,7 @@ export function GlitchReality() {
           {/* Card 1: Structured Study Intervals */}
           <div className="rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.08)] hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 text-[#315BFF] flex items-center justify-center mb-4">
                 <Timer className="w-5 h-5" />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
@@ -231,7 +231,7 @@ export function GlitchReality() {
           {/* Card 2: Smart Deadline Radar */}
           <div className="rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.08)] hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
@@ -250,7 +250,7 @@ export function GlitchReality() {
           {/* Card 3: Verified Course Notes */}
           <div className="rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.08)] hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
                 <BookOpen className="w-5 h-5" />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">

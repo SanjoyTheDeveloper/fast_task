@@ -36,7 +36,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="h-10 w-10 rounded-2xl bg-blue-50 text-[#315BFF] flex items-center justify-center border border-blue-100">
+            <div className="h-10 w-10 rounded-full bg-blue-50 text-[#315BFF] flex items-center justify-center border border-blue-100">
               <GIcon name="workspace_premium" size={22} className="text-[#315BFF]" />
             </div>
             <div>
@@ -52,7 +52,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer"
+            className="h-8 w-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer"
           >
             <GIcon name="close" size={18} />
           </button>

@@ -24,7 +24,7 @@ export function Footer({
                 className="inline-flex items-center gap-2.5 transition-opacity hover:opacity-90 group"
                 aria-label="FastTask Home"
               >
-                <div className="h-9 w-9 rounded-xl bg-[#315BFF] flex items-center justify-center text-white shadow-sm shadow-blue-500/25 shrink-0 group-hover:scale-105 transition-all">
+                <div className="h-9 w-9 rounded-full bg-[#315BFF] flex items-center justify-center text-white shadow-sm shadow-blue-500/25 shrink-0 group-hover:scale-105 transition-all">
                   <CheckSquare className="h-5 w-5 stroke-[2.5]" />
                 </div>
                 <div className="flex items-center gap-1.5">
