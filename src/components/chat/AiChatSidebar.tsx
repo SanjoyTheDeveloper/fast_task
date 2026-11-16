@@ -88,7 +88,7 @@ export function AiChatSidebar({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="h-9 w-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer mb-4"
+          className="h-9 w-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer mb-6"
           title="Expand sidebar"
           aria-label="Expand sidebar"
         >
@@ -131,7 +131,7 @@ export function AiChatSidebar({
     >
       <div className="flex flex-col min-h-0 flex-1">
         {/* 1. Header: Logo, Thinka Title, Collapse & Search Icons */}
-        <div className="flex items-center justify-between pb-3.5">
+        <div className="flex items-center justify-between pt-1 pb-5">
           <div className="flex items-center gap-2">
             {/* Radiant Sunburst Icon matching screenshot */}
             <div className="h-8 w-8 rounded-lg bg-blue-50 text-[#315BFF] flex items-center justify-center shrink-0 border border-blue-100">
@@ -172,7 +172,7 @@ export function AiChatSidebar({
 
         {/* Optional Search Bar */}
         {isSearching && (
-          <div className="mb-3 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="mb-3.5 animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="relative">
               <input
                 type="text"
@@ -204,7 +204,7 @@ export function AiChatSidebar({
         <button
           type="button"
           onClick={onNewChat}
-          className="w-full py-2.5 px-4 mb-3 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98] cursor-pointer"
+          className="w-full py-2.5 px-4 mt-3 mb-3.5 rounded-xl bg-[#315BFF] hover:bg-blue-700 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98] cursor-pointer"
         >
           <GIcon name="add" size={18} weight={600} />
           <span>New Chat</span>
@@ -221,7 +221,7 @@ export function AiChatSidebar({
         </button>
 
         {/* 4. Chat History Scroll Area */}
-        <div className="flex-1 overflow-y-auto pr-1 -mr-1 space-y-3">
+        <div className="flex-1 overflow-y-auto pr-1 -mr-1 pt-1 space-y-3">
           {/* Today Group */}
           {todaySessions.length > 0 && (
             <div className="space-y-1">
