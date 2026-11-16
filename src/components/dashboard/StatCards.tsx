@@ -39,60 +39,42 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
       label: "Total task",
       value: displayTotal,
       iconName: "assignment",
-      trend: "+7%",
-      trendDirection: "up" as const,
-      trendText: "from last month",
       cardBg: "bg-white",
       borderHover: "hover:border-[#315BFF]",
       iconBox: "bg-[#EEF3FF] text-[#315BFF] border-[#BFDBFE] group-hover:bg-[#315BFF] group-hover:text-white group-hover:shadow-md group-hover:shadow-blue-500/25",
-      trendBadge: "bg-[#EEF3FF] text-[#315BFF] border-[#BFDBFE]",
     },
     {
       id: "progress",
       label: "On progress",
       value: displayProgress,
       iconName: "hourglass_top",
-      trend: "+3%",
-      trendDirection: "up" as const,
-      trendText: "from last month",
       cardBg: "bg-white",
       borderHover: "hover:border-[#7C3AED]",
       iconBox: "bg-[#EDE9FE] text-[#7C3AED] border-[#DDD6FE] group-hover:bg-[#7C3AED] group-hover:text-white group-hover:shadow-md group-hover:shadow-purple-500/25",
-      trendBadge: "bg-[#EDE9FE] text-[#7C3AED] border-[#DDD6FE]",
     },
     {
       id: "completed",
       label: "Completed",
       value: displayCompleted,
       iconName: "check_circle",
-      trend: "+9%",
-      trendDirection: "up" as const,
-      trendText: "from last month",
       cardBg: "bg-white",
       borderHover: "hover:border-[#10B981]",
       iconBox: "bg-[#D1FAE5] text-[#10B981] border-[#A7F3D0] group-hover:bg-[#10B981] group-hover:text-white group-hover:shadow-md group-hover:shadow-emerald-500/25",
-      trendBadge: "bg-[#D1FAE5] text-[#065F46] border-[#A7F3D0]",
     },
     {
       id: "overdue",
       label: "Overdue",
       value: displayOverdue,
       iconName: "warning",
-      trend: "-2%",
-      trendDirection: "down" as const,
-      trendText: "from last month",
       cardBg: "bg-white",
       borderHover: "hover:border-[#EF4444]",
       iconBox: "bg-[#FEE2E2] text-[#EF4444] border-[#FECACA] group-hover:bg-[#EF4444] group-hover:text-white group-hover:shadow-md group-hover:shadow-rose-500/25",
-      trendBadge: "bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]",
     },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       {cards.map((card) => {
-        const isUp = card.trendDirection === "up";
-
         return (
           <div
             key={card.id}
@@ -110,27 +92,10 @@ export function StatCards({ tasks = [], totalCount }: StatCardsProps) {
               </div>
             </div>
 
-            {/* Middle: Big bold count matching reference */}
-            <div className="pt-2 pb-4">
+            {/* Big bold count */}
+            <div className="pt-3">
               <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
                 {card.value}
-              </span>
-            </div>
-
-            {/* Bottom Row: Minimalist arrow + percentage pill + 'from last month' */}
-            <div className="flex items-center gap-2 text-xs">
-              <div
-                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-bold ${card.trendBadge}`}
-              >
-                <GIcon
-                  name={isUp ? "trending_up" : "trending_down"}
-                  size={14}
-                  weight={600}
-                />
-                <span>{card.trend}</span>
-              </div>
-              <span className="text-slate-400 font-normal">
-                {card.trendText}
               </span>
             </div>
           </div>
