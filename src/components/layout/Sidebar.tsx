@@ -114,7 +114,7 @@ export function Sidebar({ user, className, onNavigate }: SidebarProps) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
-  const { profile, palette } = useStudentProfile(
+  const { profile } = useStudentProfile(
     user?.name ? { name: user.name } : undefined
   );
 

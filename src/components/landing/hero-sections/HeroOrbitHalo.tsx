@@ -13,7 +13,6 @@ import {
 export function HeroOrbitHalo() {
   // Interactive Mouse Parallax & 3D Tilt State
   const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = React.useState(false);
 
   // Mouse Move Parallax Handler
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -21,12 +20,10 @@ export function HeroOrbitHalo() {
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2; // -1 to 1
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2; // -1 to 1
     setMousePos({ x, y });
-    setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
     setMousePos({ x: 0, y: 0 });
-    setIsHovered(false);
   };
 
   // Touch handlers for mobile

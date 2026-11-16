@@ -11,15 +11,19 @@ export function NavigationProgressBar() {
 
   // Complete and reset progress bar when route changes
   React.useEffect(() => {
-    if (navigating) {
+    if (!navigating) return;
+    const finishTimer = setTimeout(() => {
       setProgress(100);
-      const timer = setTimeout(() => {
-        setNavigating(false);
-        setProgress(0);
-      }, 250);
-      return () => clearTimeout(timer);
-    }
-  }, [pathname, searchParams]);
+    }, 0);
+    const resetTimer = setTimeout(() => {
+      setNavigating(false);
+      setProgress(0);
+    }, 250);
+    return () => {
+      clearTimeout(finishTimer);
+      clearTimeout(resetTimer);
+    };
+  }, [pathname, searchParams, navigating]);
 
   // Intercept click on internal navigation links for instant feedback
   React.useEffect(() => {

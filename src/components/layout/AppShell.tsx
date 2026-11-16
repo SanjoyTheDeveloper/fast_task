@@ -22,9 +22,15 @@ export function AppShell({ children, user }: AppShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const pathname = usePathname();
 
+  const prevPathRef = React.useRef(pathname);
+
   // Close mobile drawer on route change
   React.useEffect(() => {
-    setIsMobileMenuOpen(false);
+    if (prevPathRef.current !== pathname) {
+      prevPathRef.current = pathname;
+      const timer = setTimeout(() => setIsMobileMenuOpen(false), 0);
+      return () => clearTimeout(timer);
+    }
   }, [pathname]);
 
   // Handle escape key to close drawer
@@ -38,7 +44,7 @@ export function AppShell({ children, user }: AppShellProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
 
-  const { profile, palette } = useStudentProfile(
+  const { profile } = useStudentProfile(
     user?.name ? { name: user.name } : undefined
   );
   const displayName = profile?.name || user?.name || "Sanjoy Chandro Bhowmick";

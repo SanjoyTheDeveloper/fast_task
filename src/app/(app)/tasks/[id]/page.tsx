@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { TaskDialog } from "@/components/tasks/TaskDialog";
 import { TaskNote } from "@/components/tasks/TaskNote";
-import type { Task, SessionUser } from "@/types";
+import type { Task } from "@/types";
 import { formatDate } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -25,7 +25,6 @@ import {
   AlertCircle,
   Loader2,
   CheckCircle2,
-  User,
   Calendar,
 } from "lucide-react";
 
@@ -35,24 +34,16 @@ export default function TaskDetailPage() {
   const taskId = params?.id as string;
 
   const [task, setTask] = React.useState<Task | null>(null);
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
-  // Load current user and task details
+  // Load task details
   React.useEffect(() => {
     async function loadData() {
       try {
-        // Fetch current user
-        const userRes = await fetch("/api/auth/me");
-        if (userRes.ok) {
-          const userData = await userRes.json();
-          setCurrentUser(userData.user);
-        }
-
         // Fetch task strictly from response.data: Task
         const taskRes = await fetch(`/api/tasks/${taskId}`);
         if (!taskRes.ok) {

@@ -105,6 +105,7 @@ export function LmsUploadModal({
 
   // Sync course selection with current page category tab
   React.useEffect(() => {
+    if (!isOpen) return;
     if (activeCategory && activeCategory !== "All") {
       const idx = COURSE_OPTIONS.findIndex(
         (c) =>
@@ -112,7 +113,10 @@ export function LmsUploadModal({
           c.category.toLowerCase() === activeCategory.toLowerCase()
       );
       if (idx !== -1) {
-        setSelectedCourseIdx(idx);
+        const timer = setTimeout(() => {
+          setSelectedCourseIdx((prev) => (prev !== idx ? idx : prev));
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }
   }, [activeCategory, isOpen]);

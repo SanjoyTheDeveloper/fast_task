@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { loginSchema } from "@/lib/validations";
 import { db, prisma } from "@/lib/db";
-import { verifyPassword, hashPassword } from "@/lib/auth";
+import { verifyPassword } from "@/lib/auth";
 import { isEmailConfigured } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {

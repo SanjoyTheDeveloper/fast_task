@@ -36,8 +36,19 @@ export interface AiChatBoardProps {
 }
 
 export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
-  const [sessions, setSessions] = React.useState<ChatSession[]>([]);
-  const [activeSessionId, setActiveSessionId] = React.useState<string | null>(null);
+  const [sessions, setSessions] = React.useState<ChatSession[]>(() => {
+    if (typeof window === "undefined") return [];
+    return loadChatSessions();
+  });
+  const [activeSessionId, setActiveSessionId] = React.useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    const loaded = loadChatSessions();
+    const activeId = loadActiveChatId();
+    if (activeId && loaded.some((s) => s.id === activeId)) {
+      return activeId;
+    }
+    return loaded[0]?.id || null;
+  });
   const [currentModelId, setCurrentModelId] = React.useState<string>("thinka-2.0-flash");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState<boolean>(false);
@@ -45,21 +56,11 @@ export function AiChatBoard({ user, className = "" }: AiChatBoardProps) {
   const [isUpgradeOpen, setIsUpgradeOpen] = React.useState<boolean>(false);
   const [prefillPrompt, setPrefillPrompt] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isMounted, setIsMounted] = React.useState<boolean>(false);
-
-  // Initialize from client storage
-  React.useEffect(() => {
-    const loaded = loadChatSessions();
-    setSessions(loaded);
-    const activeId = loadActiveChatId();
-    if (activeId && loaded.some((s) => s.id === activeId)) {
-      setActiveSessionId(activeId);
-    } else {
-      // Default to the first session ("Forecast next week's data") or null
-      setActiveSessionId(loaded[0]?.id || null);
-    }
-    setIsMounted(true);
-  }, []);
+  const isMounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Sync to storage
   const updateSessions = React.useCallback(

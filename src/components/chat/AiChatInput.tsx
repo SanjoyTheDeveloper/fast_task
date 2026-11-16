@@ -44,7 +44,8 @@ export function AiChatInput({
 
   // Sync prefill from quick suggestion chips
   React.useEffect(() => {
-    if (prefillValue) {
+    if (!prefillValue) return;
+    const timer = setTimeout(() => {
       setInput(prefillValue);
       if (textareaRef.current) {
         textareaRef.current.focus();
@@ -55,7 +56,8 @@ export function AiChatInput({
         )}px`;
       }
       onClearPrefill?.();
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [prefillValue, onClearPrefill]);
 
   // Auto-resize textarea

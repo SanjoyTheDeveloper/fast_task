@@ -49,7 +49,14 @@ export const authConfig = {
         pathname.startsWith("/calendar") ||
         pathname.startsWith("/settings") ||
         pathname.startsWith("/lms") ||
-        pathname.startsWith("/task");
+        pathname.startsWith("/task") ||
+        pathname.startsWith("/tasks") ||
+        pathname.startsWith("/routine") ||
+        pathname.startsWith("/notes") ||
+        pathname.startsWith("/courses") ||
+        pathname.startsWith("/ai-chat") ||
+        pathname.startsWith("/ai") ||
+        pathname.startsWith("/chat");
 
       if (isProtectedRoute && !isLoggedIn) {
         let from = nextUrl.pathname;

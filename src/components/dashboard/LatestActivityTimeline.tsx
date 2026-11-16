@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Activity, User } from "lucide-react";
+import { Activity } from "lucide-react";
 import type { Task, SessionUser } from "@/types";
 
 export interface ActivityItem {

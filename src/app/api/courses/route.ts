@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
@@ -10,7 +10,7 @@ export const revalidate = 0;
  * Returns all active academic courses for the authenticated user,
  * along with task counts, completion progress, and nearest upcoming deadlines.
  */
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const user = await getCurrentUser();
     if (!user || !user.id) {

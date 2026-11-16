@@ -121,7 +121,10 @@ export default function KanbanPage() {
   }, []);
 
   React.useEffect(() => {
-    fetchTasks();
+    const timer = setTimeout(() => {
+      fetchTasks();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchTasks]);
 
   // Compute live filtered tasks without reload

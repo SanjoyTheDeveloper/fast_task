@@ -402,7 +402,7 @@ export default function CalendarPage() {
     }
     loadRoutine();
     return () => { isMounted = false; };
-  }, []);
+  }, [buildRoutineMap]);
 
   const selectedDateObj = new Date(year, month, selectedDate);
   const selectedDayOfWeekIdx = selectedDateObj.getDay();

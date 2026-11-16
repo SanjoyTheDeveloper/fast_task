@@ -48,9 +48,7 @@ function DashboardContent() {
 
   // User & Task State (Immediate 0ms local hydration + background sync)
   const { data: session } = useSession();
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
-    (session?.user as SessionUser) || null
-  );
+  const currentUser = (session?.user as SessionUser) || null;
   const [tasks, setTasks] = React.useState<Task[]>(() => getStoredTasks());
   const [courses, setCourses] = React.useState<ProjectCardItem[]>(() => getStoredCourses());
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -66,13 +64,6 @@ function DashboardContent() {
       hasPreviousPage: false,
     };
   });
-    
-  // Sync session user
-  React.useEffect(() => {
-    if (session?.user) {
-      setCurrentUser(session.user as SessionUser);
-    }
-  }, [session]);
 
   // Helper to update URL search parameters
   const updateQueryParams = React.useCallback(
@@ -177,8 +168,11 @@ function DashboardContent() {
   }, []);
 
   React.useEffect(() => {
-    fetchTasks();
-    fetchCourses();
+    const timer = setTimeout(() => {
+      fetchTasks();
+      fetchCourses();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchTasks, fetchCourses]);
 
   // Client-side course filter matching

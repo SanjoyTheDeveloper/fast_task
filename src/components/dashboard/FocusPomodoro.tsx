@@ -39,8 +39,8 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
       interval = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
-      setIsRunning(false);
+    } else if (timeLeft === 0 && isRunning) {
+      const timer = setTimeout(() => setIsRunning(false), 0);
       // Play sound if not muted
       if (!isMuted && typeof window !== "undefined") {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -54,6 +54,7 @@ export function FocusPomodoro({ onOpenZenMode }: FocusPomodoroProps = {}) {
           osc.stop(audioCtx.currentTime + 0.3);
         }
       }
+      return () => clearTimeout(timer);
     }
     return () => {
       if (interval) clearInterval(interval);

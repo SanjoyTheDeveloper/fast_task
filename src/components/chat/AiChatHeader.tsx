@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { GIcon } from "@/components/ui/GIcon";
-import { AiModelConfig } from "@/types/chat";
 import { AI_MODELS } from "@/lib/chatStorage";
 import {
   DropdownMenu,

@@ -159,54 +159,66 @@ export function AddRoutineModal({
   // Submitting & Error state
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const prevSlotIdRef = React.useRef<string | null>(null);
 
   // Initialize or reset state on open/edit
   React.useEffect(() => {
-    if (slotToEdit) {
-      const editDay = slotToEdit.dayOfWeek || defaultDay;
-      const short = DAYS_OF_WEEK.find((d) => d.full === editDay)?.short || "Sun";
-
-      setCourseTitle(slotToEdit.courseTitle || "");
-      setCourseCode(slotToEdit.courseCode || "");
-      setInstructor(slotToEdit.instructor || "");
-      setSelectedDays([editDay]);
-      setSelectedPreset("custom");
-      setIsCustomCourse(true);
-
-      const initialConfig: DayConfig = {
-        dayOfWeek: editDay,
-        short,
-        startTime: slotToEdit.startTime || "09:30 AM",
-        endTime: slotToEdit.endTime || "11:00 AM",
-        roomNo: slotToEdit.roomNo || "",
-      };
-
-      setDayConfigs({ [editDay]: initialConfig });
-      setBaseStartTime(slotToEdit.startTime || "09:30 AM");
-      setBaseEndTime(slotToEdit.endTime || "11:00 AM");
-      setBaseRoomNo(slotToEdit.roomNo || "");
-    } else {
-      setCourseTitle("");
-      setCourseCode("");
-      setInstructor("");
-      setSelectedPreset("");
-      setIsCustomCourse(false);
-      setSelectedDays([defaultDay]);
-
-      const initialShort = DAYS_OF_WEEK.find((d) => d.full === defaultDay)?.short || "Sun";
-      setDayConfigs({
-        [defaultDay]: {
-          dayOfWeek: defaultDay,
-          short: initialShort,
-          startTime: "09:30 AM",
-          endTime: "11:00 AM",
-          roomNo: "",
-        },
-      });
-      setBaseStartTime("09:30 AM");
-      setBaseEndTime("11:00 AM");
-      setBaseRoomNo("");
+    if (!isOpen) {
+      prevSlotIdRef.current = null;
+      return;
     }
+    const currentId = slotToEdit?.id || "new";
+    if (prevSlotIdRef.current === currentId) return;
+    prevSlotIdRef.current = currentId;
+
+    const timer = setTimeout(() => {
+      if (slotToEdit) {
+        const editDay = slotToEdit.dayOfWeek || defaultDay;
+        const short = DAYS_OF_WEEK.find((d) => d.full === editDay)?.short || "Sun";
+
+        setCourseTitle(slotToEdit.courseTitle || "");
+        setCourseCode(slotToEdit.courseCode || "");
+        setInstructor(slotToEdit.instructor || "");
+        setSelectedDays([editDay]);
+        setSelectedPreset("custom");
+        setIsCustomCourse(true);
+
+        const initialConfig: DayConfig = {
+          dayOfWeek: editDay,
+          short,
+          startTime: slotToEdit.startTime || "09:30 AM",
+          endTime: slotToEdit.endTime || "11:00 AM",
+          roomNo: slotToEdit.roomNo || "",
+        };
+
+        setDayConfigs({ [editDay]: initialConfig });
+        setBaseStartTime(slotToEdit.startTime || "09:30 AM");
+        setBaseEndTime(slotToEdit.endTime || "11:00 AM");
+        setBaseRoomNo(slotToEdit.roomNo || "");
+      } else {
+        setCourseTitle("");
+        setCourseCode("");
+        setInstructor("");
+        setSelectedPreset("");
+        setIsCustomCourse(false);
+        setSelectedDays([defaultDay]);
+
+        const initialShort = DAYS_OF_WEEK.find((d) => d.full === defaultDay)?.short || "Sun";
+        setDayConfigs({
+          [defaultDay]: {
+            dayOfWeek: defaultDay,
+            short: initialShort,
+            startTime: "09:30 AM",
+            endTime: "11:00 AM",
+            roomNo: "",
+          },
+        });
+        setBaseStartTime("09:30 AM");
+        setBaseEndTime("11:00 AM");
+        setBaseRoomNo("");
+      }
+    }, 0);
+    return () => clearTimeout(timer);
     setErrorMsg(null);
   }, [slotToEdit, defaultDay, isOpen]);
 

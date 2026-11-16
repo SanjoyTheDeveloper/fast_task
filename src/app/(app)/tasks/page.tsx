@@ -37,7 +37,7 @@ import {
   Loader2,
 } from "@/components/ui/GoogleIcon";
 import { toast, Toaster } from "sonner";
-import type { Task, SessionUser } from "@/types";
+import type { Task } from "@/types";
 import { COURSES } from "@/lib/academic";
 import { getStoredTasks, saveStoredTasks } from "@/lib/taskStorage";
 
@@ -138,7 +138,10 @@ export default function MyTasksPage() {
   }, [router]);
 
   React.useEffect(() => {
-    fetchTasks();
+    const timer = setTimeout(() => {
+      fetchTasks();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchTasks]);
 
   // 3. Status Toggle Handler
@@ -219,7 +222,7 @@ export default function MyTasksPage() {
   const [nowTimestamp] = React.useState(() => Date.now());
 
   // Helper to determine resolved priority
-  const getTaskPriority = (task: Task): "High" | "Medium" | "Low" => {
+  const getTaskPriority = React.useCallback((task: Task): "High" | "Medium" | "Low" => {
     if (task.priority) {
       const p = task.priority.toUpperCase();
       if (p === "HIGH") return "High";
@@ -234,7 +237,7 @@ export default function MyTasksPage() {
       if (diffHours <= 168) return "Medium";
     }
     return "Medium";
-  };
+  }, [nowTimestamp]);
 
   // Helper to determine status badge
   const getTaskStatus = (task: Task): { label: string; badgeClass: string } => {
@@ -307,7 +310,7 @@ export default function MyTasksPage() {
       }
       return 0;
     });
-  }, [tasks, searchQuery, statusChip, selectedCourse, selectedPriority, sortBy]);
+  }, [tasks, searchQuery, statusChip, selectedCourse, selectedPriority, sortBy, getTaskPriority]);
 
   // Overall Task Counts
   const totalTasksCount = tasks.length;

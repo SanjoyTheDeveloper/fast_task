@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   BookOpen,
@@ -30,13 +29,35 @@ import {
 } from "@/lib/lmsStorage";
 import type { SessionUser } from "@/types";
 
+const DEFAULT_LMS_CATEGORIES = ["All", "TWRM", "CN", "MACS", "Labs & Sessionals"];
+
 export default function LmsPage() {
-  const router = useRouter();
   const { data: session } = useSession();
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
-    (session?.user as SessionUser) || null
-  );
-  const [documents, setDocuments] = React.useState<LmsPdfDocument[]>([]);
+  const currentUser = (session?.user as SessionUser) || null;
+  const [documents, setDocuments] = React.useState<LmsPdfDocument[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const deletedIds = getStoredDeletedIds();
+      const bookmarks = getStoredBookmarks();
+      const stored =
+        localStorage.getItem("fasttask_course_uploads_v2") ||
+        localStorage.getItem("fasttask_course_uploads");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed
+            .filter((d: LmsPdfDocument) => !deletedIds.has(d.id))
+            .map((d: LmsPdfDocument) => ({
+              ...d,
+              isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
+            }));
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+    return [];
+  });
   const [activeSection, setActiveSection] = React.useState<LmsNavSection>("all");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("All");
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -48,32 +69,11 @@ export default function LmsPage() {
   const [isViewerOpen, setIsViewerOpen] = React.useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
 
-  // Load documents safely on client: fast local sync + IndexedDB + DB API sync
+  // Load documents safely on client: IndexedDB + DB API sync
   React.useEffect(() => {
     let isMounted = true;
     const deletedIds = getStoredDeletedIds();
     const bookmarks = getStoredBookmarks();
-
-    // 1. Instant sync from localStorage for 0ms visual rendering of existing cards
-    try {
-      const stored =
-        localStorage.getItem("fasttask_course_uploads_v2") ||
-        localStorage.getItem("fasttask_course_uploads");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0 && isMounted) {
-          const customFiltered = parsed
-            .filter((d: LmsPdfDocument) => !deletedIds.has(d.id))
-            .map((d: LmsPdfDocument) => ({
-              ...d,
-              isBookmarked: bookmarks[d.id] !== undefined ? bookmarks[d.id] : d.isBookmarked,
-            }));
-          setDocuments(customFiltered);
-        }
-      }
-    } catch {
-      // Offline fallback
-    }
 
     // 2. Re-hydrate full PDF blobs from IndexedDB so uploaded PDFs can be previewed/downloaded
     loadPersistedCourseUploads()
@@ -158,13 +158,6 @@ export default function LmsPage() {
       isMounted = false;
     };
   }, []);
-
-  // Sync authenticated user from session
-  React.useEffect(() => {
-    if (session?.user) {
-      setCurrentUser(session.user as SessionUser);
-    }
-  }, [session]);
 
   const loggedInName =
     currentUser?.name ||
@@ -428,10 +421,9 @@ export default function LmsPage() {
     return Array.from(map.values());
   }, [documents]);
 
-  const defaultCategories = ["All", "TWRM", "CN", "MACS", "Labs & Sessionals"];
   const availableCategories = React.useMemo(() => {
     const cats = enrolledCourses.map((c) => c.key);
-    const set = new Set([...defaultCategories, ...cats]);
+    const set = new Set([...DEFAULT_LMS_CATEGORIES, ...cats]);
     return Array.from(set);
   }, [enrolledCourses]);
 

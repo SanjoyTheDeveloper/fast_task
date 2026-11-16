@@ -1,16 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { PageHeaderBanner } from "@/components/layout";
 import { GIcon } from "@/components/ui/GIcon";
 import {
-  Calendar,
   Plus,
   Pencil,
   Trash2,
   CalendarDays,
-  CalendarCheck,
   Search,
   X,
   LayoutGrid,
@@ -148,11 +145,17 @@ function getCourseBadgeStyle(courseCode: string, courseTitle: string) {
 }
 
 export default function SchedulePage() {
-  const router = useRouter();
-
   // Routine schedule state
-  const [slots, setSlots] = React.useState<RoutineSlot[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [slots, setSlots] = React.useState<RoutineSlot[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const cached = getStoredRoutineSlots();
+      return cached && cached.length > 0 ? cached : DEFAULT_SAMPLE_SLOTS;
+    } catch {
+      return DEFAULT_SAMPLE_SLOTS;
+    }
+  });
+  const [isLoading, setIsLoading] = React.useState(false);
   const [selectedDayTab, setSelectedDayTab] = React.useState<string>("All");
 
   // Filter & Search states
@@ -169,26 +172,9 @@ export default function SchedulePage() {
     return new Date().toLocaleDateString("en-US", { weekday: "long" });
   }, []);
 
-  // 1. Fetch routine slots (Instant local load + background sync)
+  // 1. Background sync routine slots
   React.useEffect(() => {
     let isMounted = true;
-
-    // 1. Instant local load on client mount after hydration
-    try {
-      const cached = getStoredRoutineSlots();
-      if (cached && cached.length > 0 && isMounted) {
-        setSlots(cached);
-        setIsLoading(false);
-      } else if (isMounted) {
-        setSlots(DEFAULT_SAMPLE_SLOTS);
-        setIsLoading(false);
-      }
-    } catch {
-      if (isMounted) {
-        setSlots(DEFAULT_SAMPLE_SLOTS);
-        setIsLoading(false);
-      }
-    }
 
     // 2. Background sync
     async function fetchRoutine() {

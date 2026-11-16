@@ -25,7 +25,6 @@ export function TaskProgressGauge({ tasks = [], totalCount }: TaskProgressGaugeP
     const completed = tasks.filter((t) => t.completed).length;
     const highPriorityActive = tasks.filter((t) => !t.completed && t.priority === "HIGH").length;
     const medPriorityActive = tasks.filter((t) => !t.completed && t.priority === "MEDIUM").length;
-    const otherActive = Math.max(0, total - completed - highPriorityActive - medPriorityActive);
 
     const completedPercent = Math.max(0, Math.round((completed / total) * 100));
     const onReviewPercent = Math.max(0, Math.round((highPriorityActive / total) * 100));

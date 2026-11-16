@@ -47,42 +47,57 @@ export default function SettingsPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
-    (session?.user as SessionUser) || null
+    () => (session?.user as SessionUser) || null
   );
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [isSavedRecently, setIsSavedRecently] = React.useState(false);
 
-  // Profile Form State - Initialized consistently to avoid SSR hydration mismatch
-  const [name, setName] = React.useState(DEFAULT_STUDENT_PROFILE.name);
-  const [studentId, setStudentId] = React.useState(DEFAULT_STUDENT_PROFILE.studentId);
-  const [department, setDepartment] = React.useState(DEFAULT_STUDENT_PROFILE.department);
-  const [batch, setBatch] = React.useState(DEFAULT_STUDENT_PROFILE.batch);
-  const [avatarColor, setAvatarColor] = React.useState(DEFAULT_STUDENT_PROFILE.avatarColor);
-  const [linkedin, setLinkedin] = React.useState(DEFAULT_STUDENT_PROFILE.linkedin || "");
+  // Profile Form State - Initialized from stored profile if available
+  const [name, setName] = React.useState(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE.name;
+    return getStoredProfile().name || DEFAULT_STUDENT_PROFILE.name;
+  });
+  const [studentId, setStudentId] = React.useState(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE.studentId;
+    return getStoredProfile().studentId || DEFAULT_STUDENT_PROFILE.studentId;
+  });
+  const [department, setDepartment] = React.useState(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE.department;
+    return getStoredProfile().department || DEFAULT_STUDENT_PROFILE.department;
+  });
+  const [batch, setBatch] = React.useState(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE.batch;
+    return getStoredProfile().batch || DEFAULT_STUDENT_PROFILE.batch;
+  });
+  const [avatarColor, setAvatarColor] = React.useState(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE.avatarColor;
+    return getStoredProfile().avatarColor || DEFAULT_STUDENT_PROFILE.avatarColor;
+  });
+  const [linkedin, setLinkedin] = React.useState(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE.linkedin || "";
+    return getStoredProfile().linkedin || "";
+  });
 
   // Track initial state for dirty check / revert
-  const [initialProfile, setInitialProfile] = React.useState<StudentProfile>(DEFAULT_STUDENT_PROFILE);
+  const [initialProfile, setInitialProfile] = React.useState<StudentProfile>(() => {
+    if (typeof window === "undefined") return DEFAULT_STUDENT_PROFILE;
+    return getStoredProfile();
+  });
 
-  // Load authenticated user and saved student metadata
+  // Populate from session if user has a name in session
   React.useEffect(() => {
-    // Sync with local storage on client mount
-    const stored = getStoredProfile();
-    setName(stored.name || DEFAULT_STUDENT_PROFILE.name);
-    setStudentId(stored.studentId || DEFAULT_STUDENT_PROFILE.studentId);
-    setDepartment(stored.department || DEFAULT_STUDENT_PROFILE.department);
-    setBatch(stored.batch || DEFAULT_STUDENT_PROFILE.batch);
-    setAvatarColor(stored.avatarColor || DEFAULT_STUDENT_PROFILE.avatarColor);
-    setLinkedin(stored.linkedin || "");
-    setInitialProfile(stored);
-
-    if (session?.user) {
-      setCurrentUser(session.user as SessionUser);
-      if (!stored.name && session.user.name) {
-        setName(session.user.name);
+    const sessionName = session?.user?.name;
+    if (sessionName) {
+      const stored = getStoredProfile();
+      if (!stored.name) {
+        const timer = setTimeout(() => {
+          setName(sessionName);
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }
-  }, [session]);
+  }, [session?.user?.name]);
 
   // Handle saving profile changes
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -165,7 +180,6 @@ export default function SettingsPage() {
     }
   };
 
-  const activePalette = AVATAR_PALETTES.find((p) => p.id === avatarColor) || AVATAR_PALETTES[0];
   const userInitial = name.trim() ? name.trim().charAt(0).toUpperCase() : "S";
   const userEmail = currentUser?.email || "";
 

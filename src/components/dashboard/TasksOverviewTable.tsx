@@ -1,16 +1,9 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import {
-  Check,
   Search,
   SlidersHorizontal,
-  LayoutList,
-  Kanban as KanbanIcon,
-  ChevronLeft,
-  ChevronRight,
-  ArrowUpRight,
 } from "lucide-react";
 import type { Task } from "@/types/task";
 
@@ -37,11 +30,7 @@ export interface TasksOverviewTableProps {
 
 export function TasksOverviewTable({
   tasks = [],
-  onToggleStatus,
-  onEditTask,
   onOpenCreateModal,
-  activeView = "table",
-  onViewChange,
 }: TasksOverviewTableProps) {
   const [searchFilter, setSearchFilter] = React.useState("");
   const [priorityFilter, setPriorityFilter] = React.useState<string>("ALL");

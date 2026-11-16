@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import type { SessionUser } from "@/types";
 import { PageHeaderBanner } from "@/components/layout";
@@ -71,13 +70,10 @@ const COURSE_BADGES: Record<string, { bg: string; text: string; border: string }
 
 
 export default function NotesPage() {
-  const router = useRouter();
   const { data: session } = useSession();
 
   // Core State (0ms instant sync)
-  const [currentUser, setCurrentUser] = React.useState<SessionUser | null>(
-    (session?.user as SessionUser) || null
-  );
+  const currentUser = (session?.user as SessionUser) || null;
 
   // Storage key
   const storageKey = React.useMemo(() => {
@@ -115,31 +111,31 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCourseFilter, setSelectedCourseFilter] = React.useState("ALL");
 
-  // Sync session user
-  React.useEffect(() => {
-    if (session?.user) {
-      setCurrentUser(session.user as SessionUser);
-    }
-  }, [session]);
+  const prevKeyRef = React.useRef(storageKey);
 
-  // 2. Load Notes from Storage
+  // 2. Load Notes from Storage when storage key changes
   React.useEffect(() => {
-    try {
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          setNotes(parsed);
+    if (prevKeyRef.current === storageKey) return;
+    prevKeyRef.current = storageKey;
+    const timer = setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            setNotes(parsed);
+          }
+        } else {
+          setNotes([]);
         }
-      } else {
+      } catch (e) {
+        console.error("Failed to load notes:", e);
         setNotes([]);
+      } finally {
+        setIsLoaded(true);
       }
-    } catch (e) {
-      console.error("Failed to load notes:", e);
-      setNotes([]);
-    } finally {
-      setIsLoaded(true);
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [storageKey]);
 
   // Save notes helper

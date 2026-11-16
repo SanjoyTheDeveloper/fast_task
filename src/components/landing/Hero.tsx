@@ -16,21 +16,18 @@ const HeroVideoModal = dynamic(
 
 export function Hero() {
   const [isVideoOpen, setIsVideoOpen] = React.useState(false);
-  const [registerHref, setRegisterHref] = React.useState("/register");
-  const [activeNav, setActiveNav] = React.useState("Home");
-
-  React.useEffect(() => {
+  const [registerHref] = React.useState<string>(() => {
+    if (typeof document === "undefined") return "/register";
     try {
       const isAuth =
         document.cookie.includes("authjs.session-token") ||
         document.cookie.includes("__Secure-authjs.session-token");
-      if (isAuth) {
-        setRegisterHref("/dashboard");
-      }
+      return isAuth ? "/dashboard" : "/register";
     } catch {
-      // Fallback in case of environment constraint
+      return "/register";
     }
-  }, []);
+  });
+  const [activeNav, setActiveNav] = React.useState("Home");
 
   return (
     <section

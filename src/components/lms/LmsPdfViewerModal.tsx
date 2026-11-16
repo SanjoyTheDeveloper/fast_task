@@ -33,17 +33,15 @@ export function LmsPdfViewerModal({
 }: LmsPdfViewerModalProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [viewerMode, setViewerMode] = React.useState<"pdf" | "reader">("pdf");
+  const [prevDocId, setPrevDocId] = React.useState<string | null>(null);
   const totalPages = doc?.pages || 24;
 
-  React.useEffect(() => {
+  // Sync state with doc changes during render
+  if (doc && doc.id !== prevDocId) {
+    setPrevDocId(doc.id);
     setCurrentPage(1);
-    // If the document has a real fileUrl (e.g. uploaded PDF), default to native PDF viewer
-    if (doc?.fileUrl) {
-      setViewerMode("pdf");
-    } else {
-      setViewerMode("reader");
-    }
-  }, [doc]);
+    setViewerMode(doc.fileUrl ? "pdf" : "reader");
+  }
 
   if (!isOpen || !doc) return null;
 
